@@ -1,0 +1,127 @@
+<style lang="less" scoped>
+@import "@/less/css.less";
+    .customer_content {
+        box-sizing: border-box;
+        .present_message {
+            width: 202px;
+            transition: 0.25s;
+            @media screen and (max-width:1200px) {
+                max-width: 0px;
+                max-height: 0px;
+                overflow: hidden;
+            }
+        }
+    }
+    .present_item {
+        height: 374px;
+    }
+    .administrator {
+        width: 138px;
+        color: #212121;
+        font-size: 12px;
+        white-space: nowrap;
+        .administrator_item {
+            padding: 10px 0 12px 7px;
+        }
+        .administrator_item div img {
+            width: 28px;
+            padding-right: 3px;
+        }
+    }
+    .physical {
+        width: 108px;
+        margin-top: 50px;
+    }
+    
+</style>
+
+<template>
+    <div class="customerPage flex">
+        <!-- <div><myHeaderL></myHeaderL></div> -->
+        <div class="customer_content flex">
+            <div class="present_message">
+                <!-- <div class="LOGO"><img src="@/assets/img/logo.png" alt=""></div> -->
+                <div class="present_item">
+                    
+                </div>
+                <div class="administrator mg">
+                    <div class="administrator_item cursor flex al" @click="myCustomer">
+                        <div><img src="@/assets/img/doctor.png" alt=""></div>
+                        <div>My Doctors</div>
+                    </div>
+                    <div class="administrator_item cursor flex al" @click="appointment">
+                        <div><img src="@/assets/img/date.png" alt=""></div>
+                        <div>Appointments</div>
+                    </div>
+                    <div class="administrator_item cursor flex al" @click="vetRecord">
+                        <div><img src="@/assets/img/message.png" alt=""></div>
+                        <div>Medical Record</div>
+                    </div>
+                    <div class="administrator_item cursor flex al" @click="myPaymentHistory">
+                        <div><img src="@/assets/img/wallet.png" alt=""></div>
+                        <div>My Payments History</div>
+                    </div>
+                    <div class="administrator_item cursor flex al" @click="setting">
+                        <div><img src="@/assets/img/profile.png" alt=""></div>
+                        <div>Setting</div>
+                    </div>
+                    <div class="ju">
+                        <img class="physical" src="@/assets/img/physical3.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</template>
+
+<script>
+export default {
+    data () {
+        return {
+            petId:'0000001',
+            age:"2 yrs S mo",
+            breed:'Husky',
+            sex:"M",
+            neuteredStatus:'None',
+            weight: "33.5kg",
+            show: false,
+            change:true,
+            rotate: false,
+        }
+    },
+    mounted () {
+    },
+    methods: {
+        edit () {
+            this.change = !this.change
+        },
+        petList () {
+            this.show = !this.show
+            this.rotate = !this.rotate
+        },
+        setting () {
+            setTimeout(() => {
+                this.$router.push("/vetSetting")
+            })
+        },
+        petDetails () {
+            this.$router.push("/petDetails")
+        },
+        appointment () {
+            this.$router.push("/appointment")
+        },
+        myCustomer () {
+            this.$router.push("/myCustomer")
+        },
+        myPaymentHistory () {
+            this.$router.push("/myPaymentHistory")
+        },
+        vetRecord () {
+            this.$router.push("/vetRecord")
+        }
+    }
+}
+</script>
+

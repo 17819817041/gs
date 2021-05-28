@@ -1,0 +1,183 @@
+<style lang="less" scoped>
+    @import "@/less/css.less";
+    .vetRecord {
+        width: 100%;
+    }
+    .vetRecordContent {
+        height: 100%;
+    }
+    .vetRecordContent_item {
+        background: @content;
+        flex: 10;
+        height: 100%;
+        .itemChild {
+            width: 98%;
+        }
+    }
+    .vetRecord_message {
+        .vetRecord_item {
+            width: 98%;
+            background: white;
+            border-radius: 10px;
+        }
+    }
+    .petMessage_title {
+        color: #5E5E5E;
+    }
+    .vetRecord_wrap {
+        padding: 25px 0;
+    }
+    .vetRecord_message {
+        // padding: 20px;
+        .about {
+            padding: 0 0 7px 30px;
+        }
+    }
+    .noPadding {
+        padding: 0 0 4px 30px !important;
+    }
+    .vetRecord_message1 {
+        width: 50%;
+        position: relative;
+    }
+    .vetRecord_image {
+        width: 15%;
+    } 
+    .dog_img{
+        padding: 25px 0;
+        width: 200px;
+        height: 200px;
+        transition: 0.25s;
+        @media screen and (max-width:1500px) {
+            width: 150px;
+            height: 150px;
+        }
+    }
+    .children {
+        transition: 0.25s;
+        @media screen and (max-width:1430px) {
+            width: 40% !important;
+        }
+    }
+    .about {
+        padding: 0 0 12px 30px;
+        transition: 0.25s;
+        @media screen and (max-width:1299px) {
+            padding: 0 0 11px 20px !important;
+        }
+    }
+    .size22 {
+        font-size: 22px;
+    }
+    .medialvetRecord {
+        padding: 20px 0 20px 30px;
+    }
+    .vetvetRecord {
+        width: 900px;
+        word-wrap: break-word;
+    }
+</style>
+
+<template>
+    <div class="vetRecord">
+        <div class="vetRecordContent">
+            <div class="vetRecordContent_item">
+                <div class="itemChild mg">
+                    <div class="explan al">
+                        <img src="@/assets/img/recordImg.png" alt="">
+                        Medical Record History
+                    </div>
+                    <div class="vetRecord_message">
+                        <div class="vetRecord_item flex mg">
+                            <div class="vetRecord_image ju">
+                                <img class="dog_img" src="@/assets/img/dog.png" alt="">
+                            </div>
+                            <div style="flex:10">
+                                <div class="vetRecord_wrap flex">
+                                    <div class="vetRecord_message flex size22">
+                                        <div>
+                                            <div class="flex about">
+                                                <div>Pet ID</div>
+                                            </div>
+                                            <div class="about">
+                                                <div>Name</div>
+                                            </div>
+                                            <div class="about">
+                                                <div>Age</div>
+                                            </div>
+                                            <div class="about">
+                                                <div>Pet Type</div>
+                                            </div>
+                                            <div class="about">
+                                                <div>Breed</div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="about">
+                                                <div>Pet ID66666666</div>
+                                            </div>
+                                            <div class="about">
+                                                <div>Pet ID</div>
+                                            </div>
+                                            <div class="about">
+                                                <div>Pet ID</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="vetRecord_message1 flex">
+                                        <div class="children size22">
+                                            <div class="about">
+                                                <div>Gender</div>
+                                            </div>
+                                            <div class="about">
+                                                <div>Neutered status</div>
+                                            </div>
+                                            <div class="about">
+                                                <div>Weight</div>
+                                            </div>
+                                            <div class="about">
+                                                <div>Remarks</div>
+                                            </div>
+                                        </div>
+                                        <div class="children size22">
+                                            <div class="about">
+                                                <div>Gender</div>
+                                            </div>
+                                            <div class="about">
+                                                <div>Neutered status</div>
+                                            </div>
+                                            <div class="about">
+                                                <div>Weight</div>
+                                            </div>
+                                            <div class="about">
+                                                <div>Remarks</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="medialvetRecord size22">
+                                    <div>Medical Record</div>
+                                    <div>Date: 2021/5/24</div>
+                                    <div>Vet: Dr Beck</div>
+                                    <div class="vetvetRecord">
+                                        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+                                        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+                                        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+
+}
+</script>
+
