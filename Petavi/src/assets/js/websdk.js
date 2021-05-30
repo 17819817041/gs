@@ -80,23 +80,23 @@ var rtcCall = new webrtc.Call({
             console.log('onAcceptCall::', 'from: ', from, 'options: ', options);
             if (from) {
                 store.commit("setUser",{ key: 'callModal', value: false })
-                router.push("/agroa")
+                router.push("/agora")
             }
         },
         //通过streamType区分视频流和音频流，streamType: 'VOICE'(音频流)，'VIDEO'(视频流)
         onGotRemoteStream: function (stream, streamType) {
             console.log('onGotRemoteStream::', 'stream: ', stream, 'streamType: ', streamType);
-            // store.commit("setApp",{ key: 'remoteStream', value: stream })
-            var video = document.getElementById('video');
-            video.srcObject = stream;
-            video.play()
+            store.commit("setApp",{ key: 'remoteStream', value: stream })
+            // var video = document.getElementById('video');
+            // video.srcObject = stream;
+            // video.play()
         },
         onGotLocalStream: function (stream, streamType) {
             console.log('onGotLocalStream::', 'stream:', stream, 'streamType: ', streamType);
-            // store.commit("setApp",{ key: 'localStream', value: stream })
-            var video = document.getElementById('localVideo');
-            video.srcObject = stream;
-            video.play()
+            store.commit("setApp",{ key: 'localStream', value: stream })
+            // var video = document.getElementById('localVideo');
+            // video.srcObject = stream;
+            // video.play()
         },
         onRinging: function (caller, streamType) {
             console.log("onRinging", caller)

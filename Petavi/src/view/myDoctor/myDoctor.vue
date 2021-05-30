@@ -125,6 +125,7 @@ export default {
     },
     created () {
         this.getDoctorList()
+        // this.detail = this.doctorList[0]
     },
     computed: {
         callModal: {
@@ -167,6 +168,9 @@ export default {
             this.$store.commit("setUser", {
                 key: "callTo",
                 value: this.detail
+                // value: {
+                //     doctorId: 322
+                // }
             })
             this.callModal = true
         },

@@ -20,11 +20,21 @@
             position: absolute;
             width: 123px;
             height: 150px;
-            border: solid 1px;
+            // border: solid 1px;
             bottom: 20px;
             right: 20px;
             z-index: 100;
-            background: black;
+            // background: black;
+            box-shadow: 0 0 5px #999;
+        }
+        .video_parent {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: solid 1px;
+            bottom: 0px;
+            right: 0px;
+            z-index: 100;
         }
         .answer {
             position: absolute;
@@ -104,7 +114,8 @@
                     <div class="cursor" @click="join"><img src="@/assets/img/answer_video.png" alt=""></div>
                     <div class="cursor"><img src="@/assets/img/answer_phone.png" alt=""></div>
                 </div>
-                <div class="video_child" id="localvideo"></div>
+                <video :class="['video_parent']" id="localVideo"></video>
+                <video :class="['video_child']" id="video"></video>
             </div>
             <div class="doctorMessage">
                 <div class="about_me sb">
@@ -160,9 +171,24 @@ export default {
     mounted () {
         // console.log(AgoraRTC)
         this.createClient()
-        
+        this.initVideo()
+    },
+    computed: {
+        remoteStream () { return this.$store.state.app.remoteStream },
+        localStream () { return this.$store.state.app.localStream },
     },
     methods: {
+        initVideo () {
+            var video = document.getElementById('localVideo');
+            video.srcObject = this.localStream;
+            video.play()
+
+            var video1 = document.getElementById('video');
+            console.log(111, video.play, this.localStream)
+            console.log(222, video1.play, this.remoteStream)
+            video1.srcObject = this.remoteStream;
+            video1.play()
+        },
         // edit () {
         //     this.change = !this.change
         // },
