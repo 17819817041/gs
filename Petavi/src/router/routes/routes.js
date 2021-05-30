@@ -24,11 +24,6 @@ export default [
         component: () => import("@/view/vetLogin/vetLogin.vue")
     },
     {
-        path:'/petDetails',
-        name:'petDetails',
-        component: () => import('@/view/petDetails/petDetails.vue')
-    },
-    {
         path:'/customerhomepage',              //CUSTOMER
         name:'customerhomepage',
         redirect: "/myDoctor",
@@ -43,6 +38,11 @@ export default [
                 path:'/myAppointment',
                 name:'myAppointment',
                 component: () => import("@/view/myAppointment/myAppointment.vue")
+            },
+            {
+                path:'/petDetails',
+                name:'petDetails',
+                component: () => import('@/view/petDetails/petDetails.vue')
             },
             {
                 path:'/setting',

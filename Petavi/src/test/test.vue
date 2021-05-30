@@ -58,9 +58,9 @@
 export default {
     data () {
         return {
-            user1:"a1",
+            user1:"430_1",
             pwd1: "123456",
-            user2: "a2",
+            user2: "322_2",
             pwd2: "123456",
         }
     },
@@ -82,7 +82,7 @@ export default {
                 pushMsg: 'user is calling you' //推送内容
             };
             this.$rtcCall.caller = 'mengyuanyuan'; // 指定呼叫方名字
-            this.$rtcCall.makeVideoCall("a2",null,true,true,config);
+            this.$rtcCall.makeVideoCall("322_2",null,true,true,config);
         },
         send () {
             let data = {

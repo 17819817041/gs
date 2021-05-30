@@ -114,35 +114,41 @@
             <img src="@/assets/img/logo.png" alt="" @click="test">
         </div>
         <div class="div sb al">
-            <div class="search al sa">
+            <div class="search al sa" v-if="login">
                 <div class="top" v-if="identity" @click="doctor">All Doctors</div>
                 <div class="top" v-else @click="patient">All Patients</div>
-                <div class="select top" style="font-size:7px" v-if="active">
+                <div class="select top" style="font-size:7px" >
                     <div>
                         Category
                         <img class="dropimg" src="@/assets/img/drop.png" alt="">
                     </div>
                 </div>
-                <div class="input" v-if="active">
+                <div class="input" >
                     <el-input prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
                 </div>
             </div>
+            <div v-else></div>
             <div class="function sb al">
-                <div class="userName al sb" v-if="active">
+                <div class="sb al" v-if="login">
+                    <div class="userName al sb">
+                        
+                        <label for="ava" class="cursor">
+                            <input id="ava" v-show="false" type="file" @change="getImage" />   <!-- 头像路径-->
+                            <img class="headImage cursor" :src="userDetails.userImage" alt="">
+                        </label>
+                        
 
-                    <input class="headImage" type="file" @change="getImage" />   <!-- 头像路径-->
-                    <img class="headImage" :src="userDetails.userImage" alt="">
-
-                    <div class="name">{{userDetails.userName}}</div>
-                    <div class="informationImg cursor top al" @click="notice">
-                        <img src="@/assets/img/information.png" alt="">
+                        <div class="name">{{userDetails.userName}}</div>
+                        <div class="informationImg cursor top al" @click="notice">
+                            <img src="@/assets/img/information.png" alt="">
+                        </div>
+                        <div class="homeImg al cursor" @click="home">
+                            <img src="@/assets/img/home.png" alt="">
+                        </div>
                     </div>
-                    <div class="homeImg al cursor" @click="home">
-                        <img src="@/assets/img/home.png" alt="">
+                    <div class="logout cursor bold tc white al ju" @click="logout">
+                        <div >Logout</div>     
                     </div>
-                </div>
-                <div class="logout cursor bold tc white al ju" v-if="active" @click="logout">
-                    <div >Logout</div>     
                 </div>
                 <div class="helpBtn cursor al ju" @click="support">
                     <div class="al">
@@ -156,29 +162,60 @@
 </template>
 
 <script>
-import { data, getUserDetails, updateUserDetails, file } from "@/axios/request.js"
+import { getUserDetails, updateUserDetails, file } from "@/axios/request.js"
 export default {
     data () {
         return {
             customerId:'Amily Watson',
             identity: true,
-            userDetails: {}
-        }
-    },
-    props: {
-        active: {
-            type: Boolean,
-            default:true
+            userDetails: {},
         }
     },
     created () {
         this.getUser()
-
+    },
+    watch: {
+        login: {
+            handler (val) {
+                if (val) {
+                    this.getUser()
+                }
+            },
+        }
+    },
+    computed: {
+        login: {
+            get () { return this.$store.state.user.login },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "login",
+                    value: val
+                })
+            },
+        }
     },
     methods: {
         getUser () {
+            const data = {
+                userId: localStorage.getItem("userId"),
+                // platform: localStorage.getItem("platform"),
+                // token: localStorage.getItem("Token")
+            }
             getUserDetails(data).then(res => {
-                this.userDetails = res.data.data
+                if (res.data.rtnCode == 200) {
+                    this.userDetails = res.data.data
+                    this.login = true
+                    this.$store.dispatch("IMLogin")
+                } else {
+                    this.userDetails = {}
+                    // this.login = false
+                    this.login = true
+                }
+                
+            }).catch(e => {
+                console.log(e)
+                // this.login = false
+                this.login = true
             })
         },
         getImage (e) {
@@ -214,9 +251,10 @@ export default {
             this.$router.push("/customerhomepage")
         },
         logout () {
+            this.$store.dispatch("logout", this)
             // localStorage.clear()
-            localStorage.removeItem("Token")
-            // this.$router.push("/login")
+            
+
         },
         doctor () {
             this.identity = false

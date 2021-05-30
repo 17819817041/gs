@@ -1,8 +1,11 @@
 <style lang="less" scoped>
 @import "@/less/css.less";
+    // .customerPage {
+    //     flex: 10;
+    // }
     .customer_content {
         .pet_message {
-            width: calc(97% - 125px);
+            width: 100%;
             height: 100%;
             background: @content;
             margin-top: 10px;
@@ -50,11 +53,20 @@
     }
     .details_image {
         padding: 0 50px;
-        img {
-            width: 180px;
-            height: 180px;
-            padding-left: 50px;
+        .wrap_IMG {
+            width: 200px;
+            height: 200px;
+            border: solid 1px;
+            border-radius: 50%;
+            margin-left: 50px;
+            overflow: hidden;
         }
+    }
+    .pet_IMG {
+        width: auto;
+        height: 100%;
+        display: block;
+        margin: auto;
     }
     .details_message {
         width: 30%;
@@ -143,20 +155,21 @@
 
 <template>
     <div class="customerPage">
-        <div><myHeaderL></myHeaderL></div>
         <div class="customer_content flex">
-            <div class="present_message">
-                <message></message>
-            </div>
             <div class="pet_message">
                 <div class="bold petMessage_title" @click="toPetMessage">Pet Details</div>
-                <div class="details_item size21 flex">
+                <div class="details_item size21 flex" v-for="(item) in petList" :key="item.id">
                     <div v-if="change" class="edit cursor tc" @click="edit">Edit</div>
                     <div v-else class="save cursor tc" @click="save">Save</div>
-
                     <div class="details_image ju">
-                        <img :src="petDetails.image" alt="">
-                        <input type="file" @change="petImage">
+                        
+                        <label for="ava1">
+                            <div class="wrap_IMG">
+                                <img class="pet_IMG" :src="item.image" alt="">
+                            </div>
+                            <input id="ava1" type="file" v-show="false" @change="petImage">
+                        </label>
+
                     </div>
                     <div class="details_message flex">
                         <div>
@@ -178,16 +191,16 @@
                         </div>
                         <div>
                             <div class="flex about">
-                                <div>{{petDetails.id}}</div>
+                                <div>{{item.id}}</div>
                             </div>
                             <div :class="['flex', 'al', 'about', {noPadding:!change}]">
-                                <div v-if="change">{{petDetails.name}}</div>
+                                <div v-if="change">{{item.name}}</div>
                                 <div class="editInp al" v-else>
-                                    <input type="text" v-model="petDetails.name">
+                                    <input type="text" v-model="item.name">
                                 </div>
                             </div>
                             <div :class="['flex', 'about', {noPadding:!change}]">
-                                <div v-if="change">{{petDetails.age}}</div>
+                                <div v-if="change">{{item.age}}</div>
                                 <div class="al" v-else>
                                     <div class="years_input al"><input class="tc" type="text"></div>
                                     <div>yrs</div>
@@ -196,13 +209,13 @@
                                 </div>
                             </div>
                             <div class="flex about">
-                                <div v-if="change">{{petDetails.petType}}</div>
+                                <div v-if="change">{{item.petType}}</div>
                                 <div class="editInp al" v-else>
-                                    <input type="text" v-model="petDetails.petType">
+                                    <input type="text" v-model="item.petType">
                                 </div>
                             </div>
                             <div class="flex about">
-                                <div v-if="change">{{petDetails.breed}}</div>
+                                <div v-if="change">{{item.breed}}</div>
                                 <div class="editInp al" v-else>
                                     <el-select v-model="breed">
                                         <el-option v-for="(item,i) in breedList" :key="i" :value="item"></el-option>
@@ -234,7 +247,7 @@
                         </div>
                         <div>
                             <div class="flex about">
-                                <div v-if="change">{{petDetails.gender}}</div>
+                                <div v-if="change">{{item.gender}}</div>
                                 <div class="editInp al" v-else>
                                     <el-select v-model="sex" @change="getSex">
                                         <el-option value="1">M</el-option>
@@ -246,10 +259,10 @@
                                 <div>None</div>
                             </div>
                             <div class="flex about">
-                                <div v-if="change">{{petDetails.weight}}</div>
+                                <div v-if="change">{{item.weight}}</div>
                                 <div v-else class="flex">
                                     <div class="editInp1 al" >
-                                        <div class="input"><input type="text" v-model="petDetails.weight"></div>
+                                        <div class="input"><input type="text" v-model="item.weight"></div>
                                     </div>
                                     <div>kg</div>
                                 </div>
@@ -278,7 +291,7 @@
 </template>
 
 <script>
-import { file, addPet, petDetails, updatePet } from "@/axios/request.js"
+import { file, addPet, petDetails, updatePet, petList } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -305,8 +318,11 @@ export default {
     },
     created () {
         this.getPetDetails()
-        
-        
+    },
+    computed: {
+        petList: {
+            get () {return this.$store.state.user.petList}
+        }
     },
     methods: {
         addPet () {                                                                              //添加宠物
@@ -327,6 +343,7 @@ export default {
             this.petDetails.age = "2yrs2mo"                                                         //更新宠物信息
             updatePet(this.petDetails).then(res => {
                 console.log(res,"geng新完成")
+                this.getPetDetails()
             })
         },
         petImage (e) {                                                                          //上传宠物图片
@@ -336,6 +353,7 @@ export default {
                 console.log(res,"宠物图片")
                 this.src = res.data.data
                 this.petDetails.image = res.data.data
+                this.updatePet()
             })
         },
 

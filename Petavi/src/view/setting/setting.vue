@@ -217,7 +217,7 @@
 </template>
 
 <script>
-import { getUserDetails, updateUserDetails, data } from "@/axios/request.js"
+import { getUserDetails, updateUserDetails } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -242,6 +242,11 @@ export default {
             this.user.userGender = val.target.value
         },
         getUser () {
+            const data = {
+                userId: localStorage.getItem("userId"),
+                platform: localStorage.getItem("platform"),
+                token: localStorage.getItem("Token")
+            }
             getUserDetails(data).then(res => {
                 console.log(res.data.data,"user")
                 this.user = res.data.data

@@ -97,14 +97,14 @@
                 </div>
                 <div><message></message></div>
             </div>
-            <div class="showVideo" id="player1">
+            <div class="showVideo" id="video">
 
                 <div class="answer sb">
                     <div class="cursor"><img src="@/assets/img/answer_audeo.png" alt=""></div>
                     <div class="cursor" @click="join"><img src="@/assets/img/answer_video.png" alt=""></div>
                     <div class="cursor"><img src="@/assets/img/answer_phone.png" alt=""></div>
                 </div>
-                <div class="video_child" id="player2"></div>
+                <div class="video_child" id="localvideo"></div>
             </div>
             <div class="doctorMessage">
                 <div class="about_me sb">
@@ -136,14 +136,6 @@
                 </div>
             </div>
         </div>
-
-
-
-        <!-- <div id="player1"></div>
-        <div id="player2"></div>
-        <div><button @click="leave">离开</button>
-            <button @click="join">进入</button>
-        </div> -->
     </div>
 </template>
 

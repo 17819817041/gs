@@ -288,7 +288,7 @@ export default {
             console.log(val)
         },
         toVideo () {
-            this.$router.push('/vetAgora')
+            this.$router.push('/agora')
         },
         vetBooking () {
             this.$router.push("/vetBooking")

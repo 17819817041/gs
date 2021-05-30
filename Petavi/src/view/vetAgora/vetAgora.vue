@@ -150,13 +150,13 @@
                 </div>
                 <div><message></message></div>
             </div>
-            <div class="showVideo" id="player2">
+            <div class="showVideo" id="localVideo">
                 <div class="answer sb">
                     <div class="cursor"><img src="@/assets/img/answer_audeo.png" alt=""></div>
                     <div class="cursor" @click="join"><img src="@/assets/img/answer_video.png" alt=""></div>
                     <div class="cursor"><img src="@/assets/img/answer_phone.png" alt=""></div>
                 </div>
-                <div class="video_child" id="player1"></div>
+                <div class="video_child" id="video"></div>
             </div>
             <div class="doctorMessage">
                 <div class="about_me sb">

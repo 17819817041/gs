@@ -65,16 +65,16 @@
             <div class="loginBtn ju">
                 <div class="toLogin tc">
                     <div class="customerLogin cursor white" @click="customerLogin">
-                        <el-button class="width100" type="primary" :loading="customerloading">Customer Login</el-button>
+                        <el-button class="width100" type="primary">Customer Login</el-button>
                         <div class="bone" @click="customerLogin">
                             <img src="@/assets/img/bone.png" alt="">
                         </div>
                     </div>
                     <div class="vetLogin cursor white" @click="vetLogin">
-                        <el-button class="width100" type="warning" :loading="vetloading">Vet Login</el-button>
+                        <el-button class="width100" type="warning" >Vet Login</el-button>
                     </div>
                     <div class="createAccount cursor" @click="createAccount">
-                        <el-button class="backWhite width100" type="primary" :loading="createloading">Create Account</el-button>
+                        <el-button class="backWhite width100" type="primary" >Create Account</el-button>
                     </div>
                 </div>
             </div>
@@ -86,10 +86,7 @@
 export default {
     data () {
         return {
-            customerloading: false,
-            vetloading: false,
-            createloading: false,
-            
+
         }
     },
     created () {
@@ -97,26 +94,15 @@ export default {
     },
     methods: {
         customerLogin () {
-            this.customerloading = true
-            setTimeout(() => {
-                this.$router.push("/customerLogin")
-            },500)
-            
+            this.$router.push("/customerLogin")            
         },
         vetLogin () {
-            this.vetloading = true
-            setTimeout(() => {
-                this.$router.push('/vetLogin')
-            },500)
-            
+            this.$router.push('/vetLogin')
         },
         createAccount () {
-            this.createloading = true
-            setTimeout(() => {
-                this.$router.push({
-                    name:'signUp'
-                })
-            },500)
+            this.$router.push({
+                name:'signUp'
+            })
         }
     }
 }

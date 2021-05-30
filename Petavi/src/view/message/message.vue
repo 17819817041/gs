@@ -166,21 +166,32 @@ export default {
             show: false,
             change:true,
             rotate: false,
-            data: {
-                userId: localStorage.getItem("userId"),
-                pageNum: 0,
-                pageSize: 10
-            }
+            pageNum: 0,
+            pageSize: 100
         }
     },
     created () {
         this.getPetList()
     },
+    computed: {
+        petList: {
+            get () {return this.$store.state.user.petList},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "petList",
+                    value: val
+                })
+            },
+        }
+    },
     methods: {
         getPetList () {
-            petList(this.data).then(res => {
-                console.log(res,"宠物列表")
-            })
+            var data = {
+                userId: localStorage.getItem("userId"),
+                pageNum: this.pageNum,
+                pageSize: this.pageSize
+            }
+            this.$store.dispatch("getPetList",data)
         },
         edit () {
             this.change = !this.change

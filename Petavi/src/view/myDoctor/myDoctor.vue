@@ -1,17 +1,17 @@
 <template>
     <div class="myDoctor flex">
-        <div class="doctorList">
+        <div class="doctorList noBar">
             <div class="width102 clear">
-                <div class="doctor_item float">
+                <div class="doctor_item float" v-for="(item) in doctorList" :key="item.doctorId" @click="getDetail(item)">
                     <div class="image flex">
                         <div class="doctor_head">
                             <img src="@/assets/img/head.png" alt="">
                             <div class="grade white al size12b">
-                                <img src="@/assets/img/rate.png" alt="">{{grade}}
+                                <img src="@/assets/img/rate.png" alt="">{{item.baeScore}}
                             </div>
                         </div>
                         <div class="about">
-                            <div class="size16">Dr. Sherley Billman</div>
+                            <div class="size16">{{item.doctorName}}</div>
                             <div class="size14">General Obstetrics & Gynecology</div>
                             <div class="size12a al">
                                 <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
@@ -22,166 +22,11 @@
                     <div class="workTime al sb">
                         <div>
                             <div class="size14">Experience</div>
-                            <div><span class="size16">20</span> <span class="size14"> Years</span></div>
+                            <div><span class="size16">{{item.experience}}</span> <span class="size14"> Years</span></div>
                         </div>
                         <div>
                             <div class="size14">Likes</div>
-                            <div><span class="size16">125</span><span class="size14"> (40%)</span></div>
-                        </div>
-                        <div class="call">
-                            <el-button class="callBtn width100" type="primary">Call</el-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="doctor_item float">
-                    <div class="image flex">
-                        <div class="doctor_head">
-                            <img src="@/assets/img/head.png" alt="">
-                            <div class="grade white al size12b">
-                                <img src="@/assets/img/rate.png" alt="">{{grade}}
-                            </div>
-                        </div>
-                        <div class="about">
-                            <div class="size16">Dr. Sherley Billman</div>
-                            <div class="size14">General Obstetrics & Gynecology</div>
-                            <div class="size12a al">
-                                <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
-                                0.8 km away
-                            </div>
-                        </div>
-                    </div>
-                    <div class="workTime al sb">
-                        <div>
-                            <div class="size14">Experience</div>
-                            <div><span class="size16">20</span> <span class="size14"> Years</span></div>
-                        </div>
-                        <div>
-                            <div class="size14">Likes</div>
-                            <div><span class="size16">125</span><span class="size14"> (40%)</span></div>
-                        </div>
-                        <div class="call">
-                            <el-button class="callBtn width100" type="primary">Call</el-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="doctor_item float">
-                    <div class="image flex">
-                        <div class="doctor_head">
-                            <img src="@/assets/img/head.png" alt="">
-                            <div class="grade white al size12b">
-                                <img src="@/assets/img/rate.png" alt="">{{grade}}
-                            </div>
-                        </div>
-                        <div class="about">
-                            <div class="size16">Dr. Sherley Billman</div>
-                            <div class="size14">General Obstetrics & Gynecology</div>
-                            <div class="size12a al">
-                                <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
-                                0.8 km away
-                            </div>
-                        </div>
-                    </div>
-                    <div class="workTime al sb">
-                        <div>
-                            <div class="size14">Experience</div>
-                            <div><span class="size16">20</span> <span class="size14"> Years</span></div>
-                        </div>
-                        <div>
-                            <div class="size14">Likes</div>
-                            <div><span class="size16">125</span><span class="size14"> (40%)</span></div>
-                        </div>
-                        <div class="call">
-                            <el-button class="callBtn width100" type="primary">Call</el-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="doctor_item float">
-                    <div class="image flex">
-                        <div class="doctor_head">
-                            <img src="@/assets/img/head.png" alt="">
-                            <div class="grade white al size12b">
-                                <img src="@/assets/img/rate.png" alt="">{{grade}}
-                            </div>
-                        </div>
-                        <div class="about">
-                            <div class="size16">Dr. Sherley Billman</div>
-                            <div class="size14">General Obstetrics & Gynecology</div>
-                            <div class="size12a al">
-                                <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
-                                0.8 km away
-                            </div>
-                        </div>
-                    </div>
-                    <div class="workTime al sb">
-                        <div>
-                            <div class="size14">Experience</div>
-                            <div><span class="size16">20</span> <span class="size14"> Years</span></div>
-                        </div>
-                        <div>
-                            <div class="size14">Likes</div>
-                            <div><span class="size16">125</span><span class="size14"> (40%)</span></div>
-                        </div>
-                        <div class="call">
-                            <el-button class="callBtn width100" type="primary">Call</el-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="doctor_item float">
-                    <div class="image flex">
-                        <div class="doctor_head">
-                            <img src="@/assets/img/head.png" alt="">
-                            <div class="grade white al size12b">
-                                <img src="@/assets/img/rate.png" alt="">{{grade}}
-                            </div>
-                        </div>
-                        <div class="about">
-                            <div class="size16">Dr. Sherley Billman</div>
-                            <div class="size14">General Obstetrics & Gynecology</div>
-                            <div class="size12a al">
-                                <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
-                                0.8 km away
-                            </div>
-                        </div>
-                    </div>
-                    <div class="workTime al sb">
-                        <div>
-                            <div class="size14">Experience</div>
-                            <div><span class="size16">20</span> <span class="size14"> Years</span></div>
-                        </div>
-                        <div>
-                            <div class="size14">Likes</div>
-                            <div><span class="size16">125</span><span class="size14"> (40%)</span></div>
-                        </div>
-                        <div class="call">
-                            <el-button class="callBtn width100" type="primary">Call</el-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="doctor_item float">
-                    <div class="image flex">
-                        <div class="doctor_head">
-                            <img src="@/assets/img/head.png" alt="">
-                            <div class="grade white al size12b">
-                                <img src="@/assets/img/rate.png" alt="">{{grade}}
-                            </div>
-                        </div>
-                        <div class="about">
-                            <div class="size16">Dr. Sherley Billman</div>
-                            <div class="size14">General Obstetrics & Gynecology</div>
-                            <div class="size12a al">
-                                <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
-                                0.8 km away
-                            </div>
-                        </div>
-                    </div>
-                    <div class="workTime al sb">
-                        <div>
-                            <div class="size14">Experience</div>
-                            <div><span class="size16">20</span> <span class="size14"> Years</span></div>
-                        </div>
-                        <div>
-                            <div class="size14">Likes</div>
-                            <div><span class="size16">125</span><span class="size14"> (40%)</span></div>
+                            <div><span class="size16">125</span><span class="size14"> ({{item.likingRate}}) </span></div>
                         </div>
                         <div class="call">
                             <el-button class="callBtn width100" type="primary">Call</el-button>
@@ -190,10 +35,10 @@
                 </div>
             </div>
         </div>
-        <div class="doctorDetails">
+        <div class="doctorDetails noBar">
             <div class="details_item mg">
                 <div class="head_image ju"><img src="@/assets/img/john.png" alt=""></div>
-                <div class="doctor_name tc">Dr. Vinay Misra</div>
+                <div class="doctor_name tc">{{detail.doctorName}}</div>
                 <div class="size15 tc">General Obstetrics </div>
                 <div class="star ju">
                     <el-rate class="Rate" v-model="rate" @change="getRate"></el-rate>
@@ -209,13 +54,13 @@
                 </div>
                 <div class="reviews sb">
                     <div>
-                        <div class="size15">Experience</div>
-                        <div class="size16">8+ years</div>
+                        <div class="size15">{Experience}</div>
+                        <div class="size16">{{detail.experience}}+ years</div>
                     </div>
                     <div class="xian"></div>
                     <div class="tc likes">
                         <div class="size15">Likes</div>
-                        <div><span class="size16">125</span><span class="size15">(80%)</span></div>
+                        <div><span class="size16">125</span><span class="size15">(detail.liKingRate)</span></div>
                     </div>
                     <div class="xian"></div>
                     <div style="text-align:end">
@@ -260,6 +105,7 @@
 </template>
 
 <script>
+import { doctorList } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -272,10 +118,39 @@ export default {
             weight: "33.5kg",
             grade:4.5,
             change:true,
-            rate:null
+            rate:null,
+            doctorList: [],
+            detail: {}
+        }
+    },
+    created () {
+        this.getDoctorList()
+    },
+    computed: {
+        callModal: {
+            get () { return this.$store.state.user.callModal },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "callModal",
+                    value: val
+                })
+            },
         }
     },
     methods: {
+        getDetail (item) {
+            this.detail = item
+        },
+        getDoctorList () {
+            const doctor = {
+                platform: localStorage.getItem("platform"),
+                userId: localStorage.getItem("userId")
+            }
+            doctorList(doctor).then(res => {
+                console.log(res,"医生列表")
+                this.doctorList = res.data.data
+            })
+        },
         edit () {
             this.change = !this.change
         },
@@ -288,7 +163,12 @@ export default {
             console.log(val)
         },
         toVideo () {
-            this.$router.push('agora')
+            // this.$router.push('agora')
+            this.$store.commit("setUser", {
+                key: "callTo",
+                value: this.detail
+            })
+            this.callModal = true
         },
         booking () {
             this.$router.push("/booking")
@@ -302,8 +182,13 @@ export default {
     .pet_message {
         flex: 10;
         margin-top: 10px;
+        .myDoctor {
+            height: 100%;
+        }
         .doctorList {
             width: 74%;      //医生列表
+            height: 100%;
+            overflow: auto;
             // padding: 30px;
             border: #F3F3F3 solid 1px;
             border-radius: 4px;
@@ -313,6 +198,8 @@ export default {
         }
         .doctorDetails {
             width: 26%;
+            height: 100%;
+            overflow: auto;
             // border: solid 1px;
             @media screen and (max-width:1000px) {
                 width: 40%;

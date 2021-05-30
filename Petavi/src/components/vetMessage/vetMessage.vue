@@ -85,21 +85,18 @@ export default {
             breed:'Husky',
             sex:"M",
             neuteredStatus:'None',
-            weight: "33.5kg",
-            show: false,
-            change:true,
-            rotate: false,
+            weight: "33.5kg"
         }
     },
     mounted () {
+
+    },
+    created () {
+        
     },
     methods: {
         edit () {
             this.change = !this.change
-        },
-        petList () {
-            this.show = !this.show
-            this.rotate = !this.rotate
         },
         setting () {
             setTimeout(() => {

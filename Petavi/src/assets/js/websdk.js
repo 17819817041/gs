@@ -1,5 +1,7 @@
 import WebIM from "easemob-websdk"
 import config from "./config.js"
+import store from "@/vuex/store.js"
+import router from "@/router/router/router.js"
 
 let conn = {};
 WebIM.config = config;
@@ -54,7 +56,7 @@ var options = {
             console.log('您的App用户注册数量已达上限,请升级至企业版！')
         }
     }, 
-  }; 
+}; 
 //   conn.registerUser(options);
 
 
@@ -76,26 +78,35 @@ var rtcCall = new webrtc.Call({
     listener: {
         onAcceptCall: function (from, options) {
             console.log('onAcceptCall::', 'from: ', from, 'options: ', options);
+            if (from) {
+                store.commit("setUser",{ key: 'callModal', value: false })
+                router.push("/agroa")
+            }
         },
         //通过streamType区分视频流和音频流，streamType: 'VOICE'(音频流)，'VIDEO'(视频流)
         onGotRemoteStream: function (stream, streamType) {
             console.log('onGotRemoteStream::', 'stream: ', stream, 'streamType: ', streamType);
+            // store.commit("setApp",{ key: 'remoteStream', value: stream })
             var video = document.getElementById('video');
             video.srcObject = stream;
             video.play()
         },
         onGotLocalStream: function (stream, streamType) {
             console.log('onGotLocalStream::', 'stream:', stream, 'streamType: ', streamType);
+            // store.commit("setApp",{ key: 'localStream', value: stream })
             var video = document.getElementById('localVideo');
             video.srcObject = stream;
             video.play()
         },
         onRinging: function (caller, streamType) {
-                        console.log("onRinging", caller)
+            console.log("onRinging", caller)
+            // store.commit("setUser",{ key: 'callModal2', value: true })
         },
         onTermCall: function (reason) {
             console.log('onTermCall::');
             console.log('reason:', reason);
+            store.commit("setUser",{ key: 'callModal', value: false })
+            store.commit("setUser",{ key: 'callModal2', value: false })
         },
         onIceConnectionStateChange: function (iceState) {
             console.log('onIceConnectionStateChange::', 'iceState:', iceState);

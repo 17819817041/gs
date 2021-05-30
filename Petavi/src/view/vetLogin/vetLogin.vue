@@ -50,11 +50,20 @@
                         <div class=" size12">Add your details to login</div>
                     </el-form-item>
                     <el-form-item prop="email">
-                        <el-input v-model="form.Email" placeholder="Your Email"></el-input>
+                        <el-input v-model="form.email" placeholder="Your Email"></el-input>
                     </el-form-item>
                     <el-form-item prop="password">
-                        <el-input v-model="form.Password" placeholder="Password"></el-input>
+                        <el-input v-model="form.password" placeholder="Password"></el-input>
                     </el-form-item>
+
+                    <el-form-item>
+                        <div class="google tc cursor" @click="vethomepage">
+                            <el-button class="googleBtn width100" type="primary" :loading="loading">
+                                <span class="span">Login</span>
+                            </el-button>
+                        </div>
+                    </el-form-item>
+
                     <el-form-item>
                         <div class=" size12 cursor" @click="forget">Forgot your password?</div>
                     </el-form-item>
@@ -63,7 +72,7 @@
                     </el-form-item>
                     <el-form-item>
                         <div class="fackbook cursor white">
-                            <el-button class="facebookBtn width100" type="primary">Login with facebook</el-button>
+                            <el-button class="facebookBtn width100" type="primary" @click="faceBook">Login with facebook</el-button>
                         </div>
                     </el-form-item>
                     <el-form-item>
@@ -86,22 +95,35 @@
 </template>
 
 <script>
+import { login } from "@/axios/request.js"
 export default {
     data () {
         return {
             loading:false,
-            form: {
-                Email:'',
-                Password:''
-            },
             rules: {
-                Email: [
-                    { required:true, message:'请输入邮箱', triggle:"blur" }
+                email: [
+                    { required:true, message:'请输入邮箱', trigger:"blur" }
                 ],
-                Password: [
-                    { required: true, message:'请输入密码', triggle:'blur' }
+                password: [
+                    { required: true, message:'请输入密码', trigger:'blur' }
                 ]
+            },
+            form: {
+                platform:2,
+                email:'9@qq.com',
+                password:'123'
             }
+        }
+    },
+    computed: {
+        login: {
+            get () { return this.$store.state.user.login },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "login",
+                    value: val
+                })
+            },
         }
     },
     methods: {
@@ -113,18 +135,47 @@ export default {
                 }
             })
         },
+        faceBook () {
+            this.$store.dispatch("login", {'vm': this} )
+        },
         vethomepage () {
             this.loading = true
-            setTimeout(() => {
-                // this.$router.push("/petDetails")
-                this.$router.push({
-                    name: "vethomepage",
-                    query: {
-                        userId: null,
-                        platform:2
-                    }
-                })
-            },1000)
+            let that = this
+            this.$refs.form.validate(flag => {
+                if (flag) {
+                    login(that.form).then(res => {
+                        console.log(res, "兽医登陆")
+                        localStorage.setItem("userId", res.data.data.userId)
+                        localStorage.setItem("platform", res.data.data.platform)
+                        localStorage.setItem("Token",res.data.data.token)
+                        this.$store.dispatch("IMSignUp")
+                        this.$router.push({
+                            name: "vethomepage",
+                            query: {
+                                userId: null,
+                                platform:2
+                            }
+                        })
+                        this.loading = false
+                    }).catch(e => {
+                        console.log(e)
+                        this.loading = false
+                    })
+                }
+            })
+            
+
+            // this.loading = true
+            // setTimeout(() => {
+            //     this.$router.push("/petDetails")
+            //     this.$router.push({
+            //         name: "vethomepage",
+            //         query: {
+            //             userId: null,
+            //             platform:2
+            //         }
+            //     })
+            // },1000)
         },
         forget () {
             this.$router.push("/forgetPwd")

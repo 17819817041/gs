@@ -1,11 +1,4 @@
 import request from "./axios"
-export const data = {
-    userId: localStorage.getItem("userId"),
-    platform: localStorage.getItem("platform"),
-    token: localStorage.getItem("Token")
-}
-
-
 export function signUp (data) {    //注册
     return request (
         {
@@ -41,10 +34,6 @@ export function getUserDetails (params) {          // 获取用户信息
         {
             url: "/userDetails/getUserDetails",
             method: "POST",
-            // headers: {
-            //     userId: localStorage.getItem("userId"),
-            //     platform: localStorage.getItem("platform")
-            // },
             params:params
         }
     )
@@ -103,6 +92,14 @@ export function petList (data) {     //宠物列表
 export function updatePet (data) {    //更新宠物信息
     return request({
         url: "/pet/updatePet",
+        method: "POST",
+        params: data
+    })
+}
+
+export function doctorList (data) {
+    return request({
+        url: "/doctor/getDoctorListByLimit",
         method: "POST",
         params: data
     })

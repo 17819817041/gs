@@ -73,6 +73,15 @@
                     <el-form-item prop="password">
                         <el-input class="input" placeholder="Password" v-model="form.password"></el-input>
                     </el-form-item>
+
+                    <el-form-item>
+                        <div class="google cursor" @click="toLogin">
+                            <el-button class="faceBook width100" type="primary" :loading="loading">
+                                <span class="span">Login</span>
+                            </el-button>
+                        </div>
+                    </el-form-item>
+
                     <el-form-item>
                         <div class=" size12 cursor" @click="forget">Forgot your password?</div>
                     </el-form-item>
@@ -86,7 +95,7 @@
                     </el-form-item>
                     <el-form-item>
                         <div class="google cursor" @click="toLogin">
-                            <el-button class="googleBtn width100" type="primary" :loading="loading">
+                            <el-button class="googleBtn width100" type="primary">
                                 <span class="span">Login with Google</span>
                                 <div class="googleImg">
                                     <img src="@/assets/img/google.png" alt="">
@@ -114,12 +123,23 @@ export default {
             },
             rules: {
                 email: [
-                    { required:true, message:'请输入邮箱', triggle:"blur" }
+                    { required:true, message:'Please enter your email', trigger:"blur" }
                 ],
                 password: [
-                    { required: true, message:'请输入密码', triggle:'blur' }
+                    { required: true, message:'Please enter your password', trigger:'blur' }
                 ]
             }
+        }
+    },
+    computed: {
+        login: {
+            get () { return this.$store.state.user.login },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "login",
+                    value: val
+                })
+            },
         }
     },
     methods: {
@@ -132,26 +152,39 @@ export default {
             })
         },
         toLogin () {
-            this.loading = true
-            setTimeout(() => {
-                login(this.form).then(res => {
-                    console.log(res)
-                    if (res.data.rtnCode == 200) {
-                        localStorage.setItem("Token",res.data.data.token)
-                        localStorage.setItem("userId",res.data.data.userId)
-                        localStorage.setItem("platform",res.data.data.platform)
-                        this.$router.push({
-                            name:'customerhomepage',
-                            query: {
-                                userId:res.data.data.userId,
-                                platform: 1
-                            }
-                        })
-                        this.loading = false
-                    }
-                })
-                
-            },500)
+            let that = this
+            this.$refs.form.validate(flag => {
+                if (flag) {
+                    that.loading = true
+                    login(that.form).then(res => {
+                        console.log(res)
+                        that.loading = false
+                        if (res.data.rtnCode == 200) {
+                            that.login = true
+                            localStorage.setItem("Token",res.data.data.token)
+                            localStorage.setItem("userId",res.data.data.userId)
+                            localStorage.setItem("platform",res.data.data.platform)
+                            this.$store.dispatch("IMSignUp")
+                            that.$router.replace({
+                                name:'customerhomepage',
+                                query: {
+                                    userId:res.data.data.userId,
+                                    platform: 1
+                                }
+                            })
+                            
+                        } else if (res.data.rtnCode == 202) {
+                            this.$message({
+                                type: 'warning',
+                                message: 'Username or password wrong!'
+                            });
+                        }
+                    })
+                } else {
+
+                }
+            })
+            
         },
         forget () {
             this.$router.push("/forgetPwd")

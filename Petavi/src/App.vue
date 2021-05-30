@@ -1,19 +1,127 @@
 <template>
 	<div id="app">
 		<router-view></router-view>
+
+		<transition name='fade'>
+			<div class="mask flex" v-if="callModal">
+				<div class="confirmBox mg">
+					<div class="sa al">
+						<el-image class="Image" :src="img" fit="cover"></el-image> Name
+					</div>
+					<div class="loading" v-if="loading">
+						loading...
+					</div>
+					<div class="wrap_btn sa">
+						<div class="btn al ju cursor" @click="cancel">Cancel</div>
+						<div class="btn al ju cursor" @click="sure">Sure</div>
+						
+					</div>
+				</div>
+			</div>
+		</transition>
+
+		<transition name='fade'>
+			<div class="mask flex" v-if="callModal2">
+				<div class="confirmBox mg">
+					<div class="sa al">
+						<el-image class="Image" :src="img" fit="cover"></el-image> Name
+					</div>
+					<div class="wrap_btn sa">
+						<div class="btn al ju cursor" @click="cancel2">Cancel</div>
+						<div class="btn al ju cursor" @click="sure2">Sure</div>
+						
+					</div>
+				</div>
+			</div>
+		</transition>
 	</div>
 </template>
 
 <script>
+import img from "@/assets/img/0000.png"
 export default {
+	data () {
+		return {
+			img: "",
+			loading: false
+		}
+	},
+	created () {
+		this.img = img
+		
+	},
+	watch: {
+		callModal: {
+			handler (val) {
+				if (val) {
+					this.loading = false
+				}
+			}
+		}
+	},
+	computed: {
+        callModal: {
+            get () { return this.$store.state.user.callModal },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "callModal",
+                    value: val
+                })
+            },
+        },
+		callModal2: {
+            get () { return this.$store.state.user.callModal2 },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "callModal2",
+                    value: val
+                })
+            },
+        },
+		callTo () { return this.$store.state.user.callTo },
+		IMuser () { return this.$store.state.user.IMuser },
+    },
+	methods: {
+		sure () {
+			// this.$router.push("/agora")
+			console.log(this.callTo.doctorId + '_2')
+			this.loading = true
+			var config = {
+                push: false, // 对方(app端)不在线时是否推送
+                timeoutTime: 3000000, // 超时时间
+                txtMsg: 'I gave you a video call.', // 给对方发送的消息
+                pushMsg: 'user is calling you' //推送内容
+            };
+            // this.$rtcCall.caller = 'mengyuanyuan'; // 指定呼叫方名字
+            this.$rtcCall.makeVideoCall(this.callTo.doctorId + '_2',null,true,true,config);
 
+		},
+		cancel () {
+			this.callModal = false
+			this.$rtcCall.endCall()
+		},
+		sure2 () {
+			this.$rtcCall.acceptCall()
+			// this.$router.push("/agroa")
+		},
+		cancel2 () {
+			this.callModal2 = false
+			this.$rtcCall.endCall()
+		}
+	}
 }
 </script>
 
-<style>
+<style lang="less">
+	@import "@/less/css.less";
 	html, body {
 		padding: 0;
 		margin: 0;
+		height: 100%;
+
+	}
+	#app {
+		height: 100%;
 	}
 	div {
 		box-sizing: border-box;
@@ -39,6 +147,9 @@ export default {
 	}
 	.el-rate__icon {
 		margin-right: 0 !important;
+	}
+	.vet_form .el-radio__input{
+		display: none !important;
 	}
 	.float {
 		float: left;
@@ -127,5 +238,39 @@ export default {
 	}
 	.white {
 		color: white;
+	}
+	.mask {
+		position: fixed;
+		z-index: 500;
+		width: 100vw;
+		height: 100vh;
+		background: rgba(0, 0, 0, 0.4);
+		left: 0;
+		top: 0;
+	}
+	.Image {
+		width: 70px;
+		height: 70px;
+	}
+	.confirmBox {
+		background: white;
+		box-shadow: 0 2px 2px 2px gray;
+		padding: 15px;
+		width: 300px;
+		border-radius: 10px;
+	}
+	.wrap_btn {
+		padding-top: 40px;
+	}
+	.btn {
+		width: 80px;
+		border: solid 1px;
+		border-radius: 8px;
+	}
+	.fade-enter-active, .fade-leave-active {
+		transition: opacity 0.3s;
+	}
+	.fade-enter, .leave-active {
+		opacity: 0;
 	}
 </style>
