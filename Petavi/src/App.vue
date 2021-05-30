@@ -88,7 +88,7 @@ export default {
 			this.loading = true
 			var config = {
                 push: false, // 对方(app端)不在线时是否推送
-                timeoutTime: 3000000, // 超时时间
+                timeoutTime: 30000, // 超时时间
                 txtMsg: 'I gave you a video call.', // 给对方发送的消息
                 pushMsg: 'user is calling you' //推送内容
             };
@@ -102,7 +102,6 @@ export default {
 		},
 		sure2 () {
 			this.$rtcCall.acceptCall()
-			// this.$router.push("/agroa")
 		},
 		cancel2 () {
 			this.callModal2 = false

@@ -59,12 +59,12 @@ export default {
                     }
                 }, 
             }; 
-            console.log(123,localStorage.getItem('IMtoken'))
-            if (localStorage.getItem('IMtoken')) {
-                store.dispatch('IMLogin')
-            } else {
+            // console.log(123,localStorage.getItem('IMtoken'))
+            // if (localStorage.getItem('IMtoken')) {
+            //     store.dispatch('IMLogin')
+            // } else {
                 conn.registerUser(options);
-            }
+            // }
         },
         IMLogin (store) {
             var options = { 

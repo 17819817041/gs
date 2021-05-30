@@ -107,7 +107,7 @@
                 </div>
                 <div><message></message></div>
             </div>
-            <div class="showVideo" id="video">
+            <div class="showVideo">
 
                 <div class="answer sb">
                     <div class="cursor"><img src="@/assets/img/answer_audeo.png" alt=""></div>
@@ -171,7 +171,9 @@ export default {
     mounted () {
         // console.log(AgoraRTC)
         this.createClient()
-        this.initVideo()
+        setTimeout(() => {
+            this.initVideo()
+        },10)
     },
     computed: {
         remoteStream () { return this.$store.state.app.remoteStream },
@@ -183,11 +185,7 @@ export default {
             video.srcObject = this.localStream;
             video.play()
 
-            var video1 = document.getElementById('video');
-            console.log(111, video.play, this.localStream)
-            console.log(222, video1.play, this.remoteStream)
-            video1.srcObject = this.remoteStream;
-            video1.play()
+            
         },
         // edit () {
         //     this.change = !this.change

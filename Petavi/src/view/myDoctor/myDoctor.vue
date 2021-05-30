@@ -33,6 +33,10 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- <video :class="['video_parent']" id="localVideo"></video>
+                <video :class="['video_child']" id="video"></video> -->
+
             </div>
         </div>
         <div class="doctorDetails noBar">
@@ -136,7 +140,9 @@ export default {
                     value: val
                 })
             },
-        }
+        },
+        // remoteStream () { return this.$store.state.app.remoteStream },
+        // localStream () { return this.$store.state.app.localStream },
     },
     methods: {
         getDetail (item) {
@@ -167,10 +173,10 @@ export default {
             // this.$router.push('agora')
             this.$store.commit("setUser", {
                 key: "callTo",
-                value: this.detail
-                // value: {
-                //     doctorId: 322
-                // }
+                // value: this.detail
+                value: {
+                    doctorId: 322
+                }
             })
             this.callModal = true
         },
@@ -183,6 +189,11 @@ export default {
 
 <style lang="less" scoped>
 @import "@/less/css.less";
+video {
+    width: 300px;
+    height: 200px;
+    border: solid 1px;
+}
     .pet_message {
         flex: 10;
         margin-top: 10px;

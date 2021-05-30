@@ -80,6 +80,7 @@ var rtcCall = new webrtc.Call({
             console.log('onAcceptCall::', 'from: ', from, 'options: ', options);
             if (from) {
                 store.commit("setUser",{ key: 'callModal', value: false })
+                store.commit("setUser",{ key: 'callModal2', value: false })
                 router.push("/agora")
             }
         },
@@ -87,6 +88,13 @@ var rtcCall = new webrtc.Call({
         onGotRemoteStream: function (stream, streamType) {
             console.log('onGotRemoteStream::', 'stream: ', stream, 'streamType: ', streamType);
             store.commit("setApp",{ key: 'remoteStream', value: stream })
+
+            // setTimeout(() => {
+            //     var reVideo = document.getElementById('video');
+            //     console.log(666,reVideo.play,stream)
+            //     reVideo.srcObject = stream;
+            //     reVideo.play()
+            // },1000)
             // var video = document.getElementById('video');
             // video.srcObject = stream;
             // video.play()
@@ -100,7 +108,7 @@ var rtcCall = new webrtc.Call({
         },
         onRinging: function (caller, streamType) {
             console.log("onRinging", caller)
-            // store.commit("setUser",{ key: 'callModal2', value: true })
+            store.commit("setUser",{ key: 'callModal2', value: true })
         },
         onTermCall: function (reason) {
             console.log('onTermCall::');
