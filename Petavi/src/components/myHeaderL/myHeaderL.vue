@@ -11,16 +11,18 @@
             height: 80px;
         }
         .logo {
-            background: white;
+            background: rgb(255, 255, 255);
             position: absolute;
             left: 0;
             top: 0;
+            z-index: 500;
             padding: 15px 30px 0 62px;
         }
         .logo img {
             width: 110px;
             height: 123px;
             transition: 0.25s;
+            z-index: 500;
             @media screen and (max-width: 1300px) {
                 width: 75px;
                 height: 85px;
@@ -42,7 +44,7 @@
             background: @logout;
         }
         .userName {
-            width: 250px;
+            width: 220px;
             height: 40px;
             margin-right: 20px;
         }
@@ -56,14 +58,16 @@
     .select {
         padding: 0 15px;
     }
-    .headImage {
-        border: solid 1px;
+    .label_img {
         width: 60px;
         height: 60px;
         border-radius: 50%;
+        border: solid gray 1px;
+        margin-right:5px;
+        overflow: hidden;
     }
     .name {
-        transform: translate(-10%,15%);
+        transform: translate(-41%,15%);
     }
     .top {
         margin-top: 10px;
@@ -76,7 +80,7 @@
         position: absolute;
         width: calc(100% - 240px);
         height: 55px;
-        right: 20px;
+        right: 25px;
         bottom: 9px;
         transition: 0.25s;
         @media screen and (max-width: 1300px) {
@@ -106,19 +110,22 @@
     .dropimg {
         padding-left: 5px;
     }
+    .category {
+        font-size: 12;
+    }
 </style>
 
 <template>
     <div class="headerLogoPage">
         <div class="logo">
-            <img src="@/assets/img/logo.png" alt="" @click="test">
+            <img class="logo_IMG" src="@/assets/img/logo.png" alt=""> <!-- @click="test"-->
         </div>
         <div class="div sb al">
             <div class="search al sa" v-if="login">
-                <div class="top" v-if="identity" @click="doctor">All Doctors</div>
-                <div class="top" v-else @click="patient">All Patients</div>
-                <div class="select top" style="font-size:7px" >
-                    <div>
+                <div class="top cursor" v-if="identity" @click="doctor">All Doctors</div>
+                <div class="top cursor" v-else @click="patient">All Patients</div>
+                <div class="select top" >
+                    <div class="category">
                         Category
                         <img class="dropimg" src="@/assets/img/drop.png" alt="">
                     </div>
@@ -132,9 +139,17 @@
                 <div class="sb al" v-if="login">
                     <div class="userName al sb">
                         
-                        <label for="ava" class="cursor">
+                        <label for="ava" class="cursor label_img ju al">
                             <input id="ava" v-show="false" type="file" @change="getImage" />   <!-- 头像路径-->
-                            <img class="headImage cursor" :src="userDetails.userImage" alt="">
+                            <!-- <el-image style="height:60px;" :src="userDetails.userImage" alt="" fit="cover">
+                                <div slot="error" class="image-slot al" style="height: 100%;width:100%">
+                                    <i class="el-icon-picture-outline" style="font-size:30px;color:gray"></i>
+                                </div>
+                            </el-image> -->
+                            <div class="ju al" style="height:60px;overflow:hidden;">
+                                <img style="height:60px;" v-if="userDetails.userImage" :src="userDetails.userImage" alt="">
+                                <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i>
+                            </div>
                         </label>
                         
 
@@ -154,7 +169,7 @@
                     <div class="al">
                         <img src="@/assets/img/what.png" alt="">
                     </div>
-                    <div class="suppot size12"> Help & Suppot </div>
+                    <div class="suppot size12"> Help & Support </div>
                 </div>
             </div>
         </div>
@@ -162,7 +177,7 @@
 </template>
 
 <script>
-import { getUserDetails, updateUserDetails, file } from "@/axios/request.js"
+import { getUserDetails, updateUserDetails, file, vetDetails, updateVetDetails } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -181,7 +196,13 @@ export default {
                     this.getUser()
                 }
             },
-        }
+        },
+        AllDetail: {
+            handler (val) {
+                this.userDetails = JSON.parse(JSON.stringify(this.AllDetail))
+            },
+            immediate: true
+        },
     },
     computed: {
         login: {
@@ -192,45 +213,63 @@ export default {
                     value: val
                 })
             },
-        }
+        },
+        AllDetail: {
+            get () { return this.$store.state.user.userDetail },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "userDetail",
+                    value: val
+                })
+            },
+        },
+        // 
     },
     methods: {
         getUser () {
-            const data = {
-                userId: localStorage.getItem("userId"),
-                // platform: localStorage.getItem("platform"),
-                // token: localStorage.getItem("Token")
-            }
-            getUserDetails(data).then(res => {
-                if (res.data.rtnCode == 200) {
-                    this.userDetails = res.data.data
-                    this.login = true
-                    this.$store.dispatch("IMLogin")
-                } else {
-                    this.userDetails = {}
-                    // this.login = false
-                    this.login = true
-                }
-                
-            }).catch(e => {
-                console.log(e)
-                // this.login = false
-                this.login = true
-            })
+            this.$store.dispatch("getUser")
         },
         getImage (e) {
-            var formData = new FormData();
-            formData.append('file', e.target.files[0]);
-            file(formData).then(res => {
-                if (res.data.rtnCode == 200) {
-                    this.userDetails.userImage = res.data.data
-                    updateUserDetails(this.userDetails).then(res => {
-                        if (res.data.rtnCode == 200) {
-                            this.getUser()
-                        }
-                    })
-                }
-            })
+            if (localStorage.getItem("platform") == 1) {
+                var formData = new FormData();
+                formData.append('file', e.target.files[0]);
+                file(formData).then(res => {
+                    if (res.data.rtnCode == 200) {
+                        this.userDetails.userImage = res.data.data
+                        
+                        updateUserDetails(this.userDetails).then(res => {
+                            if (res.data.rtnCode == 200) {
+                                this.getUser()
+                            } else {
+                                
+                            }
+                        }).catch(e => {
+                            console.log(e)
+                        })
+                    } else {
+                        this.userDetails = {}
+                    }
+                })
+            } else if (localStorage.getItem("platform") == 2) {
+                var formData = new FormData();
+                formData.append('file', e.target.files[0]);
+                file(formData).then(res => {
+                    if (res.data.rtnCode == 200) {
+                        this.userDetails.doctorImage = res.data.data
+                        this.userDetails.doctorName = "Beck"
+                        updateVetDetails(this.userDetails).then(res => {
+                            console.log(res,"更换医生头像",this.userDetails)
+                            if (res.data.rtnCode == 200) {
+                                this.getUser()
+                            }
+                        }).catch(e => {
+                            console.log(e)
+                        })
+                    } else {
+                        this.userDetails = {}
+                    }
+                })
+            }
         },
         test () {
             this.$router.push("/test")
@@ -248,13 +287,15 @@ export default {
             }
         },
         home () {
-            this.$router.push("/customerhomepage")
+            if (localStorage.getItem("platform") == 1) {
+                this.$router.push("/customerhomepage")
+            } else if (localStorage.getItem("platform") == 2) {
+                this.$router.push("/myCustomer")
+            }
         },
         logout () {
             this.$store.dispatch("logout", this)
             // localStorage.clear()
-            
-
         },
         doctor () {
             this.identity = false

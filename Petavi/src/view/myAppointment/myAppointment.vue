@@ -96,15 +96,15 @@
                         </div>
                     </div>
                     <div class="Way">
-                        <div class="video_btn ju al">
+                        <div class="video_btn ju al cursor">
                             <img src="@/assets/img/video1.png" alt="">
                             Video Consultation
                         </div>
-                        <div class="phone_btn ju al">
+                        <div class="phone_btn ju al cursor">
                             <img src="@/assets/img/callimg1.png" alt="">
                             Phone Consultation
                         </div>
-                        <div class="chat_btn ju al">
+                        <div class="chat_btn ju al cursor">
                             <img src="@/assets/img/chat1.png" alt="">
                             Chat
                         </div>
@@ -131,11 +131,11 @@
                         </div>
                     </div>
                     <div class="Way">
-                        <div class="phone_btn ju al">
+                        <div class="phone_btn ju al cursor">
                             <img src="@/assets/img/callimg1.png" alt="">
                             Phone Consultation
                         </div>
-                        <div class="chat_btn ju al">
+                        <div class="chat_btn ju al cursor">
                             <img src="@/assets/img/chat1.png" alt="">
                             Chat
                         </div>

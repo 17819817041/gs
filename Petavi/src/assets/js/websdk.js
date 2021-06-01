@@ -81,6 +81,8 @@ var rtcCall = new webrtc.Call({
             if (from) {
                 store.commit("setUser",{ key: 'callModal', value: false })
                 store.commit("setUser",{ key: 'callModal2', value: false })
+                let starTime = Date.now()
+                localStorage.setItem('starTime',starTime)
                 router.push("/agora")
             }
         },
@@ -115,6 +117,9 @@ var rtcCall = new webrtc.Call({
             console.log('reason:', reason);
             store.commit("setUser",{ key: 'callModal', value: false })
             store.commit("setUser",{ key: 'callModal2', value: false })
+            let endTime = Date.now()
+            localStorage.setItem('endTime',endTime)
+            // router.back()
         },
         onIceConnectionStateChange: function (iceState) {
             console.log('onIceConnectionStateChange::', 'iceState:', iceState);

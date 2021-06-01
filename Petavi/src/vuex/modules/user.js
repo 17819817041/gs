@@ -1,4 +1,4 @@
-import { petList } from "@/axios/request.js"
+import { petList, getUserDetails, vetDetails } from "@/axios/request.js"
 import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 import Vue from "vue"
 export default {
@@ -9,6 +9,9 @@ export default {
         callModal: false,
         callModal2: false,
         callTo: {},
+        userDetail: {},
+        mask: {},
+        headImg: {}
     },
     mutations: {
         setUser (state,data) {
@@ -31,6 +34,61 @@ export default {
                 console.log(e)
             })
         },
+        // getUser (store,data) {
+        //     var data = {
+        //         userId: localStorage.getItem("userId")
+        //     }
+        //     getUserDetails(data).then(res => {
+        //         if (res.data.rtnCode == 200) {
+        //             console.log(res,"user详情")
+        //            store.commit("setUser",{ key: "petList", value: res.data.data }) 
+        //         } else {
+        //             store.commit("setUser",{ key: "petList", value: {} }) 
+        //         }
+        //     })
+        // },
+
+        getUser (store,data) {
+            if (localStorage.getItem("platform") == 1) {
+                var data = {
+                  userId: localStorage.getItem("userId")
+                }
+                getUserDetails(data).then(res => {
+                    if (res.data.rtnCode == 200) {
+                        console.log(res,"user详情")
+                        store.commit("setUser",{ key: "userDetail", value: res.data.data }) 
+                        store.commit("setUser",{ key: "login", value: true }) 
+                        store.dispatch("IMLogin")
+                    } else {
+                        store.commit("setUser",{ key: "userDetail", value: {} }) 
+                    }
+                }).catch(e => {
+                    console.log(e)
+                    store.commit("setUser",{ key: "login", value: false }) 
+                })
+            } else if (localStorage.getItem("platform") == 2) {
+                var data = {
+                    userId: localStorage.getItem("userId"),
+                }
+                vetDetails(data).then(res => {
+                    console.log(res,"医生详情")
+                    if (res.data.rtnCode == 200) {
+                        res.data.data.userImage = res.data.data.doctorImage
+                        res.data.data.userName = res.data.data.doctorName
+                        store.commit("setUser",{ key: "userDetail", value: res.data.data }) 
+                        store.commit("setUser",{ key: "login", value: true }) 
+                        store.dispatch("IMLogin")
+                    } else {
+                        store.commit("setUser",{ key: "userDetail", value: {} }) 
+                    }
+                }).catch(e => {
+                    console.log(e)
+                    store.commit("setUser",{ key: "login", value: false }) 
+                })
+            }
+        },
+
+
         IMSignUp (store) {
             var options = { 
                 username: localStorage.getItem("userId") + '_' + localStorage.getItem("platform"),  //430_2
@@ -105,6 +163,8 @@ export default {
                 console.log(e)
             })
         },
+        updateDetails (store,data) {
 
+        }
     }
 }

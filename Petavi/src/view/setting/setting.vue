@@ -69,9 +69,12 @@
     }
     .person_image{
         width: 27%;
-        img {
+        .felame {
             width: 200px;
             height: 200px;
+            border-radius: 50%;
+            // border: solid 1px;
+            overflow: hidden;
         }
     } 
     .message1, .message2 {
@@ -113,6 +116,7 @@
         overflow: hidden;
         margin-top: 30px;
         border-radius: 10px;
+        background: white;
         box-shadow: 0px 3px 3px 0px #D0D0D0;
     }
     .stripe {
@@ -131,6 +135,100 @@
         outline: none;
         height: 100%;
     }
+    .payment_item {
+        width: 80%;
+    }
+    .payment_wrap {
+        // height: 500px;
+        // border: solid 1px;
+        margin-bottom: 30px;
+        .balance {
+            width: 300px;
+            // border: solid 1px;
+            box-shadow: 0 2px 2px 2px #e7e4e4;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .card {
+            // width: 65%;
+            flex: 10;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 2px 2px #e7e4e4;
+            margin-left: 25px;
+        }
+    }
+    .balance_title {
+        color: @logout;
+        font-size: 17px;
+        padding: 25px 0;
+    }
+    .payment_title {
+        color: #5E5E5E;
+        font-size: 25px;
+        padding: 30px 0;
+        img {
+            padding-right: 10px;
+        }
+    }
+    .HK {
+        width: 210px;
+        // border: solid 1px;
+    }
+    .hk {
+        color: #767676;
+        font-size: 20px;
+        margin-top: 10px;
+    }
+    .balance_show {
+        font-size: 30px;
+        padding: 0 10px;
+    }
+    .active_current {
+        width: 210px;
+        font-size: 12px;
+        color: #9F9F9F;
+        padding-left: 23px;
+        padding-bottom: 50px;
+    }
+    .drawal {
+        width: 250px;
+        .drawal_btn {
+            width: 112px;
+            background: @logout;
+            border-radius: 9px;
+            padding: 10px 0;
+            color: white;
+        }
+        .top_up {
+            background: @helpBtn;
+            width: 100px;
+            border-radius: 9px;
+            padding: 10px 0;
+            color: white;
+        }
+    }
+    .card_img {
+        img {
+            width: 100%;
+        }
+    }
+    .label_i{
+        width:100%;
+        height:100%;
+        overflow:hidden;
+        
+    }
+    .circle {
+        border-radius: 50%;
+        border:solid 1px;
+        height:100%;
+        overflow:hidden;
+    }
+    .Icon {
+        font-size:50px;
+        color:gray;
+    }
 </style>
 
 <template>
@@ -148,7 +246,22 @@
                         <div v-else class="save tc cursor" @click="save">Save</div>
                     </div>
                     <div class="detail flex width100 al">
-                        <div class="person_image al ju"><img class="felame" :src="user.userImage" alt=""></div>
+                        <div class="person_image al ju">
+                            <div class="felame">
+                                <label for="ava3" class="label_i">
+                                    <input type="file" id="ava3" v-show="false" @change="getImage">
+                                    <!-- <el-image class="cursor" style="height:100%;" :src="user.userImage" alt="" fit="cover">
+                                        <div slot="error" class="image-slot al" style="height: 100%;width:100%">
+                                            <i class="el-icon-picture-outline" style="font-size:30px;color:gray"></i>
+                                        </div>
+                                    </el-image> -->
+                                    <div class="ju al circle">
+                                        <img style="height:100%;" v-if="user.userImage" :src="user.userImage" alt="">
+                                        <i class="el-icon-picture-outline Icon" v-else></i>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
                         <div class="flex" style="width:73%">
                             <div class="message1">   
                                 <div class="message1_item ts flex size22 al">
@@ -201,7 +314,7 @@
                     </div>
                 </div>
                 <div class="payment mg">
-                    <img class="width100" src="@/assets/img/aaa.png" alt="">
+                    <!-- <img class="width100" src="@/assets/img/aaa.png" alt=""> -->
                     <!-- <div class="stripe">
                         <div class="input" id="cardNumber"></div>
                         <div class="input" id="cardExpiry"></div>
@@ -210,6 +323,40 @@
                             <el-button type="primary">Pay</el-button>
                         </div>
                     </div> -->
+
+                    <div class="payment_item mg">
+                        <div class="payment_title ju bold al">
+                            <img src="@/assets/img/account.png" alt="">
+                            Payment
+                        </div>      
+                        <div class="sa payment_wrap mg">
+                            <div class="balance">
+                                <div class="tc balance_title">My Balance</div>
+                                <div class="HK mg ju">
+                                    <div class="hk">$</div>
+                                    <div class="balance_show">{{payment}}</div>
+                                    <div class="hk">HKD</div>
+                                </div>
+                                <div class="active_current mg">is your current balance</div>
+                                <div class="drawal sb mg">
+                                    <div class="drawal_btn tc cursor">Withdrawal</div>
+                                    <div class="top_up tc cursor">Top Up</div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="sb balance_title">
+                                    <div>Saved Cards</div>
+                                    <div>+ Add New</div>
+                                </div>
+                                <div class="card_img">
+                                    <img src="@/assets/img/cardimg.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -217,7 +364,7 @@
 </template>
 
 <script>
-import { getUserDetails, updateUserDetails } from "@/axios/request.js"
+import { getUserDetails, updateUserDetails, file } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -230,39 +377,98 @@ export default {
             cardExpiry:'',
             cardCvc:'',
             stripe:'',
-            user:{}
+            payment: 8504,
+            user:{},
         }
+    },
+    watch: {
+        AllDetail: {
+            handler (val) {
+                this.user = JSON.parse(JSON.stringify(this.AllDetail))
+            },
+            immediate: true
+        },
     },
     created () {
         // this.getStripe()
-        this.getUser()
+        // let star = localStorage.getItem("starTime")
+        // let end = localStorage.getItem("endTime")
+        let star = Date.now()
+        let end = Date.now() + 360000
+        let check = end - star
+        this.payment = this.payment - check/1000
+        this.payment = this.payment.toLocaleString()
+        // console.log(this.payment.toLocaleString())
+        
+    },
+    computed: {
+        AllDetail: {
+            get () { return this.$store.state.user.userDetail },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "userDetail",
+                    value: val
+                })
+            },
+        },
     },
     methods: {
         getGender (val) {
             this.user.userGender = val.target.value
         },
-        getUser () {
-            const data = {
-                userId: localStorage.getItem("userId"),
-                platform: localStorage.getItem("platform"),
-                token: localStorage.getItem("Token")
-            }
-            getUserDetails(data).then(res => {
-                console.log(res.data.data,"user")
-                this.user = res.data.data
-            })
-        },
         updateDetails () {
             console.log(this.user)
             updateUserDetails(this.user).then(res => {
-                console.log(res)
+                this.$store.dispatch("getUser")
             })
         },
 
         save () {
             this.updateDetails()
-            this.getUser()
             this.editBtn = true
+        },
+        getImage (e) {
+            if (localStorage.getItem("platform") == 1) {
+                var formData = new FormData();
+                formData.append('file', e.target.files[0]);
+                file(formData).then(res => {
+                    if (res.data.rtnCode == 200) {
+                        this.user.userImage = res.data.data
+                        updateUserDetails(this.user).then(res => {
+                            if (res.data.rtnCode == 200) {
+                                this.$store.dispatch("getUser")
+                                
+                            } else {
+                                
+                            }
+                        }).catch(e => {
+                            console.log(e)
+                        })
+                    } else {
+                        this.user = {}
+                    }
+                })
+            } else if (localStorage.getItem("platform") == 2) {
+                var formData = new FormData();
+                formData.append('file', e.target.files[0]);
+                file(formData).then(res => {
+                    if (res.data.rtnCode == 200) {
+                        this.user.doctorImage = res.data.data
+                        this.user.doctorName = "Beck"
+                        this.getUser()
+                        updateVetDetails(this.user).then(res => {
+                            console.log(res,"更换医生头像",this.user)
+                            if (res.data.rtnCode == 200) {
+                                this.getUser()
+                            }
+                        }).catch(e => {
+                            console.log(e)
+                        })
+                    } else {
+                        this.user = {}
+                    }
+                })
+            }
         },
 
 

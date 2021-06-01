@@ -5,6 +5,7 @@
         .present_message {
             width: 202px;
             transition: 0.25s;
+            height: 100%;
             @media screen and (max-width:1200px) {
                 max-width: 0px;
                 max-height: 0px;
@@ -47,7 +48,7 @@
                 <div class="administrator mg">
                     <div class="administrator_item cursor flex al" @click="myCustomer">
                         <div><img src="@/assets/img/doctor.png" alt=""></div>
-                        <div>My Doctors</div>
+                        <div>My Patients</div>
                     </div>
                     <div class="administrator_item cursor flex al" @click="appointment">
                         <div><img src="@/assets/img/date.png" alt=""></div>
@@ -85,7 +86,7 @@ export default {
             breed:'Husky',
             sex:"M",
             neuteredStatus:'None',
-            weight: "33.5kg"
+            weight: "33.5kg",
         }
     },
     mounted () {
@@ -94,6 +95,7 @@ export default {
     created () {
         
     },
+    
     methods: {
         edit () {
             this.change = !this.change

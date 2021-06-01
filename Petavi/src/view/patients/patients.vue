@@ -53,11 +53,14 @@
         width: 27%;
     } 
     .dog_img, .felame {
-        width: 200px;
+        width: 60%;
+        border: solid 1px;
+        border-radius: 50%;
+        overflow: hidden;
         transition: 0.25s;
-        @media screen and (max-width:1500px) {
-            width: 150px;
-        }
+        // @media screen and (max-width:1500px) {
+        //     width: 150px;
+        // }
     }
     .message1, .message2 {
         width: 30%;
@@ -174,7 +177,9 @@
                     <div class="personal_message mg">
                         <div class="size25 bold tc item_title">Guadian Details</div>
                         <div class="detail flex width100 al">
-                            <div class="person_image al ju"><img class="felame" src="@/assets/img/female.png" alt=""></div>
+                            <div class="person_image al ju">
+                                <img class="felame" src="@/assets/img/female.png" alt="" mode="widthFix">
+                            </div>
                             <div class="flex" style="width:73%">
                                 <div class="message1">   
                                     <div class="message1_item ts flex size22 al">
@@ -186,11 +191,11 @@
                                             <div>Mobile</div>
                                         </div>
                                         <div class="name1">
-                                            <div>666666</div>
-                                            <div>666666</div>
-                                            <div>666666</div>
-                                            <div>666666</div>
-                                            <div>666666</div>
+                                            <div>125</div>
+                                            <div>Mary</div>
+                                            <div>21</div>
+                                            <div>HK</div>
+                                            <div>12138</div>
                                         </div>
                                     </div>   
                                 </div>
@@ -202,9 +207,9 @@
                                             <div>Remarks</div>
                                         </div>
                                         <div class="name2">
-                                            <div>666666</div>
-                                            <div>666666</div>
-                                            <div>666666</div>
+                                            <div>F</div>
+                                            <div>None</div>
+                                            <div>None</div>
                                         </div>
                                     </div>
                                 </div>
@@ -213,7 +218,7 @@
                         <div class="details_item flex">
                             <div class="size25 bold tc item_title2">Pet Details</div>
                             <div class="details_image ju al">
-                                <img class="dog_img" src="@/assets/img/dog.png" alt="">
+                                <img class="dog_img" src="@/assets/img/dog.png" alt="" mode="widthFix">
                             </div>
                             <div class="details_message flex size22">
                                 <div>
@@ -235,7 +240,7 @@
                                 </div>
                                 <div>
                                     <div class="flex about">
-                                        <div>Pet ID66666666</div>
+                                        <div>369</div>
                                     </div>
                                     <div class="flex about">
                                         <div>Pet ID</div>
@@ -262,16 +267,16 @@
                                 </div>
                                 <div class="children size22">
                                     <div class="flex about">
-                                        <div>Gender</div>
+                                        <div>M</div>
                                     </div>
                                     <div class="flex about">
-                                        <div>Neutered status</div>
+                                        <div>None</div>
                                     </div>
                                     <div class="flex about">
-                                        <div>Weight</div>
+                                        <div>13.5kg</div>
                                     </div>
                                     <div class="flex about">
-                                        <div>Remarks</div>
+                                        <div>-</div>
                                     </div>
                                 </div>
                                 <div class="record">

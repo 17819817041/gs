@@ -5,13 +5,20 @@
                 <div class="doctor_item float" v-for="(item) in doctorList" :key="item.doctorId" @click="getDetail(item)">
                     <div class="image flex">
                         <div class="doctor_head">
-                            <img src="@/assets/img/head.png" alt="">
+                            <div class="item_head ju al">
+                                <el-image style="height:60px;width:60px" :src="item.userHead" alt="" fit="cover">
+                                    <div slot="error" class="image-slot ju al" style="height: 100%;width:100%">
+                                        <i class="el-icon-picture-outline" style="font-size:35px;color:gray"></i>
+                                    </div>
+                                </el-image>
+                            </div>
                             <div class="grade white al size12b">
                                 <img src="@/assets/img/rate.png" alt="">{{item.baeScore}}
                             </div>
                         </div>
                         <div class="about">
-                            <div class="size16">{{item.doctorName}}</div>
+                            <div class="size16" v-if="item.doctorName">{{item.doctorName}}</div>
+                            <div class="size16" v-else>No Name</div>
                             <div class="size14">General Obstetrics & Gynecology</div>
                             <div class="size12a al">
                                 <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
@@ -41,8 +48,16 @@
         </div>
         <div class="doctorDetails noBar">
             <div class="details_item mg">
-                <div class="head_image ju"><img src="@/assets/img/john.png" alt=""></div>
-                <div class="doctor_name tc">{{detail.doctorName}}</div>
+                <div class="head_image mg ju">
+                    <el-image style="height:80px" :src="detail.userHead" alt="" fit="cover">
+                        <div slot="error" class="image-slot al" style="height: 100%;width:100%">
+                            <i class="el-icon-picture-outline" style="font-size:40px;color:gray"></i>
+                        </div>
+                    </el-image>
+                </div>
+                <div class="doctor_name tc" v-if="detail.doctorName">{{detail.doctorName}}</div>
+                <div class="doctor_name tc" v-else>Name</div>
+
                 <div class="size15 tc">General Obstetrics </div>
                 <div class="star ju">
                     <el-rate class="Rate" v-model="rate" @change="getRate"></el-rate>
@@ -58,18 +73,18 @@
                 </div>
                 <div class="reviews sb">
                     <div>
-                        <div class="size15">{Experience}</div>
-                        <div class="size16">{{detail.experience}}+ years</div>
+                        <div class="size12">{Experience}</div>
+                        <div class="size13">{{detail.experience}}+ years</div>
                     </div>
                     <div class="xian"></div>
                     <div class="tc likes">
-                        <div class="size15">Likes</div>
-                        <div><span class="size16">125</span><span class="size15">(detail.liKingRate)</span></div>
+                        <div class="size12">Likes</div>
+                        <div><span class="size13">125</span><span class="size12">(detail.liKingRate)</span></div>
                     </div>
                     <div class="xian"></div>
                     <div style="text-align:end">
-                        <div class="size15">Reviews</div>
-                        <div class="size16">230</div>
+                        <div class="size12">Reviews</div>
+                        <div class="size13">230</div>
                     </div>
                 </div>
                 <div class="working al">
@@ -129,7 +144,6 @@ export default {
     },
     created () {
         this.getDoctorList()
-        // this.detail = this.doctorList[0]
     },
     computed: {
         callModal: {
@@ -146,16 +160,26 @@ export default {
     },
     methods: {
         getDetail (item) {
+            if (item.doctorName == null) {
+                item.doctorName = 'No name'
+            }
             this.detail = item
+            console.log(this.detail)
+            this.$store.commit("setUser",{
+                key: "mask",
+                value: item
+            })
         },
         getDoctorList () {
             const doctor = {
                 platform: localStorage.getItem("platform"),
-                userId: localStorage.getItem("userId")
+                userId: localStorage.getItem("userId"),
+                pageNum:1,
+                pageSize: 10
             }
             doctorList(doctor).then(res => {
                 console.log(res,"医生列表")
-                this.doctorList = res.data.data
+                this.doctorList = res.data.data.pageT
             })
         },
         edit () {
@@ -171,14 +195,22 @@ export default {
         },
         toVideo () {
             // this.$router.push('agora')
-            this.$store.commit("setUser", {
-                key: "callTo",
-                // value: this.detail
-                value: {
-                    doctorId: 322
-                }
-            })
-            this.callModal = true
+            
+            if (this.detail.doctorId) {
+                this.$store.commit("setUser", {
+                    key: "callTo",
+                    value: this.detail
+                    // value: {
+                    //     doctorId: 322
+                    // }
+                })
+                this.callModal = true
+            } else {
+                this.$message({
+                    type: "error",
+                    message: "Please choose a doctor"
+                })
+            }
         },
         booking () {
             this.$router.push("/booking")
@@ -193,6 +225,12 @@ video {
     width: 300px;
     height: 200px;
     border: solid 1px;
+}
+.size_12 {
+    font-size: 12px;
+}
+.size_13 {
+    font-size: 13px;
 }
     .pet_message {
         flex: 10;
@@ -228,6 +266,13 @@ video {
     }
     .doctor_head {
         position: relative;
+        .item_head {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: solid rgb(216, 214, 214) 1px;
+            overflow: hidden;
+        }
         .grade {
             position: absolute;
             left: 50%;
@@ -237,6 +282,13 @@ video {
             padding: 3px 6px;
             border-radius: 3px;
         }
+    }
+    .head_image {
+        width: 80px;
+        height: 80px;
+        border: solid gray 1px;
+        border-radius: 50%;
+        overflow: hidden;
     }
     .about {
         margin-left: 10px;
@@ -254,14 +306,14 @@ video {
         margin: 0 3% 5px 0;
         padding: 15px 14px;
         transition: 0.25s;
-        @media screen and (max-width:1620px) {
-            width: 46%;
-            margin: 0 3.5% 5px 0.5%;
-        }
-        @media screen and (max-width:1000px) {
-            width: 80%;
-            margin: 0 3.5% 5px 8.5%;
-        }
+        // @media screen and (max-width:1620px) {
+        //     width: 46%;
+        //     margin: 0 3.5% 5px 0.5%;
+        // }
+        // @media screen and (max-width:1000px) {
+        //     width: 80%;
+        //     margin: 0 3.5% 5px 8.5%;
+        // }
     }
     .workTime {
         margin-top: 45px;
@@ -327,7 +379,7 @@ video {
         margin: auto;
     }
     .reviews {
-        width: 80%;
+        width: 94%;
         margin: auto;
         margin-top: 27px;
     }

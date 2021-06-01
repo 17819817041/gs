@@ -67,6 +67,9 @@ export default {
     computed: {
         IMuser () { return this.$store.state.user.IMuser }
     },
+    created () {
+        
+    },
     methods: {
         endCall () {
             this.$rtcCall.endCall()

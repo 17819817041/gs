@@ -2,7 +2,7 @@
     <div class="myCustomer flex">
         <div class="animal">
             <div class="wrap clear">
-                <div class="wrap_item ju float cursor"  @click="toPatients">
+                <!-- <div class="wrap_item ju float cursor"  @click="toPatients">
                     <div><img class="personal_img" src="@/assets/img/customerHead.png" alt=""></div>
                     <div class="name tc">
                         <div class="size25">Betty Wong</div>
@@ -11,21 +11,19 @@
                             <div class="size17">Chai Wan, Hong Kong</div>
                         </div>
                     </div>
-                </div>
-                <div class="wrap_item ju float">
-                    <div><img class="personal_img" src="@/assets/img/customerHead.png" alt=""></div>
-                    <div class="name tc">
-                        <div class="size25">Betty Wong</div>
-                        <div class="address flex">
-                            <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
-                            <div class="size17">Chai Wan, Hong Kong</div>
-                        </div>
+                </div> -->
+                <div class="wrap_item ju float" v-for="(item,i) in List" :key="item.id"   @click="toPatients(i)">
+                    <!--  <div><img class="personal_img" src="@/assets/img/female.png" alt=""></div> -->
+
+                    <div class="ju al Personal">
+                        <img class="personal_img" style="height:100%;" v-if="item.image" :src="item.image" alt="">
+                        <i class="el-icon-picture-outline Icon" v-else></i>
                     </div>
-                </div>
-                <div class="wrap_item ju float">
-                    <div><img class="personal_img" src="@/assets/img/customerHead.png" alt=""></div>
+
+
                     <div class="name tc">
-                        <div class="size25">Betty Wong</div>
+                        <div class="size25" v-if="item.name">{{item.name}}</div>
+                        <div class="size25" v-else>No Name</div>
                         <div class="address flex">
                             <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
                             <div class="size17">Chai Wan, Hong Kong</div>
@@ -33,7 +31,7 @@
                     </div>
                 </div>
             </div>
-            <div class="player mg" id="player2">
+            <!-- <div class="player mg" id="player2">
                 <div id="player1">
 
                 </div>
@@ -41,7 +39,7 @@
             <div class="join" @click="join">
                 加入
             </div>
-            <div @click="leave">离开</div>
+            <div @click="leave">离开</div> -->
         </div>
         <div class="personWithAnimal">
             <div class="information_wrap">
@@ -64,39 +62,39 @@
                 </div>
                 <div>
                     <div class="guardianDetails mg size19">Guardian Details</div>
-                <div class="ju"><img class="patients_img" src="@/assets/img/customerHead1.png" alt=""></div>
-                <div class="size19 tc personal_name">Betty Wong</div>
-                <div class="address ju">
-                    <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
-                    <div class="size13">Chai Wan, Hong Kong</div>
-                </div>
-                <div class="ju">
-                    <div><img class="relationWay" src="@/assets/img/chat.png" alt=""></div>
-                    <div><img class="relationWay" src="@/assets/img/phone.png" alt=""></div>
-                </div>
-                <div class="message_list size15bl">
-                    <div style="width:100%" class="flex al ts">
-                        <div class="const">User ID</div>
-                        <div class="event">Tom6666666666666</div>
+                    <div class="ju"><img class="patients_img" src="@/assets/img/customerHead1.png" alt=""></div>
+                    <div class="size19 tc personal_name">Betty Wong</div>
+                    <div class="address ju">
+                        <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
+                        <div class="size13">Chai Wan, Hong Kong</div>
                     </div>
-                    <div style="width:100%" class="flex al ts">
-                        <div class="const">Name</div>
-                        <div class="event">Tom6666666666666</div>
+                    <div class="ju">
+                        <div><img class="relationWay" src="@/assets/img/chat.png" alt=""></div>
+                        <div><img class="relationWay" src="@/assets/img/phone.png" alt=""></div>
                     </div>
-                    <div style="width:100%" class="flex al ts">
-                        <div class="const">Age</div>
-                        <div class="event">Tom6666666666666</div>
+                    <div class="message_list size15bl">
+                        <div style="width:100%" class="flex al ts">
+                            <div class="const">User ID</div>
+                            <div class="event">666</div>
+                        </div>
+                        <div style="width:100%" class="flex al ts">
+                            <div class="const">Name</div>
+                            <div class="event">Tom</div>
+                        </div>
+                        <div style="width:100%" class="flex al ts">
+                            <div class="const">Age</div>
+                            <div class="event">21</div>
+                        </div>
+                        <div style="width:100%" class="flex al ts">
+                            <div class="const">Location</div>
+                            <div class="event">HK</div>
+                        </div>
+                        <div style="width:100%" class="flex al ts">
+                            <div class="const">Mobile</div>
+                            <div class="event">12138</div>
+                        </div>
                     </div>
-                    <div style="width:100%" class="flex al ts">
-                        <div class="const">Location</div>
-                        <div class="event">Tom6666666666666</div>
-                    </div>
-                    <div style="width:100%" class="flex al ts">
-                        <div class="const">Mobile</div>
-                        <div class="event">Tom6666666666666</div>
-                    </div>
-                </div>
-                <div class="personMore mg te cursor"><span>More...</span></div>
+                    <div class="personMore mg te cursor"><span>More...</span></div>
                 </div>
             </div>
         </div>
@@ -118,67 +116,106 @@ export default {
                 channel: '654',
                 uid: 888,
                 token: '0060bc95e1145da4b729993725eb55b319aIABktH+02bSfhRnt1IbqwSWGHtt2CLSt2SYNHo683uu1BjN2IlwAAAAAEAD/3NMfIxqyYAEAAQAjGrJg'
-            }
+            },
+            List: {},
+            pageNum: 0,
+            pageSize: 100,
         }
     },
     mounted () {
-        this.createClient()
+        // this.createClient()
+    },
+    created () {
+        var data = {
+            // userId: localStorage.getItem("userId"),
+            userId: 430,
+            pageNum: 1,
+            pageSize: 10
+        }
+        this.$store.dispatch("getPetList",data)
+    },
+    watch: {
+        petList: {
+            handler (val) {
+                this.List = JSON.parse(JSON.stringify(this.petList))
+            },
+            immediate: true
+        }
+    },
+    computed: {
+        petList: {
+            get () {return this.$store.state.user.petList},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "petList",
+                    value: val
+                })
+            },
+        }
     },
     methods: {
-        toPatients () {
-            this.$router.push("/patients")
+        toPatients (i) {
+            if (i == 1) {
+                this.$router.push("/patients")
+            }
         },
 
-        createClient () {
-            this.client = this.$V.createClient({  //进入页面自动调用 mounted
-                mode: "rtc",
-                codec: "vp8"
-            })
-            this.client.on("user-published", this.handleUserPublished);    //点击join触发
-        },
-        handleUserPublished (user, mediaType) {
-            console.log(1233333, user.uid, mediaType)
-            const id = user.uid;
-            this.remoteUsers[id] = user;
-            this.subscribe(user, mediaType);
-        },
-        async subscribe (user, mediaType) {
-            const uid = user.uid;
-            await this.client.subscribe(user, mediaType);
-            if (mediaType === 'video') {
-                console.log("subscribe success" , uid, this.client.uid);
-                user.videoTrack.play(`player2`);
-            }
-            if (mediaType === 'audio') {
-                user.audioTrack.play();
-            }
-        },
-        async join () {
-            [ this.options.uid, this.localTracks.audioTrack, this.localTracks.videoTrack ] = await Promise.all([
-                // join the channel
-                this.client.join(this.options.appid, this.options.channel, this.options.token || null),
-                // create local tracks, using microphone and camera
-                this.$V.createMicrophoneAudioTrack(),
-                this.$V.createCameraVideoTrack()
-            ]);
-            this.localTracks.videoTrack.play("player1");
-            await this.client.publish(Object.values(this.localTracks));
-            console.log("publish success");
-        },
-        async leave() {
-            for (var trackName in this.localTracks) {
-                var track = this.localTracks[trackName];
-                if(track) {
-                    track.stop();
-                    track.close();
-                    this.localTracks[trackName] = undefined;
-                }
-            }
-            // remove remote users and player views
-            this.remoteUsers = {};
-            // leave the channel
-            await this.client.leave();
-        }
+
+
+
+
+
+
+        // createClient () {
+        //     this.client = this.$V.createClient({  //进入页面自动调用 mounted
+        //         mode: "rtc",
+        //         codec: "vp8"
+        //     })
+        //     this.client.on("user-published", this.handleUserPublished);    //点击join触发
+        // },
+        // handleUserPublished (user, mediaType) {
+        //     console.log(1233333, user.uid, mediaType)
+        //     const id = user.uid;
+        //     this.remoteUsers[id] = user;
+        //     this.subscribe(user, mediaType);
+        // },
+        // async subscribe (user, mediaType) {
+        //     const uid = user.uid;
+        //     await this.client.subscribe(user, mediaType);
+        //     if (mediaType === 'video') {
+        //         console.log("subscribe success" , uid, this.client.uid);
+        //         user.videoTrack.play(`player2`);
+        //     }
+        //     if (mediaType === 'audio') {
+        //         user.audioTrack.play();
+        //     }
+        // },
+        // async join () {
+        //     [ this.options.uid, this.localTracks.audioTrack, this.localTracks.videoTrack ] = await Promise.all([
+        //         // join the channel
+        //         this.client.join(this.options.appid, this.options.channel, this.options.token || null),
+        //         // create local tracks, using microphone and camera
+        //         this.$V.createMicrophoneAudioTrack(),
+        //         this.$V.createCameraVideoTrack()
+        //     ]);
+        //     this.localTracks.videoTrack.play("player1");
+        //     await this.client.publish(Object.values(this.localTracks));
+        //     console.log("publish success");
+        // },
+        // async leave() {
+        //     for (var trackName in this.localTracks) {
+        //         var track = this.localTracks[trackName];
+        //         if(track) {
+        //             track.stop();
+        //             track.close();
+        //             this.localTracks[trackName] = undefined;
+        //         }
+        //     }
+        //     // remove remote users and player views
+        //     this.remoteUsers = {};
+        //     // leave the channel
+        //     await this.client.leave();
+        // }
     }
 }
 </script>
@@ -197,6 +234,7 @@ export default {
         border: solid 1px;
     }
     .myCustomer {
+        height: 100%;
         width: 100%;
     }
     .animal {
@@ -220,7 +258,7 @@ export default {
         width: 30.33%;
         padding: 20px 0;
         box-shadow: 0 2px 1px 1px #D5D5D5;
-        margin: 0 3% 5px 0%;
+        margin: 0 3% 10px 0%;
         transition: 0.2s;
         @media screen and (max-width:1620px) {
             width: 46%;
@@ -231,8 +269,17 @@ export default {
             margin: 0 3.5% 5px 8.5%;
         }
     }
+    .Personal {
+        width: 60px;
+        height: 60px;
+        border: solid 1px rgb(228, 223, 223);
+        border-radius: 50%;
+        margin-right: 10px;
+    }
     .personal_img {
         padding-right: 8px;
+        width: 60px;
+        height: 60px;
         
     }
     .personWithAnimal {
@@ -324,5 +371,9 @@ export default {
     }
     .relationWay {
         padding: 0 15px;
+    }
+    .Icon {
+        font-size:35px;
+        color:gray;
     }
 </style>

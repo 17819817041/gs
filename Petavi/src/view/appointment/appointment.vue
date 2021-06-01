@@ -12,12 +12,12 @@
     }
     .calendar {
         width: 100%;
-        border: solid 1px;
+        // border: solid 1px;
         .calendar_item {
             width: 65%;
             margin: 20px 10px;
             background: white;
-            border: solid 1px;
+            // border: solid 1px;
         }
         .appointment_details {
             width: 40%;
@@ -61,7 +61,7 @@
                     </div>
                     <div class="calendar flex">
                         <div class="calendar_item">
-
+                            <img style="width:100%" src="@/assets/img/rili.png" alt="">
                         </div>
                         <div class="appointment_details">
                             <div class="appointment_details_item sa al">

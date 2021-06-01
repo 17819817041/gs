@@ -17,7 +17,7 @@
         width: 90%;
         margin: auto;
         border: #EFEEEE solid 1px;
-        margin-top: 60px;
+        margin-top: 30px;
         position: relative;
         .arrow {
             position: absolute;
@@ -52,9 +52,13 @@
     }
     .pet_img {
         padding-top: 10px;
+        width: 100px;
+        height: 100px;
+        border: solid 1px;
+        border-radius: 50%;
     }
     .pet_name {
-        padding: 15px 0;
+        padding: 10px 0;
     }
     .more_message {
         text-align: end;
@@ -96,26 +100,24 @@
                 <div class="present_item">
                     <div class="arrow">
                         <div class="myPet">
-                            <img @click="petList" :class="[ {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
+                            <!-- <img @click="showPetList" :class="[ {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
                             <div :class="['pet_list', {height:show}]">
-                                <div class="list_item">666</div>
-                                <div class="list_item">666</div>
-                                <div class="list_item">666</div>
-                            </div>
+                                <div class="list_item" v-for="(item,i) in petList" :key="i">{{item.name}}</div>
+                            </div> -->
                         </div>
                     </div>
                     
-                    <div class="pet_img ju">
-                        <img src="@/assets/img/petimg.png" alt="" @click="petDetails">
+                    <div class="pet_img mg ju">
+                        <img :src="pet.image" alt="" @click="petDetails">
                     </div>
-                    <div class="pet_name size21 tc">Daisy</div>
+                    <div class="pet_name size21 tc">{{pet.name}}</div>
                     <div class="details size12 tc">
-                        <div>Pet ID : {{petId}}</div>
-                        <div>Age : {{age}}</div>
-                        <div>Breed : {{breed}}</div>
-                        <div>Sex : {{sex}}</div>
-                        <div>Neutered status : {{neuteredStatus}}</div>
-                        <div>Weight : {{weight}}</div>
+                        <div>Pet ID : {{pet.id}}</div>
+                        <div>Age : {{pet.age}}</div>
+                        <div>Breed : {{pet.breed}}</div>
+                        <div>Sex : {{pet.gender}}</div>
+                        <div>Neutered status : {{pet.petJueYu}}</div>
+                        <div>Weight : {{pet.weight}}</div>
                     </div>
                     <div class="more_message size12 cursor">
                         More...
@@ -152,7 +154,7 @@
 </template>
 
 <script>
-import { petList } from "@/axios/request.js"
+import { getUserPetForOne } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -166,12 +168,23 @@ export default {
             show: false,
             change:true,
             rotate: false,
-            pageNum: 0,
-            pageSize: 100
+            pet: {}
         }
     },
     created () {
         this.getPetList()
+    },
+    watch: {
+        petList: {
+            handler (val) {
+                if (val[0]) {
+                    this.pet = val[0]
+                } else {
+                    this.pet = {}
+                }
+            },
+            immediate: true
+        }
     },
     computed: {
         petList: {
@@ -196,7 +209,7 @@ export default {
         edit () {
             this.change = !this.change
         },
-        petList () {
+        showPetList () {
             this.show = !this.show
             this.rotate = !this.rotate
         },

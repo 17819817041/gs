@@ -28,7 +28,7 @@
     }
     .vet_form {
         width: 700px;
-        margin: 50px auto;
+        margin: 30px auto;
     }
     .vet_sign {
         border-radius: 8px;
@@ -52,7 +52,7 @@
                     <el-radio label="2" v-model="data.platform">
                         <div class="vet">
                             <div class="vet_head">
-                                <img :class="[ 'opacity', {'opacity1':data.platform == 2}]" src="@/assets/img/vet.png" alt="">
+                                <img @click="vetIdentity" :class="[ 'opacity', {'opacity1':data.platform == 2}]" src="@/assets/img/vet.png" alt="">
                             </div>
                             <div class="vet_text">Vet</div>
                         </div>
@@ -60,7 +60,7 @@
                     <el-radio label="1" v-model="data.platform">
                         <div class="pet">
                             <div class="pet_head">
-                                <img :class="[ 'opacity', {'opacity1':data.platform == 1}]" src="@/assets/img/pet.png" alt="">
+                                <img @click="petIdentity" :class="[ 'opacity', {'opacity1':data.platform == 1}]" src="@/assets/img/pet.png" alt="">
                             </div>
                             <div class="pet_text">Customer</div>
                         </div>
@@ -79,14 +79,14 @@
                     <el-input placeholder="Address" v-model="data.address"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input placeholder="Password" v-model="data.password"></el-input>
+                    <el-input placeholder="Password" show-password v-model="data.password"></el-input>
                 </el-form-item>
                 <el-form-item prop="confirm">
-                    <el-input placeholder="Confirm Password" v-model="data.password"></el-input>
+                    <el-input placeholder="Confirm Password" show-password v-model="surePwd"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <div class="vet_sign cursor">
-                        <el-button class="width100" type="primary" @click="finishSignUp">Sign Up</el-button>
+                        <el-button class="width100"  type="primary" @click="finishSignUp">Sign Up</el-button>
                     </div>
                 </el-form-item>
             </el-form>
@@ -105,20 +105,22 @@ export default {
             loading: false,
             Vloading:false,
             data: {
-                platform: null,
-                email: '972307875@qq.com',
-                password: "a972307875",
-                address: "123",
-                phone: "12345678989",
-                name: "lwz"
-
                 // platform: null,
-                // email: '',
-                // password: "",
-                // address: "",
-                // phone: "",
-                // name: ""
+                // email: 'xhajsjxbdj@163.com',
+                // password: "123456l",
+                // address: "123",
+                // phone: "12345678989",
+                // name: "lwz"
+
+                platform: null,
+                email: '',
+                password: "",
+                address: "",
+                phone: "",
+                name: ""
             },
+            // surePwd: '123456l',
+            surePwd: '',
             rules: {
                 platform: [
                     { required: true, message: "Please select your identity", trigger: 'blur' }
@@ -145,13 +147,13 @@ export default {
         
     },
     methods: {
-        
         vetIdentity () {
             this.data.platform = 2
             localStorage.setItem("platform",2)
             console.log('vet')
         },
         petIdentity () {
+            console.log(1)
             this.data.platform =1
             localStorage.setItem("platform",1)
             console.log('customerLogin')
@@ -168,32 +170,44 @@ export default {
             }
         },
         finishSignUp () {
-            this.Vloading = true
-            let that = this
-            this.$refs.form.validate(flag => {
-                if (flag) {
-                    signUp(that.data).then(res => {
-                        console.log(res)
-                        if (res.data.rtnCode == 200) {
+            if (this.surePwd === this.data.password) {
+                this.Vloading = true
+                let that = this
+                this.$refs.form.validate(flag => {
+                    if (flag) {
+                        signUp(that.data).then(res => {
+                            console.log(res)
+                            if (res.data.rtnCode == 200) {
+                                that.Vloading = false
+                                this.$message({
+                                    type: "success",
+                                    message: "Register successfully,Please go to email to activate your account!"
+                                })
+                                setTimeout(() => {
+                                    that.toLoginPage()
+                                },1000)
+                            } else {
+                                that.Vloading = false
+                            }
+                        }).catch(e => {
+                            console.log(e)
                             that.Vloading = false
-                            that.toLoginPage()
-                        } else {
-
-                        }
-                    }).catch(e => {
-                        console.log(e)
-                    })
-                } else {
-                    this.Vloading = false
-                    this.$message({
-                        type: "error",
-                        message: "Incomplete data"
-                    })
-                }
-            })
-            
-            
-            
+                        })
+                    } else {
+                        this.Vloading = false
+                        this.$message({
+                            type: "error",
+                            message: "Incomplete data!"
+                        })
+                    }
+                })
+            } else {
+                this.surePwd = ""
+                this.$message({
+                    type: "error",
+                    message: "Please make sure the passwords are the same!"
+                })
+            }
         }
     }
 }

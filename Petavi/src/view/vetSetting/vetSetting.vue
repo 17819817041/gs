@@ -12,8 +12,10 @@
                     <div class="save cursor tc" v-else @click="saveBtn">Save</div>
                 </div>
                 <div class="profile flex">
-                    <div class="profile_img ju">
-                        <img class="profileimg" src="@/assets/img/profileimg.png" alt="">
+                    <div class="profile_img">
+                        <div style="width:70%;margin:auto">
+                            <img class="profileimg mg" src="@/assets/img/profileimg.png" alt="" mode="widthFix">
+                        </div>
                     </div>
                     <div class="profile_message">
                         <div class="message_wrap flex">
@@ -157,6 +159,7 @@ export default {
     }
     .profile_message1 {
         width: 45%;
+        padding-left: 60px;
         .address_child {
             color: #333333;
             font-size: 12px;
@@ -187,10 +190,9 @@ export default {
     }
     .profile_img {
         width: 25%;
-        .profileimg {
-            width: 300px;
-            height: 300px;
-        }
+    }
+    .profileimg {
+        width: 100%;
     }
     .vetReset {
         width: 600px;

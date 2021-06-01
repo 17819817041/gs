@@ -5,8 +5,13 @@
 		<transition name='fade'>
 			<div class="mask flex" v-if="callModal">
 				<div class="confirmBox mg">
-					<div class="sa al">
-						<el-image class="Image" :src="img" fit="cover"></el-image> Name
+					<div class="flex al mg" style="width:70%">
+						<el-image class="IMAGE_HEAD" :src="mask.userHead" fit="cover">
+							<div slot="error" class="image-slot ju al" style="height: 100%;width:100%">
+								<i class="el-icon-picture-outline" style="font-size:40px;color:gray"></i>
+							</div>
+						</el-image> 
+						<div style="margin-top:30px">{{mask.doctorName}}</div>
 					</div>
 					<div class="loading" v-if="loading">
 						loading...
@@ -24,12 +29,11 @@
 			<div class="mask flex" v-if="callModal2">
 				<div class="confirmBox mg">
 					<div class="sa al">
-						<el-image class="Image" :src="img" fit="cover"></el-image> Name
+						<el-image class="IMAGE_HEAD" :src="img" fit="cover"></el-image> Name
 					</div>
 					<div class="wrap_btn sa">
 						<div class="btn al ju cursor" @click="cancel2">Cancel</div>
 						<div class="btn al ju cursor" @click="sure2">Sure</div>
-						
 					</div>
 				</div>
 			</div>
@@ -48,7 +52,10 @@ export default {
 	},
 	created () {
 		this.img = img
-		
+		let userId = localStorage.getItem("userId")
+		if (userId) {
+			this.$store.dispatch("IMLogin")
+		}
 	},
 	watch: {
 		callModal: {
@@ -80,10 +87,12 @@ export default {
         },
 		callTo () { return this.$store.state.user.callTo },
 		IMuser () { return this.$store.state.user.IMuser },
+		mask () {return this.$store.state.user.mask}
     },
 	methods: {
 		sure () {
 			// this.$router.push("/agora")
+			console.log(this.callTo)
 			console.log(this.callTo.doctorId + '_2')
 			this.loading = true
 			var config = {
@@ -117,7 +126,7 @@ export default {
 		padding: 0;
 		margin: 0;
 		height: 100%;
-
+		
 	}
 	#app {
 		height: 100%;
@@ -150,6 +159,17 @@ export default {
 	.vet_form .el-radio__input{
 		display: none !important;
 	}
+	// .docHead_img .docHead .image-slot .el-icon-picture-outline {
+	// 	display: flex;
+	// 	justify-content: center;
+    //     width: 100px;
+    //     height: 100px;
+	// 	background: red;
+    // }
+	// .el-icon-picture-outline {
+	// 	width: 1100px !important;
+	// 	height: 100px !important;
+	// }
 	.float {
 		float: left;
 	}
@@ -247,10 +267,6 @@ export default {
 		left: 0;
 		top: 0;
 	}
-	.Image {
-		width: 70px;
-		height: 70px;
-	}
 	.confirmBox {
 		background: white;
 		box-shadow: 0 2px 2px 2px gray;
@@ -271,5 +287,12 @@ export default {
 	}
 	.fade-enter, .leave-active {
 		opacity: 0;
+	}
+	.IMAGE_HEAD {
+		width: 70px;
+		height: 70px;
+		padding: right 20px;
+		border-radius: 50%;
+		border: solid 1px rgb(207, 202, 202);
 	}
 </style>

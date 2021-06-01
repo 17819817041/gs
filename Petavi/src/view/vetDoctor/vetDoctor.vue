@@ -67,7 +67,7 @@
                 <div class="vetDoctor_item float">
                     <div class="image flex">
                         <div class="vetDoctor_head">
-                            <img src="@/assets/img/head.png" alt="">
+                            <img src="@/assets/img/john.png" alt="">
                             <div class="grade white al size12b">
                                 <img src="@/assets/img/rate.png" alt="">{{grade}}
                             </div>
@@ -98,7 +98,7 @@
                 <div class="vetDoctor_item float">
                     <div class="image flex">
                         <div class="vetDoctor_head">
-                            <img src="@/assets/img/head.png" alt="">
+                            <img src="@/assets/img/smile.png" alt="">
                             <div class="grade white al size12b">
                                 <img src="@/assets/img/rate.png" alt="">{{grade}}
                             </div>
@@ -126,10 +126,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="vetDoctor_item float">
+                <!-- <div class="vetDoctor_item float">
                     <div class="image flex">
                         <div class="vetDoctor_head">
-                            <img src="@/assets/img/head.png" alt="">
+                            <img src="@/assets/img/customerHead.png" alt="">
                             <div class="grade white al size12b">
                                 <img src="@/assets/img/rate.png" alt="">{{grade}}
                             </div>
@@ -143,24 +143,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="workTime al sb">
-                        <div>
-                            <div class="size14">Experience</div>
-                            <div><span class="size16">20</span> <span class="size14"> Years</span></div>
-                        </div>
-                        <div>
-                            <div class="size14">Likes</div>
-                            <div><span class="size16">125</span><span class="size14"> (40%)</span></div>
-                        </div>
-                        <div class="call">
-                            <el-button class="callBtn width100" type="primary">Call</el-button>
-                        </div>
-                    </div>
-                </div>
+                </div> -->
                 <div class="vetDoctor_item float">
                     <div class="image flex">
                         <div class="vetDoctor_head">
-                            <img src="@/assets/img/head.png" alt="">
+                            <img src="@/assets/img/female.png" alt="">
                             <div class="grade white al size12b">
                                 <img src="@/assets/img/rate.png" alt="">{{grade}}
                             </div>
@@ -330,6 +317,10 @@ export default {
             background: @helpBtn;
             padding: 3px 6px;
             border-radius: 3px;
+        }
+        img {
+            width: 60px;
+            height: 60px;
         }
     }
     .about {

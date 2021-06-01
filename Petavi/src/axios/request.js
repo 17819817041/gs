@@ -49,7 +49,7 @@ export function updateUserDetails (data) {            //更新用户信息
     )
 }
 
-export function addPet (data) {       
+export function addPet (data) {           //添加宠物
     return request(
         {
             url: "/pet/addPet",
@@ -97,10 +97,32 @@ export function updatePet (data) {    //更新宠物信息
     })
 }
 
-export function doctorList (data) {
-    return request({
+export function doctorList (data) {      //医生列表
+    return request({ 
         url: "/doctor/getDoctorListByLimit",
         method: "POST",
         params: data
     })
+}
+
+export function vetDetails (data) {      //医生详情
+    return request(
+        {
+            // url: "/doctorDetails/getDoctorDetailsByUserId",
+            url: "/doctorDetails/getUserDetails",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
+
+export function updateVetDetails (data) {      //修改医生详情
+    return request(
+        {
+            url: "/doctorDetails/updateDoctorDetails",
+            method: "POST",
+            params: data
+        }
+    )
 }

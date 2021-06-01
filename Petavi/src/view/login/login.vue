@@ -94,9 +94,11 @@ export default {
     },
     methods: {
         customerLogin () {
+            localStorage.setItem("platform",1)
             this.$router.push("/customerLogin")            
         },
         vetLogin () {
+            localStorage.setItem("platform",2)
             this.$router.push('/vetLogin')
         },
         createAccount () {

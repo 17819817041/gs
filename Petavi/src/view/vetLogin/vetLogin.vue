@@ -4,7 +4,7 @@
         width: 700px;
     }
     .title {
-        padding: 100px 0;
+        padding: 60px 0;
     }
     .contentL {
         @media screen and (max-width:564px) {
@@ -47,13 +47,13 @@
             <div class="FormL tc">
                 <el-form ref="form" :rules="rules" :model="form">
                     <el-form-item>
-                        <div class=" size12">Add your details to login</div>
+                        <div class="size12">Add your details to login</div>
                     </el-form-item>
                     <el-form-item prop="email">
                         <el-input v-model="form.email" placeholder="Your Email"></el-input>
                     </el-form-item>
                     <el-form-item prop="password">
-                        <el-input v-model="form.password" placeholder="Password"></el-input>
+                        <el-input v-model="form.password" show-password placeholder="Password"></el-input>
                     </el-form-item>
 
                     <el-form-item>
@@ -112,7 +112,22 @@ export default {
                 platform:2,
                 email:'9@qq.com',
                 password:'123'
-            }
+
+                 
+                // platform:2,
+                // email:'',
+                // password:''
+
+                // platform: 2,
+                // email:'youxiangceshi6@163.com',
+                // password:'youxiangceshi7'
+            } 
+            // 173156297@qq.com
+            // form: {
+            //     platform:localStorage.getItem("platform"),
+            //     email:'',
+            //     password:''
+            // }
         }
     },
     computed: {
@@ -126,15 +141,10 @@ export default {
             },
         }
     },
+    created () {
+        
+    },  
     methods: {
-        SignUp () {
-            this.$router.push({
-                name: "signUp",
-                query:{
-                    user:'vetLogin'
-                }
-            })
-        },
         faceBook () {
             this.$store.dispatch("login", {'vm': this} )
         },
@@ -151,12 +161,13 @@ export default {
                         this.$store.dispatch("IMSignUp")
                         this.$router.push({
                             name: "vethomepage",
-                            query: {
-                                userId: null,
-                                platform:2
-                            }
+                            // query: {
+                            //     userId: null,
+                            //     platform:2
+                            // }
                         })
-                        this.loading = false
+                        that.login = true
+                        that.loading = false
                     }).catch(e => {
                         console.log(e)
                         this.loading = false
@@ -179,7 +190,15 @@ export default {
         },
         forget () {
             this.$router.push("/forgetPwd")
-        }
+        },
+        SignUp () {
+            this.$router.push({
+                name: "signUp",
+                query:{
+                    user:'vetLogin'
+                }
+            })
+        },
     }
 }
 </script>

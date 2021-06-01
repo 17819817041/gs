@@ -4,7 +4,7 @@
         width: 700px;
     }
     .title {
-        padding: 100px 0;
+        padding: 60px 0;
         @media screen and (max-width:564px) {
             padding: 50px 0 40px 0;
         }
@@ -71,7 +71,7 @@
                         <el-input class="input" placeholder="Your Email" v-model="form.email"></el-input>
                     </el-form-item>
                     <el-form-item prop="password">
-                        <el-input class="input" placeholder="Password" v-model="form.password"></el-input>
+                        <el-input class="input" placeholder="Password" show-password v-model="form.password"></el-input>
                     </el-form-item>
 
                     <el-form-item>
@@ -120,6 +120,10 @@ export default {
                 platform:1,
                 email:'1257354834@qq.com',
                 password:'123456'
+
+                // platform: 1,
+                // email:'',
+                // password:''
             },
             rules: {
                 email: [
@@ -165,6 +169,7 @@ export default {
                             localStorage.setItem("userId",res.data.data.userId)
                             localStorage.setItem("platform",res.data.data.platform)
                             this.$store.dispatch("IMSignUp")
+                            this.$store.dispatch("getUser")
                             that.$router.replace({
                                 name:'customerhomepage',
                                 query: {

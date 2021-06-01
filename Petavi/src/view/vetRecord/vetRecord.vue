@@ -114,7 +114,7 @@
                                         </div>
                                         <div>
                                             <div class="about">
-                                                <div>Pet ID66666666</div>
+                                                <div>666</div>
                                             </div>
                                             <div class="about">
                                                 <div>Pet ID</div>
