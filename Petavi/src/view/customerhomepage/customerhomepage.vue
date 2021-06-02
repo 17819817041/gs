@@ -3,6 +3,10 @@
     .customerhomepage {
         height: 100%;
     }
+    .present_message {
+        background: white;
+        z-index: 500;
+    }
     .customer_content {
         width: 100%;
         box-sizing: border-box;

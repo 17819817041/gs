@@ -139,6 +139,10 @@ export default {
 	div {
 		box-sizing: border-box;
 	}
+	.el-input .el-input__inner {
+		outline: none !important;
+		border: none !important;
+	}
 	.vet_form .el-input .el-input__inner {
 		border: none !important;
 		padding-right: 0 !important;
@@ -177,8 +181,16 @@ export default {
 
 	.typeFlex .el-form-item__content {
 		display: flex;
-		justify-content: space-between;
 		line-height: 20px;
+	}
+	.form_select .el-radio__input{
+		display: none !important;
+	}
+	.form_select .el-radio {
+		margin:auto
+	}
+	.form_select .el-form-item__label {
+		color: #B6B7B7 !important;
 	}
 	
 

@@ -19,6 +19,10 @@
         border: #C6C6C6 solid 1px;
         margin: 10px 50px;
         padding: 5px;
+        overflow: hidden;
+        img {
+            height: 100%;
+        }
     }
     .opacity {
         opacity: 0.8;
@@ -29,6 +33,10 @@
     .vet_form {
         width: 700px;
         margin: 30px auto;
+        @media screen and (max-width:564px) {
+            width: @phoneMedia;
+            margin: auto;
+        }
     }
     .vet_sign {
         border-radius: 8px;

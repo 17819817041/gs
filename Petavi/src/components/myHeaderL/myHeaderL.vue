@@ -10,13 +10,20 @@
         @media screen and (max-width: 1300px) {
             height: 80px;
         }
+        @media screen and (max-width: 1300px) {
+            height: 70px;
+        }
         .logo {
             background: rgb(255, 255, 255);
             position: absolute;
             left: 0;
             top: 0;
-            z-index: 500;
+            z-index: 600;
             padding: 15px 30px 0 62px;
+            @media screen and (max-width: 564px) {
+                height: 70px;
+                padding: 10px 10px 0 10px;
+            }
         }
         .logo .logo_IMG {
             width: 110px;
@@ -27,6 +34,10 @@
                 width: 75px;
                 height: 85px;
             }
+            @media screen and (max-width: 564px) {
+                width: 50px;
+                height: 60px;
+            }
         }
         .helpBtn {
             padding: 0 3px;
@@ -34,6 +45,9 @@
             height: 40px;
             border-radius: 30px;
             background: @helpBtn;
+            @media screen and (max-width: 564px) {
+                transform: scale(0.8);
+            }
             
         }
         .logout {
@@ -59,6 +73,9 @@
         opacity: 0;
         @media screen and (max-width: 1300px) {
             opacity: 1;
+        }
+        @media screen and (max-width: 664px) {
+            opacity: 0;
         }
     }
     .input {
@@ -102,15 +119,22 @@
         @media screen and (max-width: 1200px) {
             right: 0;
         }
+        @media screen and (max-width:564px) {
+            height: 30px;
+            bottom: 5px;
+        }
     }
     .div .search {
         @media screen and (max-width:1200px) {
-            width: 40%;
+            width: 50%;
         }
     }
     .div .function {
         @media screen and (max-width:1200px) {
-            width: 60%;
+            width: 50%;
+        }
+        @media screen and (max-width:564px) {
+            width: 37%;
         }
     }
     .div div {
@@ -135,7 +159,7 @@
         <div class="logo">
             <img class="logo_IMG" src="@/assets/img/logo.png" alt=""> <!-- @click="test"-->
 
-            <!-- <img :class="[ {rotate: rotate},'list_img' ]" src="@/assets/img/list.png" alt="" @click="showDetails"> -->
+            <img :class="[ {rotate: rotate},'list_img' ]" src="@/assets/img/list.png" alt="" @click="showDetails">
         </div>
         <div class="div sb al">
             <div class="search al sa" v-if="login">
@@ -148,7 +172,7 @@
                     </div>
                 </div>
                 <div class="input" >
-                    <el-input prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
+                    <el-input style="transform:scale(1);border:none;" prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
                 </div>
             </div>
             <div v-else></div>
@@ -163,7 +187,7 @@
                                     <i class="el-icon-picture-outline" style="font-size:30px;color:gray"></i>
                                 </div>
                             </el-image> -->
-                            <div class="ju al" style="height:60px;overflow:hidden;">
+                            <div class="ju al" style="height:60px;overflow:hidden;border-radius:50%;transform:scale(1)">
                                 <img style="height:100%;width:100%" v-if="userDetails.userImage" :src="userDetails.userImage" alt="">
                                 <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i>
                             </div>

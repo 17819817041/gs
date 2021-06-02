@@ -1,46 +1,30 @@
 <template>
-    <div class="booking mg tc">
-        <div class="size21">Booking</div>
-        <div class="size12">Select an option to book</div>
-        <div class="visitAndWay sb mg">
-            <div class="phone">
-                <div><img src="@/assets/img/phoneWay.png" alt=""></div>
-                <div class="size13">Phone Consultation</div>
-                <div class="size12">Min session 10 mins . $0.99 per/min</div>
-            </div>  
-            <div class="video">
-                <div><img src="@/assets/img/videoWay.png" alt=""></div>
-                <div class="size13">Video Consultation</div>
-                <div class="size12">Min session 15 mins . $1.99 per/min</div>
-            </div>
-            <div class="visit">
-                <div><img src="@/assets/img/bookingImg.png" alt=""></div>
-                <div class="size13">Physical Visit</div>
-                <div class="size12">Book free, all fees are payable at clinic</div>
-            </div>
-        </div>
+    <div class="booking mg">
+        <div class="size21 tc" style="margin-top:30px;">Booking</div>
+        <div class="size12 tc" style="margin:10px auto">Select an option to book</div>
+        
         <div class="form_select">
-            <el-form>
-                <el-form-item class="typeFlex">
-                    <div>
-                        <el-radio label="phone" style="border:solid 1px">
+            <el-form label-position="top">
+                <el-form-item class="typeFlex tc">
+                    <div class="width30">
+                        <el-radio label="phone">
                             <div class="phone">
-                                <div><img src="@/assets/img/phoneWay.png" alt=""></div>
+                                <div class="ju"><img src="@/assets/img/phoneWay.png" alt=""></div>
                             </div> 
                         </el-radio>
                         <div class="size13">Phone Consultation</div>
                         <div class="size12">Min session 10 mins . $0.99 per/min</div>
                     </div>
-                    <div>
+                    <div class="width30">
                         <el-radio label="video">
-                            <div class="video">
+                            <div class="video ju">
                                 <div><img src="@/assets/img/videoWay.png" alt=""></div>
                             </div>
                         </el-radio>
                             <div class="size13">Video Consultation</div>
                             <div class="size12">Min session 15 mins . $1.99 per/min</div>
                     </div>
-                    <div>
+                    <div class="width30">
                         <el-radio label="visit">
                             <div class="visit mg">
                                 <div><img src="@/assets/img/bookingImg.png" alt=""></div>
@@ -79,7 +63,7 @@
                         </div>
                     </div>
                 </el-form-item>
-                <el-form-item>
+                <el-form-item label="Booking Date">
                     <div class="sb">
                         <div class="day">
                             <el-select v-model="day" placeholder="Day">
@@ -214,18 +198,26 @@ export default {
     .star_time, .end_time {
         width: 38%;
     }
+    .typeFlex .width30 {
+        width:33.3%; 
+    }
     .textarea_wrap {
+        background: @content;
+        padding: 10px;
+        border-radius: 7px;
+        margin-bottom: 10px;
         .textarea {
             border: none;
             outline: none;
-            background: @content;
             resize: none;
-            border-radius: 7px;
-            padding: 10px;
+            background: @content;
         }
     }
     textarea::-webkit-input-placeholder {
         color: #BBBBBB;
         font-size: 16px;  
+    }
+    .phone, .video, .visit {
+        margin-bottom: 15px;
     }
 </style>

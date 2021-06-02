@@ -9,7 +9,7 @@
     .title {
         padding: 40px 0;
         @media screen and (max-width:564px) {
-            padding: 50px 0 40px 0;
+            padding: 30px 0 30px 0;
         }
     }
     .contentL {

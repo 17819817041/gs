@@ -3,6 +3,9 @@ module.exports = {
     lintOnSave: false,
     devServer: {
         https: true,
+        open: true,
+		port: 8080,
+		hot:true,
         proxy: {
 			"api": {
 				target: "https://petavi.top/api",

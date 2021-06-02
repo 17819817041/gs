@@ -41,9 +41,6 @@
                     </div>
                 </div>
 
-                <!-- <video :class="['video_parent']" id="localVideo"></video>
-                <video :class="['video_child']" id="video"></video> -->
-
             </div>
         </div>
         <div class="doctorDetails noBar">

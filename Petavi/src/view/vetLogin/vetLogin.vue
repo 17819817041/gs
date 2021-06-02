@@ -4,11 +4,14 @@
         width: 700px;
     }
     .title {
-        padding: 60px 0;
+        padding: 40px 0;
+        @media screen and (max-width:564px) {
+            padding: 30px 0 30px 0;
+        }
     }
     .contentL {
         @media screen and (max-width:564px) {
-            width: 95%;
+            width: @phoneMedia;
             margin: auto;
         }
     }

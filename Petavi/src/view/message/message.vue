@@ -1,23 +1,40 @@
 <style lang="less" scoped>
 @import "@/less/css.less";
+.customerPage {
+    // position: fixed;
+    // top: 119px;
+    // left: 0;
+    // width: 202px !important;
+    background: white;
+}
     .customer_content {
         width: 100%;
         box-sizing: border-box;
         .present_message {
             width: 202px;
-            transition: 0.25s;
+            transition: 0.1s;
             @media screen and (max-width:1300px) {
-                max-width: 0px;
-                // max-height: 0px;
-                overflow: hidden;
+                background: white;
+                position: fixed;
+                top: 100px;
+                left: 0;
+                width: 167px !important;
+                opacity: 0;
             }
         }
+    }
+    .opacity {
+        opacity: 1 !important;
+        // border: solid 1px;
+        overflow: auto;
+        height: calc(100% - 100px);
+        overflow: auto;
     }
     .present_item {
         width: 90%;
         margin: auto;
         border: #EFEEEE solid 1px;
-        margin-top: 30px;
+        margin-top: 50px;
         position: relative;
         .arrow {
             position: absolute;
@@ -51,7 +68,7 @@
         max-height: 200px !important;
     }
     .pet_img {
-        // padding-top: 10px;
+        margin-top: 30px;
         width: 100px;
         height: 100px;
         border: solid 1px rgb(230, 223, 223);
@@ -69,12 +86,13 @@
         margin-top: 20px;
     }
     .administrator {
-        width: 138px;
+        margin-top: 60px;
+        width: 130px;
         color: #212121;
         font-size: 12px;
-        white-space: nowrap;
+        // white-space: nowrap;
         .administrator_item {
-            padding: 10px 0 12px 7px;
+            padding: 10px 0 12px 0px;
         }
         .administrator_item div img {
             width: 28px;
@@ -104,7 +122,7 @@
 <template>
     <div class="customerPage">
         <div class="customer_content flex">
-            <div :class="['present_message', {maxHeight: true}]">
+            <div :class="['present_message', 'noBar', {opacity: showDeta}]">
                 <div class="present_item">
                     <div class="arrow">
                         <div class="myPet">
@@ -204,7 +222,8 @@ export default {
                     value: val
                 })
             },
-        }
+        },
+        showDeta () { return this.$store.state.user.rotate }
     },
     methods: {
         getPetList () {
