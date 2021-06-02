@@ -19,7 +19,7 @@
                         <div class="about">
                             <div class="size16" v-if="item.doctorName">{{item.doctorName}}</div>
                             <div class="size16" v-else>No Name</div>
-                            <div class="size14">General Obstetrics & Gynecology</div>
+                            <div class="size_12">General Obstetrics & Gynecology</div>
                             <div class="size12a al">
                                 <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
                                 0.8 km away
@@ -228,6 +228,7 @@ video {
 }
 .size_12 {
     font-size: 12px;
+    color: #767676;
 }
 .size_13 {
     font-size: 13px;
@@ -317,6 +318,11 @@ video {
     }
     .workTime {
         margin-top: 45px;
+        div {
+            @media screen and (max-width:1350px) {
+                transform: scale(0.9);
+            }
+        }
     }
     .physical {
         width: 108px;
@@ -382,6 +388,9 @@ video {
         width: 94%;
         margin: auto;
         margin-top: 27px;
+        @media screen and (max-width:1250px) {
+            transform: scale(0.9);
+        }
     }
     .xian {
         border-left: 1px #DCDDE0 solid;

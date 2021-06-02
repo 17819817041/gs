@@ -45,8 +45,21 @@
         background: @logout;
         font-size: 12px;
         color: white;
-        padding: 2px;
+        padding: 5px 2px;
         margin: 3px;
+    }
+    .Cancel {
+        margin-top: 6px;
+        width: 80px;
+        border-radius: 7px;
+        background: @cancel;
+        font-size: 12px;
+        color: white;
+        padding: 5px 2px;
+        margin: 3px;
+    }
+    .DateTime, .pet_name,.appointment_details_name {
+        margin-top: 6px;
     }
 </style>
 
@@ -64,7 +77,7 @@
                             <img style="width:100%" src="@/assets/img/rili.png" alt="">
                         </div>
                         <div class="appointment_details">
-                            <div class="appointment_details_item sa al">
+                            <div class="appointment_details_item sa">
                                 <div><img class="appointment_details_img" src="@/assets/img/petimg.png" alt=""></div>
                                 <div class="appointment_details_name">
                                     <div class="size13">Amily Watson</div>
@@ -83,7 +96,7 @@
                                 </div>
                                 <div>
                                     <div class="Reschedule size13 cursor tc" @click="reschedule">Reschedule</div>
-                                    <div class="Reschedule size13 cursor tc">Reschedule</div>
+                                    <div class="Cancel size13 cursor tc">Cancel</div>
                                 </div>
                             </div>
                         </div>

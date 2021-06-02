@@ -62,6 +62,11 @@
     .rotate {
         transform: rotateZ(180deg);
     }
+    .list {
+        @media screen and (max-width:1300px) {
+            display: none;
+        }
+    }
 </style>
 
 <template>
@@ -125,7 +130,8 @@ export default {
                     value: val
                 })
             },
-        }
+        },
+        
     },
     methods: {
         scroll (val) {
@@ -137,7 +143,7 @@ export default {
                 } else {
                     this.active = true
                 }   
-            },100)
+            },10)
         },
         getPetList () {
             var data = {

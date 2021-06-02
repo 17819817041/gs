@@ -11,7 +11,9 @@ export default {
         callTo: {},
         userDetail: {},
         mask: {},
-        headImg: {}
+        headImg: {},
+        rotate: false,
+        sureCall: true
     },
     mutations: {
         setUser (state,data) {

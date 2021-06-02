@@ -1,21 +1,22 @@
 <style lang="less" scoped>
 @import "@/less/css.less";
-    // .customerPage {
-    //     flex: 10;
-    // }
+    .customerPage {
+        flex: 10;
+    }
     .customer_content {
+        width: 100%;
         .pet_message {
             width: 100%;
             height: 100%;
             background: @content;
             margin-top: 10px;
-            @media screen and (max-width:1350px) {
-                width: 82%;
-            }
-            @media screen and (max-width:1200px) {
-                width: 98%;
-                margin: auto;
-            }
+            // @media screen and (max-width:1350px) {
+            //     width: 82%;
+            // }
+            // @media screen and (max-width:1200px) {
+            //     width: 98%;
+            //     margin: auto;
+            // }
         }
     }
     .petMessage_title, .details_item {
@@ -30,20 +31,20 @@
         padding: 70px 0;
         box-shadow: 0px 3px 3px 0px #D0D0D0;
         .edit {
-            width: 100px;
+            width: 80px;
             position: absolute;
-            border-radius: 20px;
+            border-radius: 15px;
             background: @helpBtn;
-            padding: 10px 0px;
+            padding: 7px 0px;
             right: 20px;
             top: 20px;
         }
         .save {
-            width: 100px;
+            width: 80px;
             position: absolute;
-            border-radius: 20px;
+            border-radius: 15px;
             background: @hdColor;
-            padding: 10px 0px;
+            padding: 7px 0px;
             right: 20px;
             top: 20px;
         }
@@ -52,11 +53,12 @@
         color: #5E5E5E;
     }
     .details_image {
-        padding: 0 50px;
+        width: 25%;
+        // padding: 0 50px;
         .wrap_IMG {
             width: 200px;
             height: 200px;
-            border: solid 1px;
+            border: solid 1px rgb(223, 201, 201);
             border-radius: 50%;
             margin-left: 50px;
             overflow: hidden;
@@ -83,8 +85,12 @@
         .about {
             height: 43px;
             padding: 0 0 12px 30px;
+            white-space: nowrap;
         }
     }
+    // .message1_child {
+    //     border: solid 1px;
+    // }
     .editInp {
         width: 160px;
         border-radius: 10px;
@@ -113,7 +119,7 @@
         @media screen and (max-width:120px) {}
     }
     .record_active {
-        width: 300px;
+        // width: 300px;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -151,6 +157,9 @@
             resize: none;
         }
     }
+    .size19 {
+        font-size: 19px;
+    }
 </style>
 
 <template>
@@ -158,7 +167,7 @@
         <div class="customer_content flex">
             <div class="pet_message">
                 <div class="bold petMessage_title" @click="toPetMessage">Pet Details</div>
-                <div class="details_item size21 flex" v-for="(item) in petList" :key="item.id">
+                <div class="details_item size19 flex" v-for="(item) in petList" :key="item.id">
                     <div v-if="change" class="edit cursor tc" @click="edit">Edit</div>
                     <div v-else class="save cursor tc" @click="save">Save</div>
                     <div class="details_image ju">
@@ -225,7 +234,7 @@
                         </div>
                     </div>
                     <div class="details_message1 flex">
-                        <div>
+                        <div class="message1_child">
                             <div class="flex about">
                                 <div>Gender</div>
                             </div>
@@ -272,7 +281,7 @@
                             </div>
                             <div class="flex about">
                                 <div class="al">
-                                    <div class=" record_active">6666666666666666666666666666666666666666666666666666 </div>
+                                    <div class=" record_active">66666666666666666666... </div>
                                     <div class="morePetDetalis cursor" @click="record">More</div>
                                 </div>
                             </div>

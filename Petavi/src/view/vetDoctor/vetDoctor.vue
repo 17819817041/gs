@@ -1,6 +1,6 @@
 <template>
     <div class="myvetDoctor flex">
-        <div class="vetDoctorList">
+        <div class="vetDoctorList noBar">
             <div class="width102 clear">
                 <div class="vetDoctor_item float">
                     <div class="image flex">
@@ -21,12 +21,12 @@
                     </div>
                     <div class="workTime al sb">
                         <div>
-                            <div class="size14">Experience</div>
-                            <div><span class="size16">20</span> <span class="size14"> Years</span></div>
+                            <div class="size_12">Experience</div>
+                            <div><span class="size16">20</span> <span class="size_12"> Years</span></div>
                         </div>
                         <div>
-                            <div class="size14">Likes</div>
-                            <div><span class="size16">125</span><span class="size14"> (40%)</span></div>
+                            <div class="size_12">Likes</div>
+                            <div><span class="size16">125</span><span class="size_12"> (40%)</span></div>
                         </div>
                         <div class="call">
                             <el-button class="callBtn width100" type="primary">Call</el-button>
@@ -52,12 +52,12 @@
                     </div>
                     <div class="workTime al sb">
                         <div>
-                            <div class="size14">Experience</div>
-                            <div><span class="size16">20</span> <span class="size14"> Years</span></div>
+                            <div class="size_12">Experience</div>
+                            <div><span class="size16">20</span> <span class="size_12"> Years</span></div>
                         </div>
                         <div>
-                            <div class="size14">Likes</div>
-                            <div><span class="size16">125</span><span class="size14"> (40%)</span></div>
+                            <div class="size_12">Likes</div>
+                            <div><span class="size16">125</span><span class="size_12"> (40%)</span></div>
                         </div>
                         <div class="call">
                             <el-button class="callBtn width100" type="primary">Call</el-button>
@@ -83,12 +83,12 @@
                     </div>
                     <div class="workTime al sb">
                         <div>
-                            <div class="size14">Experience</div>
-                            <div><span class="size16">20</span> <span class="size14"> Years</span></div>
+                            <div class="size_12">Experience</div>
+                            <div><span class="size16">20</span> <span class="size_12"> Years</span></div>
                         </div>
                         <div>
-                            <div class="size14">Likes</div>
-                            <div><span class="size16">125</span><span class="size14"> (40%)</span></div>
+                            <div class="size_12">Likes</div>
+                            <div><span class="size16">125</span><span class="size_12"> (40%)</span></div>
                         </div>
                         <div class="call">
                             <el-button class="callBtn width100" type="primary">Call</el-button>
@@ -114,12 +114,12 @@
                     </div>
                     <div class="workTime al sb">
                         <div>
-                            <div class="size14">Experience</div>
-                            <div><span class="size16">20</span> <span class="size14"> Years</span></div>
+                            <div class="size_12">Experience</div>
+                            <div><span class="size16">20</span> <span class="size_12"> Years</span></div>
                         </div>
                         <div>
-                            <div class="size14">Likes</div>
-                            <div><span class="size16">125</span><span class="size14"> (40%)</span></div>
+                            <div class="size_12">Likes</div>
+                            <div><span class="size16">125</span><span class="size_12"> (40%)</span></div>
                         </div>
                         <div class="call">
                             <el-button class="callBtn width100" type="primary">Call</el-button>
@@ -163,12 +163,12 @@
                     </div>
                     <div class="workTime al sb">
                         <div>
-                            <div class="size14">Experience</div>
-                            <div><span class="size16">20</span> <span class="size14"> Years</span></div>
+                            <div class="size_12">Experience</div>
+                            <div><span class="size16">20</span> <span class="size_12"> Years</span></div>
                         </div>
                         <div>
-                            <div class="size14">Likes</div>
-                            <div><span class="size16">125</span><span class="size14"> (40%)</span></div>
+                            <div class="size_12">Likes</div>
+                            <div><span class="size16">125</span><span class="size_12"> (40%)</span></div>
                         </div>
                         <div class="call">
                             <el-button class="callBtn width100" type="primary">Call</el-button>
@@ -177,7 +177,7 @@
                 </div>
             </div>
         </div>
-        <div class="vetDoctorDetails">
+        <div class="vetDoctorDetails noBar">
             <div class="details_item mg">
                 <div class="head_image ju"><img src="@/assets/img/john.png" alt=""></div>
                 <div class="vetDoctor_name tc">Dr. Vinay Misra</div>
@@ -286,8 +286,13 @@ export default {
 
 <style lang="less" scoped>
 @import "@/less/css.less";
+.myvetDoctor {
+    height: 100%;
+}
     .vetDoctorList {
         width: 74%;      //医生列表
+        height: 100%;
+        overflow: auto;
         // padding: 30px;
         border: #F3F3F3 solid 1px;
         border-radius: 4px;
@@ -297,10 +302,16 @@ export default {
     }
     .vetDoctorDetails {
         width: 26%;
+        height: 100%;
+        overflow: auto;
         // border: solid 1px;
         @media screen and (max-width:1000px) {
             width: 40%;
         }
+    }
+    .size_12 {
+        font-size: 12px;
+        color: #767676;
     }
     .width102 {
         width: 102.5%;
@@ -339,17 +350,20 @@ export default {
         margin: 0 3% 5px 0;
         padding: 15px 14px;
         transition: 0.25s;
-        @media screen and (max-width:1620px) {
-            width: 46%;
-            margin: 0 3.5% 5px 0.5%;
-        }
-        @media screen and (max-width:1000px) {
-            width: 80%;
-            margin: 0 3.5% 5px 8.5%;
-        }
+        // @media screen and (max-width:1620px) {
+        //     width: 46%;
+        //     margin: 0 3.5% 5px 0.5%;
+        // }
+        // @media screen and (max-width:1000px) {
+        //     width: 80%;
+        //     margin: 0 3.5% 5px 8.5%;
+        // }
     }
     .workTime {
         margin-top: 45px;
+        @media screen and (max-width:1350px) {
+            transform: scale(0.9);
+        }
     }
     .physical {
         width: 108px;
@@ -390,7 +404,13 @@ export default {
         // border: solid rgb(100, 95, 95) 1px;
     }
     .call {
-        width: 80px;
+        width: 70px;
+    }
+    .callBtn:hover {
+        opacity: 0.8;
+    }
+    .callBtn:active {
+        opacity: 0.6;
     }
     .vetDoctor_name {
         font-size: 19px;

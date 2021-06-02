@@ -18,7 +18,7 @@
             z-index: 500;
             padding: 15px 30px 0 62px;
         }
-        .logo img {
+        .logo .logo_IMG {
             width: 110px;
             height: 123px;
             transition: 0.25s;
@@ -47,6 +47,18 @@
             width: 220px;
             height: 40px;
             margin-right: 20px;
+        }
+    }
+    .list_img {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        bottom: 30px;
+        left: 180px;
+        transition: 0.3s;
+        opacity: 0;
+        @media screen and (max-width: 1300px) {
+            opacity: 1;
         }
     }
     .input {
@@ -113,12 +125,17 @@
     .category {
         font-size: 12;
     }
+    .rotate {
+        transform: rotateZ(90deg);
+    }
 </style>
 
 <template>
     <div class="headerLogoPage">
         <div class="logo">
             <img class="logo_IMG" src="@/assets/img/logo.png" alt=""> <!-- @click="test"-->
+
+            <!-- <img :class="[ {rotate: rotate},'list_img' ]" src="@/assets/img/list.png" alt="" @click="showDetails"> -->
         </div>
         <div class="div sb al">
             <div class="search al sa" v-if="login">
@@ -147,7 +164,7 @@
                                 </div>
                             </el-image> -->
                             <div class="ju al" style="height:60px;overflow:hidden;">
-                                <img style="height:60px;" v-if="userDetails.userImage" :src="userDetails.userImage" alt="">
+                                <img style="height:100%;width:100%" v-if="userDetails.userImage" :src="userDetails.userImage" alt="">
                                 <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i>
                             </div>
                         </label>
@@ -184,6 +201,7 @@ export default {
             customerId:'Amily Watson',
             identity: true,
             userDetails: {},
+            rotate: false
         }
     },
     created () {
@@ -226,6 +244,11 @@ export default {
         // 
     },
     methods: {
+        showDetails () {
+            this.show = !this.show
+            this.rotate = !this.rotate
+            this.$store.commit("setUser", { key: "rotate", value: this.rotate } )
+        },
         getUser () {
             this.$store.dispatch("getUser")
         },
@@ -280,9 +303,9 @@ export default {
             })
         },
         notice () {
-            if (data.platform == 1) {
+            if (localStorage.getItem("platform") == 1) {
                 this.$router.push("/notice")
-            } else if (data.platform == 2) {
+            } else if (localStorage.getItem("platform") == 2) {
                 this.$router.push("/vetNotice")
             }
         },
@@ -298,12 +321,16 @@ export default {
             // localStorage.clear()
         },
         doctor () {
-            this.identity = false
-            this.$router.push("/vetDoctor")
+            if (localStorage.getItem("platform") == 2) {
+                this.identity = false
+                this.$router.push("/vetDoctor")
+            }
         },
         patient () {
-            this.identity = true
-            this.$router.push("/myCustomer")
+            if (localStorage.getItem("platform") == 2) {
+                this.identity = true
+                this.$router.push("/myCustomer")
+            }
         }
     }
 }

@@ -33,8 +33,8 @@ export default {
     data () {
         return {
             data: {
-                platform: 1,
-                email: "1257354834@qq.com"
+                platform: localStorage.getItem("platform"),
+                email: ""
             }
         }
     },

@@ -6,17 +6,17 @@
                 <div class="tc padding1 size14a">Please enter your new password</div>
                 <el-form>
                     <el-form-item>
-                        <el-input placeholder="Current Password"></el-input>
+                        <el-input placeholder="Current Password" v-model="currentPwd"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-input placeholder="New Password"></el-input>
+                        <el-input placeholder="New Password" v-model="newPwd" show-password></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-input placeholder="Confirm Password"></el-input>
+                        <el-input placeholder="Confirm Password" v-model="confirmPwd" show-password>></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button class="color-1 cursor width100" type="primary" :loading="loading" @click="submit">Submit</el-button>
-                        <div class="forgetPass size12 tc color cursor">Forgot your password? Chick here </div>
+                        <div class="forgetPass size12 tc color cursor" @click="forgetPwd">Forgot your password? Chick here </div>
                     </el-form-item>
                 </el-form>
             </div>
@@ -29,12 +29,17 @@ export default {
     data () {
         return {
             loading:false,
-            
+            currentPwd: "",
+            newPwd: "",
+            confirmPwd: ""
         }
     },
     methods: {
         submit () {
             this.loading = true
+        },
+        forgetPwd () {
+            this.$router.push("/forgetPwd")
         }
     }
 }
@@ -44,6 +49,7 @@ export default {
 @import "@/less/css.less";
     .reset {
         flex: 10;
+        height: 100%;
     }
     .reset_content {
         width: 100%;

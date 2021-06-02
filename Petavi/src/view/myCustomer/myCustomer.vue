@@ -1,7 +1,7 @@
 <template>
     <div class="myCustomer flex">
         <div class="animal">
-            <div class="wrap clear">
+            <div class="wrap noBar clear">
                 <!-- <div class="wrap_item ju float cursor"  @click="toPatients">
                     <div><img class="personal_img" src="@/assets/img/customerHead.png" alt=""></div>
                     <div class="name tc">
@@ -12,7 +12,7 @@
                         </div>
                     </div>
                 </div> -->
-                <div class="wrap_item ju float" v-for="(item,i) in List" :key="item.id"   @click="toPatients(i)">
+                <div class="wrap_item ju float" v-for="(item,i) in List" :key="item.id"   @click="toPatients(item,i)">
                     <!--  <div><img class="personal_img" src="@/assets/img/female.png" alt=""></div> -->
 
                     <div class="ju al Personal">
@@ -22,11 +22,11 @@
 
 
                     <div class="name tc">
-                        <div class="size25" v-if="item.name">{{item.name}}</div>
-                        <div class="size25" v-else>No Name</div>
+                        <div class="size20" v-if="item.name">{{item.name}}</div>
+                        <div class="size20" v-else>No Name</div>
                         <div class="address flex">
                             <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
-                            <div class="size17">Chai Wan, Hong Kong</div>
+                            <div class="size_14">Chai Wan, Hong Kong</div>
                         </div>
                     </div>
                 </div>
@@ -41,21 +41,25 @@
             </div>
             <div @click="leave">离开</div> -->
         </div>
-        <div class="personWithAnimal">
+        <div class="personWithAnimal noBar">
             <div class="information_wrap">
                 <div class="petDetails">
                     <div class="petDetails_item">
                         <div class="Title sb">
                             <div class="size19">Pet Details</div>
                         </div>
-                        <div class="ju"><img class="Img" src="@/assets/img/petimg.png" alt=""></div>
+                        <div class="ju mg al PET_IMG">
+                            <img class="Img" :src="changePage.image" alt="" v-if="changePage.image">
+                            <i class=" el-icon-picture-outline Icon" style="font-size:60px;color:gray;" v-else></i>
+                        </div>
                         <div class="pet_information">
-                            <div class="pet_name size19">Gigi</div>
-                            <div class="size15bl">Pet ID : 000000</div>
-                            <div class="size15bl">Age : 1 yrs</div>
-                            <div class="size15bl">Sex : F</div>
+                            <div class="pet_name size19" v-if="changePage.name">{{changePage.name}}</div>
+                            <div class="pet_name size19" v-else>None</div>
+                            <div class="size15bl">Pet ID : {{changePage.id}}</div>
+                            <div class="size15bl">Age : {{changePage.age}}</div>
+                            <div class="size15bl">Sex : {{changePage.gender}}</div>
                             <div class="size15bl">neutered status : None</div>
-                            <div class="size15bl">Weight : 20kg</div>
+                            <div class="size15bl">Weight : {{changePage.weight}}kg</div>
                         </div>
                         <div class="petMore te cursor"><span>More...</span></div>
                     </div>
@@ -69,8 +73,8 @@
                         <div class="size13">Chai Wan, Hong Kong</div>
                     </div>
                     <div class="ju">
-                        <div><img class="relationWay" src="@/assets/img/chat.png" alt=""></div>
-                        <div><img class="relationWay" src="@/assets/img/phone.png" alt=""></div>
+                        <div><img class="relationWay cursor" src="@/assets/img/chat.png" alt=""></div>
+                        <div><img class="relationWay cursor" src="@/assets/img/phone.png" alt=""></div>
                     </div>
                     <div class="message_list size15bl">
                         <div style="width:100%" class="flex al ts">
@@ -120,6 +124,7 @@ export default {
             List: {},
             pageNum: 0,
             pageSize: 100,
+            changePage: {}
         }
     },
     mounted () {
@@ -154,10 +159,12 @@ export default {
         }
     },
     methods: {
-        toPatients (i) {
-            if (i == 1) {
+        toPatients (item,i) {
+            if (i == 0) {
                 this.$router.push("/patients")
             }
+            this.changePage = item
+            console.log(this.changePage)
         },
 
 
@@ -249,6 +256,7 @@ export default {
             width: 102.5%;
             padding: 1.8% 1.3% 1.8% 1.8%;
             height: 100%;
+            overflow: auto;
         }
     }
     .personal_name {
@@ -260,14 +268,14 @@ export default {
         box-shadow: 0 2px 1px 1px #D5D5D5;
         margin: 0 3% 10px 0%;
         transition: 0.2s;
-        @media screen and (max-width:1620px) {
-            width: 46%;
-            margin: 0 3.5% 5px 0.5%;
-        }
-        @media screen and (max-width:1000px) {
-            width: 80%;
-            margin: 0 3.5% 5px 8.5%;
-        }
+        // @media screen and (max-width:1620px) {
+        //     width: 46%;
+        //     margin: 0 3.5% 5px 0.5%;
+        // }
+        // @media screen and (max-width:1000px) {
+        //     width: 80%;
+        //     margin: 0 3.5% 5px 8.5%;
+        // }
     }
     .Personal {
         width: 60px;
@@ -283,6 +291,8 @@ export default {
         
     }
     .personWithAnimal {
+        height: 100%;
+        overflow: auto;
         width: 26%;
         .information_wrap {
             width: 90%;
@@ -295,14 +305,14 @@ export default {
         height: 21px;
         padding-right: 8px;
     }
-    .size25 {
+    .size20 {
         color: black;
         font-size: 25px;
     }
     .size19 {
         font-size: 19px;
     }
-    .size17 {
+    .size_14 {
         color: #9F9F9F;
         font-size: 17px;
     }
@@ -375,5 +385,11 @@ export default {
     .Icon {
         font-size:35px;
         color:gray;
+    }
+    .PET_IMG {
+        width: 150px;
+        height: 150px;
+        border: solid 1px rgb(218, 210, 210);
+        border-radius: 50%;
     }
 </style>

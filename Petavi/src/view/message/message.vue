@@ -6,9 +6,9 @@
         .present_message {
             width: 202px;
             transition: 0.25s;
-            @media screen and (max-width:1200px) {
+            @media screen and (max-width:1300px) {
                 max-width: 0px;
-                max-height: 0px;
+                // max-height: 0px;
                 overflow: hidden;
             }
         }
@@ -51,11 +51,15 @@
         max-height: 200px !important;
     }
     .pet_img {
-        padding-top: 10px;
+        // padding-top: 10px;
         width: 100px;
         height: 100px;
-        border: solid 1px;
+        border: solid 1px rgb(230, 223, 223);
         border-radius: 50%;
+        img {
+            width: 100%;
+            height: 100%;
+        }
     }
     .pet_name {
         padding: 10px 0;
@@ -91,12 +95,16 @@
     .rotate {
         transform: rotateZ(180deg);
     }
+    .Icon {
+        font-size:50px;
+        color:gray;
+    }
 </style>
 
 <template>
     <div class="customerPage">
         <div class="customer_content flex">
-            <div class="present_message">
+            <div :class="['present_message', {maxHeight: true}]">
                 <div class="present_item">
                     <div class="arrow">
                         <div class="myPet">
@@ -107,8 +115,9 @@
                         </div>
                     </div>
                     
-                    <div class="pet_img mg ju">
-                        <img :src="pet.image" alt="" @click="petDetails">
+                    <div class="pet_img mg ju al">
+                        <img :src="pet.image" alt="" v-if="pet.image" @click="petDetails">
+                        <i class="el-icon-picture-outline Icon" v-else></i>
                     </div>
                     <div class="pet_name size21 tc">{{pet.name}}</div>
                     <div class="details size12 tc">

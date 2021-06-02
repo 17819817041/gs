@@ -100,41 +100,6 @@
                             <img src="@/assets/img/video1.png" alt="">
                             Video Consultation
                         </div>
-                        <div class="phone_btn ju al cursor">
-                            <img src="@/assets/img/callimg1.png" alt="">
-                            Phone Consultation
-                        </div>
-                        <div class="chat_btn ju al cursor">
-                            <img src="@/assets/img/chat1.png" alt="">
-                            Chat
-                        </div>
-                    </div>
-                </div>
-                <div class="myAppointment_item_message mg al">
-                    <div class="head_image ju al">
-                        <img src="@/assets/img/female.png" alt="">
-                    </div>
-                    <div class="message_wrap">
-                        <div class="nameAndWay">
-                            <div class="doctor_name size23">Dr. Sherley Billman</div>
-                            <div class="telOrVideo size20">Phone Counsultation</div>
-                        </div>
-                        <div class="flex dateAndPet">
-                            <div class="dateAndPet_date">
-                                <div class="size20">Date and Time</div>
-                                <div class="size23">Today - 9:30 AM</div>
-                            </div>
-                            <div class="dateAndPet_pet">
-                                <div class="size20">Pet Name</div>
-                                <div class="size23">Daisy</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="Way">
-                        <div class="phone_btn ju al cursor">
-                            <img src="@/assets/img/callimg1.png" alt="">
-                            Phone Consultation
-                        </div>
                         <div class="chat_btn ju al cursor">
                             <img src="@/assets/img/chat1.png" alt="">
                             Chat

@@ -17,12 +17,12 @@
         height: 374px;
     }
     .administrator {
-        width: 138px;
+        width: 167px;
         color: #212121;
         font-size: 12px;
         white-space: nowrap;
         .administrator_item {
-            padding: 10px 0 12px 7px;
+            padding: 10px 0 12px 5px;
         }
         .administrator_item div img {
             width: 28px;

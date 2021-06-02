@@ -82,7 +82,7 @@
                     <el-input placeholder="Password" show-password v-model="data.password"></el-input>
                 </el-form-item>
                 <el-form-item prop="confirm">
-                    <el-input placeholder="Confirm Password" show-password v-model="surePwd"></el-input>
+                    <el-input placeholder="Confirm Password" show-password v-model="confirmPwd"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <div class="vet_sign cursor">
@@ -119,8 +119,8 @@ export default {
                 phone: "",
                 name: ""
             },
-            // surePwd: '123456l',
-            surePwd: '',
+            // confirmPwd: '123456l',
+            confirmPwd: '',
             rules: {
                 platform: [
                     { required: true, message: "Please select your identity", trigger: 'blur' }
@@ -139,6 +139,9 @@ export default {
                 ],
                 name: [
                     { required: true, message:'Please enter your name', trigger:'blur' }
+                ],
+                confirmPwd: [
+                    { required: true, message:'Please confirm your password', trigger:'blur' }
                 ],
             }
         }
@@ -170,7 +173,7 @@ export default {
             }
         },
         finishSignUp () {
-            if (this.surePwd === this.data.password) {
+            if (this.confirmPwd === this.data.password) {
                 this.Vloading = true
                 let that = this
                 this.$refs.form.validate(flag => {
@@ -202,7 +205,7 @@ export default {
                     }
                 })
             } else {
-                this.surePwd = ""
+                this.confirmPwd = ""
                 this.$message({
                     type: "error",
                     message: "Please make sure the passwords are the same!"

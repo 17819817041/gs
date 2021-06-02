@@ -2,7 +2,6 @@
 @import "@/less/css.less";
 .agora {
     height: 100%;
-    border: red solid 3px;
 }
     .logo_wrap {
         position: relative;
@@ -15,13 +14,14 @@
         top: 15px;
         width: 110px;
         height: 123px;
+        z-index: 500;
+        background: white;
     }
     .showVideo {
         background: @content;
         flex: 8;
         position: relative;
-        border: solid blue 1px;
-        height: calc(100% - 1);
+        // height: 100%;
         .video_child {
             position: absolute;
             width: 123px;
@@ -53,18 +53,22 @@
     .doctorMessage {
         // flex: 2;
         width: 23%;
-        height: calc(100% - 1);
-        border: solid 1px green;
+        height: 100%;
+        overflow: auto;
+
     }
     .about_me {
         padding: 40px 0 28px 0;
+        // @media screen and (max-width: 1300px) {
+        //     transform: scale(0.9,0.6);
+        // }
     }
     .myName {
-        width: 30%;
+        width: 35%;
         padding: 0 5px;
     }
     .myOperation{
-        width: 65%;
+        width: 60%;
         height: 50px;
         padding: 0 10px;
     }
@@ -114,20 +118,25 @@
         border-radius: 50%;
         overflow: hidden;
         background: white;
+        @media screen and (max-width: 1300px) {
+            width: 50px;
+            height: 50px;
+        }
     }
     .userHead {
+        width: 60px;
         height: 60px;
     }
     .docHead_img {
-        width: 100px;
-        height: 100px;
-        border: solid 1px;
+        width: 70px;
+        height: 70px;
+        border: solid 1px rgb(199, 192, 192);
         border-radius: 50%;
         overflow: hidden;
     }
     .docHead {
         // width: 100%;
-        height: 100px;
+        height: 100%;
     }
 
     .atPresentDoctor {
@@ -137,11 +146,11 @@
         padding: 10px 20px 20px 20px;
     }
     .get_day {
-        width: 270px;
+        width: 100%;
     }
     .time {
         background: #F3F3F3;
-        width: 80px;
+        width: 30%;
         padding: 5px 10px;
         border-radius: 15px;
         .min_arrow {
@@ -166,14 +175,7 @@
         padding: 10px 10px;
         .save {
             background: @hdColor;
-            width: 100px;
-            border-radius: 20px;
-            padding: 7px 10px;
-            color: white;
-        }
-        .submit {
-            background: @helpBtn;
-            width: 100px;
+            width: 30%;
             border-radius: 20px;
             padding: 7px 10px;
             color: white;
@@ -182,33 +184,38 @@
             padding-left: 15px;
         }
     }
+    .submit {
+        background: @helpBtn;
+        width: 100px;
+        border-radius: 20px;
+        padding: 7px 10px;
+        color: white;
+    }
     .MESSAGE {
-        width: 180px;
-        border: solid red 1px;
-        height: calc(100% );
+        width: 185px;
+        height: calc(100% );    
     }
     .cus_message {
-        height: 100%;
-        overflow: hidden;
+        height: calc(100% - 123px);
+        overflow: auto;
         width: 100%;
-        border: solid 1px gray;
     }
 </style>
 
 <template>
     <div class="agora">
-        <div class="flex">
+        <div class="flex" style="height:100%">
             <div class="MESSAGE">
                 <div class="logo_wrap">
                     <img class="LOGO" src="@/assets/img/logo.png" alt="">
                 </div>
-                <div v-if="platform == 1"  class="cus_message">
+                <div v-if="platform == 1"  class="cus_message noBar">
                     <message></message>
                     <!-- <div class="cus_message">
                         123
                     </div> -->
                 </div>
-                <div v-else-if="platform == 2">
+                <div v-else-if="platform == 2"  class="cus_message noBar">
                     <vetMessage></vetMessage>
                 </div>
             </div>
@@ -225,18 +232,21 @@
             </div>
 
 
-            <div class="doctorMessage">
+            <div class="doctorMessage noBar">
                 <div class="about_me sb">
                     <div class="myName sb al">
-                        <div class="userHead_img ju al">
-                            <el-image class="userHead ju al" :src="userDetailMessage.userImage" alt="" fit="cover">
-                                <div slot="error" class="image-slot al" style="height: 100%;width:100%">
-                                    <i class="el-icon-picture-outline" style="font-size:30px;color:gray"></i>
-                                </div>
-                            </el-image>
+                        <div>
+                            <div class="userHead_img ju al">
+                                <el-image class="userHead ju al" :src="userDetailMessage.userImage" alt="" fit="cover">
+                                    <div slot="error" class="image-slot al ju" style="height: 100%;width:100%">
+                                        <i class=" el-icon-picture-outline" style="font-size:30px;color:gray;"></i>
+                                    </div>
+                                </el-image>
+                            </div>
+                            <div class="tc" v-if="userDetailMessage.userName">{{userDetailMessage.userName}}</div>
+                            <div v-else class="tc" style="font-size:12px">No Name</div>
                         </div>
-                        <div>{{userDetailMessage.userName}}</div>
-                        <div><img src="@/assets/img/information.png" alt=""></div>
+                        <div><img style="width:17px;height:22px" src="@/assets/img/information.png" alt=""></div>
                     </div>
                     <div class="myOperation sb al">
                         <div class="outLogo size12 bold cursor al ju">Logout</div>
@@ -264,10 +274,10 @@
                         </div>
                     </div>
                     <div class="chat_user mg">
-                        <img style="width:100%;height:100%" src="@/assets/img/chatPage.png" alt="">
+                        <!-- <img style="width:100%;height:100%" src="@/assets/img/chatPage.png" alt=""> -->
                     </div>
                 </div>
-                <div v-else-if="platform == 2">
+                <div v-else-if="platform == 2" >
                     <div class="atPresentDoctor mg">
                         <div>Medical Record</div>
                         <div style="padding:13px 0">Date</div>

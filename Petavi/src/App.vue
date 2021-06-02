@@ -18,8 +18,9 @@
 					</div>
 					<div class="wrap_btn sa">
 						<div class="btn al ju cursor" @click="cancel">Cancel</div>
-						<div class="btn al ju cursor" @click="sure">Sure</div>
-						
+						<transition name="fade">
+							<div class="btn al ju cursor" v-show="sureCall" @click="sure">Dial</div>
+						</transition>
 					</div>
 				</div>
 			</div>
@@ -33,7 +34,7 @@
 					</div>
 					<div class="wrap_btn sa">
 						<div class="btn al ju cursor" @click="cancel2">Cancel</div>
-						<div class="btn al ju cursor" @click="sure2">Sure</div>
+						<div class="btn al ju cursor" @click="sure2">Dial</div>
 					</div>
 				</div>
 			</div>
@@ -47,7 +48,8 @@ export default {
 	data () {
 		return {
 			img: "",
-			loading: false
+			loading: false,
+			// sureCall: true
 		}
 	},
 	created () {
@@ -87,10 +89,12 @@ export default {
         },
 		callTo () { return this.$store.state.user.callTo },
 		IMuser () { return this.$store.state.user.IMuser },
-		mask () {return this.$store.state.user.mask}
+		mask () {return this.$store.state.user.mask},
+		sureCall () { return this.$store.state.user.sureCall }
     },
 	methods: {
 		sure () {
+			this.sureCall = false
 			// this.$router.push("/agora")
 			console.log(this.callTo)
 			console.log(this.callTo.doctorId + '_2')
@@ -106,6 +110,7 @@ export default {
 
 		},
 		cancel () {
+			this.sureCall = true
 			this.callModal = false
 			this.$rtcCall.endCall()
 		},
@@ -126,7 +131,7 @@ export default {
 		padding: 0;
 		margin: 0;
 		height: 100%;
-		
+
 	}
 	#app {
 		height: 100%;
@@ -134,20 +139,52 @@ export default {
 	div {
 		box-sizing: border-box;
 	}
-	.el-input .el-input__inner {
+	.vet_form .el-input .el-input__inner {
 		border: none !important;
+		padding-right: 0 !important;
 	}
-	.el-input .el-input__inner::placeholder {
-		text-align: center;
+	.vet_form .el-input .el-input__inner::placeholder {
+		text-align: center !important;
 	}
-	.el-select .el-input__inner {
-		border: solid #787878 1px;
-		border-radius: 4px;
-		background: white;
-		box-shadow: 0 0 1px 1px #959595;
+	
+	.FormL .el-input .el-input__inner {
+		border: none !important;
+		padding-right: 0 !important;
 	}
+	.FormL .el-input .el-input__inner::placeholder {
+		text-align: center !important;
+	}
+
+    .el-select .el-input .el-select__caret::before {
+		content: "";
+		background: url('~@/assets/img/arrowUp.png') center center no-repeat;
+		position: absolute;
+		width: 16px;
+		height: 12px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		overflow: hidden !important;
+	}
+
+	.form_select .el-select .el-input__inner {
+		border: solid #787878 1px !important;
+		border-radius: 4px !important;
+		background: white !important;
+		box-shadow: 0 0 1px 1px #959595 !important;
+		outline: none !important;
+	}
+
+	.typeFlex .el-form-item__content {
+		display: flex;
+		justify-content: space-between;
+		line-height: 20px;
+	}
+	
+
 	.el-select {
 		width: 100% !important;
+		
 	}
 	.el-form-item__label {
 		padding: 15px 0 !important;

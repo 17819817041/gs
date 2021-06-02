@@ -119,6 +119,8 @@ var rtcCall = new webrtc.Call({
             store.commit("setUser",{ key: 'callModal2', value: false })
             let endTime = Date.now()
             localStorage.setItem('endTime',endTime)
+            store.commit("setUser",{ key: 'sureCall', value: true })
+            // router.replace() 
             // router.back()
         },
         onIceConnectionStateChange: function (iceState) {

@@ -221,7 +221,7 @@
     }
     .circle {
         border-radius: 50%;
-        border:solid 1px;
+        border:solid 1px rgb(221, 214, 214);
         height:100%;
         overflow:hidden;
     }
@@ -256,7 +256,7 @@
                                         </div>
                                     </el-image> -->
                                     <div class="ju al circle">
-                                        <img style="height:100%;" v-if="user.userImage" :src="user.userImage" alt="">
+                                        <img style="height:100%;" v-if="user.userImage" :src="user.userImage" alt="" mode="widthFix">
                                         <i class="el-icon-picture-outline Icon" v-else></i>
                                     </div>
                                 </label>
@@ -276,11 +276,11 @@
                                         <div>{{user.userId}}</div>
                                         <div v-if="editBtn">{{user.userName}}</div>
                                         <div v-else class="inp al"><input type="text" v-model="user.userName"></div>
-                                        <div v-if="editBtn">{{user.age}} <span style="color:white">-</span> </div>    <!-- null -->
+                                        <div v-if="editBtn"><span v-if="user.age">{{user.age}}</span><span v-else>No Age</span> </div>    <!-- null -->
                                         <div v-else class="inp al"><input type="text" v-model="user.age"></div>
-                                        <div v-if="editBtn">{{user.userAddress}}</div>
+                                        <div v-if="editBtn"><span v-if="user.userAddress">{{user.userAddress}}</span><span v-else>No Location</span> </div>
                                         <div v-else class="inp al"><input type="text" v-model="user.userAddress"></div>
-                                        <div v-if="editBtn">{{user.userPhone}}</div>
+                                        <div v-if="editBtn"><span v-if="user.userPhone">{{user.userPhone}}</span><span v-else>None</span></div>
                                         <div v-else class="inp al"><input type="text" v-model="user.userPhone"></div>
                                     </div>
                                 </div>   
@@ -484,6 +484,16 @@ export default {
         edit () {
             this.editBtn = false
         },
+
+
+
+
+
+
+
+
+
+        
         
         submit () {
             this.stripe.createToken(this.cardNumber,{}).then(res => {

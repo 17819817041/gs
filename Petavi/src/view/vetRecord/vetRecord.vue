@@ -117,10 +117,13 @@
                                                 <div>666</div>
                                             </div>
                                             <div class="about">
-                                                <div>Pet ID</div>
+                                                <div>kicou</div>
                                             </div>
                                             <div class="about">
-                                                <div>Pet ID</div>
+                                                <div>2</div>
+                                            </div>
+                                            <div class="about">
+                                                <div>1</div>
                                             </div>
                                         </div>
                                     </div>
@@ -141,16 +144,16 @@
                                         </div>
                                         <div class="children size22">
                                             <div class="about">
-                                                <div>Gender</div>
+                                                <div>M</div>
                                             </div>
                                             <div class="about">
-                                                <div>Neutered status</div>
+                                                <div>-</div>
                                             </div>
                                             <div class="about">
-                                                <div>Weight</div>
+                                                <div>13.5kg</div>
                                             </div>
                                             <div class="about">
-                                                <div>Remarks</div>
+                                                <div>None</div>
                                             </div>
                                         </div>
                                     </div>
