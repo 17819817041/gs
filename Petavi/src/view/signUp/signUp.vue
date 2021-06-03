@@ -7,9 +7,7 @@
         margin-bottom: 10px;
     }
     .headPortrait {
-        .headPortrait_form {
-            width: 700px;
-        }
+        border: solid 1px;
     }
     .vet_text, .pet_text {
         color: #A1A1A1;
@@ -20,8 +18,23 @@
         margin: 10px 50px;
         padding: 5px;
         overflow: hidden;
+        transition: 0.2s;
         img {
+            width: 100%;
             height: 100%;
+        }
+        @media screen and (max-width: 850px) {
+            width: 105px;
+            height: 105px;
+        }
+        @media screen and (max-width: 564px) {
+            width: 85px;
+            height: 85px;
+        }
+    }
+    .vet_child, .pet_child {
+        @media screen and (max-width:564px) {
+            width: 170px !important;
         }
     }
     .opacity {
@@ -36,6 +49,10 @@
         @media screen and (max-width:564px) {
             width: @phoneMedia;
             margin: auto;
+        }
+        transition: 0.2s;
+        @media screen and (max-width: 700px) {
+            width: 90%;
         }
     }
     .vet_sign {
@@ -58,7 +75,7 @@
             <el-form ref="form" :model="data" :rules="rules">
                 <el-form-item prop="platform">
                     <el-radio label="2" v-model="data.platform">
-                        <div class="vet">
+                        <div class="vet_child" style="transition:0.2s">
                             <div class="vet_head">
                                 <img @click="vetIdentity" :class="[ 'opacity', {'opacity1':data.platform == 2}]" src="@/assets/img/vet.png" alt="">
                             </div>
@@ -66,7 +83,7 @@
                         </div>
                     </el-radio>
                     <el-radio label="1" v-model="data.platform">
-                        <div class="pet">
+                        <div class="pet_child">
                             <div class="pet_head">
                                 <img @click="petIdentity" :class="[ 'opacity', {'opacity1':data.platform == 1}]" src="@/assets/img/pet.png" alt="">
                             </div>

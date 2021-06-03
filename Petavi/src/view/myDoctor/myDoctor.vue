@@ -1,7 +1,7 @@
 <template>
     <div class="myDoctor flex">
         <div class="doctorList noBar">
-            <div class="width102 clear">
+            <div class="width102 clear" v-if="!loading">
                 <div class="doctor_item float" v-for="(item) in doctorList" :key="item.doctorId" @click="getDetail(item)">
                     <div class="image flex">
                         <div class="doctor_head">
@@ -40,8 +40,8 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+            <div v-else class="loading" v-loading="loading"></div>
         </div>
         <div class="doctorDetails noBar">
             <div class="details_item mg">
@@ -136,7 +136,8 @@ export default {
             change:true,
             rate:null,
             doctorList: [],
-            detail: {}
+            detail: {},
+            loading: true
         }
     },
     created () {
@@ -175,8 +176,20 @@ export default {
                 pageSize: 10
             }
             doctorList(doctor).then(res => {
-                console.log(res,"医生列表")
-                this.doctorList = res.data.data.pageT
+                if (res.data.rtnCode == 200) {
+                    console.log(res,"医生列表")
+                    this.doctorList = res.data.data.pageT
+                    this.loading = false
+                } else {
+                    this.doctorList = []
+                    this.loading = false
+                    this.$message.error('Fail to load !');
+                }
+            }).catch(e => {
+                console.log(e)
+                this.doctorList = []
+                this.loading = false
+                this.$message.error('Fail to load !');
             })
         },
         edit () {
@@ -422,5 +435,9 @@ video {
     }
     .Rate {
         transform: scale(1.3);
+    }
+    .loading {
+        width: 100%;
+        height: 45%;
     }
 </style>

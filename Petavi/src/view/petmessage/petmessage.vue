@@ -123,6 +123,7 @@
 </template>
 
 <script>
+import { addPet } from '@/axios/request.js'
 export default {
     data () {
         return {
@@ -140,13 +141,26 @@ export default {
             years:'',
             yearsList:[],
             sex:'',
-            sexList:[ "M", "F" ]
+            sexList:[ "M", "F" ],
+            addPetMessage: {
+                id: localStorage.getItem("userId"),
+                name: "dog",
+                image: null,
+                petType: 1,
+                birth: "2020-02-05",
+                weightL: "33.5kg"
+            },
         }
     },
     created () {
         this.getDay()
     },
     methods: {
+        addPet () {                                                                              //添加宠物
+            addPet(this.addPetMessage).then(res => {
+                console.log(res,"添加宠物信息")
+            })  
+        },
         getDay () {
             let month = new Date().getMonth() + 1      //获取月份
             let Day = new Date(2021,month,0).getDate()//  获取每月天数

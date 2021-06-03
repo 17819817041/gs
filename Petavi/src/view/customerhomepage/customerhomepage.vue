@@ -78,7 +78,7 @@
         <div><myHeaderL></myHeaderL></div>
         <div class="customer_content flex">
             <div class="list">
-                <img @click="showPetList" v-show="active" :class="[ {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
+                <img @click="showPetList" v-show="active" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
                 <div :class="['pet_list noBar', {height:show}]">
                     <div class="list_item mg cursor" v-for="(item,i) in petList" :key="i">{{item.name}}</div>
                 </div>
@@ -141,8 +141,7 @@ export default {
         scroll (val) {
             clearTimeout(this.timer)
             this.timer = setTimeout(() => {
-                console.log(val)
-                if (val.target.scrollTop >= 40) {
+                if (val.target.scrollTop >= 30) {
                    this.active = false
                 } else {
                     this.active = true

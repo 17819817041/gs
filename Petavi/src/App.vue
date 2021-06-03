@@ -143,13 +143,6 @@ export default {
 		outline: none !important;
 		border: none !important;
 	}
-	.vet_form .el-input .el-input__inner {
-		border: none !important;
-		padding-right: 0 !important;
-	}
-	.vet_form .el-input .el-input__inner::placeholder {
-		text-align: center !important;
-	}
 	
 	.FormL .el-input .el-input__inner {
 		border: none !important;
@@ -205,8 +198,22 @@ export default {
 	.el-rate__icon {
 		margin-right: 0 !important;
 	}
+
+
+	.vet_form .el-input .el-input__inner {
+		border: none !important;
+		padding-right: 0 !important;
+	}
+	.vet_form .el-input .el-input__inner::placeholder {
+		text-align: center !important;
+	}
 	.vet_form .el-radio__input{
 		display: none !important;
+	}
+	.vet_form .el-radio {
+		@media screen and (max-width:564px) {
+			margin-right: 0 !important;
+		}
 	}
 	// .docHead_img .docHead .image-slot .el-icon-picture-outline {
 	// 	display: flex;
@@ -293,6 +300,7 @@ export default {
 	}
 	.cursor {
 		cursor: pointer;
+		user-select: none;
 	}
 	.cursor:hover {
 		opacity: 0.8;

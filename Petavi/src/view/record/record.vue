@@ -2,6 +2,7 @@
     @import "@/less/css.less";
     .record {
         // width: 100%;
+        height: 100%;
         flex: 10;
     }
     .recordContent {
@@ -17,9 +18,13 @@
     }
     .record_message {
         .record_item {
+            margin-bottom: 15px;
             width: 98%;
             background: white;
             border-radius: 10px;
+        }
+        .about {
+            padding: 0 0 7px 30px;
         }
     }
     .petMessage_title {
@@ -27,12 +32,6 @@
     }
     .record_wrap {
         padding: 25px 0;
-    }
-    .record_message {
-        // padding: 20px;
-        .about {
-            padding: 0 0 7px 30px;
-        }
     }
     .noPadding {
         padding: 0 0 4px 30px !important;

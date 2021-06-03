@@ -27,8 +27,14 @@ export default {
         getPetList (store,data) {
             petList(data).then(res => {
                 if (res.data.rtnCode == 200) {
+                    res.data.data.pageT.forEach(item => {
+                        item.change = true
+                        let date = item.age.split('yrs')
+                        item.yrs = date.join(',').split('mo').join('').split(',')[0]
+                        item.mo = date.join(',').split('mo').join('').split(',')[1]
+                    })
                     console.log(res,"宠物列表")
-                   store.commit("setUser",{ key: "petList", value: res.data.data.pageT }) 
+                    store.commit("setUser",{ key: "petList", value: res.data.data.pageT }) 
                 } else {
                     store.commit("setUser",{ key: "petList", value: [] }) 
                 }

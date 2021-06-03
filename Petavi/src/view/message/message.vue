@@ -73,8 +73,8 @@
         height: 100px;
         border: solid 1px rgb(230, 223, 223);
         border-radius: 50%;
+        overflow: hidden;
         img {
-            width: 100%;
             height: 100%;
         }
     }
@@ -86,7 +86,7 @@
         margin-top: 20px;
     }
     .administrator {
-        margin-top: 60px;
+        margin-top: 30%;
         width: 130px;
         color: #212121;
         font-size: 12px;
@@ -108,7 +108,7 @@
     }
     .physical {
         width: 108px;
-        margin-top: 50px;
+        margin-top: 60%;
     }
     .rotate {
         transform: rotateZ(180deg);
@@ -133,7 +133,7 @@
                         </div>
                     </div>
                     
-                    <div class="pet_img mg ju al">
+                    <div class="pet_img mg ju al cursor">
                         <img :src="pet.image" alt="" v-if="pet.image" @click="petDetails">
                         <i class="el-icon-picture-outline Icon" v-else></i>
                     </div>
@@ -195,7 +195,9 @@ export default {
             show: false,
             change:true,
             rotate: false,
-            pet: {}
+            pet: {},
+            pageNum: 1,
+            pageSize: 100
         }
     },
     created () {
