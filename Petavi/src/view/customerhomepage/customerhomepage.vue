@@ -2,6 +2,14 @@
 @import "@/less/css.less";
     .customerhomepage {
         height: 100%;
+        .list_wrap {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 600;
+        }
     }
     .present_message {
         background: white;
@@ -19,10 +27,21 @@
             left: 165px;
             z-index: 1000;
         }
-        
     }
-    .list img {
+    .list {
+        @media screen and (max-width:1300px) {
+            left: 130px !important;
+            top: 80px !important;
+        }
+    }
+    .list .img1 {
         transition: 0.3s;
+    }
+    .img2 {
+        transition: 0.3S;
+        @media screen and (max-width: 1300px) {
+            opacity: 0;
+        }
     }
     .pet_list {
         background: white;
@@ -66,10 +85,8 @@
     .rotate {
         transform: rotateZ(180deg);
     }
-    .list {
-        @media screen and (max-width:1300px) {
-            display: none;
-        }
+    .rotate1 {
+        transform: rotateZ(-180deg);
     }
 </style>
 
@@ -77,21 +94,20 @@
     <div class="customerhomepage">
         <div><myHeaderL></myHeaderL></div>
         <div class="customer_content flex">
-            <div class="list">
-                <img @click="showPetList" v-show="active" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
+        <div class="list_wrap" v-if="show" @click="showPetList"></div>
+            <div class="list" v-show="nameList">
+                <img class="img1" @click="showPetList" v-show="!showList" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
+                <img class="img2" @click="showPetList" :class="[ 'cursor', {rotate1: rotate} ]" src="@/assets/img/arrow.png" alt="">
                 <div :class="['pet_list noBar', {height:show}]">
                     <div class="list_item mg cursor" v-for="(item,i) in petList" :key="i">{{item.name}}</div>
                 </div>
             </div>
             <div class="present_message noBar" @scroll="scroll">
-                
                 <message></message>
-
             </div>
             <div class="pet_message noBar">
                 <router-view></router-view>
             </div>
-            
         </div>
     </div>
 </template>
@@ -102,9 +118,8 @@ export default {
     data () {
         return {
             show: false,
+            Hide: true,
             rotate: false,
-            active: true,
-            timer: null,
             pageNum: 0,
             pageSize: 100,
         }
@@ -135,16 +150,18 @@ export default {
                 })
             },
         },
-        
+        active () { return this.$store.state.user.rotate },
+        showList () { return this.$store.state.user.showList },
+        nameList () { return this.$store.state.user.nameList }
     },
     methods: {
         scroll (val) {
             clearTimeout(this.timer)
             this.timer = setTimeout(() => {
                 if (val.target.scrollTop >= 30) {
-                   this.active = false
+                    this.$store.commit("setUser", { key: "nameList",value: false })
                 } else {
-                    this.active = true
+                    this.$store.commit("setUser", { key: "nameList",value: true })
                 }   
             },10)
         },

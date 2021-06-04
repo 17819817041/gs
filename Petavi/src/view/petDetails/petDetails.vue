@@ -70,6 +70,17 @@
     }
     .details_message {
         width: 30%;
+        position: relative;
+        .delete {
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            padding: 5px 10px;
+            color: white;
+            background: @denger;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
         .about {
             height: 36px;
             padding: 0 0 7px 30px;
@@ -158,6 +169,7 @@
     .size19 {
         font-size: 19px;
     }
+    
 </style>
 
 <template>
@@ -179,22 +191,28 @@
 
                     </div>
                     <div class="details_message flex">
+                        <div class="delete cursor size15" v-if="!item.change" @click="Delete(item)">
+                            Delete information
+                        </div>
                         <div>
-                            <div class="flex about al">
-                                <div>Pet ID</div>
+                            <div>
+                                <div class="flex about al">
+                                    <div>Pet ID</div>
+                                </div>
+                                <div class="flex about al">
+                                    <div>Name</div>
+                                </div>
+                                <div class="flex about al">
+                                    <div>Age</div>
+                                </div>
+                                <div class="flex about al">
+                                    <div>Pet Type</div>
+                                </div>
+                                <div class="flex about al">
+                                    <div>Breed</div>
+                                </div>
                             </div>
-                            <div class="flex about al">
-                                <div>Name</div>
-                            </div>
-                            <div class="flex about al">
-                                <div>Age</div>
-                            </div>
-                            <div class="flex about al">
-                                <div>Pet Type</div>
-                            </div>
-                            <div class="flex about al">
-                                <div>Breed</div>
-                            </div>
+                            
                         </div>
                         <div>
                             <div class="flex about">
@@ -298,7 +316,7 @@
 </template>
 
 <script>
-import { file, petDetails, updatePet } from "@/axios/request.js"
+import { file, petDetails, updatePet, deletePet } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -332,9 +350,40 @@ export default {
         //         }
         //     })
         // },
+        Delete (item) {
+            let data = {
+                petId: item.id
+            }
+            deletePet(data).then(res => {
+                if (res.data.rtnCode == 200) {
+                    this.$confirm('Delete current information?', 'Attention', {
+                        confirmButtonText: 'Confirm',
+                        cancelButtonText: 'Cancel',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$message({
+                            type: "success",
+                            message: "success delee !"
+                        })
+                        var data = {
+                            userId: localStorage.getItem("userId"),
+                            pageNum: this.pageNum,
+                            pageSize: this.pageSize
+                        }
+                        this.$store.dispatch("getPetList",data)
+                    })
+                }
+            })
+        },
         updatePet () {                                                                         //更新宠物信息
             updatePet(this.petList[this.i]).then(res => {
                 console.log(res,"geng新完成")
+            }).catch(e => {
+                console.log(e)
+                this.$message({
+                    type: "error",
+                    message: "Update Failed!"
+                })
             })
         },
         petImage (e) {    
@@ -343,9 +392,17 @@ export default {
             formData.append("file",e.target.files[0])
             file(formData).then(res => {
                 console.log(res,"宠物图片")
-                this.src = res.data.data
-                this.petList[this.i].image = res.data.data
-                this.updatePet()
+                if (res.data.rtnCode == 200) {
+                    this.src = res.data.data
+                    this.petList[this.i].image = res.data.data
+                    this.updatePet()
+                }
+            }).catch(e => {
+                console.log(e)
+                this.$message({
+                    type: "error",
+                    message: "Picture is too large"
+                })
             })
         },
         getSex (e) {

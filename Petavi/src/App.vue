@@ -226,6 +226,17 @@ export default {
 	// 	width: 1100px !important;
 	// 	height: 100px !important;
 	// }
+	.message_form .el-select .el-input {
+		border: solid 1px !important;
+		color: rgb(112,112,112);
+		border-radius: 10px;
+		overflow: hidden;
+	}
+	.message_form .el-select .el-input .el-input__inner {
+		background: white !important;
+	}
+
+
 	.float {
 		float: left;
 	}
@@ -239,6 +250,9 @@ export default {
 	}
 	.size16 {
 		font-size: 16px;
+		@media screen and(max-width: 1100px) {
+			font-size: 14px;
+		}
 	}
 	.width100 {
 		width: 100%;

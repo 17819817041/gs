@@ -62,7 +62,7 @@
 </style>
 
 <template>
-    <div class="login">
+    <div class="login" v-loading="loading">
         <div>
             <myHeaderL></myHeaderL>
         </div>
@@ -85,7 +85,7 @@
 
                         <el-form-item>
                             <div class="google cursor" @click="toLogin">
-                                <el-button class="faceBook width100" type="primary" :loading="loading">
+                                <el-button class="faceBook width100" type="primary">
                                     <span class="span">Login</span>
                                 </el-button>
                             </div>
@@ -194,6 +194,13 @@ export default {
                                 message: 'Username or password wrong!'
                             });
                         }
+                    }).catch(e => {
+                        console.log(e)
+                        that.loading = false
+                        this.$message({
+                            type: 'warning',
+                            message: 'Fail login!'
+                        });
                     })
                 } else {
 

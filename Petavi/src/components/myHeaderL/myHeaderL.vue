@@ -100,7 +100,7 @@
         margin-right:5px;
         overflow: hidden;
         transition: 0.2s;
-        @media screen and (max-width: 1200px) {
+        @media screen and (max-width: 1220px) {
             width: 50px;
             height: 50px;
         }
@@ -123,11 +123,15 @@
         bottom: 9px;
         transition: 0.25s;
         @media screen and (max-width: 1300px) {
-            width: 80%;
+            position: absolute;
+            transform: scale(0.7);
+            width: 114%;
             bottom: 0px;
+            right: -207px;
         }
-        @media screen and (max-width: 1200px) {
-            right: 0;
+        @media screen and (max-width: 1230px) {
+            width: 106%;
+            right: -150px;
         }
         @media screen and (max-width:564px) {
             height: 30px;
@@ -135,16 +139,11 @@
         }
     }
     .div .search {
-        border: solid 1px;
         @media screen and (max-width:1200px) {
             width: 40%;
         }
     }
     .div .function {
-        border: solid white;
-        @media screen and (max-width:1200px) {
-            width: 60%;
-        }
         @media screen and (max-width:564px) {
             width: 37%;
         }
@@ -152,7 +151,7 @@
     .div div {
         @media screen and (max-width: 1300px) {
             transition: 0.25s;
-            transform: scale(0.9);
+            // transform: scale(0.9);
         }
     }
     .dropimg {
@@ -189,7 +188,7 @@
             </div>
             <div v-else></div>
             <div class="function al">
-                <div class="al function_item" v-if="login" >
+                <div class="al sb function_item" v-if="login" >
                     <div class="userName al sb">
                         
                         <div class="myMessage al">
@@ -287,6 +286,7 @@ export default {
             this.show = !this.show
             this.rotate = !this.rotate
             this.$store.commit("setUser", { key: "rotate", value: this.rotate } )
+            this.$store.commit("setUser", { key: "showList", value: !this.rotate } )
         },
         getUser () {
             this.$store.dispatch("getUser")

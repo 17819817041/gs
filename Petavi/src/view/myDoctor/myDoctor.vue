@@ -256,8 +256,8 @@ video {
             // padding: 30px;
             border: #F3F3F3 solid 1px;
             border-radius: 4px;
-            @media screen and (max-width:1000px) {
-                width: 60%;
+            @media screen and (max-width:1050px) {
+                width: 100%;
             }
         }
         .doctorDetails {
@@ -265,8 +265,8 @@ video {
             height: 100%;
             overflow: auto;
             // border: solid 1px;
-            @media screen and (max-width:1000px) {
-                width: 40%;
+            @media screen and (max-width:1050px) {
+                display: none;
             }
         }
     }
@@ -321,10 +321,10 @@ video {
         //     width: 46%;
         //     margin: 0 3.5% 5px 0.5%;
         // }
-        // @media screen and (max-width:1000px) {
-        //     width: 80%;
-        //     margin: 0 3.5% 5px 8.5%;
-        // }
+        @media screen and (max-width:1000px) {
+            width: 37%;
+            margin: 0 3.5% 5px 6.5%;
+        }
     }
     .workTime {
         margin-top: 45px;

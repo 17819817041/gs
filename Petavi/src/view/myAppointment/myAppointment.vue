@@ -76,7 +76,7 @@
             <div class="explan al"><img src="@/assets/img/appointment.png" alt="">Appointment</div>
             <div class="myAppointment_item mg">
                 <div class="myAppointment_item_message mg al">
-                    <div class="head_image ju al cursor" @click="appointmentDetalis">
+                    <div class="head_image ju al cursor">
                         <img src="@/assets/img/female.png" alt="">
                     </div>
                     <div class="message_wrap">
@@ -96,7 +96,7 @@
                         </div>
                     </div>
                     <div class="Way">
-                        <div class="video_btn ju al cursor">
+                        <div class="video_btn ju al cursor" @click="appointmentDetalis">
                             <img src="@/assets/img/video1.png" alt="">
                             Video Consultation
                         </div>

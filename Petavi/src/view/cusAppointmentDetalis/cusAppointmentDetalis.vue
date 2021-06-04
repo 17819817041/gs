@@ -43,9 +43,8 @@
                             </div>
                         </div>
                         <div class="telephone_or_video">
-                            <div class="videoConsultation ju al"><img src="@/assets/img/video1.png" alt="">Video Consultation</div>
-                            <div class="phoneConsultation ju al"><img src="@/assets/img/callimg1.png" alt="">Phone Consultation</div>
-                            <div class="chat ju al"><img src="@/assets/img/chat1.png" alt="">Chat</div>
+                            <div class="videoConsultation cursor ju al"><img src="@/assets/img/video1.png" alt="">Video Consultation</div>
+                            <div class="chat cursor ju al"><img src="@/assets/img/chat1.png" alt="">Chat</div>
                         </div>
                     </div>
                 </div>

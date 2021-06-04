@@ -122,7 +122,7 @@
 <template>
     <div class="customerPage">
         <div class="customer_content flex">
-            <div :class="['present_message', 'noBar', {opacity: showDeta}]">
+            <div :class="['present_message', 'noBar', {opacity: showDeta}]" @scroll="scroll">
                 <div class="present_item">
                     <div class="arrow">
                         <div class="myPet">
@@ -197,6 +197,7 @@ export default {
             rotate: false,
             pet: {},
             pageNum: 1,
+            timer: null,
             pageSize: 100
         }
     },
@@ -228,6 +229,17 @@ export default {
         showDeta () { return this.$store.state.user.rotate }
     },
     methods: {
+        scroll (val) {
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                console.log(val)
+                if (val.target.scrollTop >= 30) {
+                    this.$store.commit("setUser", { key: "nameList",value: false })
+                } else {
+                    this.$store.commit("setUser", { key: "nameList",value: true })
+                }   
+            },10)
+        },
         getPetList () {
             var data = {
                 userId: localStorage.getItem("userId"),
