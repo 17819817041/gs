@@ -13,16 +13,15 @@
                                 </el-image>
                             </div>
                             <div class="grade white al size12b">
-                                <img src="@/assets/img/rate.png" alt="">{{item.baeScore}}
+                                <img src="@/assets/img/rate.png" alt="">{{item.baseScore}}
                             </div>
                         </div>
                         <div class="about">
                             <div class="size16" v-if="item.doctorName">{{item.doctorName}}</div>
                             <div class="size16" v-else>No Name</div>
-                            <div class="size_12">General Obstetrics & Gynecology</div>
-                            <div class="size12a al">
-                                <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
-                                0.8 km away
+                            <div class="size_12 al">
+                                <img class="location_img" style="padding-right:5px" src="@/assets/img/location.png" alt="">
+                                {{item.addressName}}
                             </div>
                         </div>
                     </div>
@@ -33,7 +32,7 @@
                         </div>
                         <div>
                             <div class="size14">Likes</div>
-                            <div><span class="size16">125</span><span class="size14"> ({{item.likingRate}}) </span></div>
+                            <div><span class="size16">{{item.totalLike}}</span><span class="size14"> ({{item.likingRate}}) </span></div>
                         </div>
                         <div class="call">
                             <el-button class="callBtn width100" type="primary">Call</el-button>
@@ -57,7 +56,7 @@
 
                 <div class="size15 tc">General Obstetrics </div>
                 <div class="star ju">
-                    <el-rate class="Rate" v-model="rate" @change="getRate"></el-rate>
+                    <el-rate class="Rate" v-model="rate"></el-rate>
                 </div>
                 <div class="relation ju">
                     <div class="cursor"><img src="@/assets/img/chat.png" alt=""></div>
@@ -75,8 +74,8 @@
                     </div>
                     <div class="xian"></div>
                     <div class="tc likes">
-                        <div class="size12">Likes</div>
-                        <div><span class="size13">125</span><span class="size12">(detail.liKingRate)</span></div>
+                        <div class="size12 al">Likes</div>
+                        <div al><span class="size13">{{detail.totalLike}}</span><span class="size12"> ({{detail.likingRate}})</span></div>
                     </div>
                     <div class="xian"></div>
                     <div style="text-align:end">
@@ -134,7 +133,7 @@ export default {
             weight: "33.5kg",
             grade:4.5,
             change:true,
-            rate:null,
+            rate:0,
             doctorList: [],
             detail: {},
             loading: true
@@ -161,8 +160,9 @@ export default {
             if (item.doctorName == null) {
                 item.doctorName = 'No name'
             }
+            console.log(item)
             this.detail = item
-            console.log(this.detail)
+            this.rate = this.detail.baseScore
             this.$store.commit("setUser",{
                 key: "mask",
                 value: item
@@ -199,9 +199,6 @@ export default {
             this.$router.push({
                 name:'petmessage'
             })
-        },
-        getRate (val) {
-            console.log(val)
         },
         toVideo () {
             // this.$router.push('agora')
@@ -391,7 +388,7 @@ video {
         }
     }
     .toVideo {
-        width: 80%;
+        width: 60%;
         margin: auto;
     }
     .reviews {
@@ -439,5 +436,8 @@ video {
     .loading {
         width: 100%;
         height: 45%;
+    }
+    .location_img {
+        transform: translate(0,1px);
     }
 </style>

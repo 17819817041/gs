@@ -10,6 +10,7 @@
             height: 100%;
             background: @content;
             margin-top: 10px;
+            padding-bottom: 30px;
             // @media screen and (max-width:1350px) {
             //     width: 82%;
             // }
@@ -31,23 +32,37 @@
         padding: 70px 0;
         box-shadow: 0px 3px 3px 0px #D0D0D0;
         .edit {
-            width: 80px;
+            width: 70px;
             position: absolute;
-            border-radius: 15px;
+            border-radius: 12px;
             background: @helpBtn;
-            padding: 7px 0px;
+            padding: 4px 0px;
             right: 20px;
             top: 20px;
+            font-size: 15px;
+            box-shadow: 0 1px 2px 1px rgb(214, 210, 210);
         }
-        .save {
-            width: 80px;
-            position: absolute;
-            border-radius: 15px;
-            background: @hdColor;
-            padding: 7px 0px;
-            right: 20px;
-            top: 20px;
-        }
+    }
+    .wrap_save {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        font-size: 15px;
+    }
+    .save {
+        width: 70px;
+        border-radius: 12px;
+        background: @hdColor;
+        padding: 4px 0px;
+        box-shadow: 0 1px 2px 1px rgb(214, 210, 210);
+    }
+    .cancel {
+        width: 70px;
+        border-radius: 12px;
+        margin-left: 10px;
+        background: @helpBtn;
+        padding: 4px 0px;
+        box-shadow: 0 1px 2px 1px rgb(214, 210, 210);
     }
     .petMessage_title {
         color: #5E5E5E;
@@ -69,7 +84,7 @@
         display: block;
     }
     .details_message {
-        width: 30%;
+        width: 21%;
         position: relative;
         .delete {
             position: absolute;
@@ -91,11 +106,11 @@
     }
     .details_message1 {
         width: 40%;
-        .about {
-            height: 36px;
-            padding: 0 0 12px 30px;
-            white-space: nowrap;
-        }
+    }
+    .about {
+        height: 36px;
+        padding: 0 0 12px 30px;
+        white-space: nowrap;
     }
     // .message1_child {
     //     border: solid 1px;
@@ -110,6 +125,7 @@
             padding-left: 10px;
             border: none;
             outline: none;
+            font-size: 16px;
         }
     }
     .editInp1 {
@@ -122,6 +138,7 @@
             padding-left: 10px;
             border: none;
             outline: none;
+            font-size: 16px;
         }
     }
     .details_images, .details_message, .details_message1 {
@@ -134,17 +151,17 @@
         text-overflow: ellipsis;
     }
     .years_input, .month_input {
-        width: 35px;
-        height: 35px;
+        width: 30px;
+        height: 30px;
         overflow: hidden;
         border-radius: 40%;
-        border: solid 1px;
+        border: solid 1px gray;
         input {
             border: none;
             outline: none;
             width: 100%;
             height: 100%;
-            font-size: 25px;
+            font-size: 16px;
         }
     }
     .morePetDetalis {
@@ -153,11 +170,11 @@
         text-decoration: underline;
     }
     .textarea {
-        width: 100%;
-        border: solid 1px;
-        height: 100px;
-        border: solid 1px;
+        width: 80%;
+        border: solid 1px rgb(202, 202, 202);
+        height: 80px;
         border-radius: 10px;
+        transform: translate(30px,-8px);
         overflow: hidden;
         textarea {
             width: 100%;
@@ -169,7 +186,12 @@
     .size19 {
         font-size: 19px;
     }
-    
+    .remarktext {
+        width: 96%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 </style>
 
 <template>
@@ -179,7 +201,10 @@
                 <div class="bold petMessage_title" @click="toPetMessage">Pet Details</div>
                 <div class="details_item size19 flex" v-for="(item,i) in petList" :key="i">
                     <div v-if="item.change" class="edit cursor tc" @click="edit(item,i)">Edit</div>
-                    <div v-else class="save cursor tc" @click="save(item,i)">Save</div>
+                    <div v-else class="wrap_save flex">
+                        <div class="save cursor tc" @click="save(item,i)">Save</div>
+                        <div class="cancel cursor tc" @click="cancel(item)">cancel</div>
+                    </div>
                     <div class="details_image ju">
                         
                         <label for="ava1">
@@ -212,7 +237,6 @@
                                     <div>Breed</div>
                                 </div>
                             </div>
-                            
                         </div>
                         <div>
                             <div class="flex about">
@@ -240,73 +264,85 @@
                                 </div>
                             </div>
                             <div class="flex about">
-                                <div v-if="item.change">{{item.breed}}</div>
+                                <div v-if="item.change">
+                                    <div v-if="item.breed">{{item.breed}}</div>
+                                    <div v-else>none</div>
+                                </div>
                                 <div class="editInp al" v-else>
-                                    <el-select v-model="breed">
+                                    <!-- <el-select v-model="breed">
                                         <el-option v-for="(item,i) in breedList" :key="i" :value="item"></el-option>
-                                    </el-select>
+                                    </el-select> -->
+                                    <input type="text" v-model="item.breed" placeholder="input breed">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="details_message1 flex">
-                        <div class="message1_child">
-                            <div class="flex about">
-                                <div>Gender</div>
+                    <div class="details_message1">
+                        <div class="flex">
+                            <div class="message1_child">
+                                <div class="flex about">
+                                    <div>Gender</div>
+                                </div>
+                                <div class="flex about">
+                                    <div>Neutered status</div>
+                                </div>
+                                <div class="flex about">
+                                    <div>Weight</div>
+                                </div>
+                                <div class="flex about">
+                                    <div>Medical records </div>
+                                </div>
+                                <div class="flex about">
+                                    <div style="color:white">record</div>
+                                </div>
+                                <div class="flex about">
+                                    <div>Remarks</div>
+                                </div>
                             </div>
-                            <div class="flex about">
-                                <div>Neutered status</div>
-                            </div>
-                            <div class="flex about">
-                                <div>Weight</div>
-                            </div>
-                            <div class="flex about">
-                                <div>Medical records </div>
-                            </div>
-                            <div class="flex about">
-                                <div style="color:white">record</div>
-                            </div>
-                            <div class="flex about">
-                                <div>Remarks</div>
+                            <div>
+                                <div class="flex about">
+                                    <div v-if="item.change">{{item.gender == 1? 'Male':'Female'}}</div>
+                                    <div class="editInp al" v-else>
+                                        <el-select v-model="sex" @change="getSex">
+                                            <el-option value="1">M</el-option>
+                                            <el-option value="2">F</el-option>
+                                        </el-select>
+                                    </div>
+                                </div>
+                                <div class="flex about">
+                                    <div v-if="item.change">{{item.petJueYu == 1? 'Sterilization':'Unneutered'}}</div>
+                                    <div v-else class="editInp al">
+                                        <el-select v-model="status" @change="neuteredStatus">
+                                            <el-option value="1">Sterilization</el-option>
+                                            <el-option value="2">Unneutered</el-option>
+                                        </el-select>
+                                    </div>
+                                </div>
+                                <div class="flex about">
+                                    <div v-if="item.change">{{item.weight}} kg</div>
+                                    <div v-else class="flex">
+                                        <div class="editInp1 al" >
+                                            <div class="input"><input type="text" v-model="item.weight"></div>
+                                        </div>
+                                        <div>kg</div>
+                                    </div>
+                                </div>
+                                <div class="flex about">
+                                    <div>2021/05/01 </div>
+                                </div>
+                                <div class="flex about">
+                                    <div class="al">
+                                        <div class=" record_active">66666666666666666666... </div>
+                                        <div class="morePetDetalis cursor" @click="record">More</div>
+                                    </div>
+                                </div>
+                                <div class="flex about">
+                                    <div class="remarktext" v-if="item.change">{{item.remark? item.remark:'none'}}</div>
+                                </div>
                             </div>
                         </div>
-                        <div>
-                            <div class="flex about">
-                                <div v-if="item.change">{{item.gender == 1? 'M':'F'}}</div>
-                                <div class="editInp al" v-else>
-                                    <el-select v-model="sex" @change="getSex">
-                                        <el-option value="1">M</el-option>
-                                        <el-option value="2">F</el-option>
-                                    </el-select>
-                                </div>
-                            </div>
-                            <div class="flex about">
-                                <div>None</div>
-                            </div>
-                            <div class="flex about">
-                                <div v-if="item.change">{{item.weight}}</div>
-                                <div v-else class="flex">
-                                    <div class="editInp1 al" >
-                                        <div class="input"><input type="text" v-model="item.weight"></div>
-                                    </div>
-                                    <div>kg</div>
-                                </div>
-                            </div>
-                            <div class="flex about">
-                                <div>2021/05/01 </div>
-                            </div>
-                            <div class="flex about">
-                                <div class="al">
-                                    <div class=" record_active">66666666666666666666... </div>
-                                    <div class="morePetDetalis cursor" @click="record">More</div>
-                                </div>
-                            </div>
-                            <div class="flex about">
-                                <div v-if="item.change">Remarks</div>
-                                <div v-else class="textarea">
-                                    <textarea name="" id="" cols="30" rows="10"></textarea>
-                                </div>
-                            </div>
+                        <div class="textarea" v-if="!item.change">
+                            <textarea v-model="item.remark" name="" id="" cols="30" rows="10"></textarea>
                         </div>
                     </div>
                 </div>
@@ -316,15 +352,13 @@
 </template>
 
 <script>
-import { file, petDetails, updatePet, deletePet } from "@/axios/request.js"
+import { file, updatePet, deletePet } from "@/axios/request.js"
 export default {
     data () {
         return {
-            neuteredStatus:'None',
             sex: null,
-            // change:true,
             breed:'Husky',
-            breedList: [ 'Husky' ],
+            status: '',
             pageNum: 0,
             pageSize: 100,
             // data: {
@@ -333,12 +367,15 @@ export default {
         }
     },
     created () {
-        
+        // let arr = [1,2,3,1,5,6]
+        // arr.splice(-1,1)
+        // console.log(arr)
     },
     computed: {
         petList: {
             get () {return this.$store.state.user.petList}
-        }
+        },
+        petTypeList () { return this.$store.state.user.petType }
     },
     methods: {
         // getPetDetails () {                                                                  //获取第一只宠物
@@ -350,6 +387,15 @@ export default {
         //         }
         //     })
         // },
+        cancel (item) {
+            var data = {
+                userId: localStorage.getItem("userId"),
+                pageNum: this.pageNum,
+                pageSize: this.pageSize
+            }
+            this.$store.dispatch("getPetList",data)
+            item.change = true
+        },
         Delete (item) {
             let data = {
                 petId: item.id
@@ -378,6 +424,14 @@ export default {
         updatePet () {                                                                         //更新宠物信息
             updatePet(this.petList[this.i]).then(res => {
                 console.log(res,"geng新完成")
+                if (res.data.rtnCode == 200) {
+                    var data = {
+                        userId: localStorage.getItem("userId"),
+                        pageNum: this.pageNum,
+                        pageSize: this.pageSize
+                    }
+                    this.$store.dispatch("getPetList",data)
+                }
             }).catch(e => {
                 console.log(e)
                 this.$message({
@@ -405,36 +459,41 @@ export default {
                 })
             })
         },
+        neuteredStatus (e) {
+            this.petList[this.i].petJueYu = e
+            if (e == 1) {
+                this.status = "Sterilization"
+            } else if (e == 2) {
+                this.status = "Unneutered"
+            }
+        },  
         getSex (e) {
+            console.log(e)
             this.petList[this.i].gender = e
             if (e == 1) {
-                this.sex = "M"
+                this.sex = "Male"
             } else if (e == 2) {
-                this.sex = "F"
+                this.sex = "Female"
             }
         },
         edit (item,i) {
-            console.log(i)
             item.change = false
             this.i = i
+            console.log(this.petList[this.i])
             if (this.petList[this.i].gender == 1) {
-                this.sex = 'M'
+                this.sex = 'Male'
             } else if (this.petList[i].gender == 2) {
-                this.sex = "F"
+                this.sex = "Female"
             }
         },
         save (item,i) {
             this.petList[i].age = item.yrs + 'yrs' + item.mo + 'mo'
             this.updatePet()
-            setTimeout(() => {
-                var data = {
-                    userId: localStorage.getItem("userId"),
-                    pageNum: this.pageNum,
-                    pageSize: this.pageSize
-                }
-                this.$store.dispatch("getPetList",data)
-                item.change = true
-            },10)
+            this.$message({
+                type: 'success',
+                message: 'Successfully changed'
+            })
+            item.change = true
         },
         toPetMessage () {
             this.$router.push({

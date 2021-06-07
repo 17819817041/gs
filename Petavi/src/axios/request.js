@@ -92,7 +92,7 @@ export function petDetails (data) {     //宠物ID获取第一条宠物信息
 export function petList (data) {     //宠物列表
     return request(
         {
-            url: "/pet/getPetList",
+            url: "/pet/getPetDetailList",
             metjod: "POST",
             params: data
         }
@@ -118,9 +118,9 @@ export function doctorList (data) {      //医生列表
 export function vetDetails (data) {      //医生详情
     return request(
         {
-            // url: "/doctorDetails/getDoctorDetailsByUserId",
-            url: "/doctorDetails/getUserDetails",
-            method: "GET",
+            url: "/doctorDetails/getDoctorDetailsByUserId",
+            // url: "/doctorDetails/getUserDetails",
+            method: "POST",
             params: data
         }
     )

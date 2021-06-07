@@ -112,14 +112,14 @@ export default {
                 ]
             },
             form: {
-                // platform:2,
-                // email:'9@qq.com',
-                // password:'123'
+                platform:2,
+                email:'9@qq.com',
+                password:'123'
 
                  
-                platform:2,
-                email:'',
-                password:''
+                // platform:2,
+                // email:'',
+                // password:''
 
                 // platform: 2,
                 // email:'youxiangceshi6@163.com',
@@ -158,19 +158,21 @@ export default {
                 if (flag) {
                     login(that.form).then(res => {
                         console.log(res, "兽医登陆")
-                        localStorage.setItem("userId", res.data.data.userId)
-                        localStorage.setItem("platform", res.data.data.platform)
-                        localStorage.setItem("Token",res.data.data.token)
-                        this.$store.dispatch("IMSignUp")
-                        this.$router.push({
-                            name: "vethomepage",
-                            // query: {
-                            //     userId: null,
-                            //     platform:2
-                            // }
-                        })
-                        that.login = true
-                        that.loading = false
+                        if (res.data.rtnCode == 200) {
+                            localStorage.setItem("userId", res.data.data.userId)
+                            localStorage.setItem("platform", res.data.data.platform)
+                            localStorage.setItem("Token",res.data.data.token)
+                            this.$store.dispatch("IMSignUp")
+                            this.$router.push({
+                                name: "vethomepage",
+                                // query: {
+                                //     userId: null,
+                                //     platform:2
+                                // }
+                            })
+                            that.login = true
+                            that.loading = false
+                        }
                     }).catch(e => {
                         console.log(e)
                         this.loading = false

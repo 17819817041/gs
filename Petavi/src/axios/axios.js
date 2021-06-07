@@ -1,9 +1,9 @@
 import axios from "axios"
 
 const service = axios.create({
-    baseURL: "https://petavi.top/api"
+    // baseURL: "https://petavi.top/api"
     // baseURL: "/api"
-    // baseURL: "http://192.168.10.10:9011/api"      // 内网
+    baseURL: "http://192.168.10.10:9011/api"      // 内网
     // baseURL: "http://47.52.255.24:9011/api"    
 })
 service.interceptors.request.use(config => {

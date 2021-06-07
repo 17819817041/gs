@@ -9,7 +9,9 @@
                     <div class="width30">
                         <el-radio label="phone">
                             <div class="phone">
-                                <div class="ju"><img src="@/assets/img/phoneWay.png" alt=""></div>
+                                <div class="ju">
+                                    <img :class="['opacity',{ opacity1: way == 'phone' }]" src="@/assets/img/phoneWay.png" alt="" @click="phoneWay">
+                                </div>
                             </div> 
                         </el-radio>
                         <div class="size13">Phone Consultation</div>
@@ -18,16 +20,20 @@
                     <div class="width30">
                         <el-radio label="video">
                             <div class="video ju">
-                                <div><img src="@/assets/img/videoWay.png" alt=""></div>
+                                <div>
+                                    <img :class="['opacity',{ opacity1: way == 'video' }]" src="@/assets/img/videoWay.png" alt="" @click="videoWay">
+                                </div>
                             </div>
                         </el-radio>
-                            <div class="size13">Video Consultation</div>
-                            <div class="size12">Min session 15 mins . $1.99 per/min</div>
+                        <div class="size13">Video Consultation</div>
+                        <div class="size12">Min session 15 mins . $1.99 per/min</div>
                     </div>
                     <div class="width30">
                         <el-radio label="visit">
                             <div class="visit mg">
-                                <div><img src="@/assets/img/bookingImg.png" alt=""></div>
+                                <div>
+                                    <img :class="['opacity',{ opacity1: way == 'visit' }]" src="@/assets/img/bookingImg.png" alt="" @click="visitWay">
+                                </div>
                             </div>
                         </el-radio>
                         <div class="size13">Physical Visit</div>
@@ -36,7 +42,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-select v-model="doctor" placeholder="Select the doctor">
-                        <el-option v-for="(item,i) in doctorSelect" :key="i" :value="item"></el-option>
+                        <el-option v-for="(item,i) in doctorSelect" :key="i" :label="item.doctorName" :value="item.doctorName"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -48,18 +54,44 @@
                     <div class="sb">
                         <div class="pet">
                             <el-select v-model="pet" placeholder="Select pet">
-                                <el-option v-for="(item,i) in petSelect" :key="i" :value="item"></el-option>
+                                <el-option v-for="(item,i) in petSelect" :key="i" :label="item.name" :value="item.name"></el-option>
                             </el-select>
                         </div>
                         <div class="star_time">
-                            <el-select v-model="starTime" placeholder="Booking Star Time">
+                            <!-- <el-select v-model="starTime" placeholder="Booking Star Time">
                                 <el-option v-for="(item,i) in starTimeSelect" :key="i" :value="item"></el-option>
-                            </el-select>
+                            </el-select> -->
+                            <div  :class="['arrow', { rotate: starRotate }]"></div>
+                            <el-time-select
+                                v-model="starTime"
+                                :picker-options="{
+                                    start: '08:30',
+                                    step: '00:15',
+                                    end: '18:30'
+                                }"
+                                @change="getStarTime"
+                                @focus="starFocus"
+                                @blur="starBlur"
+                                placeholder="Booking Star Time">
+                            </el-time-select>
                         </div>
                         <div class="end_time">
-                            <el-select v-model="endTime"  placeholder="Booking End Time">
+                            <!-- <el-select v-model="endTime"  placeholder="Booking End Time">
                                 <el-option v-for="(item,i) in endTimeSelect" :key="i" :value="item"></el-option>
-                            </el-select>
+                            </el-select> -->
+                            <div :class="['arrow', { rotate: endRotate }]"></div>
+                            <el-time-select
+                                v-model="endTime"
+                                :picker-options="{
+                                    start: '08:30',
+                                    step: '00:15',
+                                    end: '18:30'
+                                }"
+                                @change="getEndTime"
+                                @focus="endFocus"
+                                @blur="endBlur"
+                                placeholder="Booking End Time">
+                            </el-time-select>
                         </div>
                     </div>
                 </el-form-item>
@@ -71,8 +103,8 @@
                             </el-select>
                         </div>
                         <div class="month">
-                            <el-select v-model="month" placeholder="Month">
-                                <el-option v-for="(item,i) in monthSelect" :key="i" :value="item"></el-option>
+                            <el-select v-model="month" placeholder="Month" @change="chooseMonth">
+                                <el-option v-for="(item,i) in monthSelect" :key="i" :label="item.label" :value="item.value"></el-option>
                             </el-select>
                         </div>
                         <div class="years">
@@ -98,6 +130,8 @@ import { doctorList } from "@/axios/request.js"
 export default {
     data () {
         return {
+            endRotate: false,
+            starRotate: false,
             doctor: '',
             doctorSelect: [],
             location: '',
@@ -111,9 +145,26 @@ export default {
             day: '',
             daySelect: [],
             month: '',
-            monthSelect: [],
+            monthSelect: [ 
+                { label: 'Jan', value: '1' }, 
+                { label: 'Feb', value: '2' }, 
+                { label: 'Mar', value: '3' }, 
+                { label: 'Apr', value: '4' }, 
+                { label: 'May', value: '5' }, 
+                { label: 'Jun', value: '6' }, 
+                { label: 'Jul', value: '7' }, 
+                { label: 'Aug', value: '8' }, 
+                { label: 'Sep', value: '9' }, 
+                { label: 'Oct', value: '10' }, 
+                { label: 'Nov', value: '11' }, 
+                { label: 'Dec', value: '12' }, 
+            ],
             years: '',
-            yearsSelect: []
+            yearsSelect: [],
+            way: null,
+            judge_month: null,
+            pageNum: 1,
+            pageSize: 10
         }
     },
     created () {
@@ -132,6 +183,16 @@ export default {
         petList () { return this.$store.state.user.petList }
     },
     methods: {
+        phoneWay () {
+            this.way = 'phone'
+        },
+        videoWay () {
+            this.way = 'video'
+        },
+        visitWay () {
+            this.way = 'visit'
+        },
+
         confirm () {
             this.$router.push("/confirm")
         },
@@ -144,30 +205,55 @@ export default {
             }
             doctorList(doctor).then(res => {
                 console.log(res,"医生select")
-                // this.doctorSelect = res.data.data.pageT
+                this.doctorSelect = res.data.data.pageT
             })
         },
         getPetSelect () {
-            this.$store.dispatch("getPetList")
+            var data = {
+                userId: localStorage.getItem("userId"),
+                pageNum: this.pageNum,
+                pageSize: this.pageSize
+            }
+            this.$store.dispatch("getPetList",data)
         },
-        starTime () {
-
+        getStarTime (val) {
+            console.log(val)
         },
-        endTime () {
-
+        getEndTime (val) {
+            console.log(val)
         },
         getDay () {
-            let month = new Date().getMonth() + 1      //获取月份
-            let Day = new Date(2021,month,0).getDate()//  获取每月天数
-            for (let i=1;i<=Day;i++) {
+            // let month = new Date().getMonth() + 1      //获取月份
+            // let Day = new Date(2021,month,0).getDate()//  获取每月天数
+            for (let i=1;i<=31;i++) {
                 this.daySelect.push(i)
-            }
-            for (let i=1;i<=12;i++) {
-                this.monthSelect.push(i)
             }
             for (let i=1;i<10;i++) {
                 this.yearsSelect.push('202' + i)
             }
+        },
+        chooseMonth (val) {
+            this.judge_month = val
+            let Day = new Date(2021,this.judge_month,0).getDate()//  获取每月天数
+            this.daySelect = []
+            for (let i=1;i<=Day;i++) {
+                this.daySelect.push(i)
+            }
+            if (this.day > this.daySelect.length) {
+                this.day = this.daySelect.length
+            }
+        },
+        endFocus () {
+            this.endRotate = true
+        },
+        endBlur () {
+            this.endRotate = false
+        },
+        starFocus () {
+            this.starRotate = true
+        },
+        starBlur () {
+            this.starRotate = false
         }
     }
 }
@@ -177,9 +263,6 @@ export default {
 @import "@/less/css.less";
     .booking {
         width: 700px;
-    }
-    .opacity {
-        opacity: 1 !important;
     }
     .visitAndWay {
         width: 99%;
@@ -196,7 +279,19 @@ export default {
         width: 20%;
     }
     .star_time, .end_time {
+        position: relative;
         width: 38%;
+    }
+    .arrow {
+        top: 50%;
+        right: 0;
+        height: 12px;
+        width: 16px;
+        z-index: 700;
+        transform: translate(-50%,-50%);
+        position: absolute;
+        background: url('~@/assets/img/arrow.png') center center no-repeat;
+        transition: 0.3s;
     }
     .typeFlex .width30 {
         width:33.3%; 
@@ -219,5 +314,17 @@ export default {
     }
     .phone, .video, .visit {
         margin-bottom: 15px;
+    }
+    .opacity {
+        opacity: 0.6;
+    }
+    .opacity:hover {
+        cursor: pointer;
+    }
+    .opacity1 {
+        opacity: 1 !important;
+    }
+    .rotate {
+        transform: translate(-50%,-50%) rotateZ(-180deg);
     }
 </style>

@@ -31,15 +31,6 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="player mg" id="player2">
-                <div id="player1">
-
-                </div>
-            </div>
-            <div class="join" @click="join">
-                加入
-            </div>
-            <div @click="leave">离开</div> -->
         </div>
         <div class="personWithAnimal noBar">
             <div class="information_wrap">
@@ -109,18 +100,18 @@
 export default {
     data () {
         return {
-            client:null,
-            localTracks : {
-                videoTrack: null,
-                audioTrack: null
-            },
-            remoteUsers : {},
-            options: {
-                appid: '0bc95e1145da4b729993725eb55b319a',
-                channel: '654',
-                uid: 888,
-                token: '0060bc95e1145da4b729993725eb55b319aIABktH+02bSfhRnt1IbqwSWGHtt2CLSt2SYNHo683uu1BjN2IlwAAAAAEAD/3NMfIxqyYAEAAQAjGrJg'
-            },
+            // client:null,
+            // localTracks : {
+            //     videoTrack: null,
+            //     audioTrack: null
+            // },
+            // remoteUsers : {},
+            // options: {
+            //     appid: '0bc95e1145da4b729993725eb55b319a',
+            //     channel: '654',
+            //     uid: 888,
+            //     token: '0060bc95e1145da4b729993725eb55b319aIABktH+02bSfhRnt1IbqwSWGHtt2CLSt2SYNHo683uu1BjN2IlwAAAAAEAD/3NMfIxqyYAEAAQAjGrJg'
+            // },
             List: {},
             pageNum: 0,
             pageSize: 100,
@@ -280,13 +271,13 @@ export default {
     .Personal {
         width: 60px;
         height: 60px;
+        overflow: hidden;
         border: solid 1px rgb(228, 223, 223);
         border-radius: 50%;
         margin-right: 10px;
     }
     .personal_img {
         padding-right: 8px;
-        width: 60px;
         height: 60px;
         
     }
@@ -350,6 +341,7 @@ export default {
         padding: 10px 0;
     }
     .Img {
+        height: 100%;
         padding: 2px 0 5px 0;
     }
     .pet_information {
@@ -391,5 +383,6 @@ export default {
         height: 150px;
         border: solid 1px rgb(218, 210, 210);
         border-radius: 50%;
+        overflow: hidden;
     }
 </style>

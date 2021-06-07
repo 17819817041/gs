@@ -126,7 +126,7 @@
                         </el-form-item>
                     </div>
                     <el-form-item prop="petType">
-                        <el-input placeholder="Pet Type"></el-input>
+                        <el-input placeholder="Pet Type" v-model="addPetMessage.petType"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-input placeholder="Remark"></el-input>
@@ -245,7 +245,6 @@ export default {
             this.day = val
         },
         chooseMonth (val) {
-            console.log(val)
             this.judge_month = val
             let Day = new Date(2021,this.judge_month,0).getDate()//  获取每月天数
             console.log(Day,'day')
@@ -259,11 +258,17 @@ export default {
             }
         },
         submit () {
+            this.addPetMessage.birth = String(this.years) + '-' + String(this.month) + '-' + String(this.day)
             this.$refs.form.validate((flag) => {
                 if (flag) {
-                    this.addPetMessage.birth = String(this.years) + '-' + String(this.month) + '-' + String(this.day)
                     this.addPet()
-                    // this.$router.replace('/petDetails')
+                    this.$message({
+                        type: 'success',
+                        message: "Successfully added !"
+                    })
+                    setTimeout(() => {
+                        this.$router.replace('/petDetails')
+                    },500)
                 } else {
                     this.$message({
                         type: "error",

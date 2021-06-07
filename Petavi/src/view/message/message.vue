@@ -86,7 +86,7 @@
         margin-top: 20px;
     }
     .administrator {
-        margin-top: 30%;
+        margin-top: 20%;
         width: 130px;
         color: #212121;
         font-size: 12px;
@@ -108,7 +108,7 @@
     }
     .physical {
         width: 108px;
-        margin-top: 60%;
+        margin-top: 30%;
     }
     .rotate {
         transform: rotateZ(180deg);

@@ -165,10 +165,10 @@ export default {
 	}
 
 	.form_select .el-select .el-input__inner {
-		border: solid #787878 1px !important;
+		// border: solid #787878 1px !important;
 		border-radius: 4px !important;
 		background: white !important;
-		box-shadow: 0 0 1px 1px #959595 !important;
+		box-shadow: 0 0 2px 1px #818080 !important;
 		outline: none !important;
 	}
 
@@ -235,6 +235,32 @@ export default {
 	.message_form .el-select .el-input .el-input__inner {
 		background: white !important;
 	}
+
+
+	.star_time .el-date-editor {
+		// border: solid #787878 1px !important;
+		border-radius: 4px !important;
+		background: white !important;
+		box-shadow: 0 0 2px 1px #818080 !important;
+		outline: none !important;
+		width: 100% !important;
+	}
+	.star_time .el-date-editor .el-input__inner {
+		background: white !important;
+	}
+	.end_time .el-date-editor {
+		width: 100% !important;
+		// border: solid #787878 1px !important;
+		border-radius: 4px !important;
+		background: white !important;
+		box-shadow: 0 0 2px 1px #818080 !important;
+		outline: none !important;
+		width: 100% !important;
+	}
+	.end_time .el-date-editor .el-input__inner {
+		background: white !important;
+	}
+
 
 
 	.float {

@@ -15,7 +15,8 @@ export default {
         rotate: false,
         sureCall: true,
         showList: true,
-        nameList: true
+        nameList: true,
+        petType: []
     },
     mutations: {
         setUser (state,data) {
@@ -28,6 +29,7 @@ export default {
         },
         getPetList (store,data) {
             petList(data).then(res => {
+                console.log(res,"宠物列表&类别")
                 if (res.data.rtnCode == 200) {
                     res.data.data.pageT.forEach(item => {
                         item.change = true
@@ -38,9 +40,11 @@ export default {
                         } else {
 
                         }
+                        if (item.petTypeList) {
+                            store.commit("setUser",{ key: "petType", value: res.data.data.pageT.splice(-1,1)[0].petTypeList })
+                        }
                     })
-                    console.log(res,"宠物列表")
-                    store.commit("setUser",{ key: "petList", value: res.data.data.pageT }) 
+                    store.commit("setUser",{ key: "petList", value: res.data.data.pageT })
                 } else {
                     store.commit("setUser",{ key: "petList", value: [] }) 
                 }
@@ -81,6 +85,7 @@ export default {
                     store.commit("setUser",{ key: "login", value: false }) 
                 })
             } else if (localStorage.getItem("platform") == 2) {
+                console.log('2医生')
                 var data = {
                     userId: localStorage.getItem("userId"),
                 }
@@ -101,8 +106,6 @@ export default {
                 })
             }
         },
-
-
         IMSignUp (store) {
             var options = { 
                 username: localStorage.getItem("userId") + '_' + localStorage.getItem("platform"),  //430_2
