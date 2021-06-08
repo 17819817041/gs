@@ -1,5 +1,5 @@
 <template>
-    <div class="vetSetting">
+    <div class="vetSetting noBar">
         <div class="explan al Explan_title mg">
             <img class="setting_img" src="@/assets/img/setting.png" alt="">
             Setting
@@ -9,13 +9,19 @@
                 <div class="vetSetting_content_item_title">
                     <div class=" size26 bold tc">My Profile</div>
                     <div class="edit cursor tc" v-if="edit" @click="editBtn">Edit</div>    
-                    <div class="save cursor tc" v-else @click="saveBtn">Save</div>
+                    <div class="alter flex" v-else>
+                        <div class="save cursor tc" @click="saveBtn">Save</div>
+                        <div class="cancel tc cursor" @click="cancelBtn" >Cancel</div>
+                    </div>
                 </div>
                 <div class="profile flex">
                     <div class="profile_img">
-                        <div style="width:70%;margin:auto">
-                            <img class="profileimg mg" src="@/assets/img/profileimg.png" alt="" mode="widthFix">
-                        </div>
+                        <label for="avaSet">
+                            <div style="width:50%;margin:auto">
+                                <img :class="['profileimg mg', {cursor: !edit}]" src="@/assets/img/profileimg.png" alt="" mode="widthFix">
+                            </div>
+                            <input type="file" id="avaSet" v-if="!edit" v-show="false">
+                        </label>
                     </div>
                     <div class="profile_message">
                         <div class="message_wrap flex">
@@ -24,27 +30,33 @@
                         </div>
                         <div class="message_wrap flex">
                             <div class="title al">Name</div>
-                            <div class="mean al">Dr Beck</div>
+                            <div v-if="edit" class="mean al">{{userDetail.doctorName}}</div>
+                            <div v-else class="inp mean al"><input type="text" v-model="userDetail.doctorName"></div>
                         </div>
                         <div class="message_wrap flex">
                             <div class="title al">Age</div>
-                            <div class="mean al">-</div>
+                            <div v-if="edit" class="mean al">{{userDetail.age? userDetail.age:'None'}}</div>
+                            <div v-else class="inp mean al"><input type="text" v-model="userDetail.age"></div>
                         </div>
                         <div class="message_wrap flex">
-                            <div class="title al">Location</div>
-                            <div class="mean al">Hong Kong,China</div>
+                            <div  class="title al">Location</div>
+                            <div v-if="edit" class="mean al">{{userDetail.location? userDetail.location: "None"}}</div>
+                            <div v-else class="inp mean al"><input type="text" v-model="userDetail.location"></div>
                         </div>
                         <div class="message_wrap flex">
                             <div class="title al">Mobile</div>
-                            <div class="mean al">(852)2211 3355</div>
+                            <div v-if="edit" class="mean al">{{userDetail.mobile? userDetail.mobile: "None"}}</div>
+                            <div v-else class="inp mean al"><input type="text" v-model="userDetail.mobile"></div>
                         </div>
                         <div class="message_wrap flex">
                             <div class="title al">Gender</div>
-                            <div class="mean al">Male</div>
+                            <div class="mean al" v-if="edit">{{userDetail.genderId? userDetail.genderId: "None"}}</div>
+                            <div v-else class="inp mean al"><input type="text" v-model="userDetail.genderId"></div>
                         </div>
                         <div class="message_wrap flex">
                             <div class="title al">Education</div>
-                            <div class="mean al">-</div>
+                            <div class="mean al" v-if="edit">{{userDetail.workExperience}}</div>                                              <!--   //学历   -->
+                            <div v-else class="inp mean al"><input type="text" v-model="userDetail.workExperience"></div>
                         </div>
                         <div class="message_wrap flex">
                             <div class="title al">Gertification</div>
@@ -60,18 +72,60 @@
                         <div>
                             <div class="message_wrap flex">
                                 <div class="title al">Veterinary Hospital</div>
-                                <div class="mean al">AAA Hospital</div>
+                                <div v-if="edit" class="mean al">{{userDetail.vetrtinaryHospitalName?userDetail.vetrtinaryHospitalName:"None"}}</div>
+                                <!-- <div v-else class="inp mean al"><input type="text" v-model="userDetail.vetrtinaryHospitalId"></div> -->
+                                <div v-else class="inp mean al">
+                                    <el-select class="option width100 al" @change="getHospital" v-model="userDetail.vetrtinaryHospitalName" placeholder="Hospital" name="" id="">
+                                        <el-option v-for="(item) in hospitalList" 
+                                        :key="item.veterinaryHospitalId" 
+                                        :value="item.veterinaryHospitalId" 
+                                        :label="item.veterinaryHospitalName">
+                                        </el-option>
+                                    </el-select>
+                                </div>
                             </div>
                             <div class="message_wrap flex">
                                 <div class="title al">Work experience</div>
-                                <div class="mean al">8+ years</div>
+                                <div class="mean al" v-if="edit">{{userDetail.workExperience? userDetail.workExperience: "None"}}</div>
+                                <div v-else class="inp mean al"><input type="text" v-model="userDetail.workExperience"></div>
                             </div>
                             <div class="message_wrap flex">
                                 <div class="al">Working address and Timing</div>
                             </div>
-                            <div class="message_wrap address_child">
-                                <div>Manning House, Queen's Road Central, Central, Hong Kong</div>
-                                <div style="margin-top:10px">9:00 - 18:30 Monday to Friday</div>
+                            <div class="message_wrap address_child al">
+                                <div v-if="edit">{{userDetail.workingAddress}}</div>
+                                <div v-else class="address_inp al"><input type="text" v-model="userDetail.workingAddress"></div>
+                            </div>
+                            <div class="message_wrap">
+                                <div v-if="edit" style="margin-top:10px;color: #7c7878;">{{userDetail.startTime}} - {{userDetail.endTime}} </div>
+                                <div v-else class="timeInp_wrap sb al">
+                                    <div class="timeInp al">
+                                        <!-- <input type="text" v-model="userDetail.startTime"> -->
+                                        <el-time-select 
+                                            class="width100"
+                                            v-model="userDetail.startTime"
+                                            :picker-options="{
+                                                start: '08:30',
+                                                step: '00:15',
+                                                end: '18:30'
+                                            }"
+                                            placeholder="Booking Star Time">
+                                        </el-time-select>
+                                    </div> --
+                                    <div class="timeInp al">
+                                        <!-- <input type="text" v-model="userDetail.endTime"> -->
+                                        <el-time-select 
+                                            class="width100"
+                                            v-model="userDetail.endTime"
+                                            :picker-options="{
+                                                start: '08:30',
+                                                step: '00:15',
+                                                end: '18:30'
+                                            }"
+                                            placeholder="Booking Star Time">
+                                        </el-time-select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="message_wrap flex">
                                 <div class="title al">Professional field</div>
@@ -91,21 +145,69 @@
 </template>
 
 <script>
+import { updateVetDetails, HospitalList } from "@/axios/request.js"
 export default {
     data () {
         return {
-            edit: true
+            edit: true,
+            hospitalName: '',
+            hospitalList: []
         }
     },
+    computed: {
+        userDetail () { return this.$store.state.user.userDetail }
+    },
+    created () {
+        this.getHospitalList()
+    },
     methods: {
+        getHospital (val) {
+            console.log(val)
+            this.userDetail.vetrtinaryHospitalId = val
+        },
         editBtn () {
             this.edit = false
         },
         saveBtn () {
+            this.update()
+            this.edit = true
+        },
+        cancelBtn () {
             this.edit = true
         },
         reset () {
             this.$router.push("/vetReset")
+        },
+        update () {
+            updateVetDetails(this.userDetail).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$store.dispatch("getUser")
+                    this.$message({
+                        type: "success",
+                        message: "Successfully changed!"
+                    })
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: "Change Failed!"
+                    })
+                }
+            }).catch(e => {
+                console.log(e)
+                this.$message({
+                    type: "error",
+                    message: "Change Failed!"
+                })
+            })
+        },
+        getHospitalList () {
+            HospitalList().then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.hospitalList = res.data.data
+                }
+            })
         }
     }
 }
@@ -117,6 +219,7 @@ export default {
         flex: 10;
         height: 100%;
         background: @content;
+        overflow: auto;
     }
     .setting_img {
         width: 37px;
@@ -142,30 +245,41 @@ export default {
     }
     .vetSetting_content_item_title {
         position: relative;
-        .edit, .save {
-            position: absolute;
-            right: 20px;
-            top: 10%;
-            width: 80px;
-            padding: 5px 0;
-            border-radius: 10px;
-        }
-        .edit {
-            background: @helpBtn;
-        }
-        .save {
-            background: @hdColor;
-        }
+    }
+    .edit, .alter {
+        position: absolute;
+        right: 20px;
+        top: 10%;
+        padding: 5px 0;
+        border-radius: 10px;
+    }
+    .edit {
+        background: @helpBtn;
+        width: 80px;
+    }
+    .save {
+        background: @hdColor;
+        width: 80px;
+        padding: 5px 0;
+        border-radius: 10px;
+    }
+    .cancel {
+        background: @helpBtn;
+        width: 80px;
+        border-radius: 10px;
+        padding: 5px 0;
+        margin-left: 5px;
     }
     .profile_message1 {
         width: 45%;
         padding-left: 60px;
         .address_child {
-            color: #333333;
-            font-size: 12px;
+            color: #7c7878;
+            // padding: 0 !important;
         }
         .message_wrap {
             width: 300px;
+            height: 69px;
             padding: 20px 0;
             .title{    
                 width: 260px;
@@ -175,13 +289,23 @@ export default {
             }
         }
     }
+    .option {
+        border: none;
+        outline: none;
+        height: 100%;
+    }
     .profile_message {
         width: 25%;
         .message_wrap {
             width: 300px;
             padding: 10px 0;
-            .title, .mean {    
+            .title {    
                 width: 250px;
+                height: 29px;
+            }
+            .mean  {
+                width: 210px;
+                height: 29px;
             }
         }
         .aboutMe {
@@ -204,5 +328,44 @@ export default {
         border-radius: 17px;
         color: white;
         padding: 7px 0;
+    }
+
+    .inp {
+        width: 140px;
+        border: solid 1px ;
+        border-radius: 10px;
+        overflow: hidden;
+        height: 29px;
+        input {
+            width: 100%;
+            border: none;
+            outline: none;
+        }
+    }
+    .timeInp_wrap {
+        width: 220px;
+        margin-top: 10px;
+    }
+    .timeInp {
+        width: 100px;
+        border: solid 1px;
+        border-radius: 10px;
+        overflow: hidden;
+        height: 29px;
+        input {
+            width: 100%;
+            border: none;
+            outline: none;
+        }
+    }
+    .address_inp {
+        width: 220px;
+        height: 29px;
+        border: solid 1px;
+        border-radius: 10px;
+        input {
+            outline: none;
+            border: none;
+        }
     }
 </style>

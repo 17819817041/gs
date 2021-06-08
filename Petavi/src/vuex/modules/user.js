@@ -1,4 +1,4 @@
-import { petList, getUserDetails, vetDetails } from "@/axios/request.js"
+import { petList, getUserDetails, vetDetails, doctorList, login } from "@/axios/request.js"
 import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 import Vue from "vue"
 export default {
@@ -6,6 +6,7 @@ export default {
         IMuser: {},
         login: false,
         petList:[],
+        // doctorList: [],
         callModal: false,
         callModal2: false,
         callTo: {},
@@ -92,7 +93,7 @@ export default {
                 vetDetails(data).then(res => {
                     console.log(res,"医生详情")
                     if (res.data.rtnCode == 200) {
-                        res.data.data.userImage = res.data.data.doctorImage
+                        res.data.data.userImage = res.data.data.headUr
                         res.data.data.userName = res.data.data.doctorName
                         store.commit("setUser",{ key: "userDetail", value: res.data.data }) 
                         store.commit("setUser",{ key: "login", value: true }) 
@@ -180,8 +181,27 @@ export default {
                 console.log(e)
             })
         },
-        updateDetails (store,data) {
-
-        }
+        // getDoctorList (store,data) {
+        //     const doctor = {
+        //         platform: localStorage.getItem("platform"),
+        //         userId: localStorage.getItem("userId"),
+        //         pageNum:1,
+        //         pageSize: 10
+        //     }
+        //     doctorList(doctor).then(res => {
+        //         if (res.data.rtnCode == 200) {
+        //             console.log(res,"医生列表")
+        //             // this.doctorList = res.data.data.pageT
+        //             store.commit("setUser",{ key: "doctorList", value: res.data.data.pageT })
+        //         } else {
+        //             store.commit("setUser",{ key: "doctorList", value: [] })
+        //             this.$message.error('Fail to load !');
+        //         }
+        //     }).catch(e => {
+        //         console.log(e)
+        //         store.commit("setUser",{ key: "doctorList", value: [] })
+        //         this.$message.error('Fail to load !');
+        //     })
+        // }
     }
 }

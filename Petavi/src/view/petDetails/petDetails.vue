@@ -367,9 +367,7 @@ export default {
         }
     },
     created () {
-        // let arr = [1,2,3,1,5,6]
-        // arr.splice(-1,1)
-        // console.log(arr)
+        
     },
     computed: {
         petList: {

@@ -145,9 +145,14 @@ export default {
         }
     },
     created () {
-        
+        this.judge_login()
     },  
     methods: {
+        judge_login () {
+            if (localStorage.getItem("platform") == 2 && localStorage.getItem("Token") ) {
+                this.$router.replace("/customerhomepage")
+            }
+        },
         faceBook () {
             this.$store.dispatch("login", {'vm': this} )
         },

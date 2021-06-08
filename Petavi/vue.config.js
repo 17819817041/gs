@@ -3,6 +3,7 @@ module.exports = {
     lintOnSave: false,
     devServer: {
         // https: true,
+		// host: '192.168.1.105',
 		hot:true,
         proxy: {
 			"api": {

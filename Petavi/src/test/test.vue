@@ -68,9 +68,44 @@ export default {
         IMuser () { return this.$store.state.user.IMuser }
     },
     created () {
-        
+        this.message()
     },
     methods: {
+        message () {
+            // let msg = new WebIM.message('txt', id);
+            // msg.set(option);                //消息内容option，下面会有详细介绍
+            // msg.setChatType('groupChat');   //用于设置当前聊天模式为单聊、群聊（groupChat）、聊天室（chatRoom），不设置默认为单聊
+
+            let id = this.$conn.getUniqueId();                 // 生成本地消息id
+            let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+            msg.set({
+                msg: 'message content',                  // 消息内容
+                to: '322_2',                          // 接收消息对象（用户id）
+                chatType: 'singleChat',                  // 设置为单聊
+                ext: {
+                    // key: value,
+                    // key2: {
+                    //     key3: value2
+                    // }
+                },                                  //扩展消息
+                success: function (id, serverMsgId) {
+                    console.log('send private text Success',id,serverMsgId);  
+                }, 
+                fail: function(e){
+                    // 失败原因:
+                    // e.type === '603' 被禁言
+                    // e.type === '605' 群组不存在
+                    // e.type === '602' 不在群组或聊天室中
+                    // e.type === '504' 撤回消息时超出撤回时间
+                    // e.type === '505' 未开通消息撤回
+                    // e.type === '506' 没有在群组或聊天室白名单
+                    // e.type === '503' 未知错误
+                    console.log("Send private text error");  
+                }
+            });
+            this.$conn.send(msg.body);
+        },
+
         endCall () {
             this.$rtcCall.endCall()
         },
@@ -96,7 +131,7 @@ export default {
             let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
             msg.set({
                 msg: data,                  // 消息内容
-                to: 'a2',                          // 接收消息对象（用户id）
+                to: '322_2',                          // 接收消息对象（用户id）
                 chatType: 'singleChat',                  // 设置为单聊                        
                 success: function (id, serverMsgId) {
                     console.log('send private text Success');  

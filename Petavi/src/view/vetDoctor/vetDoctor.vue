@@ -1,189 +1,65 @@
 <template>
     <div class="myvetDoctor flex">
         <div class="vetDoctorList noBar">
-            <div class="width102 clear">
-                <div class="vetDoctor_item float">
+            <div class="width102 clear" v-if="!loading">
+
+                <div class="doctor_item float" v-for="(item) in doctorList" :key="item.doctorId" @click="getDetail(item)">
                     <div class="image flex">
-                        <div class="vetDoctor_head">
-                            <img src="@/assets/img/head.png" alt="">
+                        <div class="doctor_head">
+                            <div class="item_head ju al">
+                                <el-image style="height:60px;width:60px" :src="item.userHead" alt="" fit="cover">
+                                    <div slot="error" class="image-slot ju al" style="height: 100%;width:100%">
+                                        <i class="el-icon-picture-outline" style="font-size:35px;color:gray"></i>
+                                    </div>
+                                </el-image>
+                            </div>
                             <div class="grade white al size12b">
-                                <img src="@/assets/img/rate.png" alt="">{{grade}}
+                                <img src="@/assets/img/rate.png" alt="">{{item.baseScore}}
                             </div>
                         </div>
                         <div class="about">
-                            <div class="size16">Dr. Sherley Billman</div>
-                            <div class="size14">General Obstetrics & Gynecology</div>
-                            <div class="size12a al">
-                                <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
-                                0.8 km away
+                            <div class="size16" v-if="item.doctorName">{{item.doctorName}}</div>
+                            <div class="size16" v-else>No Name</div>
+                            <div class="size_12 al">
+                                <img class="location_img" style="padding-right:5px" src="@/assets/img/location.png" alt="">
+                                {{item.addressName}}
                             </div>
                         </div>
                     </div>
                     <div class="workTime al sb">
                         <div>
-                            <div class="size_12">Experience</div>
-                            <div><span class="size16">20</span> <span class="size_12"> Years</span></div>
+                            <div class="size14">Experience</div>
+                            <div><span class="size16">{{item.experience}}</span> <span class="size14"> Years</span></div>
                         </div>
                         <div>
-                            <div class="size_12">Likes</div>
-                            <div><span class="size16">125</span><span class="size_12"> (40%)</span></div>
+                            <div class="size14">Likes</div>
+                            <div><span class="size16">{{item.totalLike}}</span><span class="size14"> ({{item.likingRate}}) </span></div>
                         </div>
                         <div class="call">
                             <el-button class="callBtn width100" type="primary">Call</el-button>
                         </div>
                     </div>
                 </div>
-                <div class="vetDoctor_item float">
-                    <div class="image flex">
-                        <div class="vetDoctor_head">
-                            <img src="@/assets/img/head.png" alt="">
-                            <div class="grade white al size12b">
-                                <img src="@/assets/img/rate.png" alt="">{{grade}}
-                            </div>
-                        </div>
-                        <div class="about">
-                            <div class="size16">Dr. Sherley Billman</div>
-                            <div class="size14">General Obstetrics & Gynecology</div>
-                            <div class="size12a al">
-                                <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
-                                0.8 km away
-                            </div>
-                        </div>
-                    </div>
-                    <div class="workTime al sb">
-                        <div>
-                            <div class="size_12">Experience</div>
-                            <div><span class="size16">20</span> <span class="size_12"> Years</span></div>
-                        </div>
-                        <div>
-                            <div class="size_12">Likes</div>
-                            <div><span class="size16">125</span><span class="size_12"> (40%)</span></div>
-                        </div>
-                        <div class="call">
-                            <el-button class="callBtn width100" type="primary">Call</el-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="vetDoctor_item float">
-                    <div class="image flex">
-                        <div class="vetDoctor_head">
-                            <img src="@/assets/img/john.png" alt="">
-                            <div class="grade white al size12b">
-                                <img src="@/assets/img/rate.png" alt="">{{grade}}
-                            </div>
-                        </div>
-                        <div class="about">
-                            <div class="size16">Dr. Sherley Billman</div>
-                            <div class="size14">General Obstetrics & Gynecology</div>
-                            <div class="size12a al">
-                                <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
-                                0.8 km away
-                            </div>
-                        </div>
-                    </div>
-                    <div class="workTime al sb">
-                        <div>
-                            <div class="size_12">Experience</div>
-                            <div><span class="size16">20</span> <span class="size_12"> Years</span></div>
-                        </div>
-                        <div>
-                            <div class="size_12">Likes</div>
-                            <div><span class="size16">125</span><span class="size_12"> (40%)</span></div>
-                        </div>
-                        <div class="call">
-                            <el-button class="callBtn width100" type="primary">Call</el-button>
-                        </div>
-                    </div>
-                </div>
-                <div class="vetDoctor_item float">
-                    <div class="image flex">
-                        <div class="vetDoctor_head">
-                            <img src="@/assets/img/smile.png" alt="">
-                            <div class="grade white al size12b">
-                                <img src="@/assets/img/rate.png" alt="">{{grade}}
-                            </div>
-                        </div>
-                        <div class="about">
-                            <div class="size16">Dr. Sherley Billman</div>
-                            <div class="size14">General Obstetrics & Gynecology</div>
-                            <div class="size12a al">
-                                <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
-                                0.8 km away
-                            </div>
-                        </div>
-                    </div>
-                    <div class="workTime al sb">
-                        <div>
-                            <div class="size_12">Experience</div>
-                            <div><span class="size16">20</span> <span class="size_12"> Years</span></div>
-                        </div>
-                        <div>
-                            <div class="size_12">Likes</div>
-                            <div><span class="size16">125</span><span class="size_12"> (40%)</span></div>
-                        </div>
-                        <div class="call">
-                            <el-button class="callBtn width100" type="primary">Call</el-button>
-                        </div>
-                    </div>
-                </div>
-                <!-- <div class="vetDoctor_item float">
-                    <div class="image flex">
-                        <div class="vetDoctor_head">
-                            <img src="@/assets/img/customerHead.png" alt="">
-                            <div class="grade white al size12b">
-                                <img src="@/assets/img/rate.png" alt="">{{grade}}
-                            </div>
-                        </div>
-                        <div class="about">
-                            <div class="size16">Dr. Sherley Billman</div>
-                            <div class="size14">General Obstetrics & Gynecology</div>
-                            <div class="size12a al">
-                                <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
-                                0.8 km away
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-                <div class="vetDoctor_item float">
-                    <div class="image flex">
-                        <div class="vetDoctor_head">
-                            <img src="@/assets/img/female.png" alt="">
-                            <div class="grade white al size12b">
-                                <img src="@/assets/img/rate.png" alt="">{{grade}}
-                            </div>
-                        </div>
-                        <div class="about">
-                            <div class="size16">Dr. Sherley Billman</div>
-                            <div class="size14">General Obstetrics & Gynecology</div>
-                            <div class="size12a al">
-                                <img style="padding-right:5px" src="@/assets/img/location.png" alt="">
-                                0.8 km away
-                            </div>
-                        </div>
-                    </div>
-                    <div class="workTime al sb">
-                        <div>
-                            <div class="size_12">Experience</div>
-                            <div><span class="size16">20</span> <span class="size_12"> Years</span></div>
-                        </div>
-                        <div>
-                            <div class="size_12">Likes</div>
-                            <div><span class="size16">125</span><span class="size_12"> (40%)</span></div>
-                        </div>
-                        <div class="call">
-                            <el-button class="callBtn width100" type="primary">Call</el-button>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
+            <div v-else class="loading" v-loading="loading"></div>
         </div>
         <div class="vetDoctorDetails noBar">
             <div class="details_item mg">
-                <div class="head_image ju"><img src="@/assets/img/john.png" alt=""></div>
-                <div class="vetDoctor_name tc">Dr. Vinay Misra</div>
+                <div class="head_image mg ju">
+                    <el-image style="height:80px" :src="detail.userHead" alt="" fit="cover">
+                        <div slot="error" class="image-slot al" style="height: 100%;width:100%">
+                            <i class="el-icon-picture-outline" style="font-size:40px;color:gray"></i>
+                        </div>
+                    </el-image>
+                </div>
+
+                <div class="vetDoctor_name tc" v-if="detail.doctorName">{{detail.doctorName}}</div>
+                <div class="vetDoctor_name tc" v-else>Name</div>
+
                 <div class="size15 tc">General Obstetrics </div>
                 <div class="star ju">
-                    <el-rate class="Rate" v-model="rate" @change="getRate"></el-rate>
+                    <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
                 </div>
                 <div class="relation ju">
                     <div class="cursor"><img src="@/assets/img/chat.png" alt=""></div>
@@ -197,12 +73,12 @@
                 <div class="reviews sb">
                     <div>
                         <div class="size15">Experience</div>
-                        <div class="size16">8+ years</div>
+                        <div class="size16">{{detail.experience}}+ years</div>
                     </div>
                     <div class="xian"></div>
                     <div class="tc likes">
                         <div class="size15">Likes</div>
-                        <div><span class="size16">125</span><span class="size15">(80%)</span></div>
+                        <div><span class="size13">{{detail.totalLike}}</span><span class="size12"> ({{detail.likingRate}})</span></div>
                     </div>
                     <div class="xian"></div>
                     <div style="text-align:end">
@@ -247,6 +123,7 @@
 </template>
 
 <script>
+import { doctorList } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -259,10 +136,57 @@ export default {
             weight: "33.5kg",
             grade:4.5,
             change:true,
-            rate:null
+            rate:null,
+            doctorList: [],
+            detail: {},
+            rate: 0,
+            loading: true
         }
     },
+    created () {
+        this.getDoctorList()
+    },
+    conputed: {
+        
+    },
     methods: {
+        getDoctorList () {
+            const doctor = {
+                platform: localStorage.getItem("platform"),
+                userId: localStorage.getItem("userId"),
+                pageNum:1,
+                pageSize: 10
+            }
+            doctorList(doctor).then(res => {
+                if (res.data.rtnCode == 200) {
+                    console.log(res,"医生列表")
+                    this.doctorList = res.data.data.pageT
+                    this.loading = false
+                } else {
+                    this.doctorList = []
+                    this.loading = false
+                    this.$message.error('Fail to load !');
+                }
+            }).catch(e => {
+                console.log(e)
+                this.doctorList = []
+                this.loading = false
+                this.$message.error('Fail to load !');
+            })
+        },
+        getDetail (item) {
+            console.log(item)
+            if (item.doctorName == null) {
+                item.doctorName = 'No name'
+            }
+            console.log(item)
+            this.detail = item
+            this.rate = this.detail.baseScore
+            this.$store.commit("setUser",{    //医生首拨电话
+                key: "mask",
+                value: item
+            })
+        },
         edit () {
             this.change = !this.change
         },
@@ -270,9 +194,6 @@ export default {
             this.$router.push({
                 name:'petmessage'
             })
-        },
-        getRate (val) {
-            console.log(val)
         },
         toVideo () {
             this.$router.push('/agora')
@@ -288,6 +209,7 @@ export default {
 @import "@/less/css.less";
 .myvetDoctor {
     height: 100%;
+    width: 100%;
 }
     .vetDoctorList {
         width: 74%;      //医生列表
@@ -308,6 +230,13 @@ export default {
         @media screen and (max-width:1000px) {
             width: 40%;
         }
+    }
+    .head_image {
+        width: 80px;
+        height: 80px;
+        border: solid gray 1px;
+        border-radius: 50%;
+        overflow: hidden;
     }
     .size_12 {
         font-size: 12px;
@@ -358,6 +287,40 @@ export default {
         //     width: 80%;
         //     margin: 0 3.5% 5px 8.5%;
         // }
+    }
+    .doctor_item {
+        width: 30.33%;
+        box-shadow: 0 2px 1px 1px #D5D5D5;
+        margin: 0 3% 5px 0;
+        padding: 15px 14px;
+        transition: 0.25s;
+        // @media screen and (max-width:1620px) {
+        //     width: 46%;
+        //     margin: 0 3.5% 5px 0.5%;
+        // }
+        @media screen and (max-width:1000px) {
+            width: 37%;
+            margin: 0 3.5% 5px 6.5%;
+        }
+    }
+    .doctor_head {
+        position: relative;
+        .item_head {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: solid rgb(216, 214, 214) 1px;
+            overflow: hidden;
+        }
+        .grade {
+            position: absolute;
+            left: 50%;
+            top: 111%;
+            transform: translate(-50%,0);
+            background: @helpBtn;
+            padding: 3px 6px;
+            border-radius: 3px;
+        }
     }
     .workTime {
         margin-top: 45px;
@@ -428,7 +391,7 @@ export default {
         }
     }
     .toVideo {
-        width: 80%;
+        width: 60%;
         margin: auto;
     }
     .reviews {
@@ -466,6 +429,10 @@ export default {
         .child img {
             padding-right: 7px;
         }
+    }
+    .loading {
+        width: 100%;
+        height: 45%;
     }
     .Rate {
         transform: scale(1.3);

@@ -56,7 +56,7 @@
 
                 <div class="size15 tc">General Obstetrics </div>
                 <div class="star ju">
-                    <el-rate class="Rate" v-model="rate"></el-rate>
+                    <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
                 </div>
                 <div class="relation ju">
                     <div class="cursor"><img src="@/assets/img/chat.png" alt=""></div>
@@ -75,7 +75,7 @@
                     <div class="xian"></div>
                     <div class="tc likes">
                         <div class="size12 al">Likes</div>
-                        <div al><span class="size13">{{detail.totalLike}}</span><span class="size12"> ({{detail.likingRate}})</span></div>
+                        <div><span class="size13">{{detail.totalLike}}</span><span class="size12"> ({{detail.likingRate}})</span></div>
                     </div>
                     <div class="xian"></div>
                     <div style="text-align:end">

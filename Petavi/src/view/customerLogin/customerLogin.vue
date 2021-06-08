@@ -145,6 +145,9 @@ export default {
             }
         }
     },
+    created () {
+        this.judge_login()
+    },
     computed: {
         login: {
             get () { return this.$store.state.user.login },
@@ -157,6 +160,11 @@ export default {
         }
     },
     methods: {
+        judge_login () {
+            if (localStorage.getItem("platform") == 1 && localStorage.getItem("Token") ) {
+                this.$router.replace("/customerhomepage")
+            }
+        },
         SignUp () {
             this.$router.push({
                 name: "signUp",

@@ -168,7 +168,7 @@
 <template>
     <div class="headerLogoPage">
         <div class="logo">
-            <img class="logo_IMG" src="@/assets/img/logo.png" alt=""> <!-- @click="test"-->
+            <img class="logo_IMG" src="@/assets/img/logo.png" alt="" @click="test"> 
 
             <img :class="[ {rotate: rotate},'list_img' ]" src="@/assets/img/list.png" alt="" @click="showDetails">
         </div>

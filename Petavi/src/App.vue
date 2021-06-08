@@ -262,6 +262,21 @@ export default {
 	}
 
 
+	.person .el-input__inner {
+		background: white !important;
+	}
+	.person .el-icon-time, .person .el-input__suffix {
+		display: none !important;
+	}
+	.person .el-input__inner {
+		height: 100% !important;
+		background: white !important;
+	}
+	.person .el-input--suffix {
+		height: 100% !important;
+	}
+
+
 
 	.float {
 		float: left;

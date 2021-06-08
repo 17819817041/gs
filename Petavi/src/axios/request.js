@@ -126,13 +126,21 @@ export function vetDetails (data) {      //医生详情
     )
 }
 
-
 export function updateVetDetails (data) {      //修改医生详情
     return request(
         {
             url: "/doctorDetails/updateDoctorDetails",
             method: "POST",
             params: data
+        }
+    )
+}
+
+export function HospitalList (data) {                    //兽医院列表
+    return request(
+        {
+            url: "/VeterinaryHospital/getVeterinaryHospitalList",
+            method: "GET"
         }
     )
 }
