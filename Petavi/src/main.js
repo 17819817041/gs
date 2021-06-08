@@ -36,6 +36,6 @@ import Agora from "@/assets/js/Agora.js"
 Vue.prototype.$V = Agora
 
 import element from "element-ui"
-// import 'element-ui/lib/theme-chalk/index.css';
+// import 'element-ui/lib/theme-chalk/index.css'; 
 import "@/assets/theme/index.css"
 Vue.use(element)
