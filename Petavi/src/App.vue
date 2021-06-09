@@ -131,7 +131,6 @@ export default {
 		padding: 0;
 		margin: 0;
 		height: 100%;
-
 	}
 	#app {
 		height: 100%;
@@ -276,6 +275,14 @@ export default {
 		height: 100% !important;
 	}
 
+
+	.day_time .el-input__inner {
+		padding: 0 !important;
+		text-align: center !important;
+	}
+	.day_time .el-input__suffix {
+		display: none !important;
+	}
 
 
 	.float {

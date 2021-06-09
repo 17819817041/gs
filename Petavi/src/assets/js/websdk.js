@@ -29,7 +29,6 @@ conn.listen({
     onTextMessage: function ( e ) {
         console.log("收到消息", e)
     },    //收到文本消息
-    
 });
 
 var options = { 

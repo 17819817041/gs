@@ -38,7 +38,7 @@
                             <p>uuid: {{IMuser.uuid}}</p>
                             <el-button class="width100" type="primary" @click="login2">登录</el-button>
                             <el-button class="width100" type="primary" @click="logout">登出</el-button>
-                            <el-button type="info" >发送消息</el-button>
+                            <el-button type="info" @click="send1">发送消息</el-button>
                             <el-button type="info" >拨打电话</el-button>
                             <el-button type="info" @click="acceptCall">接听电话</el-button>
                             <el-button type="info" @click="endCall">挂断电话</el-button>
@@ -51,6 +51,9 @@
 
         <video id="localVideo"></video>
         <video id="video"></video>
+
+        <div class="wrap" ref="vetChat">
+        </div>
     </div>
 </template>
 
@@ -68,9 +71,37 @@ export default {
         IMuser () { return this.$store.state.user.IMuser }
     },
     created () {
-        this.message()
+        // this.message()
+        this.listens()
     },
     methods: {
+        listens () {
+            console.log(1)
+            let that = this
+            this.$conn.listen({
+                onTextMessage: function ( e ) {
+                    console.log("对方发来消息", e)
+                    that.createItem()
+                },    //收到文本消息
+            });
+        },
+        createItem () {
+            var div = document.createElement("span")
+            div.innerHTML = '6666666666666666666666666666666666666666666666666'
+            div.style.background = "#F3F3F3"
+            div.style.border = 'solid 1px'
+            div.style.borderRadius = '0 12px 12px 12px'
+            div.style.padding = '3px 10px'
+            div.style.marginLeft = "10px"
+            this.$refs.vetChat.appendChild(div)
+            console.log(div.offsetWidth)
+            if (div.offsetWidth >= 350) {
+                div.style.display=  'block'
+                div.style.width = '80%'
+                div.style.wordBreak = 'break-word';
+            }
+        },
+
         message () {
             // let msg = new WebIM.message('txt', id);
             // msg.set(option);                //消息内容option，下面会有详细介绍
@@ -132,6 +163,42 @@ export default {
             msg.set({
                 msg: data,                  // 消息内容
                 to: '322_2',                          // 接收消息对象（用户id）
+                chatType: 'singleChat',   // 设置为单聊
+                ext: {
+                    key: "123",
+                    key2: {
+                        key3: 321
+                    }
+                } ,                                    
+                success: function (id, serverMsgId) {
+                    console.log('send private text Success');  
+                }, 
+                fail: function(e){
+                    // 失败原因:
+                    // e.type === '603' 被禁言
+                    // e.type === '605' 群组不存在
+                    // e.type === '602' 不在群组或聊天室中
+                    // e.type === '504' 撤回消息时超出撤回时间
+                    // e.type === '505' 未开通消息撤回
+                    // e.type === '506' 没有在群组或聊天室白名单
+                    // e.type === '503' 未知错误
+                    console.log("Send private text error");  
+                }
+            });
+            this.$conn.send(msg.body);
+            // this.listens()
+        },
+        send1 () {
+            
+            let data = {
+                type: "danmu",
+                value: "hhhhhhhhhhhhh"
+            }
+            let id = this.$conn.getUniqueId();                 // 生成本地消息id
+            let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+            msg.set({
+                msg: data.value,                  // 消息内容
+                to: '430_1',                          // 接收消息对象（用户id）
                 chatType: 'singleChat',                  // 设置为单聊                        
                 success: function (id, serverMsgId) {
                     console.log('send private text Success');  
@@ -149,6 +216,7 @@ export default {
                 }
             });
             this.$conn.send(msg.body);
+            // this.listens()
         },
         login1 () {
             var that = this
@@ -202,5 +270,11 @@ export default {
     }
     video {
         border:solid;
+    }
+    .wrap {
+        width: 400px;
+        height: 400px;
+        border: solid 1px;
+
     }
 </style>

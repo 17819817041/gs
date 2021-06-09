@@ -40,6 +40,7 @@
             bottom: 0px;
             right: 0px;
             z-index: 100;
+            // background: black;
         }
         .answer {
             position: absolute;
@@ -58,7 +59,7 @@
 
     }
     .about_me {
-        padding: 40px 0 28px 0;
+        padding: 30px 0 28px 0;
         // @media screen and (max-width: 1300px) {
         //     transform: scale(0.9,0.6);
         // }
@@ -105,27 +106,66 @@
         overflow : hidden; 
         word-break: break-all;/*在任何地方换行*/
     }
+    .chat_user {
+        width: 95%;
+        border: solid 1px #ddd9d9;
+        border-bottom: none;
+        margin-top: 60px;
+        box-shadow: 0 -1px 2px 1px rgb(219, 217, 217);
+        .INP {
+            width: 100%;
+            padding: 7px 0;
+            border-top: solid 1px rgb(212, 203, 203);
+            border-bottom: solid 1px rgb(196, 190, 190);
+        }
+        .user_content {
+            width: 100%;
+            height: 520px;
+            transform: rotateY(180deg);
+        }
+    }
     .chat {
         width: 95%;
-        height: 200px;
-        border: solid 1px #EEEEEE;
-        margin-top: 100px;
+        border: #E9E9E9 solid 2px;
+        border-bottom: none;
+        margin-top: 10px;
+        position: relative;
+        // box-shadow: 0 -1px 2px 1px rgb(219, 217, 217);
+        .INP {
+            // position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 7px 0;
+            border-top: solid 1px rgb(212, 203, 203);
+            border-bottom: solid 1px rgb(196, 190, 190);
+        }
+    }
+    .INP_item {
+        width: 75%;
+        // height: 35px;
+        border: solid 1px rgb(185, 183, 183);
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    .send_img {
+        width: 15%;
+        img {
+            width: 55px;
+            height: 55px;
+        }
     }
     .userHead_img {
-        width: 60px;
-        height: 60px;
-        border: solid 1px gray;
+        width: 50px;
+        height: 50px;
+        border: solid 1px rgb(217, 223, 219);
         border-radius: 50%;
         overflow: hidden;
         background: white;
-        @media screen and (max-width: 1300px) {
-            width: 50px;
-            height: 50px;
-        }
+        margin-right: 5px;
     }
     .userHead {
-        width: 60px;
-        height: 60px;
+        height: 100%;
     }
     .docHead_img {
         width: 70px;
@@ -148,16 +188,19 @@
     .get_day {
         width: 100%;
     }
+    .day_time {
+        width: 15%;
+        border-radius: 15px;
+        height: 30px;
+        overflow: hidden;
+    }
     .time {
         background: #F3F3F3;
-        width: 30%;
-        padding: 5px 10px;
+        width: 25%;
         border-radius: 15px;
-        .min_arrow {
-            width: 11px;
-            height: 10px;
-            margin: 4px 0 0 4px;
-        }
+        overflow: hidden;
+        margin-left: 10px;
+        height: 30px;
     }
     .textarea {
         border-radius: 20px;
@@ -200,6 +243,15 @@
         overflow: auto;
         width: 100%;
     }
+    .wrap_message {
+        width: 100%;
+        height: 300px;
+    }
+    .message_item {
+        width: 100%;
+        height: 100%;
+        transform: rotateY(180deg);
+    }
 </style>
 
 <template>
@@ -234,30 +286,28 @@
 
             <div class="doctorMessage noBar">
                 <div class="about_me sb">
-                    <div class="myName sb al">
-                        <div>
+                    <div class="myName al">
+                        <div class="al" style="width:80%">
                             <div class="userHead_img ju al">
-                                <el-image class="userHead ju al" :src="userDetailMessage.userImage" alt="" fit="cover">
-                                    <div slot="error" class="image-slot al ju" style="height: 100%;width:100%">
-                                        <i class=" el-icon-picture-outline" style="font-size:30px;color:gray;"></i>
-                                    </div>
-                                </el-image>
+                                <!-- <img class="userHead" src="@/assets/img/john.png" alt=""> -->
+                                <img v-if="userDetailMessage.userImage" class="userHead" :src="userDetailMessage.userImage" alt="">
+                                <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i>
                             </div>
-                            <div class="tc" v-if="userDetailMessage.userName">{{userDetailMessage.userName}}</div>
+                            <div class="tc size14" v-if="userDetailMessage.userName">{{userDetailMessage.userName}}</div>
                             <div v-else class="tc" style="font-size:12px">No Name</div>
                         </div>
-                        <div><img style="width:17px;height:22px" src="@/assets/img/information.png" alt=""></div>
+                        <div><img style="width:17px;height:22px;margin-left:5px" src="@/assets/img/information.png" alt=""></div>
                     </div>
                     <div class="myOperation sb al">
                         <div class="outLogo size12 bold cursor al ju">Logout</div>
-                        <div class="helpAbout al ju">
+                        <div class="helpAbout cursor al ju">
                             <img src="@/assets/img/what.png" alt="">
                             Help & Support
                         </div>
                     </div>
                 </div>
                 <div v-if="platform == 1">
-                    <div class="atPresentDoctor sa">
+                    <div class="atPresentDoctor mg sa">
                         <div class="DOCTOR">
                             <div class="docHead_img mg ju">
                                 <el-image class="docHead al" :src="callToDoctor.userHead" alt="" fit="cover">
@@ -275,24 +325,41 @@
                     </div>
                     <div class="chat_user mg">
                         <!-- <img style="width:100%;height:100%" src="@/assets/img/chatPage.png" alt=""> -->
+                        <div class="user_content" ref="customerChat">
+
+                        </div>
+                        <div class="INP sa al">
+                            <div class="INP_item al ju"><el-input placeholder="Type a message" v-model="customerInp"></el-input></div>
+                            <div class="send_img al ju"><img class="cursor" src="@/assets/img/send.png" @click="customerSend" alt=""></div>
+                        </div>
                     </div>
                 </div>
                 <div v-else-if="platform == 2" >
                     <div class="atPresentDoctor mg">
                         <div>Medical Record</div>
                         <div style="padding:13px 0">Date</div>
-                        <div class="get_day sb">
-                            <div class="time al ju">
-                                day
-                                <img class="min_arrow" src="@/assets/img/minarrow.png" alt="">
+                        <div class="get_day flex">
+                            <div class="day_time ju al">
+                                <!-- day
+                                <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
+                                <el-select v-model="day" placeholder="Day">
+                                    <el-option v-for="(item,i) in daySelect" :key="i" :value="item"></el-option>
+                                </el-select>
                             </div>
                             <div class="time al ju">
-                                month
-                                <img class="min_arrow" src="@/assets/img/minarrow.png" alt="">
+                                <!-- month
+                                <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
+
+                                <el-select v-model="month" placeholder="Month" @change="chooseMonth">
+                                    <el-option v-for="(item,i) in monthSelect" :key="i" :label="item.label" :value="item.value"></el-option>
+                                </el-select>
                             </div>
                             <div class="time al ju">
-                                year
-                                <img class="min_arrow" src="@/assets/img/minarrow.png" alt="">
+                                <!-- year
+                                <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
+                                <el-select v-model="years" placeholder="Year">
+                                    <el-option v-for="(item,i) in yearsSelect" :key="i" :value="item"></el-option>
+                                </el-select>
                             </div>
                         </div>
                         <div style="padding:25px 0 10px 0">Details</div>
@@ -300,15 +367,21 @@
                             <textarea name="" id="" cols="30" rows="10"></textarea>
                         </div>
                         <div class="button sb tc">
-                            <div class="save cursor">Save</div>
+                            <div class="save ju cursor al">Save</div>
                             <div class="sb tc">
-                                <div class="submit cursor">Submit</div>
+                                <div class="submit ju cursor al">Submit</div>
                                 <div><img class="clipImg cursor" src="@/assets/img/clip.png" alt=""></div>
                             </div>
                         </div>
                     </div>
                     <div class="chat mg">
-                        
+                        <div class="wrap_message">
+                            <div class="message_item" ref="vetChat"></div>
+                        </div>
+                        <div class="INP sa al">
+                            <div class="INP_item al ju"><el-input placeholder="Type a message" v-model="vetInp"></el-input></div>
+                            <div class="send_img al ju"><img class="cursor" @click="vetSend" src="@/assets/img/send.png" alt=""></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -334,7 +407,28 @@ export default {
             // }
             platform: localStorage.getItem("platform"),
             callToDoctor: {},
-            userDetailMessage: {}
+            userDetailMessage: {},
+            years: '',
+            yearsSelect: [],
+            day: '',
+            daySelect: [],
+            month: '',
+            monthSelect: [ 
+                { label: 'Jan', value: '1' }, 
+                { label: 'Feb', value: '2' }, 
+                { label: 'Mar', value: '3' }, 
+                { label: 'Apr', value: '4' }, 
+                { label: 'May', value: '5' }, 
+                { label: 'Jun', value: '6' }, 
+                { label: 'Jul', value: '7' }, 
+                { label: 'Aug', value: '8' }, 
+                { label: 'Sep', value: '9' }, 
+                { label: 'Oct', value: '10' }, 
+                { label: 'Nov', value: '11' }, 
+                { label: 'Dec', value: '12' }, 
+            ],
+            customerInp: '',
+            vetInp: ""
         }
     },
     mounted () {
@@ -345,10 +439,10 @@ export default {
         },10)
     },
     created () {
-        console.log(this.callTo,"callTo")
-        console.log(this.userDetail,"userDetail")
         this.callToDoctor = this.callTo
         this.userDetailMessage = this.userDetail
+        this.getDay()
+        this.listens()
     },
     computed: {
         remoteStream () { return this.$store.state.app.remoteStream },
@@ -369,21 +463,183 @@ export default {
             video1.srcObject = this.remoteStream;
             video1.play()
         },
-        // edit () {
-        //     this.change = !this.change
-        // },
-        // petList () {
-        //     this.show = !this.show
-        //     this.rotate = !this.rotate
-        // },
-        // setting () {
-        //     setTimeout(() => {
-        //         this.$router.push("/setting")
-        //     })
-        // },
-        // petDetails () {
-        //     this.$router.push("/petDetails")
-        // },
+        getDay () {
+            // let month = new Date().getMonth() + 1      //获取月份
+            // let Day = new Date(2021,month,0).getDate()//  获取每月天数
+            for (let i=1;i<=31;i++) {
+                this.daySelect.push(i)
+            }
+            for (let i=1;i<10;i++) {
+                this.yearsSelect.push('202' + i)
+            }
+        },
+        chooseMonth (val) {
+            this.judge_month = val
+            let Day = new Date(2021,this.judge_month,0).getDate()//  获取每月天数
+            this.daySelect = []
+            for (let i=1;i<=Day;i++) {
+                this.daySelect.push(i)
+            }
+            if (this.day > this.daySelect.length) {
+                this.day = this.daySelect.length
+            }
+        },
+        
+        customerSend () {
+            this.createdCustomerMessage()
+            let data = {
+                type: "danmu",
+                value: this.customerInp
+            }
+            let id = this.$conn.getUniqueId();                 // 生成本地消息id
+            let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+            msg.set({
+                msg: data.value,                  // 消息内容
+                to: '322_2',                          // 接收消息对象（用户id）
+                chatType: 'singleChat',                  // 设置为单聊                        
+                success: function (id, serverMsgId) {
+                    console.log('send private text Success');  
+                }, 
+                fail: function(e){
+                    // 失败原因:
+                    // e.type === '603' 被禁言
+                    // e.type === '605' 群组不存在
+                    // e.type === '602' 不在群组或聊天室中
+                    // e.type === '504' 撤回消息时超出撤回时间
+                    // e.type === '505' 未开通消息撤回
+                    // e.type === '506' 没有在群组或聊天室白名单
+                    // e.type === '503' 未知错误
+                    console.log("Send private text error");  
+                }
+            });
+            this.$conn.send(msg.body);
+        },
+        createdCustomerMessage () {                 //客户输入内容并且发送
+            var name = document.createElement('div')
+            var msg = document.createElement("span")
+            name.innerHTML = this.userDetailMessage.userName
+            name.style.margin = 'auto'
+            name.style.width = '95%'
+            name.style.textAlign = 'end'
+            name.style.transform = `rotateY(${ 180 + 'deg'})`
+            
+            msg.innerHTML = this.customerInp
+            msg.style.background = "rgb(47,187,240)"
+            msg.style.borderRadius = '12px 12px 0px 12px'
+            msg.style.padding = '3px 10px'
+            msg.style.marginLeft = "10px"
+            msg.style.display = 'inline-block'
+            msg.style.transform = `rotateY(${ 180 + 'deg' })`
+            
+            this.$refs.customerChat.appendChild(name)
+            this.$refs.customerChat.appendChild(msg)
+            if (msg.offsetWidth >= 350) {
+                msg.style.display = 'inline-block'
+                msg.style.width = '80%'
+                msg.style.wordBreak = 'break-word';
+            }
+        },
+
+        listens () {
+            console.log(1)
+            let that = this
+            this.$conn.listen({
+                onTextMessage: function ( e ) {
+                    console.log("对方发来消息", e)
+                    that.createItem(e)
+                },    //收到文本消息
+            });
+        },
+        
+        createItem (data) {
+            var wrap = document.createElement('div')
+            var name = document.createElement('div')
+            var msg = document.createElement("span")
+            wrap.style.width = '100%'
+            wrap.style.transform = `rotateY(${ 180 + 'deg' })`
+
+            name.innerHTML = data.from
+            name.style.margin = 'auto'
+            name.style.width = '95%'
+            // name.style.transform = `rotateY(${ 180 + 'deg'})`
+
+            msg.innerHTML = data.data
+            msg.style.background = "rgb(47,187,240)"
+            msg.style.borderRadius = '0px 12px 12px 12px'
+            msg.style.padding = '3px 10px'
+            msg.style.marginLeft = "10px"
+            msg.style.display = 'inline-block'
+            // msg.style.transform = `rotateY(${ 180 + 'deg'})`
+            if (localStorage.getItem("platform") == 2) {
+                this.$refs.vetChat.appendChild(wrap)
+            } else if (localStorage.getItem("platform") == 1) {
+                this.$refs.customerChat.appendChild(wrap)
+            }
+            
+            wrap.appendChild(name)
+            wrap.appendChild(msg)
+            
+            if (msg.offsetWidth >= 350) {
+                msg.style.display = 'inline-block'
+                msg.style.width = '80%'
+                msg.style.wordBreak = 'break-word';
+            }
+        },
+
+        createdVetMessage () {                                    //兽医输入内容并且发送
+            var name = document.createElement('div')
+            var msg = document.createElement("span")
+            name.innerHTML = this.userDetailMessage.userName
+            name.style.margin = 'auto'
+            name.style.width = '95%'
+            name.style.textAlign = 'end'
+            name.style.transform = `rotateY(${ 180 + 'deg' })`
+            
+            msg.innerHTML = this.vetInp
+            msg.style.background = "rgb(47,187,240)"
+            msg.style.borderRadius = '12px 12px 0px 12px'
+            msg.style.padding = '3px 10px'
+            msg.style.marginLeft = "10px"
+            msg.style.display = 'inline-block'
+            msg.style.transform = `rotateY(${ 180 + 'deg' })`
+            
+            this.$refs.vetChat.appendChild(name)
+            this.$refs.vetChat.appendChild(msg)
+            if (msg.offsetWidth >= 350) {
+                msg.style.display = 'inline-block'
+                msg.style.width = '80%'
+                msg.style.wordBreak = 'break-word';
+            }
+        },
+        vetSend () {
+            this.createdVetMessage()
+            let data = {
+                type: "danmu",
+                value: this.vetInp
+            }
+            let id = this.$conn.getUniqueId();                 // 生成本地消息id
+            let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+            msg.set({
+                msg: data.value,                  // 消息内容
+                to: '430_1',                          // 接收消息对象（用户id）
+                chatType: 'singleChat',                  // 设置为单聊                        
+                success: function (id, serverMsgId) {
+                    console.log('send private text Success');  
+                }, 
+                fail: function(e){
+                    // 失败原因:
+                    // e.type === '603' 被禁言
+                    // e.type === '605' 群组不存在
+                    // e.type === '602' 不在群组或聊天室中
+                    // e.type === '504' 撤回消息时超出撤回时间
+                    // e.type === '505' 未开通消息撤回
+                    // e.type === '506' 没有在群组或聊天室白名单
+                    // e.type === '503' 未知错误
+                    console.log("Send private text error");  
+                }
+            });
+            this.$conn.send(msg.body);
+        },
 
         
         // createClient () {
