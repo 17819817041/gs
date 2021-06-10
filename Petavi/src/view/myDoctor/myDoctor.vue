@@ -125,13 +125,6 @@ export default {
     data () {
         return {
             active:true,
-            petId:'0000001',
-            age:"2 yrs S mo",
-            breed:'Husky',
-            sex:"M",
-            neuteredStatus:'None',
-            weight: "33.5kg",
-            grade:4.5,
             change:true,
             rate:0,
             doctorList: [],

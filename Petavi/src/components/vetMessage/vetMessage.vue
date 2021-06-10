@@ -81,12 +81,7 @@
 export default {
     data () {
         return {
-            petId:'0000001',
-            age:"2 yrs S mo",
-            breed:'Husky',
-            sex:"M",
-            neuteredStatus:'None',
-            weight: "33.5kg",
+          
         }
     },
     mounted () {
@@ -97,13 +92,8 @@ export default {
     },
     
     methods: {
-        edit () {
-            this.change = !this.change
-        },
         setting () {
-            setTimeout(() => {
-                this.$router.push("/vetSetting")
-            })
+            this.$router.push("/vetSetting")
         },
         petDetails () {
             this.$router.push("/petDetails")

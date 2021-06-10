@@ -562,6 +562,7 @@ export default {
             name.style.margin = 'auto'
             name.style.width = '95%'
             // name.style.transform = `rotateY(${ 180 + 'deg'})`
+            name.style.marginBottom = '5px'
 
             msg.innerHTML = data.data
             msg.style.background = "rgb(47,187,240)"

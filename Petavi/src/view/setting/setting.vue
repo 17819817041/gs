@@ -476,10 +476,7 @@ export default {
 
 
         reset () {
-            this.loading = true
-            setTimeout(() => {
-                this.$router.push("/reset")
-            },1000)
+            this.$router.push("/reset")
         },
         edit () {
             this.editBtn = false

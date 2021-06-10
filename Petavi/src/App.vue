@@ -284,6 +284,17 @@ export default {
 		display: none !important;
 	}
 
+	.vetReset .el-input, .vetReset .el-input .el-input__inner {
+		border-radius: 4px;
+		background: #f2f2f2 !important;
+	}
+	.vetReset .el-input .el-input__inner::placeholder {
+		text-align: center !important;
+	}
+	.reset .el-input .el-input__inner::placeholder {
+		text-align: center !important;
+	}
+
 
 	.float {
 		float: left;

@@ -5,19 +5,8 @@
         
         <div class="form_select">
             <el-form label-position="top">
-                <el-form-item class="typeFlex tc">
-                    <div class="width30">
-                        <el-radio label="phone">
-                            <div class="phone">
-                                <div class="ju">
-                                    <img :class="['opacity',{ opacity1: way == 'phone' }]" src="@/assets/img/phoneWay.png" alt="" @click="phoneWay">
-                                </div>
-                            </div> 
-                        </el-radio>
-                        <div class="size13">Phone Consultation</div>
-                        <div class="size12">Min session 10 mins . $0.99 per/min</div>
-                    </div>
-                    <div class="width30">
+                <el-form-item class="typeFlex ju tc">
+                    <div style="margin-right:10px;">
                         <el-radio label="video">
                             <div class="video ju">
                                 <div>
@@ -28,7 +17,7 @@
                         <div class="size13">Video Consultation</div>
                         <div class="size12">Min session 15 mins . $1.99 per/min</div>
                     </div>
-                    <div class="width30">
+                    <div style="margin-left:10px;">
                         <el-radio label="visit">
                             <div class="visit mg">
                                 <div>
@@ -76,10 +65,10 @@
                             </el-time-select>
                         </div>
                         <div class="end_time">
-                            <!-- <el-select v-model="endTime"  placeholder="Booking End Time">
-                                <el-option v-for="(item,i) in endTimeSelect" :key="i" :value="item"></el-option>
-                            </el-select> -->
-                            <div :class="['arrow', { rotate: endRotate }]"></div>
+                            <el-select v-model="endTime"  placeholder="CONSULTATION TIME">
+                                <el-option v-for="(item,i) in endTimeSelect" :key="i" :label="item.label" :value="item.value"></el-option>
+                            </el-select>
+                            <!-- <div :class="['arrow', { rotate: endRotate }]"></div>
                             <el-time-select
                                 v-model="endTime"
                                 :picker-options="{
@@ -91,7 +80,7 @@
                                 @focus="endFocus"
                                 @blur="endBlur"
                                 placeholder="Booking End Time">
-                            </el-time-select>
+                            </el-time-select> -->
                         </div>
                     </div>
                 </el-form-item>
@@ -141,7 +130,11 @@ export default {
             starTime: '',
             starTimeSelect: [],
             endTime: '',
-            endTimeSelect: [],
+            endTimeSelect: [
+                {label: '30MIN',value: 1},
+                {label: '45MIN',value: 2},
+                {label: '60MIN',value: 3},
+            ],
             day: '',
             daySelect: [],
             month: '',
@@ -183,9 +176,6 @@ export default {
         petList () { return this.$store.state.user.petList }
     },
     methods: {
-        phoneWay () {
-            this.way = 'phone'
-        },
         videoWay () {
             this.way = 'video'
         },

@@ -103,7 +103,7 @@
                             </div>
                         </el-form-item>
                         <el-form-item>
-                            <div class="google cursor" @click="toLogin">
+                            <div class="google cursor" @click="googleLogin" ref="google">
                                 <el-button class="googleBtn width100" type="primary">
                                     <span class="span">Login with Google</span>
                                     <div class="googleImg">
@@ -129,7 +129,7 @@ export default {
             form: {
                 platform:1,
                 email:'1257354834@qq.com',
-                password:'123456'
+                password:'123456789'
 
                 // platform: 1,
                 // email:'',
@@ -160,6 +160,23 @@ export default {
         }
     },
     methods: {
+        attachSignin(element) {
+            gapi.load('auth2', function () {
+                auth2 = gapi.auth2.init({
+                    client_id: 'project-316410',  //第二步申请的客户端id
+                    cookiepolicy: "single_host_origin"
+                });
+                auth2.attachClickHandler(element, {},
+                    function (googleUser) {
+                    //获取用户信息     
+                    var profile = googleUser.getBasicProfile();
+                        console.log(profile);           
+                    }, function (error) {
+                        console.log(JSON.stringify(error, undefined, 2));
+                })
+            })
+            
+        },
         judge_login () {
             if (localStorage.getItem("platform") == 1 && localStorage.getItem("Token") ) {
                 this.$router.replace("/customerhomepage")
@@ -218,6 +235,10 @@ export default {
         },
         forget () {
             this.$router.push("/forgetPwd")
+        },
+        googleLogin () {
+            var dom = this.$refs.google
+            this.attachSignin(dom)
         }
     }
 }

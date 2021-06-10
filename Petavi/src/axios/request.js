@@ -144,3 +144,13 @@ export function HospitalList (data) {                    //兽医院列表
         }
     )
 }
+
+export function reset (data) {                        //重置密码
+    return request(
+        {
+            url: '/user/resetPassword',
+            method: "POST",
+            params: data
+        }
+    )
+}

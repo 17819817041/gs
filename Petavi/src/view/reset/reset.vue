@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { reset } from "@/axios/request.js";
 export default {
     data () {
         return {
@@ -37,6 +38,35 @@ export default {
     methods: {
         submit () {
             this.loading = true
+            var data = {
+                userId: localStorage.getItem("userId"),
+                oldPassword: this.currentPwd,
+                newPassword: this.newPwd,
+                platform: localStorage.getItem('platform')
+            }
+            reset(data).then(res => {
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: "Password changed successfully!"
+                    })
+                    // this.$router.replace('/customerhomepage')
+                } else {
+                    this.$message({
+                        type: "erroe",
+                        message: "Error in original password!"
+                    })
+                    this.loading = false
+                }
+                this.loading = false
+            }).catch(e => {
+                console.log(e)
+                this.$message({
+                    type: "erroe",
+                    message: "Error in original password!"
+                })
+                this.loading = false
+            })
         },
         forgetPwd () {
             this.$router.push("/forgetPwd")

@@ -31,6 +31,9 @@ Vue.prototype.$WebIM = WebIM
 Vue.prototype.$conn = conn
 Vue.prototype.$rtcCall = rtcCall
 
+import { google } from "@/assets/js/google.js"
+Vue.prototype.$google = google
+
 
 import Agora from "@/assets/js/Agora.js"
 Vue.prototype.$V = Agora

@@ -170,13 +170,11 @@ export default {
                             this.$store.dispatch("IMSignUp")
                             this.$router.push({
                                 name: "vethomepage",
-                                // query: {
-                                //     userId: null,
-                                //     platform:2
-                                // }
                             })
                             that.login = true
                             that.loading = false
+                        } else {
+                            this.loading = false
                         }
                     }).catch(e => {
                         console.log(e)
@@ -184,19 +182,6 @@ export default {
                     })
                 }
             })
-            
-
-            // this.loading = true
-            // setTimeout(() => {
-            //     this.$router.push("/petDetails")
-            //     this.$router.push({
-            //         name: "vethomepage",
-            //         query: {
-            //             userId: null,
-            //             platform:2
-            //         }
-            //     })
-            // },1000)
         },
         forget () {
             this.$router.push("/forgetPwd")
