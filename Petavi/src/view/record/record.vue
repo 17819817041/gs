@@ -37,6 +37,7 @@
         padding: 0 0 4px 30px !important;
     }
     .record_message1 {
+        margin-left: 60px;
         width: 50%;
         position: relative;
     }

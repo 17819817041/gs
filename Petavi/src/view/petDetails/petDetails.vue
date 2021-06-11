@@ -199,7 +199,7 @@
         <div class="customer_content flex">
             <div class="pet_message">
                 <div class="bold petMessage_title" @click="toPetMessage">Pet Details</div>
-                <div class="details_item size19 flex" v-for="(item,i) in petList" :key="i">
+                <div class="details_item size19 flex" v-for="(item,i) in petList" :key="item.id">
                     <div v-if="item.change" class="edit cursor tc" @click="edit(item,i)">Edit</div>
                     <div v-else class="wrap_save flex">
                         <div class="save cursor tc" @click="save(item,i)">Save</div>
@@ -359,8 +359,9 @@ export default {
             sex: null,
             breed:'Husky',
             status: '',
-            pageNum: 0,
+            pageNum: 1,
             pageSize: 100,
+            i: null
             // data: {
             //     petId: 13
             // }
@@ -476,8 +477,8 @@ export default {
         },
         edit (item,i) {
             item.change = false
+            console.log(item.change,i)
             this.i = i
-            console.log(this.petList[this.i])
             if (this.petList[this.i].gender == 1) {
                 this.sex = 'Male'
             } else if (this.petList[i].gender == 2) {

@@ -72,6 +72,7 @@
         overflow: auto;
     }
     .list_item {
+        display: block;
         width: 96%;
         padding: 2px;
         margin: 10px auto;
@@ -99,7 +100,7 @@
                 <img class="img1" @click="showPetList" v-show="!showList" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
                 <img class="img2" @click="showPetList" :class="[ 'cursor', {rotate1: rotate} ]" src="@/assets/img/arrow.png" alt="">
                 <div :class="['pet_list noBar', {height:show}]">
-                    <div class="list_item mg cursor" v-for="(item,i) in petList" :key="i">{{item.name}}</div>
+                    <div class="list_item mg cursor"  @click="cutPet(item)" v-for="(item,i) in petList" :key="i">{{item.name}}</div>
                 </div>
             </div>
             <div class="present_message noBar" @scroll="scroll">
@@ -122,6 +123,7 @@ export default {
             rotate: false,
             pageNum: 0,
             pageSize: 100,
+            pet: {}
         }
     },
     created () {
@@ -155,6 +157,10 @@ export default {
         nameList () { return this.$store.state.user.nameList }
     },
     methods: {
+        cutPet (item) {
+            console.log(item)
+            this.$store.commit("setUser", { key: "pet",value: item })
+        },
         scroll (val) {
             clearTimeout(this.timer)
             this.timer = setTimeout(() => {

@@ -35,6 +35,14 @@ import { google } from "@/assets/js/google.js"
 Vue.prototype.$google = google
 
 
+// import { facebook } from "@/assets/js/facebook.js"
+// Vue.prototype.$facebook = facebook
+
+import FBSignInButton from 'vue-facebook-signin-button'
+Vue.use(FBSignInButton)
+
+
+
 import Agora from "@/assets/js/Agora.js"
 Vue.prototype.$V = Agora
 

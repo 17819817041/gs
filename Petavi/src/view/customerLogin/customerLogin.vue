@@ -59,6 +59,14 @@
         height: calc(100% - 119px);
         overflow: auto;
     }
+    .fb-signin-button {
+        /* This is where you control how the button looks. Be creative! */
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 3px;
+        background-color: #4267b2;
+        color: #fff;
+    }
 </style>
 
 <template>
@@ -99,11 +107,18 @@
                         </el-form-item>
                         <el-form-item>
                             <div class="fackbook cursor white">
-                                <el-button class="facebookBtn width100" type="primary">Login with facebook</el-button>
+                                <!-- <el-button class="facebookBtn width100" type="primary">Login with facebook</el-button> -->
+                                <fb-signin-button
+                                    style="width: 100%"
+                                    :params="fbSignInParams"
+                                    @success="onSignInSuccess"
+                                    @error="onSignInError">
+                                    Sign in with Facebook
+                                </fb-signin-button>
                             </div>
                         </el-form-item>
                         <el-form-item>
-                            <div class="google cursor" @click="googleLogin" ref="google">
+                            <div class="google cursor" ref="google">
                                 <el-button class="googleBtn width100" type="primary">
                                     <span class="span">Login with Google</span>
                                     <div class="googleImg">
@@ -117,6 +132,10 @@
                 </div>
             </div>
         </div>
+        <!-- <iframe src="https://www.google.com/calendar/embed?showTitle=0&amp;height=600&amp;wkst=1&amp;hl=en&amp;bgcolor=%23FFFFFF&amp;
+        src=liangrenwei%40gmail.com&amp;color=%23BE6D00&amp;src=p%23weather%40group.v.calendar.google.com&amp;color=%23A32929&amp;ctz=America%2FToronto" 
+        style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe> -->
+
     </div>
 </template>
 
@@ -126,6 +145,11 @@ export default {
     data () {
         return {
             loading:false,
+            goo: '',
+            fbSignInParams: {
+                scope: 'email,user_likes',
+                return_scopes: true
+            },
             form: {
                 platform:1,
                 email:'1257354834@qq.com',
@@ -142,11 +166,23 @@ export default {
                 password: [
                     { required: true, message:'Please enter your password', trigger:'blur' }
                 ]
-            }
+            },
         }
     },
     created () {
         this.judge_login()
+    },
+    mounted () {
+        let that = this
+        gapi.load('auth2', function(){
+            // Retrieve the singleton for the GoogleAuth library and set up the client.
+            var auth2 = gapi.auth2.init({
+                client_id: '628942639023-6eghdtqbgk8vvdj20tuc7l2708mshmd8.apps.googleusercontent.com', //客户端ID
+                cookiepolicy: 'single_host_origin',
+                scope: 'profile' //可以请求除了默认的'profile' and 'email'之外的数据
+            });
+            that.attachSignin(that.$refs.google,auth2);
+		});
     },
     computed: {
         login: {
@@ -160,23 +196,34 @@ export default {
         }
     },
     methods: {
-        attachSignin(element) {
-            gapi.load('auth2', function () {
-                auth2 = gapi.auth2.init({
-                    client_id: 'project-316410',  //第二步申请的客户端id
-                    cookiepolicy: "single_host_origin"
-                });
-                auth2.attachClickHandler(element, {},
-                    function (googleUser) {
-                    //获取用户信息     
-                    var profile = googleUser.getBasicProfile();
-                        console.log(profile);           
-                    }, function (error) {
-                        console.log(JSON.stringify(error, undefined, 2));
-                })
+        onSignInSuccess (response) {         //Facebook登录
+            FB.api('/me', dude => {
+              console.log(`Good to see you, ${dude.name}.`)
             })
-            
+            console.log(response) //返回第三方的登录信息 tolen等
         },
+        onSignInError (error) {
+
+        },
+        attachSignin(element,auth2) {        //谷歌登录
+            let that = this
+            var googleUser = {}
+            auth2.attachClickHandler(element, {},
+            function(googleUser) {
+                // document.getElementById('name').innerText = "Signed in: " + googleUser.getBasicProfile().getName();
+                that.goo = "Signed in: " + googleUser.getBasicProfile().getName();
+                var profile = auth2.currentUser.get().getBasicProfile();
+                console.log('ID: ' + profile.getId());
+                console.log('Full Name: ' + profile.getName());
+                console.log('Given Name: ' + profile.getGivenName());
+                console.log('Family Name: ' + profile.getFamilyName());
+                console.log('Image URL: ' + profile.getImageUrl());
+                console.log('Email: ' + profile.getEmail());
+            }, function(error) {
+                console.log(JSON.stringify(error, undefined, 2));
+            });
+        },
+
         judge_login () {
             if (localStorage.getItem("platform") == 1 && localStorage.getItem("Token") ) {
                 this.$router.replace("/customerhomepage")
@@ -235,12 +282,7 @@ export default {
         },
         forget () {
             this.$router.push("/forgetPwd")
-        },
-        googleLogin () {
-            var dom = this.$refs.google
-            this.attachSignin(dom)
         }
     }
 }
 </script>
-

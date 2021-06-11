@@ -191,11 +191,10 @@ export default {
             sex:"M",
             neuteredStatus:'None',
             weight: "33.5kg",
-
+        
             show: false,
             change:true,
             rotate: false,
-            pet: {},
             pageNum: 1,
             timer: null,
             pageSize: 100
@@ -207,11 +206,11 @@ export default {
     watch: {
         petList: {
             handler (val) {
-                if (val[0]) {
-                    this.pet = val[0]
-                } else {
-                    this.pet = {}
-                }
+                // if (val[0]) {
+                //     this.pet = val[0]
+                // } else {
+                //     this.pet = {}
+                // }
             },
             immediate: true
         }
@@ -226,6 +225,7 @@ export default {
                 })
             },
         },
+        pet () { return this.$store.state.user.pet },
         showDeta () { return this.$store.state.user.rotate }
     },
     methods: {

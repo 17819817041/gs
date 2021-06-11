@@ -73,10 +73,15 @@ export default {
     created () {
         // this.message()
         this.listens()
+        let arr = [1,2,3,4,5,6]
+        let arr1 = arr[0]
+        arr[0] = arr[5]
+        arr[5] = arr1
+        console.log(arr)
+        console.log(arr[0])
     },
     methods: {
         listens () {
-            console.log(1)
             let that = this
             this.$conn.listen({
                 onTextMessage: function ( e ) {

@@ -112,14 +112,14 @@ export default {
                 ]
             },
             form: {
-                platform:2,
-                email:'9@qq.com',
-                password:'123'
+                // platform:2,
+                // email:'9@qq.com',
+                // password:'123'
 
                  
-                // platform:2,
-                // email:'',
-                // password:''
+                platform:2,
+                email:'',
+                password:''
 
                 // platform: 2,
                 // email:'youxiangceshi6@163.com',
