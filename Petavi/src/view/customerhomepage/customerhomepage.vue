@@ -25,7 +25,7 @@
             position: absolute;
             top: 65px;
             left: 165px;
-            z-index: 1000;
+            z-index: 800;
         }
     }
     .list {

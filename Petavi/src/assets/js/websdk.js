@@ -119,8 +119,12 @@ var rtcCall = new webrtc.Call({
             let endTime = Date.now()
             localStorage.setItem('endTime',endTime)
             store.commit("setUser",{ key: 'sureCall', value: true })
-            // router.replace() 
             // router.back()
+            if (router.name == 'agora') {
+                router.back()
+            } else {
+
+            }
         },
         onIceConnectionStateChange: function (iceState) {
             console.log('onIceConnectionStateChange::', 'iceState:', iceState);

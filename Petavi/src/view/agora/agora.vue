@@ -18,9 +18,15 @@
         background: white;
     }
     .showVideo {
-        background: @content;
+        background: black;
         flex: 8;
-        position: relative;
+        height: 100%;
+        overflow: auto;
+        // position: relative;
+        .video_wrap {
+            height: 100%;
+            position: relative;
+        }
         // height: 100%;
         .video_child {
             position: absolute;
@@ -32,6 +38,12 @@
             z-index: 100;
             // background: black;
             // box-shadow: 0 0 5px #999;
+            @media screen and (max-width: 1600px) {
+                bottom: 45px;
+            }
+            @media screen and (max-width: 1200px) {
+                bottom: 65px;
+            }
         }
         .video_parent {
             position: absolute;
@@ -44,19 +56,30 @@
         }
         .answer {
             position: absolute;
-            width: 400px;
-            bottom: 30px;
+            width: 40%;
+            bottom: 40px;
             left: 50%;
             transform: translate(-50%,0);
             z-index: 600;
+            @media screen and (max-width: 1600px) {
+                bottom: 65px;
+            }
+            @media screen and (max-width: 1200px) {
+                bottom: 85px;
+            }
         }
     }
     .doctorMessage {
         // flex: 2;
-        width: 23%;
+        width: 450px;
         height: 100%;
         overflow: auto;
-
+        // @media screen and (min-width: 1600px) and (max-width: 2000px) {
+        //     width: 26%;
+        // }
+        // @media screen and (min-width: 1200px) and (max-width: 1600px) {
+        //     width: 29%;
+        // }
     }
     .about_me {
         padding: 30px 0 28px 0;
@@ -273,14 +296,15 @@
             </div>
 
             <div class="showVideo">
-
-                <div class="answer sb">
-                    <div class="cursor"><img src="@/assets/img/answer_audeo.png" alt=""></div>
-                    <div class="cursor"><img src="@/assets/img/answer_video.png" alt=""></div>
-                    <div class="cursor" @click="endCall"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
+                <div class="video_wrap">
+                    <div class="answer sb">
+                        <div class="cursor"><img src="@/assets/img/answer_audeo.png" alt=""></div>
+                        <div class="cursor"><img src="@/assets/img/answer_video.png" alt=""></div>
+                        <div class="cursor" @click="endCall"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
+                    </div>
+                    <video :class="['video_parent']" width="400px" height="400px" id="video" ref="video"></video>
+                    <video :class="['video_child']" id="localVideo"></video>
                 </div>
-                <video :class="['video_parent']" id="video"></video>
-                <video :class="['video_child']" id="localVideo"></video>
             </div>
 
 
@@ -437,6 +461,11 @@ export default {
         setTimeout(() => {
             this.initVideo()
         },10)
+        var video = this.$refs.video
+        video.addEventListener('canplay',function () {
+            console.log(this.videoWidth)
+            console.log(this.videoHeight)
+        })
     },
     created () {
         this.callToDoctor = this.callTo

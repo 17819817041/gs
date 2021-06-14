@@ -11,16 +11,23 @@
 								<i class="el-icon-picture-outline" style="font-size:40px;color:gray"></i>
 							</div>
 						</el-image> 
-						<div style="margin-top:30px">{{mask.doctorName}}</div>
+						<div style="margin-left:30px">{{mask.doctorName}}</div>
 					</div>
-					<div class="loading" v-if="loading">
-						loading...
+					<div class="loading ju" v-show="true">
+						Waiting for the answer...
 					</div>
-					<div class="wrap_btn sa">
+					<!-- <div class="wrap_btn sa">
 						<div class="btn al ju cursor" @click="cancel">Cancel</div>
-						<transition name="fade">
-							<div class="btn al ju cursor" v-show="sureCall" @click="sure">Dial</div>
-						</transition>
+						<div class="btn al ju cursor" v-if="sureCall" @click="sure">Dial</div>
+					</div> -->
+					<div class="wrap_btn sa">
+						<div class="btn al ju cursor" @click="cancel">
+							<el-button class="width100 cancelBtn" round size="mini">Cancel</el-button>
+						</div>
+						<div class="btn al ju cursor" v-if="sureCall" @click="sure">
+							<el-button type="danger" class="width100" round size="mini">Dial</el-button>
+						</div>
+						
 					</div>
 				</div>
 			</div>
@@ -34,8 +41,12 @@
 					</div>
 					<div class="wrap_btn sa">
 						<div class="btn al ju cursor" @click="cancel2">Cancel</div>
-						<div class="btn al ju cursor" @click="sure2">Dial</div>
+						<div class="btn al ju cursor" @click="sure2">Answer</div>
 					</div>
+					<!-- <div class="wrap_btn sa">
+						<el-button type="error">Cancel</el-button>
+						<el-button type="primary">Dial</el-button>
+					</div> -->
 				</div>
 			</div>
 		</transition>
@@ -90,7 +101,16 @@ export default {
 		callTo () { return this.$store.state.user.callTo },
 		IMuser () { return this.$store.state.user.IMuser },
 		mask () {return this.$store.state.user.mask},
-		sureCall () { return this.$store.state.user.sureCall }
+		// sureCall () { return this.$store.state.user.sureCall }
+		sureCall: {
+			get () { return this.$store.state.user.sureCall },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "sureCall",
+                    value: val
+                })
+            },
+		}
     },
 	methods: {
 		sure () {
@@ -390,7 +410,7 @@ export default {
 	}
 	.mask {
 		position: fixed;
-		z-index: 500;
+		z-index: 800;
 		width: 100vw;
 		height: 100vh;
 		background: rgba(0, 0, 0, 0.4);
@@ -404,13 +424,17 @@ export default {
 		width: 300px;
 		border-radius: 10px;
 	}
-	.wrap_btn {
-		padding-top: 40px;
-	}
+	// .wrap_btn {
+	// 	padding-top: 40px;
+	// }
 	.btn {
-		width: 80px;
-		border: solid 1px;
+		width: 90px;
 		border-radius: 8px;
+		transition: 0.2s;
+	}
+	.cancelBtn {
+		background: @denger !important;
+		color: white !important;
 	}
 	.fade-enter-active, .fade-leave-active {
 		transition: opacity 0.3s;
@@ -424,5 +448,8 @@ export default {
 		padding: right 20px;
 		border-radius: 50%;
 		border: solid 1px rgb(207, 202, 202);
+	}
+	.loading {
+		padding: 20px 0;
 	}
 </style>

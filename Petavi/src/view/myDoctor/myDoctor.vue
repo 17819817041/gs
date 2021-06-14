@@ -35,7 +35,7 @@
                             <div><span class="size16">{{item.totalLike}}</span><span class="size14"> ({{item.likingRate}}) </span></div>
                         </div>
                         <div class="call">
-                            <el-button class="callBtn width100" type="primary">Call</el-button>
+                            <el-button class="callBtn cursor width100" type="primary">Call</el-button>
                         </div>
                     </div>
                 </div>
