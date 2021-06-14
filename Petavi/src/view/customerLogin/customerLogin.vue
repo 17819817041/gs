@@ -1,8 +1,8 @@
 <style lang="less" scoped>
 @import "@/less/css.less";
-.login {
-    height: 100%;
-}
+    .login {
+        height: 100%;
+    }
     .FormL {
         width: 700px;
     }
@@ -203,7 +203,7 @@ export default {
             console.log(response) //返回第三方的登录信息 tolen等
         },
         onSignInError (error) {
-
+            console.log(error)
         },
         attachSignin(element,auth2) {        //谷歌登录
             let that = this

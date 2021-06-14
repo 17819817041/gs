@@ -199,11 +199,11 @@
         <div class="customer_content flex">
             <div class="pet_message">
                 <div class="bold petMessage_title" @click="toPetMessage">Pet Details</div>
-                <div class="details_item size19 flex" v-for="(item,i) in petList" :key="item.id">
+                <div class="details_item size19 flex" v-for="(item,i) in petLists" :key="item.id">
                     <div v-if="item.change" class="edit cursor tc" @click="edit(item,i)">Edit</div>
                     <div v-else class="wrap_save flex">
                         <div class="save cursor tc" @click="save(item,i)">Save</div>
-                        <div class="cancel cursor tc" @click="cancel(item)">cancel</div>
+                        <div class="cancel cursor tc" @click="cancel(item,i)">cancel</div>
                     </div>
                     <div class="details_image ju">
                         
@@ -361,18 +361,33 @@ export default {
             status: '',
             pageNum: 1,
             pageSize: 100,
-            i: null
+            i: null,
+            petLists: []
             // data: {
             //     petId: 13
             // }
         }
     },
     created () {
-        
+        console.log(Stripe)
+    },
+    watch: {
+        petList: {
+            handler (val) {
+                this.petLists = JSON.parse(JSON.stringify(val))
+            },
+            immediate: true
+        }
     },
     computed: {
         petList: {
-            get () {return this.$store.state.user.petList}
+            get () {return this.$store.state.user.petList},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "petList",
+                    value: val
+                })
+            },
         },
         petTypeList () { return this.$store.state.user.petType }
     },
@@ -386,14 +401,16 @@ export default {
         //         }
         //     })
         // },
-        cancel (item) {
+        cancel (item,i) {
+            // item.change = true
+            
             var data = {
                 userId: localStorage.getItem("userId"),
                 pageNum: this.pageNum,
                 pageSize: this.pageSize
             }
             this.$store.dispatch("getPetList",data)
-            item.change = true
+            this.petLists[i].change = true
         },
         Delete (item) {
             let data = {
@@ -421,7 +438,7 @@ export default {
             })
         },
         updatePet () {                                                                         //更新宠物信息
-            updatePet(this.petList[this.i]).then(res => {
+            updatePet(this.petLists[this.i]).then(res => {
                 console.log(res,"geng新完成")
                 if (res.data.rtnCode == 200) {
                     var data = {
@@ -430,6 +447,10 @@ export default {
                         pageSize: this.pageSize
                     }
                     this.$store.dispatch("getPetList",data)
+                    this.$message({
+                        type: 'success',
+                        message: 'Successfully changed'
+                    })
                 }
             }).catch(e => {
                 console.log(e)
@@ -459,7 +480,7 @@ export default {
             })
         },
         neuteredStatus (e) {
-            this.petList[this.i].petJueYu = e
+            this.petLists[this.i].petJueYu = e
             if (e == 1) {
                 this.status = "Sterilization"
             } else if (e == 2) {
@@ -468,7 +489,7 @@ export default {
         },  
         getSex (e) {
             console.log(e)
-            this.petList[this.i].gender = e
+            this.petLists[this.i].gender = e
             if (e == 1) {
                 this.sex = "Male"
             } else if (e == 2) {
@@ -476,23 +497,21 @@ export default {
             }
         },
         edit (item,i) {
-            item.change = false
-            console.log(item.change,i)
+            // item.change = false
+            this.petLists[i].change = false
+            // console.log(item.change,i)
             this.i = i
-            if (this.petList[this.i].gender == 1) {
+            if (this.petLists[i].gender == 1) {
                 this.sex = 'Male'
-            } else if (this.petList[i].gender == 2) {
+            } else if (this.petLists[i].gender == 2) {
                 this.sex = "Female"
             }
+            this.petLists = [...this.petLists]
         },
         save (item,i) {
-            this.petList[i].age = item.yrs + 'yrs' + item.mo + 'mo'
+            this.petLists[i].age = item.yrs + 'yrs' + item.mo + 'mo'
             this.updatePet()
-            this.$message({
-                type: 'success',
-                message: 'Successfully changed'
-            })
-            item.change = true
+            this.petLists[i].change = true
         },
         toPetMessage () {
             this.$router.push({

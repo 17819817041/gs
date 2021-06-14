@@ -32,7 +32,7 @@ Vue.prototype.$conn = conn
 Vue.prototype.$rtcCall = rtcCall
 
 import { google } from "@/assets/js/google.js"
-Vue.prototype.$google = google
+// Vue.prototype.$google = google
 
 
 // import { facebook } from "@/assets/js/facebook.js"
@@ -41,6 +41,7 @@ Vue.prototype.$google = google
 import FBSignInButton from 'vue-facebook-signin-button'
 Vue.use(FBSignInButton)
 
+import Stripe from "@/assets/js/stripe.js"
 
 
 import Agora from "@/assets/js/Agora.js"
