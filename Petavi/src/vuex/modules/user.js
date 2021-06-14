@@ -18,7 +18,8 @@ export default {
         sureCall: true,
         showList: true,
         nameList: true,
-        petType: []
+        petType: [],
+        firstPet: 0
     },
     mutations: {
         setUser (state,data) {
@@ -33,7 +34,7 @@ export default {
             petList(data).then(res => {
                 console.log(res,"宠物列表&类别")
                 if (res.data.rtnCode == 200) {
-                    store.commit("setUser",{ key: "pet", value: res.data.data.pageT[0] })
+                    store.commit("setUser",{ key: "pet", value: res.data.data.pageT[store.state.firstPet] })
                     res.data.data.pageT.forEach(item => {
                         item.change = true
                         if (item.age) {

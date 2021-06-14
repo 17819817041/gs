@@ -369,12 +369,20 @@ export default {
         }
     },
     created () {
-        console.log(Stripe)
+        
     },
     watch: {
         petList: {
             handler (val) {
                 this.petLists = JSON.parse(JSON.stringify(val))
+                this.setFirstPet()
+            },
+            immediate: true
+        },
+        firstPet: {
+            handler (val) {
+                this.petLists = JSON.parse(JSON.stringify(this.petList))
+                this.setFirstPet()
             },
             immediate: true
         }
@@ -389,9 +397,17 @@ export default {
                 })
             },
         },
-        petTypeList () { return this.$store.state.user.petType }
+        petTypeList () { return this.$store.state.user.petType },
+        firstPet () { return this.$store.state.user.firstPet },
     },
     methods: {
+        setFirstPet () {
+            var current = this.petLists[this.firstPet]
+            if (current) {
+                this.petLists.splice(this.firstPet,1)
+                this.petLists.unshift(current)
+            }
+        },
         // getPetDetails () {                                                                  //获取第一只宠物
         //     petDetails(this.data).then(res => {
         //         console.log(res,"获取宠物信息")

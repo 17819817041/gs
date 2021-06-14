@@ -79,7 +79,7 @@
                         </div>
                     </el-form-item>
                     <el-form-item>
-                        <div class="google tc cursor" @click="vethomepage">
+                        <div class="google tc cursor" >
                             <el-button class="googleBtn width100" type="primary" :loading="loading">
                                 <span class="span">Login with Google</span>
                                 <div class="googleImg">

@@ -27,7 +27,6 @@
 						<div class="btn al ju cursor" v-if="sureCall" @click="sure">
 							<el-button type="danger" class="width100" round size="mini">Dial</el-button>
 						</div>
-						
 					</div>
 				</div>
 			</div>
@@ -43,10 +42,14 @@
 						<div class="btn al ju cursor" @click="cancel2">Cancel</div>
 						<div class="btn al ju cursor" @click="sure2">Answer</div>
 					</div>
-					<!-- <div class="wrap_btn sa">
-						<el-button type="error">Cancel</el-button>
-						<el-button type="primary">Dial</el-button>
-					</div> -->
+					<div class="wrap_btn sa">
+						<div class="btn al ju cursor" @click="cancel">
+							<el-button class="width100 cancelBtn" round size="mini">Hand Up</el-button>
+						</div>
+						<div class="btn al ju cursor" v-if="sureCall" @click="sure">
+							<el-button type="danger" class="width100" round size="mini">Answer</el-button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</transition>

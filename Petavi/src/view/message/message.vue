@@ -15,11 +15,11 @@
             transition: 0.1s;
             @media screen and (max-width:1300px) {
                 background: white;
-                position: fixed;
-                top: 100px;
-                left: 0;
+                // position: fixed;
+                // top: 100px;
+                // left: 0;
                 width: 167px !important;
-                opacity: 0;
+                // opacity: 0;
             }
         }
     }
@@ -142,7 +142,7 @@
                         <div>Pet ID : {{pet.id}}</div>
                         <div>Age : {{pet.age}}</div>
                         <div>Breed : {{pet.breed}}</div>
-                        <div>Sex : {{pet.gender}}</div>
+                        <div>Sex :  <span v-if="pet.gender == 1">Male</span> <span v-else-if="pet.gender == 2">Female</span> </div>
                         <div>Neutered status : {{pet.petJueYu}}</div>
                         <div>Weight : {{pet.weight}}</div>
                     </div>

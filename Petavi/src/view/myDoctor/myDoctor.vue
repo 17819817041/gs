@@ -17,9 +17,9 @@
                             </div>
                         </div>
                         <div class="about">
-                            <div class="size16" v-if="item.doctorName">{{item.doctorName}}</div>
+                            <div class="size16 itemDoc_name" v-if="item.doctorName">{{item.doctorName}}</div>
                             <div class="size16" v-else>No Name</div>
-                            <div class="size_12 al">
+                            <div class="size_12 al address_item">
                                 <img class="location_img" style="padding-right:5px" src="@/assets/img/location.png" alt="">
                                 {{item.addressName}}
                             </div>
@@ -255,9 +255,9 @@ video {
             height: 100%;
             overflow: auto;
             // border: solid 1px;
-            @media screen and (max-width:1050px) {
-                display: none;
-            }
+            // @media screen and (max-width:1050px) {
+            //     display: none;
+            // }
         }
     }
     .width102 {
@@ -293,6 +293,13 @@ video {
     }
     .about {
         margin-left: 10px;
+        overflow: hidden;
+    }
+    .itemDoc_name {
+        flex: 10;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .grade {
         img {
@@ -311,9 +318,9 @@ video {
         //     width: 46%;
         //     margin: 0 3.5% 5px 0.5%;
         // }
-        @media screen and (max-width:1000px) {
-            width: 37%;
-            margin: 0 3.5% 5px 6.5%;
+        @media screen and (max-width:1100px) {
+            width: 45%;
+            margin: 0 1.5% 5px 3.5%;
         }
     }
     .workTime {
@@ -363,7 +370,8 @@ video {
         // border: solid rgb(100, 95, 95) 1px;
     }
     .call {
-        width: 80px;
+        max-width: 80px;
+        width: 30%;
     }
     .doctor_name {
         font-size: 19px;
@@ -432,5 +440,13 @@ video {
     }
     .location_img {
         transform: translate(0,1px);
+    }
+    .address_item {
+        text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+        display: -webkit-box;
+        -webkit-line-clamp: 2;/*规定超过两行的部分截断*/
+        -webkit-box-orient: vertical;
+        overflow : hidden; 
+        word-break: break-all;/*在任何地方换行*/
     }
 </style>

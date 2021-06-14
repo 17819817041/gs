@@ -84,11 +84,11 @@
         background: #f5f4f4;
     }
     .rotate {
-        transform: rotateZ(180deg);
-    }
-    .rotate1 {
         transform: rotateZ(-180deg);
     }
+    // .rotate1 {
+    //     transform: rotateZ(-180deg);
+    // }
 </style>
 
 <template>
@@ -97,10 +97,10 @@
         <div class="customer_content flex">
         <div class="list_wrap" v-if="show" @click="showPetList"></div>
             <div class="list" v-show="nameList">
-                <img class="img1" @click="showPetList" v-show="!showList" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
-                <img class="img2" @click="showPetList" :class="[ 'cursor', {rotate1: rotate} ]" src="@/assets/img/arrow.png" alt="">
+                <img class="img1" @click="showPetList" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
+                <!-- <img class="img2" @click="showPetList" v-show="showList" :class="[ 'cursor', {rotate1: rotate} ]" src="@/assets/img/arrow.png" alt=""> -->
                 <div :class="['pet_list noBar', {height:show}]">
-                    <div class="list_item mg cursor"  @click="cutPet(item)" v-for="(item,i) in petList" :key="i">{{item.name}}</div>
+                    <div class="list_item mg cursor"  @click="cutPet(item,i)" v-for="(item,i) in petList" :key="i">{{item.name}}</div>
                 </div>
             </div>
             <div class="present_message noBar" @scroll="scroll">
@@ -127,7 +127,6 @@ export default {
         }
     },
     created () {
-        
         this.getPetList()
     },
     watch: {
@@ -152,13 +151,22 @@ export default {
                 })
             },
         },
+        firstPet: {
+            get () {return this.$store.state.user.firstPet},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "firstPet",
+                    value: val
+                })
+            },
+        },
         active () { return this.$store.state.user.rotate },
         showList () { return this.$store.state.user.showList },
         nameList () { return this.$store.state.user.nameList }
     },
     methods: {
-        cutPet (item) {
-            console.log(item)
+        cutPet (item,i) {
+            this.firstPet = i
             this.$store.commit("setUser", { key: "pet",value: item })
         },
         scroll (val) {
