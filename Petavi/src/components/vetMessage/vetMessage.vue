@@ -6,10 +6,8 @@
             width: 202px;
             transition: 0.25s;
             height: 100%;
-            @media screen and (max-width:1200px) {
-                max-width: 0px;
-                max-height: 0px;
-                overflow: hidden;
+            @media screen and (max-width:1300px) {
+                width: 167px;
             }
         }
     }

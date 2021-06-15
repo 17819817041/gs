@@ -12,21 +12,29 @@
                         </div>
                     </div>
                 </div> -->
-                <div class="wrap_item ju float" v-for="(item,i) in List" :key="item.id"   @click="toPatients(item,i)">
-                    <!--  <div><img class="personal_img" src="@/assets/img/female.png" alt=""></div> -->
-
-                    <div class="ju al Personal">
-                        <img class="personal_img" style="height:100%;" v-if="item.image" :src="item.image" alt="">
-                        <i class="el-icon-picture-outline Icon" v-else></i>
-                    </div>
-
-
-                    <div class="name tc">
-                        <div class="size20" v-if="item.name">{{item.name}}</div>
-                        <div class="size20" v-else>No Name</div>
-                        <div class="address flex">
-                            <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
-                            <div class="size_14">Chai Wan, Hong Kong</div>
+                <div class="wrap_item float" v-for="(item,i) in List" :key="item.id"   @click="toPatients(item,i)">
+                    <div class="flex al">
+                        <div class="ju al Personal">
+                            <img class="personal_img" style="height:100%;" v-if="item.image" :src="item.image" alt="">
+                            <i class="el-icon-picture-outline Icon" v-else></i>
+                        </div>
+                        <div class="name">
+                            <div class="size18 petName flex" v-if="item.name">
+                                <div class="address_img"></div>
+                                <div>{{item.name}}</div>
+                            </div>
+                            <div class="size18 flex" v-else>
+                                <div class="address_img"></div>
+                                <div>No Name</div>
+                            </div>
+                            <div class="size_14 flex">
+                                <div class="address_img"></div>
+                                <div>{{item.id}}</div>
+                            </div>
+                            <div class="address flex">
+                                <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
+                                <div class="size_14 address_name">Chai Wan, Hong Kong</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -259,6 +267,11 @@ export default {
         box-shadow: 0 2px 1px 1px #D5D5D5;
         margin: 0 3% 10px 0%;
         transition: 0.2s;
+        padding: 25px 20px;
+        @media screen and (max-width:1100px) {
+            width: 45%;
+            margin: 0 1.5% 5px 3.5%;
+        }
         // @media screen and (max-width:1620px) {
         //     width: 46%;
         //     margin: 0 3.5% 5px 0.5%;
@@ -269,8 +282,8 @@ export default {
         // }
     }
     .Personal {
-        width: 60px;
-        height: 60px;
+        width: 65px;
+        height: 65px;
         overflow: hidden;
         border: solid 1px rgb(228, 223, 223);
         border-radius: 50%;
@@ -278,8 +291,7 @@ export default {
     }
     .personal_img {
         padding-right: 8px;
-        height: 60px;
-        
+        height: 70px;
     }
     .personWithAnimal {
         height: 100%;
@@ -291,21 +303,39 @@ export default {
             height: 100%;
         }
     }
-    .address_img {
-        width: 16px;
-        height: 21px;
-        padding-right: 8px;
+    .name {
+        width: 60%;
     }
-    .size20 {
-        color: black;
-        font-size: 25px;
+    .address_name {
+        text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+        display: -webkit-box;
+        -webkit-line-clamp: 2;/*规定超过两行的部分截断*/
+        -webkit-box-orient: vertical;
+        overflow : hidden; 
+        word-break: break-all;/*在任何地方换行*/
+    }
+    .size18 {
+        font-size: 18px;
+    }
+    .petName {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    // .address {
+    //     border: solid 1px;
+    // }
+    .address_img {
+        width: 14px;
+        height: 19px;
+        margin-right: 8px;
     }
     .size19 {
         font-size: 19px;
     }
     .size_14 {
         color: #9F9F9F;
-        font-size: 17px;
+        font-size: 14px;
     }
     .size13 {
         font-size: 13px;

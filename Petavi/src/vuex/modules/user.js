@@ -89,7 +89,6 @@ export default {
                     store.commit("setUser",{ key: "login", value: false }) 
                 })
             } else if (localStorage.getItem("platform") == 2) {
-                console.log('2医生')
                 var data = {
                     userId: localStorage.getItem("userId"),
                 }
@@ -110,48 +109,48 @@ export default {
                 })
             }
         },
-        IMSignUp (store) {
-            var options = { 
-                username: localStorage.getItem("userId") + '_' + localStorage.getItem("platform"),  //430_2
-                password: '123456',
-                nickname: 'nickName',
-                appKey: WebIM.config.appkey,
-                success: function () { 
-                    console.log("注册成功")
-                    store.dispatch("IMLogin")
-                },  
-                error: function (err) {
-                    let errorData = JSON.parse(err.data);
-                    if (errorData.error === 'duplicate_unique_property_exists') {
-                        console.log('用户已存在！');
-                        store.dispatch("IMLogin")
-                    } else if (errorData.error === 'illegal_argument') {
-                        if (errorData.error_description === 'USERNAME_TOO_LONG') {
-                            console.log('用户名超过64个字节！')
-                        }else{
-                            console.log('用户名不合法！')
-                        }
-                    } else if (errorData.error === 'unauthorized') {
-                        console.log('注册失败，无权限！')
-                    } else if (errorData.error === 'resource_limited') {
-                        console.log('您的App用户注册数量已达上限,请升级至企业版！')
-                    }
-                }, 
-            }; 
-            // console.log(123,localStorage.getItem('IMtoken'))
-            // if (localStorage.getItem('IMtoken')) {
-            //     store.dispatch('IMLogin')
-            // } else {
-                conn.registerUser(options);
-            // }
-        },
+        // IMSignUp (store) {
+        //     var options = { 
+        //         username: localStorage.getItem("userId") + '_' + localStorage.getItem("platform"),  //430_2
+        //         password: '123456',
+        //         nickname: 'nickName',
+        //         appKey: WebIM.config.appkey,
+        //         success: function () { 
+        //             console.log("注册成功")
+        //             store.dispatch("IMLogin")
+        //         },  
+        //         error: function (err) {
+        //             let errorData = JSON.parse(err.data);
+        //             if (errorData.error === 'duplicate_unique_property_exists') {
+        //                 console.log('用户已存在！');
+        //                 store.dispatch("IMLogin")
+        //             } else if (errorData.error === 'illegal_argument') {
+        //                 if (errorData.error_description === 'USERNAME_TOO_LONG') {
+        //                     console.log('用户名超过64个字节！')
+        //                 }else{
+        //                     console.log('用户名不合法！')
+        //                 }
+        //             } else if (errorData.error === 'unauthorized') {
+        //                 console.log('注册失败，无权限！')
+        //             } else if (errorData.error === 'resource_limited') {
+        //                 console.log('您的App用户注册数量已达上限,请升级至企业版！')
+        //             }
+        //         }, 
+        //     }; 
+        //     // console.log(123,localStorage.getItem('IMtoken'))
+        //     // if (localStorage.getItem('IMtoken')) {
+        //     //     store.dispatch('IMLogin')
+        //     // } else {
+        //         conn.registerUser(options);
+        //     // }
+        // },
         IMLogin (store) {
             var options = { 
                 user: localStorage.getItem("userId") + '_' + localStorage.getItem("platform"),
-                pwd: '123456',
+                pwd: localStorage.getItem('IM'),
                 appKey: WebIM.config.appkey,
                 success (res) {
-                    console.log(res)
+                    console.log(res,'IM登录成功')
                     store.commit("setUser", { key: 'IMuser', value: res.user })
                     localStorage.setItem("IMtoken",res.access_token)
                     console.log(store.state.IMuser)
@@ -169,7 +168,7 @@ export default {
                 localStorage.removeItem("userId")
                 localStorage.removeItem("paltform")
                 localStorage.removeItem("IMtoken")
-                
+                localStorage.removeItem('IM')
                 vm.$router.replace("/login")
                 store.commit("setUser", {
                     key: "login",

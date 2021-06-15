@@ -5,12 +5,10 @@
                 <div class="doctor_item float" v-for="(item) in doctorList" :key="item.doctorId" @click="getDetail(item)">
                     <div class="image flex">
                         <div class="doctor_head">
+                            <img class="onLine" v-if="item.doctorOnLineState == 1" src="@/assets/img/onLine.png" alt="">
                             <div class="item_head ju al">
-                                <el-image style="height:60px;width:60px" :src="item.userHead" alt="" fit="cover">
-                                    <div slot="error" class="image-slot ju al" style="height: 100%;width:100%">
-                                        <i class="el-icon-picture-outline" style="font-size:35px;color:gray"></i>
-                                    </div>
-                                </el-image>
+                                <img style="height:60px;" :src="item.userHead" v-if="item.userHead" alt="">
+                                <i v-else class="el-icon-picture-outline" style="font-size:35px;color:gray"></i>
                             </div>
                             <div class="grade white al size12b">
                                 <img src="@/assets/img/rate.png" alt="">{{item.baseScore}}
@@ -28,7 +26,11 @@
                     <div class="workTime al sb">
                         <div>
                             <div class="size14">Experience</div>
-                            <div><span class="size16">{{item.experience}}</span> <span class="size14"> Years</span></div>
+                            <div>
+                                <span class="size16" v-if="item.experience">{{item.experience}}</span> 
+                                <span v-else>0</span>
+                                <span class="size14"> Years</span>
+                            </div>
                         </div>
                         <div>
                             <div class="size14">Likes</div>
@@ -70,7 +72,11 @@
                 <div class="reviews sb">
                     <div>
                         <div class="size12">{Experience}</div>
-                        <div class="size13">{{detail.experience}}+ years</div>
+                        <div class="size13">
+                            <span v-if="detail.experience">{{detail.experience}}</span>
+                            <span v-else>0</span>
+                            + years
+                        </div>
                     </div>
                     <div class="xian"></div>
                     <div class="tc likes">
@@ -282,6 +288,11 @@ video {
             background: @helpBtn;
             padding: 3px 6px;
             border-radius: 3px;
+        }
+        .onLine {
+            position: absolute;
+            right: -2px;
+            bottom: -2px;
         }
     }
     .head_image {

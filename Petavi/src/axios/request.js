@@ -154,3 +154,19 @@ export function reset (data) {                        //重置密码
         }
     )
 }
+
+export function booking (data) {                     //预约
+    return request({
+        url: "/booking/addBooking",
+        method: "POST",
+        params: data
+    })
+}
+
+export function getUserByPId (data) {               //通过宠物ID获取用户信息
+    return request({
+        url: "/pet/getUserByPId",
+        method: "POST",
+        params: data
+    })
+}

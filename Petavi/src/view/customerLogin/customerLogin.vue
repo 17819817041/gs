@@ -107,7 +107,6 @@
                         </el-form-item>
                         <el-form-item>
                             <div class="fackbook cursor white">
-                                <!-- <el-button class="facebookBtn width100" type="primary">Login with facebook</el-button> -->
                                 <fb-signin-button
                                     style="width: 100%"
                                     :params="fbSignInParams"
@@ -158,6 +157,10 @@ export default {
                 // platform: 1,
                 // email:'',
                 // password:''
+
+                // platform:1,
+                // email:'861864663@qq.com',
+                // password:'66666666'
             },
             rules: {
                 email: [
@@ -250,8 +253,10 @@ export default {
                             localStorage.setItem("Token",res.data.data.token)
                             localStorage.setItem("userId",res.data.data.userId)
                             localStorage.setItem("platform",res.data.data.platform)
-                            this.$store.dispatch("IMSignUp")
+                            localStorage.setItem("IM",that.form.password)
+                            // this.$store.dispatch("IMSignUp")
                             this.$store.dispatch("getUser")
+                            // that.$store.dispatch("IMLogin")
                             that.$router.replace({
                                 name:'customerhomepage',
                                 query: {

@@ -4,10 +4,10 @@
         <div class="size12 tc" style="margin:10px auto">Select an option to book</div>
         
         <div class="form_select">
-            <el-form label-position="top">
+            <el-form label-position="top" ref="form">
                 <el-form-item class="typeFlex ju tc">
                     <div style="margin-right:10px;">
-                        <el-radio label="video">
+                        <el-radio v-model="WAY" label="1">
                             <div class="video ju">
                                 <div>
                                     <img :class="['opacity',{ opacity1: way == 'video' }]" src="@/assets/img/videoWay.png" alt="" @click="videoWay">
@@ -18,7 +18,7 @@
                         <div class="size12">Min session 15 mins . $1.99 per/min</div>
                     </div>
                     <div style="margin-left:10px;">
-                        <el-radio label="visit">
+                        <el-radio v-model="WAY" label="2">
                             <div class="visit mg">
                                 <div>
                                     <img :class="['opacity',{ opacity1: way == 'visit' }]" src="@/assets/img/bookingImg.png" alt="" @click="visitWay">
@@ -30,8 +30,8 @@
                     </div>
                 </el-form-item>
                 <el-form-item>
-                    <el-select v-model="doctor" placeholder="Select the doctor">
-                        <el-option v-for="(item,i) in doctorSelect" :key="i" :label="item.doctorName" :value="item.doctorName"></el-option>
+                    <el-select v-model="pet" placeholder="Select pet" @change="getPetId">
+                        <el-option v-for="(item,i) in petSelect" :key="i" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -42,8 +42,8 @@
                 <el-form-item>
                     <div class="sb">
                         <div class="pet">
-                            <el-select v-model="pet" placeholder="Select pet">
-                                <el-option v-for="(item,i) in petSelect" :key="i" :label="item.name" :value="item.name"></el-option>
+                            <el-select v-model="doctor" placeholder="Select the doctor" @change="getDoctorId">
+                                <el-option v-for="(item,i) in doctorSelect" :key="i" :label="item.doctorName" :value="item.doctorId"></el-option>
                             </el-select>
                         </div>
                         <div class="star_time">
@@ -65,7 +65,7 @@
                             </el-time-select>
                         </div>
                         <div class="end_time">
-                            <el-select v-model="endTime"  placeholder="CONSULTATION TIME">
+                            <el-select v-model="endTime"  placeholder="CONSULTATION TIME" @change="duration">
                                 <el-option v-for="(item,i) in endTimeSelect" :key="i" :label="item.label" :value="item.value"></el-option>
                             </el-select>
                             <!-- <div :class="['arrow', { rotate: endRotate }]"></div>
@@ -115,25 +115,29 @@
 </template>
 
 <script>
-import { doctorList } from "@/axios/request.js"
+import { doctorList, booking } from "@/axios/request.js"
 export default {
     data () {
         return {
             endRotate: false,
             starRotate: false,
             doctor: '',
+            doctorId: null,
+            WAY: null,
             doctorSelect: [],
             location: '',
             locationSelect: [],
             pet: '',
+            petId: null,
             petSelect: [],
             starTime: '',
             starTimeSelect: [],
             endTime: '',
+            duration: "",
             endTimeSelect: [
-                {label: '30MIN',value: 1},
-                {label: '45MIN',value: 2},
-                {label: '60MIN',value: 3},
+                {label: '30MIN',value: 30},
+                {label: '45MIN',value: 45},
+                {label: '60MIN',value: 60},
             ],
             day: '',
             daySelect: [],
@@ -154,6 +158,7 @@ export default {
             ],
             years: '',
             yearsSelect: [],
+            remark: 'remark',
             way: null,
             judge_month: null,
             pageNum: 1,
@@ -164,6 +169,19 @@ export default {
         this.docSelect()
         this.getPetSelect()
         this.getDay()
+        // let T = '20:15'
+        // let arr = T.split(":")
+        // let fen = Number(arr[1]) + 45
+        // let shi = Number(arr[0])
+        // console.log(fen,shi)
+        // if (Number(arr[1] + 45) > 60 ) {
+        //     fen = Number(arr[1]) + 45 - 60
+        //     shi = shi + 1
+        // } else if ((Number(arr[1]) + 45) === 60 ) {
+        //     fen = '00'
+        //     console.log(fen)
+        // }
+        // console.log(fen,shi)
     },
     watch: {
         petList: {
@@ -184,7 +202,60 @@ export default {
         },
 
         confirm () {
-            this.$router.push("/confirm")
+            let that = this
+            this.$refs.form.validate(flag => {
+                if (flag) {
+                    var data = {
+                        bookingType: that.WAY,
+                        bookingDoctor: that.doctor,
+                        bookingDoctorId: that.doctorId,
+                        locationId: 1,
+                        petName: that.pet,
+                        petId: that.petId,
+                        userName: 'this.userName',
+                        userId: localStorage.getItem('userId'),
+                        bookingStartTime: that.starTime,
+                        bookingEndTime: '20:00',
+                        // bookingDate: this.day,
+                        bookingDate: '2021-06-18',
+                        bookingRemark: that.remark,
+                        bookingTimeId: 1,
+                        bookingTime: this.duration,
+                        // goodsId: '',
+                        bookingState: 1,
+                        bookingCreateTime: '2021-06-15'
+                    }
+                    booking(data).then(res => {
+                        console.log(res)
+                        if (res.data.rtnCode == 20) {
+                            that.$router.push("/confirm")
+                        } else {
+
+                        }
+                    }).catch(e => {
+                        console.log(e)
+                    })
+                }
+            })
+        },
+        getDuration (val) {
+            this.duration = val
+        },
+        getDoctorId (val) {
+            this.doctorSelect.forEach(item => {
+                if (item.doctorId == val) {
+                    this.doctor = item.doctorName
+                    this.doctorId = item.doctorId
+                }
+            })
+        },
+        getPetId (val) {
+            this.petSelect.forEach(item => {
+                if (item.id == val) {
+                    this.pet = item.name
+                    this.petId = item.id
+                }
+            })
         },
         docSelect () {
             const doctor = {
@@ -266,11 +337,11 @@ export default {
         }
     }
     .pet {
-        width: 20%;
+        width: 25%;
     }
     .star_time, .end_time {
         position: relative;
-        width: 38%;
+        width: 35%;
     }
     .arrow {
         top: 50%;
