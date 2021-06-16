@@ -122,7 +122,7 @@
 <template>
     <div class="customerPage">
         <div class="customer_content flex">
-            <div :class="['present_message', 'noBar', {opacity: showDeta}]" @scroll="scroll">
+            <div :class="['present_message', 'noBar' ]" @scroll="scroll">
                 <div class="present_item">
                     <div class="arrow">
                         <div class="myPet">
@@ -225,8 +225,7 @@ export default {
                 })
             },
         },
-        pet () { return this.$store.state.user.pet },
-        showDeta () { return this.$store.state.user.rotate }
+        pet () { return this.$store.state.user.pet }
     },
     methods: {
         scroll (val) {

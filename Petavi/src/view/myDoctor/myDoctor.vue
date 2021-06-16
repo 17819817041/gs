@@ -126,20 +126,26 @@
 </template>
 
 <script>
-import { doctorList } from "@/axios/request.js"
+// import { doctorList } from "@/axios/request.js"
 export default {
     data () {
         return {
             active:true,
             change:true,
             rate:0,
-            doctorList: [],
             detail: {},
-            loading: true
         }
     },
     created () {
         this.getDoctorList()
+    },
+    watch: {
+        doctorList: {
+            handler (val) {
+                this.doctorList = val
+            },
+            immediate: true
+        }
     },
     computed: {
         callModal: {
@@ -153,6 +159,16 @@ export default {
         },
         // remoteStream () { return this.$store.state.app.remoteStream },
         // localStream () { return this.$store.state.app.localStream },
+        doctorList: { 
+            get () { return this.$store.state.user.searchList },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "searchList",
+                    value: val
+                })
+            }
+        },
+        loading () { return this.$store.state.user.loading },
     },
     methods: {
         getDetail (item) {
@@ -168,28 +184,35 @@ export default {
             })
         },
         getDoctorList () {
-            const doctor = {
-                platform: localStorage.getItem("platform"),
-                userId: localStorage.getItem("userId"),
-                pageNum:1,
-                pageSize: 10
-            }
-            doctorList(doctor).then(res => {
-                if (res.data.rtnCode == 200) {
-                    console.log(res,"医生列表")
-                    this.doctorList = res.data.data.pageT
-                    this.loading = false
-                } else {
-                    this.doctorList = []
-                    this.loading = false
-                    this.$message.error('Fail to load !');
-                }
-            }).catch(e => {
-                console.log(e)
-                this.doctorList = []
-                this.loading = false
-                this.$message.error('Fail to load !');
-            })
+            this.$store.dispatch('getDoctorList',this)
+            // const doctor = {
+            //     platform: localStorage.getItem("platform"),
+            //     userId: localStorage.getItem("userId"),
+            //     pageNum:1,
+            //     pageSize: 10
+            // }
+            // doctorList(doctor).then(res => {
+            //     if (res.data.rtnCode == 200) {
+            //         console.log(res,"医生列表")
+            //         this.doctorList = res.data.data.pageT
+            //         this.loading = false
+            //     } else if (res.data.rtnCode == 500 ) {
+            //         this.doctorList = []
+            //         this.loading = false
+            //         localStorage.removeItem("Token")
+            //         localStorage.removeItem("userId")
+            //         localStorage.removeItem("paltform")
+            //         localStorage.removeItem("IMtoken")
+            //         localStorage.removeItem('IM')
+            //         this.$router.replace('/customerLogin')
+            //         this.$message.error('Login expired, please log in again !');
+            //     }
+            // }).catch(e => {
+            //     console.log(e)
+            //     this.doctorList = []
+            //     this.loading = false
+            //     this.$message.error('Fail to load !');
+            // })
         },
         edit () {
             this.change = !this.change

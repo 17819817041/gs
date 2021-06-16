@@ -57,9 +57,9 @@
         </div>
         <p>Google Calendar API Quickstart</p >
         <!--Add buttons to initiate auth sequence and sign out-->
-        <button id="auth">Authorize</button>
+        <button id="auth" ref="auth">Authorize</button>
         
-        <button id="signout">Sign Out</button>
+        <button id="signout" ref="signout">Sign Out</button>
         <pre id="content"></pre>
     </div>
 </template>
@@ -80,6 +80,8 @@ export default {
     created () {
         // this.message()
         this.listens()
+    },
+    mounted () {
         this.calander()
     },
     methods: {
@@ -92,8 +94,10 @@ export default {
             // included, separated by spaces.
             var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 
-            var authorizeButton = document.getElementById('auth');
-            var signoutButton = document.getElementById('signout');
+            // var authorizeButton = document.getElementById('auth');
+            var authorizeButton = this.$refs.auth
+            // var signoutButton = document.getElementById('signout');
+            var signoutButton = this.$refs.signout
             function handleClientLoad() {
                 gapi.load('client:auth2', initClient);
             }

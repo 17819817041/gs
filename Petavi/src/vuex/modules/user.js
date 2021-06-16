@@ -7,7 +7,9 @@ export default {
         login: false,
         petList:[],
         pet: {},
-        // doctorList: [],
+        doctorList: [],
+        searchList: [],
+        loading: true,
         callModal: false,
         callModal2: false,
         callTo: {},
@@ -19,7 +21,8 @@ export default {
         showList: true,
         nameList: true,
         petType: [],
-        firstPet: 0
+        firstPet: 0,
+        inp: ''
     },
     mutations: {
         setUser (state,data) {
@@ -56,20 +59,6 @@ export default {
                 console.log(e)
             })
         },
-        // getUser (store,data) {
-        //     var data = {
-        //         userId: localStorage.getItem("userId")
-        //     }
-        //     getUserDetails(data).then(res => {
-        //         if (res.data.rtnCode == 200) {
-        //             console.log(res,"user详情")
-        //            store.commit("setUser",{ key: "petList", value: res.data.data }) 
-        //         } else {
-        //             store.commit("setUser",{ key: "petList", value: {} }) 
-        //         }
-        //     })
-        // },
-
         getUser (store,data) {
             if (localStorage.getItem("platform") == 1) {
                 var data = {
@@ -183,27 +172,45 @@ export default {
                 console.log(e)
             })
         },
-        // getDoctorList (store,data) {
-        //     const doctor = {
-        //         platform: localStorage.getItem("platform"),
-        //         userId: localStorage.getItem("userId"),
-        //         pageNum:1,
-        //         pageSize: 10
-        //     }
-        //     doctorList(doctor).then(res => {
-        //         if (res.data.rtnCode == 200) {
-        //             console.log(res,"医生列表")
-        //             // this.doctorList = res.data.data.pageT
-        //             store.commit("setUser",{ key: "doctorList", value: res.data.data.pageT })
-        //         } else {
-        //             store.commit("setUser",{ key: "doctorList", value: [] })
-        //             this.$message.error('Fail to load !');
-        //         }
-        //     }).catch(e => {
-        //         console.log(e)
-        //         store.commit("setUser",{ key: "doctorList", value: [] })
-        //         this.$message.error('Fail to load !');
-        //     })
-        // }
+        getDoctorList (store,vm) {
+            const doctor = {
+                platform: localStorage.getItem("platform"),
+                userId: localStorage.getItem("userId"),
+                pageNum:1,
+                pageSize: 10
+            }
+            doctorList(doctor).then(res => {
+                if (res.data.rtnCode == 200) {
+                    console.log(res,"医生列表")
+                    // this.doctorList = res.data.data.pageT
+                    store.commit("setUser",{ key: "doctorList", value: res.data.data.pageT })
+                    store.commit("setUser",{ key: "searchList", value: store.state.doctorList })
+                    store.commit("setUser",{ key: "loading", value: false })
+                } else if (res.data.rtnCode == 500) {
+                    localStorage.removeItem("Token")
+                    localStorage.removeItem("userId")
+                    localStorage.removeItem("paltform")
+                    localStorage.removeItem("IMtoken")
+                    localStorage.removeItem('IM')
+                    vm.$router.replace('/customerLogin')
+                    vm.$message.error('Login expired, please log in again !');
+                }
+            }).catch(e => {
+                console.log(e)
+                    store.commit("setUser",{ key: "loading", value: false })
+                    store.commit("setUser",{ key: "doctorList", value: [] })
+                vm.$message.error('Fail to load !');
+            })
+        },
+        search (store,data) {
+            store.state.searchList = []
+            store.state.doctorList.forEach(item => {
+                if (item.doctorName.toUpperCase().includes(store.state.inp.toUpperCase())) {    //item.doctorName == data 
+                    store.state.searchList.push(item)
+                } else if (data == '') {
+                    store.state.searchList = store.state.doctorList
+                }
+            })
+        }
     }
 }

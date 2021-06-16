@@ -139,7 +139,7 @@
 </template>
 
 <script>
-import { login } from "@/axios/request.js"
+import { login, uploadGoogleToken } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -174,6 +174,14 @@ export default {
     },
     created () {
         this.judge_login()
+        // document.onkeydown - function (e) {
+        //     console.log(e)
+        //     var key = window.event.keyCode
+        //     if (key == 13) {
+        //         // lett.enterSearchMember();
+        //         console.log('enter')
+        //     }
+        // }
     },
     mounted () {
         let that = this
@@ -213,20 +221,27 @@ export default {
             var googleUser = {}
             auth2.attachClickHandler(element, {},
             function(googleUser) {
-                // document.getElementById('name').innerText = "Signed in: " + googleUser.getBasicProfile().getName();
                 that.goo = "Signed in: " + googleUser.getBasicProfile().getName();
                 var profile = auth2.currentUser.get().getBasicProfile();
+                localStorage.setItem("G_token", googleUser.getAuthResponse().id_token )
+                localStorage.setItem('G_ID', profile.getId() )
+                var data = {
+                    id_token: localStorage.getItem('G_token'),
+                    platform: localStorage.getItem('platform')
+                }
+                uploadGoogleToken(data).then(res => {})
+
                 console.log('ID: ' + profile.getId());
                 console.log('Full Name: ' + profile.getName());
                 console.log('Given Name: ' + profile.getGivenName());
                 console.log('Family Name: ' + profile.getFamilyName());
                 console.log('Image URL: ' + profile.getImageUrl());
                 console.log('Email: ' + profile.getEmail());
+                console.log(googleUser.getAuthResponse().id_token)
             }, function(error) {
                 console.log(JSON.stringify(error, undefined, 2));
             });
         },
-
         judge_login () {
             if (localStorage.getItem("platform") == 1 && localStorage.getItem("Token") ) {
                 this.$router.replace("/customerhomepage")
@@ -234,10 +249,7 @@ export default {
         },
         SignUp () {
             this.$router.push({
-                name: "signUp",
-                // query:{
-                //     user: 2
-                // }
+                name: "signUp"
             })
         },
         toLogin () {

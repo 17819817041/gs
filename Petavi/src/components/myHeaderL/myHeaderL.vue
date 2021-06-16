@@ -183,7 +183,7 @@
                     </div>
                 </div>
                 <div class="input" >
-                    <el-input style="transform:scale(1);border:none;" prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
+                    <el-input style="transform:scale(1);border:none;" v-model="inp" @input="search" prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
                 </div>
             </div>
             <div v-else></div>
@@ -279,9 +279,20 @@ export default {
                 })
             },
         },
-        // 
+        inp: {
+            get () {return this.$store.state.user.inp},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "inp",
+                    value: val
+                })
+            },
+        }
     },
     methods: {
+        search () {
+            this.$store.dispatch('search',this.inp)
+        },
         showDetails () {
             this.show = !this.show
             this.rotate = !this.rotate

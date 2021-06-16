@@ -170,3 +170,11 @@ export function getUserByPId (data) {               //通过宠物ID获取用户
         params: data
     })
 }
+
+export function uploadGoogleToken (data) {           //上传Google_token
+    return request({
+        url: '/user/googleLogin',
+        method: "POST",
+        params: data
+    })
+}

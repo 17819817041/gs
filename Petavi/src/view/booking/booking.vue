@@ -4,10 +4,10 @@
         <div class="size12 tc" style="margin:10px auto">Select an option to book</div>
         
         <div class="form_select">
-            <el-form label-position="top" ref="form">
-                <el-form-item class="typeFlex ju tc">
+            <el-form label-position="top" ref="form" :model="form" :rules="rules">
+                <el-form-item class="typeFlex ju tc" prop="WAY">
                     <div style="margin-right:10px;">
-                        <el-radio v-model="WAY" label="1">
+                        <el-radio v-model="form.WAY" label="1">
                             <div class="video ju">
                                 <div>
                                     <img :class="['opacity',{ opacity1: way == 'video' }]" src="@/assets/img/videoWay.png" alt="" @click="videoWay">
@@ -18,7 +18,7 @@
                         <div class="size12">Min session 15 mins . $1.99 per/min</div>
                     </div>
                     <div style="margin-left:10px;">
-                        <el-radio v-model="WAY" label="2">
+                        <el-radio v-model="form.WAY" label="2">
                             <div class="visit mg">
                                 <div>
                                     <img :class="['opacity',{ opacity1: way == 'visit' }]" src="@/assets/img/bookingImg.png" alt="" @click="visitWay">
@@ -29,30 +29,33 @@
                         <div class="size12">Book free, all fees are payable at clinic</div>
                     </div>
                 </el-form-item>
-                <el-form-item>
-                    <el-select v-model="pet" placeholder="Select pet" @change="getPetId">
+                <el-form-item prop="pet">
+                    <el-select v-model="form.pet" placeholder="Select pet" @change="getPetId">
                         <el-option v-for="(item,i) in petSelect" :key="i" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item>
-                    <el-select v-model="location" placeholder="Location">
+                <el-form-item prop="location">
+                    <el-select v-model="form.location" placeholder="Location">
                         <el-option v-for="(item,i) in locationSelect" :key="i" :value="item"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item>
-                    <div class="sb">
-                        <div class="pet">
-                            <el-select v-model="doctor" placeholder="Select the doctor" @change="getDoctorId">
+
+                <div class="sb">
+                    <el-form-item prop="doctor" class="pet">
+                        <div class=" width100">
+                            <el-select v-model="form.doctor" placeholder="Select the doctor" @change="getDoctorId">
                                 <el-option v-for="(item,i) in doctorSelect" :key="i" :label="item.doctorName" :value="item.doctorId"></el-option>
                             </el-select>
                         </div>
-                        <div class="star_time">
+                    </el-form-item>
+                    <el-form-item prop="starTime" class="star_time" >
+                        <div>
                             <!-- <el-select v-model="starTime" placeholder="Booking Star Time">
                                 <el-option v-for="(item,i) in starTimeSelect" :key="i" :value="item"></el-option>
                             </el-select> -->
                             <div  :class="['arrow', { rotate: starRotate }]"></div>
                             <el-time-select
-                                v-model="starTime"
+                                v-model="form.starTime"
                                 :picker-options="{
                                     start: '08:30',
                                     step: '00:15',
@@ -64,8 +67,10 @@
                                 placeholder="Booking Star Time">
                             </el-time-select>
                         </div>
-                        <div class="end_time">
-                            <el-select v-model="endTime"  placeholder="CONSULTATION TIME" @change="duration">
+                    </el-form-item>
+                    <el-form-item prop="duration" class="end_time">
+                        <div>
+                            <el-select v-model="form.duration"  placeholder="CONSULTATION TIME" @change="getDuration">
                                 <el-option v-for="(item,i) in endTimeSelect" :key="i" :label="item.label" :value="item.value"></el-option>
                             </el-select>
                             <!-- <div :class="['arrow', { rotate: endRotate }]"></div>
@@ -82,30 +87,37 @@
                                 placeholder="Booking End Time">
                             </el-time-select> -->
                         </div>
-                    </div>
-                </el-form-item>
+                    </el-form-item>
+                </div>
+
                 <el-form-item label="Booking Date">
                     <div class="sb">
-                        <div class="day">
-                            <el-select v-model="day" placeholder="Day">
-                                <el-option v-for="(item,i) in daySelect" :key="i" :value="item"></el-option>
-                            </el-select>
-                        </div>
-                        <div class="month">
-                            <el-select v-model="month" placeholder="Month" @change="chooseMonth">
-                                <el-option v-for="(item,i) in monthSelect" :key="i" :label="item.label" :value="item.value"></el-option>
-                            </el-select>
-                        </div>
-                        <div class="years">
-                            <el-select v-model="years" placeholder="Year">
-                                <el-option v-for="(item,i) in yearsSelect" :key="i" :value="item"></el-option>
-                            </el-select>
-                        </div>
+                        <el-form-item prop="day" class="day">
+                            <div>
+                                <el-select v-model="form.day" placeholder="Day">
+                                    <el-option v-for="(item,i) in daySelect" :key="i" :value="item"></el-option>
+                                </el-select>
+                            </div>
+                        </el-form-item>
+                        <el-form-item class="month" prop="month">
+                            <div>
+                                <el-select v-model="form.month" placeholder="Month" @change="chooseMonth">
+                                    <el-option v-for="(item,i) in monthSelect" :key="i" :label="item.label" :value="item.value"></el-option>
+                                </el-select>
+                            </div>
+                        </el-form-item>
+                        <el-form-item  class="years" prop="years">
+                            <div>
+                                <el-select v-model="form.years" placeholder="Year">
+                                    <el-option v-for="(item,i) in yearsSelect" :key="i" :value="item"></el-option>
+                                </el-select>
+                            </div>
+                        </el-form-item>
                     </div>
                 </el-form-item>
                 <el-form-item>
                     <div class="textarea_wrap">
-                        <textarea class="width100 textarea" placeholder="Remark" name="" id="" cols="30" rows="10"></textarea>
+                        <textarea class="width100 textarea" v-model="remark" placeholder="Remark" name="" id="" cols="30" rows="10"></textarea>
                     </div>
                     <el-button class="width100" type="primary" @click="confirm">Book Now</el-button>
                 </el-form-item>
@@ -121,27 +133,31 @@ export default {
         return {
             endRotate: false,
             starRotate: false,
-            doctor: '',
+            form: {
+                WAY: null,
+                doctor: '',
+                pet: '',
+                location: null,
+                starTime: '',
+                duration: "",
+                day: '',
+                month: '',
+                years: '',
+            },
             doctorId: null,
-            WAY: null,
             doctorSelect: [],
-            location: '',
-            locationSelect: [],
-            pet: '',
+            locationSelect: [1,2],
             petId: null,
             petSelect: [],
-            starTime: '',
-            starTimeSelect: [],
             endTime: '',
-            duration: "",
+            starTimeSelect: [],
             endTimeSelect: [
                 {label: '30MIN',value: 30},
                 {label: '45MIN',value: 45},
                 {label: '60MIN',value: 60},
             ],
-            day: '',
+            date: '',
             daySelect: [],
-            month: '',
             monthSelect: [ 
                 { label: 'Jan', value: '1' }, 
                 { label: 'Feb', value: '2' }, 
@@ -156,32 +172,47 @@ export default {
                 { label: 'Nov', value: '11' }, 
                 { label: 'Dec', value: '12' }, 
             ],
-            years: '',
             yearsSelect: [],
-            remark: 'remark',
+            remark: '',
             way: null,
             judge_month: null,
             pageNum: 1,
-            pageSize: 10
+            pageSize: 10,
+            rules: {
+                WAY: [
+                    { required:true, message:'Selection of consultation methods', trigger:"blur" }
+                ],
+                doctor: [
+                    { required:true, message:'Please choose a doctor', trigger:"blur" }
+                ],
+                pet: [
+                    { required:true, message:'Please choose a pet', trigger:"blur" }
+                ],
+                location: [
+                    { required:true, message:'Please select location', trigger:"blur" }
+                ],
+                starTime: [
+                    { required:true, message:'Please select a starTime', trigger:"blur" }
+                ],
+                duration: [
+                    { required:true, message:'Please select duration', trigger:"blur" }
+                ],
+                day: [
+                    { required:true, message:'Please select day', trigger:"blur" }
+                ],
+                month: [
+                    { required:true, message:'Please select month', trigger:"blur" }
+                ],
+                years: [
+                    { required:true, message:'Please select years', trigger:"blur" }
+                ],
+            },
         }
     },
     created () {
         this.docSelect()
         this.getPetSelect()
         this.getDay()
-        // let T = '20:15'
-        // let arr = T.split(":")
-        // let fen = Number(arr[1]) + 45
-        // let shi = Number(arr[0])
-        // console.log(fen,shi)
-        // if (Number(arr[1] + 45) > 60 ) {
-        //     fen = Number(arr[1]) + 45 - 60
-        //     shi = shi + 1
-        // } else if ((Number(arr[1]) + 45) === 60 ) {
-        //     fen = '00'
-        //     console.log(fen)
-        // }
-        // console.log(fen,shi)
     },
     watch: {
         petList: {
@@ -205,46 +236,76 @@ export default {
             let that = this
             this.$refs.form.validate(flag => {
                 if (flag) {
+                    that.date = that.form.years + '-' + that.form.month + '-' + that.form.day
+                    // let D = new Date()
+                    // that.bookingCreateTime = D.toLocaleDateString().split('/').join('-')
+                    // let T = that.form.starTime
+                    // let arr = T.split(":")
+                    // let fen = Number(arr[1])
+                    // let shi = Number(arr[0])
+                    // if ((Number(arr[1]) + that.form.duration) > 60 ) {
+                    //     fen = Number(arr[1]) + that.form.duration - 60
+                    //     shi = shi + 1
+                    // }
+                    // if ((Number(arr[1]) + that.form.duration) === 60 ) {
+                    //     shi = shi + 1
+                    //     fen = '00'
+                    // }
+                    // that.endTime = shi + ':' + fen
+                    // console.log(that.endTime)
                     var data = {
-                        bookingType: that.WAY,
-                        bookingDoctor: that.doctor,
+                        bookingType: that.form.WAY,
+                        bookingDoctor: that.form.doctor,
                         bookingDoctorId: that.doctorId,
-                        locationId: 1,
-                        petName: that.pet,
+                        locationId: that.form.location,
+                        petName: that.form.pet,
                         petId: that.petId,
-                        userName: 'this.userName',
+                        userName: 'that.userName',
                         userId: localStorage.getItem('userId'),
-                        bookingStartTime: that.starTime,
-                        bookingEndTime: '20:00',
-                        // bookingDate: this.day,
-                        bookingDate: '2021-06-18',
+                        bookingStartTime: that.form.starTime,
+                        // bookingEndTime: that.form.endTime,
+                        bookingDate: that.date,
                         bookingRemark: that.remark,
-                        bookingTimeId: 1,
-                        bookingTime: this.duration,
-                        // goodsId: '',
-                        bookingState: 1,
-                        bookingCreateTime: '2021-06-15'
+                        // bookingTimeId: null,
+                        bookingTime: that.form.duration,
+                        // bookingState: 1
                     }
                     booking(data).then(res => {
                         console.log(res)
-                        if (res.data.rtnCode == 20) {
-                            that.$router.push("/confirm")
-                        } else {
-
+                        if (res.data.rtnCode == 200) {
+                            that.$message({
+                                type: 'success',
+                                message: 'Book successfully '
+                            })
+                            // that.$router.push("/confirm")
+                        } else if (res.data.rtnCode == 201) {
+                            that.$message({
+                                type: 'error',
+                                message: "Your account balance is insufficient. Please recharge your account before making an appointment"
+                            })
                         }
                     }).catch(e => {
                         console.log(e)
+                        that.$message({
+                            type: 'error',
+                            message: 'Please complete the information'
+                        })
+                    })
+                } else {
+                    that.$message({
+                        type: 'error',
+                        message: 'Please complete the information'
                     })
                 }
             })
         },
         getDuration (val) {
-            this.duration = val
+            this.form.duration = val
         },
         getDoctorId (val) {
             this.doctorSelect.forEach(item => {
                 if (item.doctorId == val) {
-                    this.doctor = item.doctorName
+                    this.form.doctor = item.doctorName
                     this.doctorId = item.doctorId
                 }
             })
@@ -252,7 +313,7 @@ export default {
         getPetId (val) {
             this.petSelect.forEach(item => {
                 if (item.id == val) {
-                    this.pet = item.name
+                    this.form.pet = item.name
                     this.petId = item.id
                 }
             })
@@ -300,8 +361,8 @@ export default {
             for (let i=1;i<=Day;i++) {
                 this.daySelect.push(i)
             }
-            if (this.day > this.daySelect.length) {
-                this.day = this.daySelect.length
+            if (this.form.day > this.daySelect.length) {
+                this.form.day = this.daySelect.length
             }
         },
         endFocus () {
@@ -367,6 +428,7 @@ export default {
             outline: none;
             resize: none;
             background: @content;
+            font-size: 16px;
         }
     }
     textarea::-webkit-input-placeholder {

@@ -193,7 +193,17 @@ export default {
 		box-shadow: 0 0 2px 1px #818080 !important;
 		outline: none !important;
 	}
-
+	.form_select .typeFlex .el-form-item__error {
+		width: 100%;
+		text-align: center !important;
+		padding: 0 !important;
+	}
+	.form_select .el-input--suffix .el-icon-time {
+		display: none;
+	}
+	.form_select .el-date-editor .el-input__suffix {
+		display: none;
+	}
 	.typeFlex .el-form-item__content {
 		display: flex;
 		line-height: 20px;

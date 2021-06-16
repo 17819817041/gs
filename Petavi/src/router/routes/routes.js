@@ -77,12 +77,20 @@ export default [
             {
                 path:'/support',
                 name:'support',
+                redirect: 'RegistrationAndLogin',
                 component: () => import("@/view/support/support.vue"),
-                children:[{
-                    path:'/chat',
-                    name:'chat',
-                    component: () => import("@/view/chat/chat.vue")
-                }]
+                children:[
+                    {
+                        path:'/chat',
+                        name:'chat',
+                        component: () => import("@/view/chat/chat.vue")
+                    },
+                    {
+                        path: "/RegistrationAndLogin",
+                        name: 'RegistrationAndLogin',
+                        component: () => import("@/view/support/RegistrationAndLogin.vue")
+                    }
+                ]
             },
             {
                 path: "/firstAid",

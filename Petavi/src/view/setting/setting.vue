@@ -293,14 +293,17 @@
                                         <div>Remarks</div>
                                     </div>
                                     <div class="name2">
-                                        <div v-if="editBtn">{{user.userGender == 2 ? 'F' : 'M'}} <span style="color:white">-</span> </div>  <!-- null -->
+                                        <div v-if="editBtn">
+                                            <span v-if="user.userGender == 1">Male</span>    
+                                            <span v-if="user.userGender == 2">Female</span>    
+                                        </div>  <!-- null -->
                                         <div v-else class="gender al">
                                             <!-- <el-select class="width100 al" style="margin-bottom:0;height:29px" v-model="sex">
                                                 <el-option v-for="(item,i) in sexList" :key="i" :value="i">{{item}}</el-option>
                                             </el-select> -->
                                             <select class="option width100" @change="getGender" name="" id="">
-                                                <option value="1">M</option>
-                                                <option value="2">F</option>
+                                                <option value="1">Male</option>
+                                                <option value="2">Female</option>
                                             </select>
                                         </div>  
                                         <div v-if="editBtn">{{user.userChoiceDoctor}} <span style="color:white">-</span> </div> <!-- null -->
