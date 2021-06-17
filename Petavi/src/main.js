@@ -9,6 +9,8 @@ import router from "@/router/router/router.js"
 import myHeader from "@/components/myHeader/myHeader.vue"
 import myHeaderL from "@/components/myHeaderL/myHeaderL.vue"
 import vetMessage from "@/components/vetMessage/vetMessage.vue"   
+import agoraMsg from "@/components/agoraMsg/agoraMsg.vue"
+Vue.component('agoraMsg',agoraMsg)
 Vue.component("vetMessage",vetMessage)
 Vue.component("myHeaderL",myHeaderL)
 Vue.component("myHeader",myHeader)

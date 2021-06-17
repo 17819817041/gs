@@ -1,12 +1,15 @@
 <style lang="less" scoped>
 @import "@/less/css.less";
 .agora {
+    width: 100%;
+    overflow: hidden;
     height: 100%;
 }
     .logo_wrap {
         position: relative;
         height: 109px;
         margin-bottom: 10px;
+        
     }
     .LOGO {
         position: absolute;
@@ -16,6 +19,14 @@
         height: 123px;
         z-index: 500;
         background: white;
+        @media screen and (max-width: 1300px) {
+            width: 75px;
+            height: 85px;
+        }
+        @media screen and (max-width: 564px) {
+            width: 50px;
+            height: 60px;
+        }
     }
     .showVideo {
         background: black;
@@ -69,17 +80,77 @@
             }
         }
     }
+    .doctorMessage_wrap {
+        height: 100%;
+        position: relative;
+        transition: 0.3s;
+        @media screen and (max-width: 1200px) {
+            width: 370px;
+        }
+        .drawer {
+            position: absolute;
+            left: 0px;
+            height: 109px;
+            overflow: hidden;
+            width: 0px;
+            top: 10px;
+            z-index: 900;
+            user-select: none;
+            transition: 0.1s;
+        }
+    }
+    .drawer {
+        @media screen and (max-width: 1500px) {
+            width: 15px !important;
+            left: -30px !important;
+            transform: translate(100%,0) !important;
+        }
+    }
+    .box1 {
+        width: 0;
+        height: 0;
+        border: solid 15px;
+        border-color:  transparent rgb(245, 243, 243) transparent  transparent;
+        transform: translate(-50%,50%);
+    }
+    .box2 {
+        width: 15px;
+        height: 60px;
+        // transform: translate(100%,0);
+        background: rgb(245, 244, 244);
+    }
+    .box3 {
+        width: 0;
+        height: 0;
+        border: solid 15px;
+        border-color: transparent rgb(243, 240, 240) transparent transparent;
+        transform: translate(-50%,-50%);
+    }
     .doctorMessage {
         // flex: 2;
         width: 450px;
         height: 100%;
         overflow: auto;
+        transition: 0.3s;
+        @media screen and (max-width: 1200px) {
+            transform: translate(-40px,-75px) scale(0.8);
+            height: calc(100% + 150px);
+        }
         // @media screen and (min-width: 1600px) and (max-width: 2000px) {
         //     width: 26%;
         // }
         // @media screen and (min-width: 1200px) and (max-width: 1600px) {
         //     width: 29%;
         // }
+    }
+    .Drawer {
+        width: 0 !important;
+        transition: 0.3s;
+        // transform: translate(100%,0) !important;
+    }
+    .Drawer1 {
+        transition: 0.3s;
+        opacity: 0;
     }
     .about_me {
         padding: 30px 0 28px 0;
@@ -258,7 +329,6 @@
         color: white;
     }
     .MESSAGE {
-        width: 185px;
         height: calc(100% );    
     }
     .cus_message {
@@ -274,6 +344,14 @@
         width: 100%;
         height: 100%;
         transform: rotateY(180deg);
+    }
+    .arrow_drawer {
+        width: 15px;
+        transition: 0.3s !important;
+    }
+    .rotate {
+        transform: rotateZ(180deg);
+        transition: 0.3s;
     }
 </style>
 
@@ -291,7 +369,7 @@
                     </div> -->
                 </div>
                 <div v-else-if="platform == 2"  class="cus_message noBar">
-                    <vetMessage></vetMessage>
+                    <agoraMsg></agoraMsg>
                 </div>
             </div>
 
@@ -307,104 +385,112 @@
                 </div>
             </div>
 
-
-            <div class="doctorMessage noBar">
-                <div class="about_me sb">
-                    <div class="myName al">
-                        <div class="al" style="width:80%">
-                            <div class="userHead_img ju al">
-                                <!-- <img class="userHead" src="@/assets/img/john.png" alt=""> -->
-                                <img v-if="userDetailMessage.userImage" class="userHead" :src="userDetailMessage.userImage" alt="">
-                                <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i>
-                            </div>
-                            <div class="tc size14" v-if="userDetailMessage.userName">{{userDetailMessage.userName}}</div>
-                            <div v-else class="tc" style="font-size:12px">No Name</div>
-                        </div>
-                        <div><img style="width:17px;height:22px;margin-left:5px" src="@/assets/img/information.png" alt=""></div>
+            <div :class="[ 'doctorMessage_wrap' ]">
+                <div class="drawer cursor" @click="DRAWER">
+                    <div class="box1"></div>
+                    <div class="box2 al ju">
+                        <img :class="[ 'arrow_drawer', {rotate: drawer} ]" src="@/assets/img/arrow_drawer.png" alt="">
                     </div>
-                    <div class="myOperation sb al">
-                        <div class="outLogo size12 bold cursor al ju">Logout</div>
-                        <div class="helpAbout cursor al ju">
-                            <img src="@/assets/img/what.png" alt="">
-                            Help & Support
-                        </div>
-                    </div>
+                    <div class="box3"></div>
                 </div>
-                <div v-if="platform == 1">
-                    <div class="atPresentDoctor mg sa">
-                        <div class="DOCTOR">
-                            <div class="docHead_img mg ju">
-                                <el-image class="docHead al" :src="callToDoctor.userHead" alt="" fit="cover">
-                                    <div slot="error" class="image-slot al" style="height: 100%;width:100%">
-                                        <i class="el-icon-picture-outline" style="font-size:40px"></i>
-                                    </div>
-                                </el-image>
+                <div :class="['doctorMessage noBar', { Drawer: drawer },{ Drawer1: drawer } ]">
+                    <div class="about_me sb">
+                        <div class="myName al">
+                            <div class="al" style="width:80%">
+                                <div class="userHead_img ju al">
+                                    <!-- <img class="userHead" src="@/assets/img/john.png" alt=""> -->
+                                    <img v-if="userDetailMessage.userImage" class="userHead" :src="userDetailMessage.userImage" alt="">
+                                    <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i>
+                                </div>
+                                <div class="tc size14" v-if="userDetailMessage.userName">{{userDetailMessage.userName}}</div>
+                                <div v-else class="tc" style="font-size:12px">No Name</div>
                             </div>
-                            <div class="tc">{{callToDoctor.doctorName}}</div>
-                            <div class="tc">Hispital Name</div>
+                            <div><img style="width:17px;height:22px;margin-left:5px" src="@/assets/img/information.png" alt=""></div>
                         </div>
-                        <div class="about_the_doctor">
-                            Dr. Beck is a vet in Hong Kong and has an experience of 8+ years in this field. We provide services in hospitalsonline consultation as video and audio
+                        <div class="myOperation sb al">
+                            <div class="outLogo size12 bold cursor al ju">Logout</div>
+                            <div class="helpAbout cursor al ju">
+                                <img src="@/assets/img/what.png" alt="">
+                                Help & Support
+                            </div>
                         </div>
                     </div>
-                    <div class="chat_user mg">
-                        <!-- <img style="width:100%;height:100%" src="@/assets/img/chatPage.png" alt=""> -->
-                        <div class="user_content" ref="customerChat">
+                    <div v-if="platform == 1">
+                        <div class="atPresentDoctor mg sa">
+                            <div class="DOCTOR">
+                                <div class="docHead_img mg ju">
+                                    <el-image class="docHead al" :src="callToDoctor.userHead" alt="" fit="cover">
+                                        <div slot="error" class="image-slot al" style="height: 100%;width:100%">
+                                            <i class="el-icon-picture-outline" style="font-size:40px"></i>
+                                        </div>
+                                    </el-image>
+                                </div>
+                                <div class="tc">{{callToDoctor.doctorName}}</div>
+                                <div class="tc">Hispital Name</div>
+                            </div>
+                            <div class="about_the_doctor">
+                                Dr. Beck is a vet in Hong Kong and has an experience of 8+ years in this field. We provide services in hospitalsonline consultation as video and audio
+                            </div>
+                        </div>
+                        <div class="chat_user mg">
+                            <!-- <img style="width:100%;height:100%" src="@/assets/img/chatPage.png" alt=""> -->
+                            <div class="user_content" ref="customerChat">
 
-                        </div>
-                        <div class="INP sa al">
-                            <div class="INP_item al ju"><el-input placeholder="Type a message" v-model="customerInp"></el-input></div>
-                            <div class="send_img al ju"><img class="cursor" src="@/assets/img/send.png" @click="customerSend" alt=""></div>
+                            </div>
+                            <div class="INP sa al">
+                                <div class="INP_item al ju"><el-input placeholder="Type a message" v-model="customerInp"></el-input></div>
+                                <div class="send_img al ju"><img class="cursor" src="@/assets/img/send.png" @click="customerSend" alt=""></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div v-else-if="platform == 2" >
-                    <div class="atPresentDoctor mg">
-                        <div>Medical Record</div>
-                        <div style="padding:13px 0">Date</div>
-                        <div class="get_day flex">
-                            <div class="day_time ju al">
-                                <!-- day
-                                <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
-                                <el-select v-model="day" placeholder="Day">
-                                    <el-option v-for="(item,i) in daySelect" :key="i" :value="item"></el-option>
-                                </el-select>
-                            </div>
-                            <div class="time al ju">
-                                <!-- month
-                                <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
+                    <div v-else-if="platform == 2" >
+                        <div class="atPresentDoctor mg">
+                            <div>Medical Record</div>
+                            <div style="padding:13px 0">Date</div>
+                            <div class="get_day flex">
+                                <div class="day_time ju al">
+                                    <!-- day
+                                    <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
+                                    <el-select v-model="day" placeholder="Day">
+                                        <el-option v-for="(item,i) in daySelect" :key="i" :value="item"></el-option>
+                                    </el-select>
+                                </div>
+                                <div class="time al ju">
+                                    <!-- month
+                                    <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
 
-                                <el-select v-model="month" placeholder="Month" @change="chooseMonth">
-                                    <el-option v-for="(item,i) in monthSelect" :key="i" :label="item.label" :value="item.value"></el-option>
-                                </el-select>
+                                    <el-select v-model="month" placeholder="Month" @change="chooseMonth">
+                                        <el-option v-for="(item,i) in monthSelect" :key="i" :label="item.label" :value="item.value"></el-option>
+                                    </el-select>
+                                </div>
+                                <div class="time al ju">
+                                    <!-- year
+                                    <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
+                                    <el-select v-model="years" placeholder="Year">
+                                        <el-option v-for="(item,i) in yearsSelect" :key="i" :value="item"></el-option>
+                                    </el-select>
+                                </div>
                             </div>
-                            <div class="time al ju">
-                                <!-- year
-                                <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
-                                <el-select v-model="years" placeholder="Year">
-                                    <el-option v-for="(item,i) in yearsSelect" :key="i" :value="item"></el-option>
-                                </el-select>
+                            <div style="padding:25px 0 10px 0">Details</div>
+                            <div class="textarea">
+                                <textarea name="" id="" cols="30" rows="10"></textarea>
+                            </div>
+                            <div class="button sb tc">
+                                <div class="save ju cursor al">Save</div>
+                                <div class="sb tc">
+                                    <div class="submit ju cursor al">Submit</div>
+                                    <div><img class="clipImg cursor" src="@/assets/img/clip.png" alt=""></div>
+                                </div>
                             </div>
                         </div>
-                        <div style="padding:25px 0 10px 0">Details</div>
-                        <div class="textarea">
-                            <textarea name="" id="" cols="30" rows="10"></textarea>
-                        </div>
-                        <div class="button sb tc">
-                            <div class="save ju cursor al">Save</div>
-                            <div class="sb tc">
-                                <div class="submit ju cursor al">Submit</div>
-                                <div><img class="clipImg cursor" src="@/assets/img/clip.png" alt=""></div>
+                        <div class="chat mg">
+                            <div class="wrap_message">
+                                <div class="message_item" ref="vetChat"></div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="chat mg">
-                        <div class="wrap_message">
-                            <div class="message_item" ref="vetChat"></div>
-                        </div>
-                        <div class="INP sa al">
-                            <div class="INP_item al ju"><el-input placeholder="Type a message" v-model="vetInp"></el-input></div>
-                            <div class="send_img al ju"><img class="cursor" @click="vetSend" src="@/assets/img/send.png" alt=""></div>
+                            <div class="INP sa al">
+                                <div class="INP_item al ju"><el-input placeholder="Type a message" v-model="vetInp"></el-input></div>
+                                <div class="send_img al ju"><img class="cursor" @click="vetSend" src="@/assets/img/send.png" alt=""></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -452,7 +538,8 @@ export default {
                 { label: 'Dec', value: '12' }, 
             ],
             customerInp: '',
-            vetInp: ""
+            vetInp: "",
+            drawer: false
         }
     },
     mounted () {
@@ -480,6 +567,9 @@ export default {
         userDetail () {return this.$store.state.user.userDetail}
     },
     methods: {
+        DRAWER () {
+            this.drawer = !this.drawer
+        },
         endCall () {
             this.$rtcCall.endCall()
         },
@@ -594,7 +684,7 @@ export default {
             name.style.marginBottom = '5px'
 
             msg.innerHTML = data.data
-            msg.style.background = "rgb(47,187,240)"
+            msg.style.background = "#EEEEEE"
             msg.style.borderRadius = '0px 12px 12px 12px'
             msg.style.padding = '3px 10px'
             msg.style.marginLeft = "10px"

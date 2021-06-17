@@ -60,7 +60,7 @@
                     </el-form-item>
 
                     <el-form-item>
-                        <div class="google tc cursor" @click="vethomepage">
+                        <div class="google tc cursor" @click="vetLogin" @keydown.enter="Login">
                             <el-button class="googleBtn width100" type="primary" :loading="loading">
                                 <span class="span">Login</span>
                             </el-button>
@@ -156,7 +156,10 @@ export default {
         faceBook () {
             this.$store.dispatch("login", {'vm': this} )
         },
-        vethomepage () {
+        Login () {
+            this.vethomepage()
+        },
+        vetLogin () {
             this.loading = true
             let that = this
             this.$refs.form.validate(flag => {

@@ -46,7 +46,7 @@
         border-radius: 7px;
         margin-bottom: 15px;
         width: 220px;
-        background: #FF3B30;
+        background: #15BC83;
     }
     .phone_btn {
         height: 45px;

@@ -245,6 +245,17 @@ export default {
     created () {
         this.getUser()
     },
+    mounted () {
+        gapi.load('auth2', function(){
+            // Retrieve the singleton for the GoogleAuth library and set up the client.
+            var auth2 = gapi.auth2.init({
+                client_id: '628942639023-6eghdtqbgk8vvdj20tuc7l2708mshmd8.apps.googleusercontent.com', //客户端ID
+                cookiepolicy: 'single_host_origin',
+                scope: 'profile' //可以请求除了默认的'profile' and 'email'之外的数据
+            });
+		});
+        console.log(gapi.auth2,6666666666666)
+    },
     watch: {
         login: {
             handler (val) {
@@ -300,7 +311,7 @@ export default {
             this.$store.commit("setUser", { key: "showList", value: !this.rotate } )
         },
         getUser () {
-            this.$store.dispatch("getUser")
+            this.$store.dispatch("getUser",this)
         },
         getImage (e) {
             if (localStorage.getItem("platform") == 1) {
@@ -368,7 +379,10 @@ export default {
         },
         logout () {
             this.$store.dispatch("logout", this)
-            // localStorage.clear()
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function() {
+                alert('用户注销成功');
+            });
         },
         doctor () {
             if (localStorage.getItem("platform") == 2) {

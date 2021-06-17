@@ -35,28 +35,6 @@
         margin: auto;
         border: #EFEEEE solid 1px;
         margin-top: 50px;
-        position: relative;
-        .arrow {
-            position: absolute;
-            top: 4px;
-            right: 6px;
-        }
-    }
-    .myPet {
-        position: relative;
-        .pet_list {
-            background: white;
-            width: 150px;
-            max-height: 0;
-            position: absolute;
-            left: 0;
-            top: 100%;
-            transition: 0.3s;
-            overflow: hidden;
-        }
-        img {
-            transition: 0.3s;
-        }
     }
     .list_item {
         padding: 2px;
@@ -124,17 +102,9 @@
         <div class="customer_content flex">
             <div :class="['present_message', 'noBar' ]" @scroll="scroll">
                 <div class="present_item">
-                    <div class="arrow">
-                        <div class="myPet">
-                            <!-- <img @click="showPetList" :class="[ {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
-                            <div :class="['pet_list', {height:show}]">
-                                <div class="list_item" v-for="(item,i) in petList" :key="i">{{item.name}}</div>
-                            </div> -->
-                        </div>
-                    </div>
                     
-                    <div class="pet_img mg ju al cursor">
-                        <img :src="pet.image" alt="" v-if="pet.image" @click="petDetails">
+                    <div class="pet_img mg ju al">
+                        <img :src="pet.image" alt="" v-if="pet.image">
                         <i class="el-icon-picture-outline Icon" v-else></i>
                     </div>
                     <div class="pet_name size21 tc">{{pet.name}}</div>
@@ -146,7 +116,7 @@
                         <div>Neutered status : {{pet.petJueYu}}</div>
                         <div>Weight : {{pet.weight}}</div>
                     </div>
-                    <div class="more_message size12 cursor">
+                    <div class="more_message size12 cursor" @click="petDetails">
                         More...
                     </div>
                 </div>

@@ -124,7 +124,7 @@ export default {
         padding: 40px 50px;
     }
     .videoConsultation {
-        background: @cancel;
+        background: #15BC83;
         width: 250px;
         border-radius: 10px;
         color: white;

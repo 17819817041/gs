@@ -1,4 +1,5 @@
 import { petList, getUserDetails, vetDetails, doctorList, login } from "@/axios/request.js"
+import router from "@/router/router/router.js"
 import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 import Vue from "vue"
 export default {
@@ -59,7 +60,7 @@ export default {
                 console.log(e)
             })
         },
-        getUser (store,data) {
+        getUser (store,vm) {
             if (localStorage.getItem("platform") == 1) {
                 var data = {
                   userId: localStorage.getItem("userId")
@@ -70,7 +71,19 @@ export default {
                         store.commit("setUser",{ key: "userDetail", value: res.data.data }) 
                         store.commit("setUser",{ key: "login", value: true }) 
                         store.dispatch("IMLogin")
-                    } else {
+                    } else if (res.data.rtnCode == 500) {
+                        store.commit("setUser",{ key: "login", value: true })
+                        localStorage.removeItem("Token")
+                        localStorage.removeItem("userId")
+                        localStorage.removeItem("paltform")
+                        localStorage.removeItem("IMtoken")
+                        localStorage.removeItem('IM')
+                        if (vm.$route.name !== 'customerLogin') {
+                            router.replace('/customerLogin')
+                            vm.$message.error('Login expired, please log in again !');
+                        }
+                        
+                        store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }
                 }).catch(e => {
@@ -89,7 +102,19 @@ export default {
                         store.commit("setUser",{ key: "userDetail", value: res.data.data }) 
                         store.commit("setUser",{ key: "login", value: true }) 
                         store.dispatch("IMLogin")
-                    } else {
+                    } else if (res.data.rtnCode == 500) {
+                        store.commit("setUser",{ key: "login", value: true })
+                        localStorage.removeItem("Token")
+                        localStorage.removeItem("userId")
+                        localStorage.removeItem("paltform")
+                        localStorage.removeItem("IMtoken")
+                        localStorage.removeItem('IM')
+                        if (vm.$route.name !== 'customerLogin') {
+                            router.replace('/customerLogin')
+                            vm.$message.error('Login expired, please log in again !');
+                        }
+                        
+                        store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }
                 }).catch(e => {
@@ -182,7 +207,6 @@ export default {
             doctorList(doctor).then(res => {
                 if (res.data.rtnCode == 200) {
                     console.log(res,"医生列表")
-                    // this.doctorList = res.data.data.pageT
                     store.commit("setUser",{ key: "doctorList", value: res.data.data.pageT })
                     store.commit("setUser",{ key: "searchList", value: store.state.doctorList })
                     store.commit("setUser",{ key: "loading", value: false })
@@ -192,13 +216,15 @@ export default {
                     localStorage.removeItem("paltform")
                     localStorage.removeItem("IMtoken")
                     localStorage.removeItem('IM')
-                    vm.$router.replace('/customerLogin')
-                    vm.$message.error('Login expired, please log in again !');
+                    if (vm.$route.name !== 'customerLogin') {
+                        router.replace('/customerLogin')
+                    }
+                    // vm.$message.error('Login expired, please log in again !');
                 }
             }).catch(e => {
                 console.log(e)
-                    store.commit("setUser",{ key: "loading", value: false })
-                    store.commit("setUser",{ key: "doctorList", value: [] })
+                store.commit("setUser",{ key: "loading", value: false })
+                store.commit("setUser",{ key: "doctorList", value: [] })
                 vm.$message.error('Fail to load !');
             })
         },

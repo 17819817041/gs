@@ -38,25 +38,39 @@
         transform: translate(0,60%);
         position: relative;
         .edit {
-            width: 95px;
+            width: 90px;
             right: 20px;
             top: 0;
-            font-size: 19px;
+            font-size: 17px;
             padding: 8px 0;
-            border-radius: 10px;
+            border-radius: 12px;
             background: @helpBtn;
             position: absolute;
+            box-shadow: 0 1px 2px 1px rgb(214, 210, 210);
         }
-        .save {
-            width: 95px;
-            right: 20px;
-            top: 0;
-            font-size: 19px;
-            padding: 8px 0;
-            border-radius: 10px;
-            background: @hdColor;
-            position: absolute;
-        }
+    }
+    .save {
+        width: 90px;
+        font-size: 17px;
+        padding: 8px 0;
+        border-radius: 12px;
+        background: @hdColor;
+        box-shadow: 0 1px 2px 1px rgb(214, 210, 210);
+    }
+    .cancel {
+        width: 90px;
+        font-size: 17px;
+        border-radius: 12px;
+        margin-left: 10px;
+        background: @helpBtn;
+        padding: 8px 0px;
+        box-shadow: 0 1px 2px 1px rgb(214, 210, 210);
+    }
+    .wrap_save {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        font-size: 15px;
     }
     .detail {
         padding: 50px 0;
@@ -243,7 +257,11 @@
                     <div class=" bold tc personal_message_title">
                         <div class="size25">Guadian Details</div>
                         <div v-if="editBtn" class="edit tc cursor" @click="edit">Edit</div>
-                        <div v-else class="save tc cursor" @click="save">Save</div>
+                        <!-- <div v-else class="save tc cursor" @click="save">Save</div> -->
+                        <div v-else class="wrap_save flex">
+                            <div class="save cursor tc" @click="save">Save</div>
+                            <div class="cancel cursor tc al ju" @click="cancel">cancel</div>
+                        </div>
                     </div>
                     <div class="detail flex width100 al">
                         <div class="person_image al ju">
@@ -425,7 +443,9 @@ export default {
                 this.$store.dispatch("getUser")
             })
         },
-
+        cancel () {
+            this.editBtn = true
+        },
         save () {
             this.updateDetails()
             this.editBtn = true

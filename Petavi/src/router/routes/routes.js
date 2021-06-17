@@ -77,7 +77,7 @@ export default [
             {
                 path:'/support',
                 name:'support',
-                redirect: 'RegistrationAndLogin',
+                redirect: '/RegistrationAndLogin',
                 component: () => import("@/view/support/support.vue"),
                 children:[
                     {

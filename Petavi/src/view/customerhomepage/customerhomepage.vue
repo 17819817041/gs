@@ -4,11 +4,14 @@
         height: 100%;
         .list_wrap {
             position: absolute;
+            // background: rgb(117, 117, 117);
+            opacity: 0.5;
             left: 0;
             top: 0;
             width: 100%;
-            height: 100%;
+            height: calc(100% + 119px);
             z-index: 600;
+            transform: translate(0,-119px);
         }
     }
     .present_message {
@@ -86,15 +89,19 @@
     .rotate {
         transform: rotateZ(-180deg);
     }
+    // .rotate1 {
+    //     transform: rotateZ(-180deg);
+    // }
 </style>
 
 <template>
     <div class="customerhomepage">
         <div><myHeaderL></myHeaderL></div>
         <div class="customer_content flex">
-        <div class="list_wrap" v-if="show"></div>
+        <div class="list_wrap" v-if="show" @click="showPetList"></div>
             <div class="list" v-show="nameList">
                 <img class="img1" @click="showPetList" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
+                <!-- <img class="img2" @click="showPetList" v-show="showList" :class="[ 'cursor', {rotate1: rotate} ]" src="@/assets/img/arrow.png" alt=""> -->
                 <div :class="['pet_list noBar', {height:show}]">
                     <div class="list_item mg cursor"  @click="cutPet(item,i)" v-for="(item,i) in petList" :key="i">{{item.name}}</div>
                 </div>
@@ -164,6 +171,7 @@ export default {
         cutPet (item,i) {
             this.firstPet = i
             this.$store.commit("setUser", { key: "pet",value: item })
+            this.show = false
         },
         scroll (val) {
             clearTimeout(this.timer)

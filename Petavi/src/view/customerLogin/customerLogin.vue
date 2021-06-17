@@ -88,19 +88,17 @@
                             <el-input class="input" placeholder="Your Email" v-model="form.email"></el-input>
                         </el-form-item>
                         <el-form-item prop="password">
-                            <el-input class="input" placeholder=" Password" show-password v-model="form.password"></el-input>
+                            <el-input class="input" placeholder="Password" show-password v-model="form.password"></el-input>
                         </el-form-item>
-
                         <el-form-item>
-                            <div class="google cursor" @click="toLogin">
+                            <div class="google cursor" @click="toLogin" @keydown.enter="LOGIN">
                                 <el-button class="faceBook width100" type="primary">
                                     <span class="span">Login</span>
                                 </el-button>
                             </div>
                         </el-form-item>
-
                         <el-form-item>
-                            <div class=" size12 cursor" @click="forget">Forgot your password?</div>
+                            <div class="size12 cursor" @click="forget">Forgot your password?</div>
                         </el-form-item>
                         <el-form-item>
                             <div class="size12">or Login With</div>
@@ -126,6 +124,7 @@
                                 </el-button>
                             </div>
                         </el-form-item>
+                        <button @click="out">google</button>
                     </el-form>
                     <div class="signUp tc size12 bold">Don't have an Account? <span class="cursor" style="color:#B3519F" @click="SignUp">Sing Up</span></div>
                 </div>
@@ -134,7 +133,6 @@
         <!-- <iframe src="https://www.google.com/calendar/embed?showTitle=0&amp;height=600&amp;wkst=1&amp;hl=en&amp;bgcolor=%23FFFFFF&amp;
         src=liangrenwei%40gmail.com&amp;color=%23BE6D00&amp;src=p%23weather%40group.v.calendar.google.com&amp;color=%23A32929&amp;ctz=America%2FToronto" 
         style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe> -->
-
     </div>
 </template>
 
@@ -174,14 +172,9 @@ export default {
     },
     created () {
         this.judge_login()
-        // document.onkeydown - function (e) {
-        //     console.log(e)
-        //     var key = window.event.keyCode
-        //     if (key == 13) {
-        //         // lett.enterSearchMember();
-        //         console.log('enter')
-        //     }
-        // }
+        setTimeout(() => {
+            console.log(666666)
+        },1000)
     },
     mounted () {
         let that = this
@@ -229,8 +222,8 @@ export default {
                     id_token: localStorage.getItem('G_token'),
                     platform: localStorage.getItem('platform')
                 }
+                that.$router.replace("/customerhomepage")
                 uploadGoogleToken(data).then(res => {})
-
                 console.log('ID: ' + profile.getId());
                 console.log('Full Name: ' + profile.getName());
                 console.log('Given Name: ' + profile.getGivenName());
@@ -244,13 +237,18 @@ export default {
         },
         judge_login () {
             if (localStorage.getItem("platform") == 1 && localStorage.getItem("Token") ) {
-                this.$router.replace("/customerhomepage")
+                if (this.$route.name != 'customerhomepage') {
+                    this.$router.replace("/customerhomepage")
+                }
             }
         },
         SignUp () {
             this.$router.push({
                 name: "signUp"
             })
+        },
+        LOGIN () {
+            this.toLogin()
         },
         toLogin () {
             let that = this
@@ -276,7 +274,6 @@ export default {
                                     platform: 1
                                 }
                             })
-                            
                         } else if (res.data.rtnCode == 202) {
                             this.$message({
                                 type: 'warning',
@@ -295,10 +292,15 @@ export default {
 
                 }
             })
-            
         },
         forget () {
             this.$router.push("/forgetPwd")
+        },
+        out () {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function() {
+                alert('用户注销成功');
+            });
         }
     }
 }

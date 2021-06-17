@@ -2,14 +2,17 @@
     @import "@/less/css.less";
     .support {
         flex: 10;
+        height: 100%;
     }
     .support_content {
         width: 100%;
-        margin-top: 15px;
+        height: 100%;
+        overflow: auto;
+        background: @content;
     }
     .showMessage {
         width: 100%;
-        background: @content;
+        height: 100%;
         .support_type, .support_title {
             margin: 10px 0;
             padding-left: 20px;
@@ -17,12 +20,14 @@
     }
     .support_type {
         width: 100%;
+        overflow: auto;
+        height: 80%;
     }
     .support_item {
         background: white;
+        overflow: auto;
     }
     .support_item div {
-        width: 200px;
         padding: 17px 25px;
         border-radius: 12px;
         margin: 15px 15px;
@@ -35,10 +40,8 @@
         color: #686760;
     }
     .support_introduce {
-        height: 100%;
         width: calc(100% - 320px);
         background:rgb(255, 255, 255);
-        height: 505px;
         margin-left: 10px;
         color: @support;
     }
@@ -46,7 +49,7 @@
 
 <template>
     <div class="support">
-        <div class="support_content flex">
+        <div class="support_content flex noBar">
             <div class="showMessage">
                 <div class="support_title">
                     <div class="al">
@@ -56,21 +59,35 @@
                         <div class="explan bold"> Help & Suppot </div>
                     </div>
                 </div>
-                <div class="support_type flex">
-                    <div class="support_item tc">
-                        <div class="cursor bold second">Top Questions</div>
-                        <div class="cursor bold white center">Registration and Login</div>
-                        <div class="cursor bold white center">Petavi First Aid </div>
-                        <div class="cursor bold white center">Setting</div>
-                        <div class="cursor bold white center">Payment</div>
-                        <div class="cursor bold white center">Terms & Conditions</div>
-                        <div class="cursor bold white center">Other</div>
-                        <div class="cursor bold last" @click="change">Chat with Admin</div>
+                <div class="support_type noBar flex">
+                    <div class="support_item noBar tc">
+                        <div class="cursor bold second">
+                            <router-link to="" style="color:#686760;text-decoration: none">Top Questions</router-link>
+                        </div>
+                        <div class="cursor bold white center">
+                            <router-link to="/RegistrationAndLogin" style="color: white;width: 100%;text-decoration: none">Registration and Login</router-link>
+                        </div>
+                        <div class="cursor bold white center"> 
+                            <router-link to="" style="color: white;width: 100%;text-decoration: none">Petavi First Aid</router-link>
+                        </div>
+                        <div class="cursor bold white center">
+                            <router-link to="" style="color: white;width: 100%;text-decoration: none">Setting</router-link>
+                        </div>
+                        <div class="cursor bold white center">
+                            <router-link to="" style="color: white;width: 100%;text-decoration: none">Payment</router-link>
+                        </div>
+                        <div class="cursor bold white center">
+                            <router-link to="" style="color: white;width: 100%;text-decoration: none">Terms & Conditions</router-link>
+                        </div>
+                        <div class="cursor bold white center">
+                            <router-link to="" style="color: white;width: 100%;text-decoration: none">Other</router-link>
+                        </div>
+                        <div class="cursor bold last">
+                            <router-link to="/chat" style="color:#686760;text-decoration: none">Chat with Admin</router-link>
+                        </div>
                     </div>
                     <div class="support_introduce">
-                        <div>
-                            <router-view></router-view>
-                        </div>
+                        <router-view></router-view>
                     </div>
                 </div>
             </div>
@@ -82,13 +99,11 @@
 export default {
     data () {
         return {
-            message:true
+            
         }
     },
     methods: {
-        change () {
-            this.message = !this.message
-        }
+        
     }
 }
 </script>
