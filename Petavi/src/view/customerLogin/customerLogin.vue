@@ -91,17 +91,28 @@
                             <el-input class="input" placeholder="Password" show-password v-model="form.password"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <div class="google cursor" @click="toLogin" @keydown.enter="LOGIN">
+                            <div class="google cursor" @click="toLogin" @keydown.enter="enter">
                                 <el-button class="faceBook width100" type="primary">
                                     <span class="span">Login</span>
                                 </el-button>
                             </div>
                         </el-form-item>
                         <el-form-item>
-                            <div class="size12 cursor" @click="forget">Forgot your password?</div>
-                        </el-form-item>
-                        <el-form-item>
-                            <div class="size12">or Login With</div>
+                            <div class="size12">
+                                <span class="cursor" @click="forget">Forgot your password?</span> <span class="cursor">or Login With</span>
+                                <span class="cursor">
+                                    <label for="face">
+                                        <img src="@/assets/img/facebook.png" alt="">
+                                        <fb-signin-button id="face" v-show="false"
+                                            :params="fbSignInParams"
+                                            @success="onSignInSuccess"
+                                            @error="onSignInError">
+                                            Sign in with Facebook
+                                        </fb-signin-button>
+                                    </label>
+                                </span>
+                                <span class="cursor"><img ref="google" src="@/assets/img/GoogleImg.png" alt=""></span>
+                            </div>
                         </el-form-item>
                         <el-form-item>
                             <div class="fackbook cursor white">
@@ -114,8 +125,8 @@
                                 </fb-signin-button>
                             </div>
                         </el-form-item>
-                        <el-form-item>
-                            <div class="google cursor" ref="google">
+                        <!-- <el-form-item>
+                            <div class="google cursor">
                                 <el-button class="googleBtn width100" type="primary">
                                     <span class="span">Login with Google</span>
                                     <div class="googleImg">
@@ -123,7 +134,7 @@
                                     </div>
                                 </el-button>
                             </div>
-                        </el-form-item>
+                        </el-form-item> -->
                         <button @click="out">google</button>
                     </el-form>
                     <div class="signUp tc size12 bold">Don't have an Account? <span class="cursor" style="color:#B3519F" @click="SignUp">Sing Up</span></div>
@@ -167,14 +178,11 @@ export default {
                 password: [
                     { required: true, message:'Please enter your password', trigger:'blur' }
                 ]
-            },
+            }
         }
     },
     created () {
         this.judge_login()
-        setTimeout(() => {
-            console.log(666666)
-        },1000)
     },
     mounted () {
         let that = this
@@ -247,7 +255,7 @@ export default {
                 name: "signUp"
             })
         },
-        LOGIN () {
+        enter () {
             this.toLogin()
         },
         toLogin () {

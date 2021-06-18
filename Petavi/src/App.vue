@@ -58,12 +58,15 @@
 
 <script>
 import img from "@/assets/img/0000.png"
+import { min } from "@/axios/request.js"
 export default {
 	data () {
 		return {
 			img: "",
 			loading: false,
-			// sureCall: true
+			// sureCall: true,
+			timer: "",
+      		value: 0,
 		}
 	},
 	created () {
@@ -72,6 +75,7 @@ export default {
 		if (userId) {
 			this.$store.dispatch("IMLogin")
 		}
+		this.start()
 	},
 	watch: {
 		callModal: {
@@ -116,6 +120,20 @@ export default {
 		}
     },
 	methods: {
+		start(){
+			this.timer = setInterval(this.valChange, 60000); // 注意: 第一个参数为方法名的时候不要加括号;
+		},
+		valChange() {
+			this.value++;
+			let data = {
+				platform: 1,
+				userId: 430
+			}
+			min(data).then(res => {
+				console.log(res)
+			})
+			console.log(this.value);
+		},
 		sure () {
 			this.sureCall = false
 			// this.$router.push("/agora")

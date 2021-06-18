@@ -178,3 +178,11 @@ export function uploadGoogleToken (data) {           //上传Google_token
         params: data
     })
 }
+
+export function min (data) {
+    return request({
+        url: "/lstener/OnlineHeartbeat",
+        method: 'POST',
+        params: data
+    })
+}
