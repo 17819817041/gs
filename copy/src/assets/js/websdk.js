@@ -32,7 +32,6 @@ conn.listen({
         console.log("收到消息", e)
         let data = JSON.parse(e.data)
         if (data.type == 'Call') {
-            router.push("/agora")
             store.commit("setUser",{ key: 'callModal2', value: true })
             store.commit("setUser",{ key: 'caller', value: data.user })
             store.commit("setUser",{ key: 'joinParams', value: data.params })

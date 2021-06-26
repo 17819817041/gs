@@ -1,5 +1,6 @@
 import emedia from 'easemob-emedia';
 import store from "@/vuex/store.js"
+import router from "@/router/router/router.js"
 import { options } from 'less';
 emedia.config({
     appkey:'1130201110157617#demo', // 从环信后台 获取的appkey、必填
@@ -40,7 +41,9 @@ emedia.mgr.onMemberJoined = function (member) {
 };
 
 emedia.mgr.onMemberLeave = function (member, reason, failed) {
+    router.back()
     console.log('onMemberLeave', member, reason, failed);
+    window.eMedia.mgr.exitConference()
     // alert(`${member.nickName || member.name} 退出了会议`);
 
 };
