@@ -155,11 +155,11 @@ export default {
 
 			const user_room = await emedia.mgr.joinRoom(params);
 			console.log("room",user_room,params)
-
 			let constraints = { audio: true, video: true };
 			const stream = await emedia.mgr.publish(constraints)
 			this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
-			this.$router.push("/agora")
+			// this.callModal = false
+			// this.$router.push("/agora")
 			this.sendMsg(params)
 		},
 		sendMsg (params) {
@@ -210,7 +210,20 @@ export default {
 			const stream = await emedia.mgr.publish(constraints)
 			console.log(stream)
 			this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
+			this.callModal2 = false
 			this.$router.push("/agora")
+
+			let data = {
+                type: "confirmCall"
+            }
+            let id = this.$conn.getUniqueId();                 // 生成本地消息id
+            let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+            msg.set({
+                msg: JSON.stringify(data),                  // 消息内容
+                to: JSON.stringify(this.caller.userId) + 'A1',     
+                chatType: 'singleChat',                  // 设置为单聊   
+            });
+            this.$conn.send(msg.body);
 		},
 		cancel2 () {
 			this.callModal2 = false

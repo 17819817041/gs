@@ -48,6 +48,12 @@ conn.listen({
         if (data.type == 'HangUp1') {
             store.commit("setUser",{ key: 'callModal2', value: false })
         }
+        if (data.type == 'confirmCall') {
+            store.commit("setUser",{ key: 'callModal', value: false })
+            store.commit("setUser",{ key: 'callLoading', value: false })
+            router.push("/agora")
+            
+        }
     },    //收到文本消息
 });
 
