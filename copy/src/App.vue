@@ -141,6 +141,7 @@ export default {
 			console.log(this.value);
 		},
 		async sure () {
+			this.$router.push("/agora")
 			this.callLoading = true
 			let params = {
 				roomName: this.$store.state.user.IMuser.username,
@@ -209,9 +210,9 @@ export default {
 			let constraints = { audio: true, video: true };
 			const stream = await emedia.mgr.publish(constraints)
 			console.log(stream)
-			this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
+			// this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
 			this.callModal2 = false
-			this.$router.push("/agora")
+			// this.$router.push("/agora")
 
 			let data = {
                 type: "confirmCall"

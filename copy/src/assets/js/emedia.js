@@ -10,7 +10,7 @@ emedia.config({
 
 emedia.mgr.onStreamAdded = function(member, stream) {
     // member：发布流人员的信息、stream：流信息
-    setTimeout(() => {
+    // setTimeout(() => {
         if(!stream.located()) {
             var option = {
                 member: member, 
@@ -20,12 +20,30 @@ emedia.mgr.onStreamAdded = function(member, stream) {
                 videoTag: document.getElementById('video')
             }
             emedia.mgr.subscribe(option.member, option.stream, option.subVideo, option.subAudio, option.videoTag)    
+            console.log('----------------------------------远程',option.stream)
+       } else {
+           console.log(stream,'++++++++++++++++++++++++++++++++++本地')
+           let dom = document.getElementById('localVideo')
+           emedia.mgr.streamBindVideo(stream,dom)
        }
-       console.log(member,stream,option,666)
        // store.commit("setApp",{ key: 'remoteStream', value: stream })
-    },1000)
+    // },1000)
 
 }
+
+emedia.mgr.onStreamRemoved = function (member, stream) {
+    console.log('onStreamRemoved',member,stream);
+};
+emedia.mgr.onMemberJoined = function (member) {
+    console.log('onMemberJoined',member);
+    // alert(`${member.nickName || member.name} 加入了会议`);
+};
+
+emedia.mgr.onMemberLeave = function (member, reason, failed) {
+    console.log('onMemberLeave', member, reason, failed);
+    // alert(`${member.nickName || member.name} 退出了会议`);
+
+};
 
 
 export {emedia}

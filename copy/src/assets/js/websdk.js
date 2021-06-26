@@ -32,6 +32,7 @@ conn.listen({
         console.log("收到消息", e)
         let data = JSON.parse(e.data)
         if (data.type == 'Call') {
+            router.push("/agora")
             store.commit("setUser",{ key: 'callModal2', value: true })
             store.commit("setUser",{ key: 'caller', value: data.user })
             store.commit("setUser",{ key: 'joinParams', value: data.params })
@@ -51,7 +52,7 @@ conn.listen({
         if (data.type == 'confirmCall') {
             store.commit("setUser",{ key: 'callModal', value: false })
             store.commit("setUser",{ key: 'callLoading', value: false })
-            router.push("/agora")
+            // router.push("/agora")
             
         }
     },    //收到文本消息

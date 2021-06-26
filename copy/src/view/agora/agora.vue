@@ -389,8 +389,8 @@
                         <div class="cursor"><img src="@/assets/img/answer_video.png" alt=""></div>
                         <div class="cursor" @click="endCall"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
                     </div>
-                    <video :class="['video_parent']" width="400px" height="400px" id="video" ref="video"></video>
-                    <video :class="['video_child']" id="localVideo"></video>
+                    <video :class="['video_parent']" autoplay width="400px" height="400px" id="video" ref="video"></video>
+                    <video :class="['video_child']" autoplay id="localVideo"></video>
                 </div>
             </div>
 
@@ -558,20 +558,15 @@ export default {
     mounted () {
         // console.log(AgoraRTC)
         // this.createClient()
-        setTimeout(() => {
-            this.initVideo()
-        },10)
-        var video = this.$refs.video
-        video.addEventListener('canplay',function () {
-            console.log(this.videoWidth)
-            console.log(this.videoHeight)
-        })
+        // setTimeout(() => {
+        //     this.initVideo()
+        // },10)
     },
     created () {
         this.callToDoctor = this.callTo
         this.userDetailMessage = this.userDetail
         this.getDay()
-        this.listens()
+        // this.listens()
     },
     computed: {
         remoteStream () { return this.$store.state.app.remoteStream },
@@ -588,15 +583,6 @@ export default {
 
             window.eMedia.mgr.exitConference()
             this.$router.back()
-        },
-        initVideo () {
-            var video = document.getElementById('localVideo');
-            video.srcObject = this.localStream;
-            video.play()
-
-            // var video1 = document.getElementById('video');
-            // video1.srcObject = this.remoteStream;
-            // video1.play()
         },
         getDay () {
             // let month = new Date().getMonth() + 1      //获取月份
