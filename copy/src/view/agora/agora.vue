@@ -585,16 +585,18 @@ export default {
             this.drawer = !this.drawer
         },
         endCall () {
+
             window.eMedia.mgr.exitConference()
+            this.$router.back()
         },
         initVideo () {
             var video = document.getElementById('localVideo');
             video.srcObject = this.localStream;
             video.play()
 
-            var video1 = document.getElementById('video');
-            video1.srcObject = this.remoteStream;
-            video1.play()
+            // var video1 = document.getElementById('video');
+            // video1.srcObject = this.remoteStream;
+            // video1.play()
         },
         getDay () {
             // let month = new Date().getMonth() + 1      //获取月份
