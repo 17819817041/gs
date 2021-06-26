@@ -2,11 +2,13 @@ import request from "./axios"
 
 
 export function login (data) {
-    return request({
-        url: '',
-        method: "POST",
-        params: data
-    })
+    return request(
+        {
+            url:'/user/userLogin',
+            method: "POST",
+            params: data
+        }
+    )
 }
 
 export function doctorList (data) {      //医生列表
@@ -20,4 +22,14 @@ export function doctorList (data) {      //医生列表
         },
         params: data
     })
+}
+
+export function forget (data) {
+    return request(
+        {
+            url:'/user/forgetPassword',
+            method: "POST",
+            params: data
+        }
+    )
 }

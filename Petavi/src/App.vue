@@ -127,7 +127,7 @@ export default {
 			this.value++;
 			let data = {
 				platform: 1,
-				userId: 430
+				userId: 486
 			}
 			min(data).then(res => {
 				console.log(res)
@@ -137,8 +137,8 @@ export default {
 		sure () {
 			this.sureCall = false
 			// this.$router.push("/agora")
-			console.log(this.callTo)
-			console.log(this.callTo.doctorId + '_2')
+			// console.log(this.callTo)
+			// console.log(this.callTo.doctorId + '_2')
 			this.loading = true
 			var config = {
                 push: false, // 对方(app端)不在线时是否推送
@@ -284,6 +284,9 @@ export default {
 	}
 	.message_form .el-select .el-input .el-input__inner {
 		background: white !important;
+	}
+	.message_form .el-cascader .el-icon-arrow-down {
+		display: none !important;
 	}
 
 
@@ -482,5 +485,20 @@ export default {
 	}
 	.loading {
 		padding: 20px 0;
+	}
+
+	.calendar .calendarMini .el-calendar-day {
+		height: 30px !important;
+		text-align: center;
+	}
+	.calendar .calendarMini .el-calendar-table__row .prev, .calendar .calendarMini .el-calendar-table__row .current, 
+	.calendar .calendarMini .el-calendar-table__row .next {
+		border: none !important;
+	}
+	.calendar .calendarMini thead {
+		font-size: 14px !important;
+	}
+	.calendar .calendarMini tbody {
+		font-size: 12px !important;
 	}
 </style>

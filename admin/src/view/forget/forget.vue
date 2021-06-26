@@ -28,7 +28,7 @@
 </template>
 
 <script>
-// import { forget } from "@/axios/request.js"
+import { forget } from "@/axios/request.js"
 export default {
     data () {
         return {

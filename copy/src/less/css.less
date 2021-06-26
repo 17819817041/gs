@@ -1,0 +1,121 @@
+@white:white;
+@hdColor:#46D3FA;   //header背景颜色
+@helpBtn:#FDB551;   //帮助按钮颜色
+@logout:#1976D2;    //退出登录按钮颜色
+@content:#F2F2F2;
+@explanTitle:#5E5E5E;  
+@support:#686760;
+@facebookBtn:#367FC0; // facebook 登录按钮
+@googleBtn:#FC6011;   //Google登录按钮
+@phoneMedia: 90%;
+@size:16px;           //首页按钮大小
+@paddingBtn:15px 0;      //首页按钮上下padding
+@callBtn:#2FBBF0;    //call按钮
+@video:#15BC83;      //点击视频通话按钮
+@denger:#FF2D55;      
+@cancel:#F53333;     
+// .color-1 {
+//     background: @hdColor !important;
+//     border: none !important;
+//     font-size: @size;
+//     padding: @paddingBtn;
+// }
+// .color-2 {
+//     background: @helpBtn !important;
+//     border: none !important;
+//     font-size: @size;
+//     padding: @paddingBtn;
+// }
+// .color-3 {
+//     background: @white !important;
+//     border-color: @hdColor !important;
+//     color: @hdColor !important;
+//     font-size: @size;
+//     padding: @paddingBtn;
+// }
+
+
+.explan {
+    color: @explanTitle;
+    font-size: 19px;
+    width: 98%;
+    margin: auto;
+    padding: 17px 0;
+}
+.videoBtn {
+    background: @video !important;
+    border: none !important;
+    border-radius: 17px;
+}
+.backWhite {
+    background: @white !important;
+    border: @hdColor solid 1px !important;
+    color: @hdColor !important;
+}
+.facebookBtn {
+    background: @facebookBtn !important;
+    border: none !important;
+    font-size: @size;
+    padding: @paddingBtn;
+}
+.googleBtn {
+    background: @googleBtn !important;
+    border: none !important;
+    font-size: @size;
+    padding: @paddingBtn;
+}
+.denger {
+    background: @denger;
+}
+.callBtn {
+    background: @callBtn !important;
+    padding: 10px 0;
+    border: none !important;
+    font-size: 15px !important;
+    border-radius: 10px !important;
+}
+
+.bar::-webkit-scrollbar{
+  width:10px;
+  height:10px;
+}
+.bar::-webkit-scrollbar-track{
+  background: rgb(239, 239, 239);
+  border-radius:2px;
+}
+.bar::-webkit-scrollbar-thumb{
+  background: #bfbfbf;
+  border-radius:10px;
+}
+.bar::-webkit-scrollbar-thumb:hover{
+  background: #333;
+}
+.bar::-webkit-scrollbar-corner{
+  background: #179a16;
+}
+.bar {
+  overflow: auto;
+  scrollbar-color: #bfbfbf  rgb(239, 239, 239); 
+  scrollbar-width: none;
+  scrollbar-width: thin;   
+
+  /* IE浏览器 */
+  /*三角箭头的颜色*/
+  scrollbar-arrow-color: #000;
+  /*滚动条滑块按钮的颜色*/
+  scrollbar-face-color: #bfbfbf;
+  /*滚动条整体颜色*/
+  scrollbar-highlight-color: #FFF;
+  /*滚动条阴影*/
+  scrollbar-shadow-color: #FFF;
+  /*滚动条轨道颜色*/
+  /* scrollbar-track-color: #0066ff; */
+  /*滚动条3d亮色阴影边框的外观颜色——左边和上边的阴影色*/
+  scrollbar-3dlight-color:#0099dd;
+  /*滚动条3d暗色阴影边框的外观颜色——右边和下边的阴影色*/
+  scrollbar-darkshadow-color: #0099dd;
+  /*滚动条基准颜色*/
+  scrollbar-base-color: #0099dd;
+}
+.noBar { -ms-overflow-style:none !important;scrollbar-width: none !important; }  
+.noBar::-webkit-scrollbar { display: none !important; }

@@ -1,4 +1,4 @@
-import { petList, getUserDetails, vetDetails, doctorList, login } from "@/axios/request.js"
+import { petList, getUserDetails, vetDetails, doctorList, login, bookingUserId } from "@/axios/request.js"
 import router from "@/router/router/router.js"
 import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 import Vue from "vue"
@@ -14,6 +14,7 @@ export default {
         callModal: false,
         callModal2: false,
         callTo: {},
+        caller: null,
         userDetail: {},
         mask: {},
         headImg: {},
@@ -23,7 +24,8 @@ export default {
         nameList: true,
         petType: [],
         firstPet: 0,
-        inp: ''
+        inp: '',
+        userBooking: [],
     },
     mutations: {
         setUser (state,data) {
@@ -37,7 +39,15 @@ export default {
         getPetList (store,data) {
             petList(data).then(res => {
                 console.log(res,"宠物列表&类别")
-                if (res.data.rtnCode == 200) {
+                if (res.data.rtnCode == 201) {
+                    if (localStorage.getItem('platform') == 1) {
+                        router.push('/petmessage')
+                    }
+                    store.commit("setUser",{ key: "petList", value: [] })
+                } else if (res.data.rtnCode == 200) {
+                    // if (localStorage.getItem('platform') == 1) {
+                    //     router.push('/customerhomepage')
+                    // }
                     store.commit("setUser",{ key: "pet", value: res.data.data.pageT[store.state.firstPet] })
                     res.data.data.pageT.forEach(item => {
                         item.change = true
@@ -53,8 +63,6 @@ export default {
                         }
                     })
                     store.commit("setUser",{ key: "petList", value: res.data.data.pageT })
-                } else {
-                    store.commit("setUser",{ key: "petList", value: [] }) 
                 }
             }).catch(e => {
                 console.log(e)
@@ -69,8 +77,8 @@ export default {
                     if (res.data.rtnCode == 200) {
                         console.log(res,"user详情")
                         store.commit("setUser",{ key: "userDetail", value: res.data.data }) 
-                        store.commit("setUser",{ key: "login", value: true }) 
                         store.dispatch("IMLogin")
+                        store.commit("setUser",{ key: "login", value: true })
                     } else if (res.data.rtnCode == 500) {
                         store.commit("setUser",{ key: "login", value: true })
                         localStorage.removeItem("Token")
@@ -78,11 +86,10 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
-                        if (vm.$route.name !== 'customerLogin') {
-                            router.replace('/customerLogin')
-                            vm.$message.error('Login expired, please log in again !');
-                        }
-                        
+                        // if (vm.$route.name !== 'customerLogin') {
+                        //     router.replace('/customerLogin')
+                        //     vm.$message.error('Login expired, please log in again !');
+                        // }
                         store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }
@@ -95,7 +102,7 @@ export default {
                     userId: localStorage.getItem("userId"),
                 }
                 vetDetails(data).then(res => {
-                    console.log(res,"医生详情")
+                    // console.log(res,"医生详情")
                     if (res.data.rtnCode == 200) {
                         res.data.data.userImage = res.data.data.headUr
                         res.data.data.userName = res.data.data.doctorName
@@ -109,11 +116,10 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
-                        if (vm.$route.name !== 'customerLogin') {
-                            router.replace('/customerLogin')
-                            vm.$message.error('Login expired, please log in again !');
-                        }
-                        
+                        // if (vm.$route.name !== 'customerLogin') {
+                        //     router.replace('/vetLogin')
+                        //     vm.$message.error('Login expired, please log in again !');
+                        // }
                         store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }
@@ -159,8 +165,9 @@ export default {
         //     // }
         // },
         IMLogin (store) {
+            console.log('IM登录成功')
             var options = { 
-                user: localStorage.getItem("userId") + '_' + localStorage.getItem("platform"),
+                user: localStorage.getItem("userId") + 'A' + localStorage.getItem("platform"),
                 pwd: localStorage.getItem('IM'),
                 appKey: WebIM.config.appkey,
                 success (res) {
@@ -168,6 +175,11 @@ export default {
                     store.commit("setUser", { key: 'IMuser', value: res.user })
                     localStorage.setItem("IMtoken",res.access_token)
                     console.log(store.state.IMuser)
+                    var eMedia = require("@/assets/js/emedia.js").emedia
+                    console.log(eMedia,'emedia')
+                },
+                fail (e) {
+                    console.log(e,'e')
                 }
             };
             conn.open(options);
@@ -217,7 +229,7 @@ export default {
                     localStorage.removeItem("IMtoken")
                     localStorage.removeItem('IM')
                     if (vm.$route.name !== 'customerLogin') {
-                        router.replace('/customerLogin')
+                        // router.replace('/customerLogin')
                     }
                     // vm.$message.error('Login expired, please log in again !');
                 }
@@ -235,6 +247,18 @@ export default {
                     store.state.searchList.push(item)
                 } else if (data == '') {
                     store.state.searchList = store.state.doctorList
+                }
+            })
+        },
+        Booking (store,vm) {
+            var data = {
+                userId: localStorage.getItem('userId'),
+                userType: localStorage.getItem('platform')
+            }
+            bookingUserId(data).then(res => {
+                console.log(res,'booking')
+                if (res.data.rtnCode == 200) {
+                    store.commit("setUser",{ key: "userBooking", value: res.data.data })
                 }
             })
         }

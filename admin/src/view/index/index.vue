@@ -97,7 +97,7 @@
 </template>
 
 <script>
-// import { login } from "@/axios/request.js"
+import { login } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -112,9 +112,9 @@ export default {
                 // email:'',
                 // password:''
 
-                platform: null,
-                email:'',
-                password:''
+                platform: 3,
+                email:'100@qq.com',
+                password:'123'
             },
             rules: {
                 email: [
@@ -142,9 +142,19 @@ export default {
     },
     methods: {
         toLogin () {
-            console.log('login')
-            this.$router.push('/home')
-            this.login = true
+            this.loading = true
+            login(this.form).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    localStorage.setItem('adminPlatform',res.data.data.platform)
+                    localStorage.setItem('adminPlatform',res.data.data.userId)
+                    localStorage.setItem('adminToken',res.data.data.token)
+                    this.$router.push('/home')
+                    this.login = true
+                    this.loading = false
+                }
+            })
+            
             // let that = this
             // this.$refs.form.validate(flag => {
             //     if (flag) {

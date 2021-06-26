@@ -239,14 +239,23 @@
         width: 75%;
         // height: 35px;
         border: solid 1px rgb(185, 183, 183);
-        border-radius: 15px;
+        border-radius: 30px;
         overflow: hidden;
+        input {
+            border: none;
+            outline: none;
+            width: 100%;
+            height: 100%;
+            padding: 12px 5px;
+            font-size: 20px;
+            background: #F3F3F3;
+        }
     }
     .send_img {
         width: 15%;
         img {
-            width: 55px;
-            height: 55px;
+            width: 60px;
+            height: 60px;
         }
     }
     .userHead_img {
@@ -438,7 +447,9 @@
 
                             </div>
                             <div class="INP sa al">
-                                <div class="INP_item al ju"><el-input placeholder="Type a message" v-model="customerInp"></el-input></div>
+                                <div class="INP_item al ju">
+                                    <input placeholder="Type a message" v-model="customerInp" @keydown.enter="customerSend" />
+                                </div>
                                 <div class="send_img al ju"><img class="cursor" src="@/assets/img/send.png" @click="customerSend" alt=""></div>
                             </div>
                         </div>
@@ -488,7 +499,9 @@
                                 <div class="message_item" ref="vetChat"></div>
                             </div>
                             <div class="INP sa al">
-                                <div class="INP_item al ju"><el-input placeholder="Type a message" v-model="vetInp"></el-input></div>
+                                <div class="INP_item al ju">
+                                    <input placeholder="Type a message" v-model="vetInp" @keydown.enter="vetSend"/>
+                                </div>
                                 <div class="send_img al ju"><img class="cursor" @click="vetSend" src="@/assets/img/send.png" alt=""></div>
                             </div>
                         </div>
@@ -564,7 +577,8 @@ export default {
         remoteStream () { return this.$store.state.app.remoteStream },
         localStream () { return this.$store.state.app.localStream },
         callTo () {return this.$store.state.user.callTo},
-        userDetail () {return this.$store.state.user.userDetail}
+        userDetail () {return this.$store.state.user.userDetail},
+        caller () { return this.$store.state.user.caller }
     },
     methods: {
         DRAWER () {
@@ -603,8 +617,11 @@ export default {
                 this.day = this.daySelect.length
             }
         },
-        
+        sss () {
+            console.log(456)
+        },
         customerSend () {
+            console.log(JSON.stringify(this.callToDoctor.doctorId),JSON.stringify(this.callToDoctor.doctorId) + '_2','322_2')
             this.createdCustomerMessage()
             let data = {
                 type: "danmu",
@@ -614,12 +631,17 @@ export default {
             let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
             msg.set({
                 msg: data.value,                  // 消息内容
-                to: '322_2',                          // 接收消息对象（用户id）
-                chatType: 'singleChat',                  // 设置为单聊                        
+                to: JSON.stringify(this.callToDoctor.doctorId) + '_2',     
+                // to: '322_2',                     // 接收消息对象（用户id）
+                chatType: 'singleChat',                  // 设置为单聊    
+                ext: {
+                    key: this.userDetailMessage.userName
+                },                    
                 success: function (id, serverMsgId) {
-                    console.log('send private text Success');  
+                    console.log('send private text Success',id,serverMsgId);  
                 }, 
                 fail: function(e){
+                    console.log(e)
                     // 失败原因:
                     // e.type === '603' 被禁言
                     // e.type === '605' 群组不存在
@@ -632,6 +654,7 @@ export default {
                 }
             });
             this.$conn.send(msg.body);
+            this.customerInp = ''
         },
         createdCustomerMessage () {                 //客户输入内容并且发送
             var name = document.createElement('div')
@@ -660,7 +683,6 @@ export default {
         },
 
         listens () {
-            console.log(1)
             let that = this
             this.$conn.listen({
                 onTextMessage: function ( e ) {
@@ -677,7 +699,7 @@ export default {
             wrap.style.width = '100%'
             wrap.style.transform = `rotateY(${ 180 + 'deg' })`
 
-            name.innerHTML = data.from
+            name.innerHTML = data.ext.key
             name.style.margin = 'auto'
             name.style.width = '95%'
             // name.style.transform = `rotateY(${ 180 + 'deg'})`
@@ -732,6 +754,7 @@ export default {
             }
         },
         vetSend () {
+            console.log(JSON.stringify(this.userDetailMessage.userId) + '_1')
             this.createdVetMessage()
             let data = {
                 type: "danmu",
@@ -741,12 +764,16 @@ export default {
             let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
             msg.set({
                 msg: data.value,                  // 消息内容
-                to: '430_1',                          // 接收消息对象（用户id）
-                chatType: 'singleChat',                  // 设置为单聊                        
+                to: this.caller,                          // 接收消息对象（用户id）
+                chatType: 'singleChat',                  // 设置为单聊    
+                ext: {
+                    key: this.userDetailMessage.doctorName
+                },                    
                 success: function (id, serverMsgId) {
-                    console.log('send private text Success');  
+                    console.log('send private text Success',id,serverMsgId);  
                 }, 
                 fail: function(e){
+                    console.log(e,66666)
                     // 失败原因:
                     // e.type === '603' 被禁言
                     // e.type === '605' 群组不存在
@@ -759,6 +786,7 @@ export default {
                 }
             });
             this.$conn.send(msg.body);
+            this.vetInp = ''
         },
 
         

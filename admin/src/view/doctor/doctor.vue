@@ -144,7 +144,7 @@ export default {
         }
     },
     created () {
-        this.getDoctorList()
+        // this.getDoctorList()
     },
     computed: {
         callModal: {
