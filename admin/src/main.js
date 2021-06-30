@@ -2,6 +2,12 @@ import Vue from 'vue'
 import App from './App.vue'
 
 
+import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
+Vue.prototype.$WebIM = WebIM
+Vue.prototype.$conn = conn
+Vue.prototype.$rtcCall = rtcCall
+
+
 import Header from "@/components/header/header.vue"
 import Message from "@/components/message/message.vue"
 Vue.component("Message",Message)

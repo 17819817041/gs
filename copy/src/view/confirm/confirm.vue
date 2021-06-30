@@ -12,7 +12,11 @@
         </svg>
 
         <div class="confirm_message sa">
-            <div class="confirm_item ju"><img class="docHead" :src="doctorURL" alt=""></div>
+            <div class="confirm_item ju">
+                <div class="docHead_wrap ju">
+                    <img class="docHead" :src="doctorURL" alt="">
+                </div>
+            </div>
             <div class="DATE confirm_item" style="padding-left:20px">
                 <div class="confirm_date">
                     <div class="size14">Date</div>
@@ -130,6 +134,12 @@ export default {
     .size19 {
         font-size: 19px;
         padding: 3px 0;
+    }
+    .docHead_wrap {
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        overflow: hidden;
     }
     .docHead {
         height: 100%;

@@ -2,15 +2,18 @@
 @import "@/less/css.less";
     .customerPage {
         flex: 10;
+        height: 100%;
     }
     .customer_content {
         width: 100%;
+        height: 100%;
         .pet_message {
             width: 100%;
             height: 100%;
             background: @content;
             margin-top: 10px;
             padding-bottom: 30px;
+            overflow: auto;
             // @media screen and (max-width:1350px) {
             //     width: 82%;
             // }
@@ -20,12 +23,10 @@
             // }
         }
     }
-    .petMessage_title, .details_item {
+    .details_item {
         width: 97%;
         margin: auto;
-        margin-top: 30px;
-    }
-    .details_item {
+        margin-bottom: 30px;
         position: relative;
         background: white;
         border-radius: 8px;
@@ -65,7 +66,14 @@
         box-shadow: 0 1px 2px 1px rgb(214, 210, 210);
     }
     .petMessage_title {
+        position: sticky;
+        top: 0;
+        width: 97%;
+        margin: auto;
+        padding: 15px 0;
         color: #5E5E5E;
+        z-index: 100;
+        background: @content;
     }
     .details_image {
         width: 25%;
@@ -194,13 +202,23 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+    .toPetMessage {
+        padding: 8px;
+        border-radius: 20px;
+        background: @video;
+        color: white;
+    }
 </style>
-
 <template>
     <div class="customerPage" v-loading='updating'>
         <div class="customer_content flex">
-            <div class="pet_message">
-                <div class="bold petMessage_title" @click="toPetMessage">Pet Details</div>
+            <div class="pet_message noBar">
+                <div class="bold petMessage_title sb al">
+                    <div class="al">Pet Details</div>
+                    <div class="al toPetMessage cursor" @click="toPetMessage">
+                        <img style="width:20px;margin-right: 3px;" src="@/assets/img/pug.svg" alt=""><span>Add Pet</span>
+                    </div>
+                </div>
                 <div class="details_item size19 flex" v-for="(item,i) in petLists" :key="item.id">
                     <div v-if="item.change" class="edit cursor tc" @click="edit(item,i)">Edit</div>
                     <div v-else class="wrap_save flex">
@@ -340,8 +358,8 @@
                                     </div>
                                     <div v-else class="editInp al">
                                         <el-select v-model="status" @change="neuteredStatus">
-                                            <el-option value="1">Sterilization</el-option>
-                                            <el-option value="2">Unneutered</el-option>
+                                            <el-option value="1" label="Sterilization"></el-option>
+                                            <el-option value="2" label="Unneutered"></el-option>
                                         </el-select>
                                     </div>
                                 </div>

@@ -1,11 +1,11 @@
 <style lang="less" scoped>
 @import "@/less/css.less";
-.patients {
-    flex: 10;
-}
+    .patients {
+        flex: 10;
+        height: 100%;
+    }
     .message_item {
-        width: calc(100% - 125px);
-        padding: 20px;
+        width: 100%;
         background: @content;
         transition: 0.25s;
         @media screen and (max-width:1200px) {

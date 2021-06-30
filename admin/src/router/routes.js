@@ -28,7 +28,55 @@ export default [
                 path: "/doctor",
                 name: "doctor",
                 component: () => import("@/view/doctor/doctor.vue")
-            }
+            },
+            {
+                path: "/petPage",
+                name: "petPage",
+                component: () => import("@/view/petPage/petPage.vue")
+            },
+            {
+                path: "/patients",
+                name: "patients",
+                component: () => import("@/view/patients/patients.vue")
+            },
+            {
+                path:'/support',
+                name:'support',
+                redirect: '/RegistrationAndLogin',
+                component: () => import("@/view/support/support.vue"),
+                children:[
+                    {
+                        path:'/chat',
+                        name:'chat',
+                        component: () => import("@/view/support/chat.vue")
+                    },
+                    {
+                        path: "/RegistrationAndLogin",
+                        name: 'RegistrationAndLogin',
+                        component: () => import("@/view/support/RegistrationAndLogin.vue")
+                    }
+                ]
+            },
+            {
+                path: "/chatRoom",
+                name: "chatRoom",
+                component: () => import("@/view/chatRoom/chatRoom.vue")
+            },
+            {
+                path: "/conference",
+                name: "conference",
+                component: () => import("@/view/conference/conference.vue")
+            },
+            {
+                path: "/agora",
+                name: "agora",
+                component: () => import("@/view/agora/agora.vue")
+            },
+            {
+                path: "/appointment",
+                name: "appointment",
+                component: () => import("@/view/appointment/appointment.vue")
+            },
         ]
     }
     

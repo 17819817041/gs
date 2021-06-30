@@ -2,13 +2,14 @@
     @import "@/less/css.less";
     .notice {
         flex: 10;
+        height: 100%;
         .notice_content {
             height: 100%;
         }
     }
     .notice_content_wrap {
         flex: 10;
-        height: 100%;
+        height: calc(100% - 59px);
         background: @content;
     }
     .notice_item {
@@ -33,6 +34,15 @@
             color: #60A1E0;
         }
     }
+    .noData {
+        width: 100%;
+        height: 100%;
+        background: white;
+    }
+    .notice_list {
+        width:100%;
+        height: 100%;
+    }
 </style>
 
 <template>
@@ -41,7 +51,7 @@
             <div class="notice_content_wrap">
                 <div class="explan al"><img src="@/assets/img/information.png" alt=""> Notice</div>
                 <div class="notice_content_item flex">
-                    <div v-if="active" style="width:100%">
+                    <div v-if="noticeList" class="notice_list">
                         <div class="notice_item flex al" v-for="(item,i) in noticeList" :key="i">
                             <div><img class="john" src="@/assets/img/john.png" alt=""></div> 
                             <div class="notice_information">
@@ -49,6 +59,10 @@
                                 <div class="notice_date">{{item.date}}</div>
                             </div>
                         </div>
+                    </div>
+                    <div v-else-if="noticeList === null" class="noData">
+                        <div class="ju"><img style="width:100px; margin: 15px" src="@/assets/img/info.png" alt=""></div>
+                        <div class="tc " style="font-size: 20px;color:gray;">No notice</div>
                     </div>
                     <div v-else class="mg size21">No New Message</div>
                 </div>
@@ -58,23 +72,37 @@
 </template>
 
 <script>
+import { notice } from "@/axios/request.js"
 export default {
     data () {
         return {
-            noticeList: [
-                {img:'@/assets/img/john.png',title:'Dr. Vinay Misra sent you the picture.',date:'Today 13:00'}
-            ],
-            active: true
+            // noticeList: [
+            //     {img:'@/assets/img/john.png',title:'Dr. Vinay Misra sent you the picture.',date:'Today 13:00'}
+            // ],
+            active: true,
+            pageNum: 1,
+            pageSize: 10,
+            noticeList: []
         }
     },
     created () {
-        this.message()
+        this.getNoticeList()
     },
     methods: {
-        message () {
-            if (this.noticeList.length == 0) {
-                this.active = false
+        getNoticeList () {
+            let data = {
+                userId: localStorage.getItem('userId'),
+                pageNum: this.pageNum,
+                pageSize: this.pageSize
             }
+            notice(data).then(res => {
+                console.log(res,'notice')
+                if (res.data.rtnCode == 200) {
+
+                } else if (res.data.rtnCode == 201) {
+                    this.noticeList = null
+                }
+            })
         }
     }
 }

@@ -132,7 +132,7 @@ export default {
     created () {
         var data = {
             // userId: localStorage.getItem("userId"),
-            userId: 430,
+            userId: 486,
             pageNum: 1,
             pageSize: 10
         }

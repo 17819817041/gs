@@ -142,9 +142,6 @@
                 </div>
             </div>
         </div>
-        <!-- <iframe src="https://www.google.com/calendar/embed?showTitle=0&amp;height=600&amp;wkst=1&amp;hl=en&amp;bgcolor=%23FFFFFF&amp;
-        src=liangrenwei%40gmail.com&amp;color=%23BE6D00&amp;src=p%23weather%40group.v.calendar.google.com&amp;color=%23A32929&amp;ctz=America%2FToronto" 
-        style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe> -->
     </div>
 </template>
 

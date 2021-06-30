@@ -226,3 +226,98 @@ export function allBooking (data) {                     //userId获取所有预�
         params: data
     })
 }
+
+export function deleteBooking (data) {                //取消预约
+    return request({
+        url: "/booking/cancalBooking",
+        method: "POST",
+        params: data
+    })
+}
+
+export function notice (data) {                         //获取通知,带分页
+    return request({
+        url: "/notice/getNotice",
+        method: "POST",
+        params: data
+    })
+}
+
+export function updateNoticeState (data) {                         //修改通知状态?noticeId=1
+    return request({
+        url: "/notice/updateState",
+        method: "POST",
+        params: data
+    })
+}
+
+export function address () {                     //获取地址
+    return request({
+        url: "/address/list",
+        method: 'GET'
+    })
+}
+
+export function addressAdd (data) {                  //添加地址     addressName=离岛&areaId=18
+    return request({
+        url: '/address/add',
+        method: 'POST',
+        params: data
+    })
+}  
+
+export function deleteAddress (data) {               //删除地址    ?addressId=19
+    return request({
+        url: "/address/del",
+        method: "POST",
+        params: data
+    })
+}
+
+export function setAddress (data) {               //修改地址    ?id=19&addressName=离岛222222&areaId=199999
+    return request({
+        url: "/address/update",
+        method: "POST",
+        params: data
+    })
+}
+
+export function areaDoc (data) {                //地区医生?addressId=1
+    return request({
+        url: "/doctorDetails/getDoctorListByAddress",
+        method: "POST",
+        params: data
+    })
+}
+
+export function addMetting (data) {            //添加会议
+    return request({
+        url: "/WebId/addWebId",
+        method: "POST",
+        data: data
+    })
+}
+ 
+export function delMetting (data) {            //删除会议?webId=3
+    return request({
+        url: "/WebId/delWebId",
+        method: "POST",
+        params: data
+    })
+}
+
+export function getDoctorByLocationId (data) {    //根据地区id获取所在医生?addressId=1
+    return request({
+        url: "/doctorDetails/getDoctorListByAddress",
+        method: "POST",
+        params: data
+    })
+}
+
+export function getUserByPetId (data) {            //宠物id获取客户?petId=45
+    return request({
+        url: "/userDetailsAndPetList/getUserAndPet",
+        method: "POST",
+        params: data
+    })
+}

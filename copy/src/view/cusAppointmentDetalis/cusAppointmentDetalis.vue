@@ -8,7 +8,11 @@
                         Appointment
                     </div>
                     <div class="calendar mg flex">
-                        <div><img class="Appointment_img" src="@/assets/img/customerHead1.png" alt=""></div>
+                        <div>
+                            <div class="head_image">
+                                <img class="Appointment_img" :src="headURL" alt="">
+                            </div>
+                        </div>
                         <div class="calendar_wrap">
                             <div class="calendar_item">
                                 <div class="size23">{{confirmKey.bookingDoctor}}</div>
@@ -17,7 +21,7 @@
                             <div class="calendar_item sb">
                                 <div>
                                     <div class="size16">Date and Time</div>
-                                    <div class="size17">{{confirmKey.bookingDate}}</div>
+                                    <div class="size17">{{confirmKey.bookingDate}} - {{confirmKey.APM}}</div>
                                 </div>
                                 <div>
                                     <div class="size16">Pet Name</div>
@@ -39,7 +43,7 @@
                             </div>
                             <div class="flex calendar_item">
                                 <div class="Reschedule size13 cursor tc">Reschedule</div>
-                                <div class="cancel size13 cursor tc">Cancel</div>
+                                <div class="cancel size13 cursor tc" @click="deleteBook">Cancel</div>
                             </div>
                         </div>
                         <div class="telephone_or_video">
@@ -54,14 +58,14 @@
 </template>
 
 <script>
-import { bookingId } from "@/axios/request.js"
+import { bookingId, deleteBooking } from "@/axios/request.js"
 export default {
     data () {
         return {
             bookingDate: '',
             bookingStarTime: '',
             doctorName: '',
-            doctorURL: '',
+            headURL: '',
             price: '',
             confirmKey: {}
         }
@@ -71,28 +75,64 @@ export default {
     },
     methods: {
         getMsg () {
-            this.doctorURL = this.$route.query.head
+            this.headURL = this.$route.query.headUrl
+            console.log(this.$route.query.headUrl)
             let data = {
                 bookingId: this.$route.query.key
             }
             bookingId(data).then(res => {
                 console.log(res,666)
-                this.confirmKey = res.data.data
-                this.bookingStarTime = this.confirmKey.bookingStartTime
+                res.data.data.APM = ''
                 let a = '09:30'
                 let aa = a.split(':')
-                console.log(Number(aa[0]),Number(aa[1]))
                 if ( Number(aa[0]) > 12 && Number(aa[1]) >= 1 ) {
                     console.log('PM')
+                    res.data.data.APM = 'PM'
                 } else {
                     console.log('AM')
+                    res.data.data.APM = 'AM'
                 }
-                this.doctorName = this.confirmKey.bookingDoctor
-                this.price = this.confirmKey.bookingPrice
-                let date = this.confirmKey.bookingDate
+                let date = res.data.data.bookingDate
                 let En = new Date(date).toDateString()
                 let arr = En.split(' ')
-                this.bookingDate = arr[0] + ',' + arr[2] + ' ' + arr[1] + ','+ arr[3]
+                res.data.data.bookingDate = arr[0] + ',' + arr[2] + ' ' + arr[1] + ','+ arr[3]
+                this.confirmKey = res.data.data
+                this.bookingStarTime = this.confirmKey.bookingStartTime
+                
+                this.doctorName = this.confirmKey.bookingDoctor
+                this.price = this.confirmKey.bookingPrice
+            })
+        },
+        deleteBook () {
+            this.$confirm('Are you sure to cancel the appointment?', 'Attention', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                let data = {
+                    bookingId: this.$route.query.key
+                }
+                deleteBooking(data).then(res => {
+                    console.log(res)
+                    if (res.data.rtnCode == 200 ) {
+                        this.$message({
+                            type: "success",
+                            message: "Appointment cancelled!"
+                        })
+                        this.$router.replace('/myAppointment')
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: "Fail cancelled!"
+                        })
+                    }
+                })
+            }).catch (e => {
+                console.log(e)
+                this.$message({
+                    type: "error",
+                    message: "Fail cancelled!"
+                })
             })
         }
     }
@@ -120,10 +160,15 @@ export default {
         background: white;
         padding-bottom: 100px;
     }
-    .Appointment_img {
-        padding: 50px 80px;
+    .head_image {
         width: 170px;
         height: 170px;
+        overflow: hidden;
+        border-radius: 50%;
+        margin: 50px 80px;
+    }
+    .Appointment_img {
+        height: 100%;
     }
     .calendar_wrap {
         width: 27%;
@@ -147,7 +192,7 @@ export default {
         margin: 0 3px;
     }
     .calendar_item {
-        margin-top: 30px;
+        margin-top: 40px;
     }
     .size23 {
         font-size: 23px;

@@ -82,11 +82,6 @@ export default {
     data () {
         return {
             active: false,
-            form: {
-                platform: 3,
-                email: '100@qq.com',
-                password: '123'
-            }
         }
     },
     created () {

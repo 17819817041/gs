@@ -114,6 +114,16 @@
     }
     .informationImg {
         margin-top: 3px;
+        position: relative;
+        .noticeDot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            right: -4px;
+        }
     }
     .div {
         position: absolute;
@@ -204,6 +214,7 @@
 
                         <div class="sa" style="padding-left:20px;">
                             <div class="informationImg cursor top al" @click="notice">
+                                <img class="noticeDot" v-show="noticeState" src="@/assets/img/dot.png" alt="">
                                 <img src="@/assets/img/information.png" alt="">
                             </div>
                             <div class="homeImg al cursor" @click="home">
@@ -265,8 +276,25 @@ export default {
             },
             immediate: true
         },
+        noticeState: {
+            handler (val) {
+                if (val) {
+                    this.$store.commit('getUser',val)
+                }
+            },
+            immediate: true
+        },
     },
     computed: {
+        noticeState: {
+            get () { return this.$store.state.user.noticeState },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "noticeState",
+                    value: val
+                })
+            },
+        },
         login: {
             get () { return this.$store.state.user.login },
             set (val) {
@@ -374,10 +402,10 @@ export default {
         },
         logout () {
             this.$store.dispatch("logout", this)
-            var auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(function(res) {
-                console.log(res)
-            });
+            // var auth2 = gapi.auth2.getAuthInstance();
+            // auth2.signOut().then(function(res) {
+            //     console.log(res)
+            // });
         },
         doctor () {
             if (localStorage.getItem("platform") == 2) {

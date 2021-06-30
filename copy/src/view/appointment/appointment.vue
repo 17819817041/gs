@@ -42,7 +42,7 @@
         width: 95%;
         background: white;
         box-shadow: 0 4px 7px 1px #D5D5D5;
-        margin: 20px auto;
+        margin: 30px auto;
         border-radius: 10px;
         overflow: hidden;
     }
@@ -140,7 +140,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="appointment_details noBar">
+                        <div class="appointment_details noBar" v-loading="loading" v-if="booking">
                             <div class="appointment_details_item sa" v-for="(item) in booking" :key="item.booking.bookingId">
                                 <div class="appointment_details_img_wrap ju al">
                                     <img class="appointment_details_img" v-if="item.userImage" :src="item.userImage" alt="">
@@ -167,6 +167,10 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="appointment_details" v-else-if="booking === null">
+                            <div class="ju"><img style="width:100px; margin: 15px" src="@/assets/img/info.png" alt=""></div>
+                            <div class="tc " style="font-size: 20px;color:gray;">No reservation</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -183,7 +187,8 @@ export default {
             value: new Date(),
             holiday,
             booking: [],
-            today: ''
+            today: '',
+            loading: true
         }
     },
     created () {
@@ -223,9 +228,10 @@ export default {
                         }
                     })
                     this.booking = res.data.data
-                    // this.loading = false
-                } else {
-
+                    this.loading = false
+                } else if (res.data.rtnCode == 201) {
+                    this.booking = null
+                    this.loading = false
                 }
             }).catch(e => {
                 console.log(e)

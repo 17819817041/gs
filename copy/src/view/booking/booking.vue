@@ -37,7 +37,7 @@
                     </el-form-item>
                     <el-form-item prop="location">
                         <el-select v-model="form.location" placeholder="Location">
-                            <el-option v-for="(item,i) in locationSelect" :key="i" :value="item"></el-option>
+                            <el-option v-for="(item,i) in locationSelect" :key="i" :label="item.addressName" :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
 
@@ -116,7 +116,7 @@
 </template>
 
 <script>
-import { doctorList, booking } from "@/axios/request.js"
+import { doctorList, booking, address } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -135,7 +135,7 @@ export default {
             },
             doctorId: null,
             doctorSelect: [],
-            locationSelect: [1,2],
+            locationSelect: [],
             petId: null,
             petSelect: [],
             endTime: '',
@@ -205,6 +205,7 @@ export default {
         this.docSelect()
         this.getPetSelect()
         this.getDay()
+        this.getAddress()
     },
     watch: {
         petList: {
@@ -230,22 +231,6 @@ export default {
             this.$refs.form.validate(flag => {
                 if (flag) {
                     that.date = that.form.years + '-' + that.form.month + '-' + that.form.day
-                    // let D = new Date()
-                    // that.bookingCreateTime = D.toLocaleDateString().split('/').join('-')
-                    // let T = that.form.starTime
-                    // let arr = T.split(":")
-                    // let fen = Number(arr[1])
-                    // let shi = Number(arr[0])
-                    // if ((Number(arr[1]) + that.form.duration) > 60 ) {
-                    //     fen = Number(arr[1]) + that.form.duration - 60
-                    //     shi = shi + 1
-                    // }
-                    // if ((Number(arr[1]) + that.form.duration) === 60 ) {
-                    //     shi = shi + 1
-                    //     fen = '00'
-                    // }
-                    // that.endTime = shi + ':' + fen
-                    // console.log(that.endTime)
                     var data = {
                         bookingType: that.form.WAY,
                         doctorHead: that.doctorHead,
@@ -273,7 +258,7 @@ export default {
                                 type: 'success',
                                 message: 'Book successfully '
                             })
-                            that.information()
+                            // that.information()
                             that.$router.push({
                                 name: 'confirm',
                                 query: {
@@ -281,11 +266,19 @@ export default {
                                     head: that.doctorHead
                                 }
                             })
-                        } else if (res.data.rtnCode == 201) {
+                        } else if (res.data.rtnCode == 201 && res.data.msg !== 'The appointment time you choose needs to be confirmed by your doctor') {
                             that.loading = false
                             that.$message({
                                 type: 'error',
-                                message: "Your account balance is insufficient. Please recharge your account before making an appointment"
+                                duration: 4000,
+                                message: res.data.msg
+                            })
+                        } else if (res.data.msg == 'The appointment time you choose needs to be confirmed by your doctor') {
+                            that.loading = false
+                            that.$message({
+                                type: 'error',
+                                duration: 4000,
+                                message: "Cannot fill in the date before the current time period!"
                             })
                         }
                     }).catch(e => {
@@ -301,6 +294,12 @@ export default {
                         message: 'Please complete the information'
                     })
                 }
+            })
+        },
+        getAddress () {
+            address().then(res => {
+                console.log(res,'address')
+                this.locationSelect = res.data.data
             })
         },
         information () {
@@ -353,7 +352,7 @@ export default {
                 platform: localStorage.getItem("platform"),
                 userId: localStorage.getItem("userId"),
                 pageNum:1,
-                pageSize: 10
+                pageSize: 1000000
             }
             doctorList(doctor).then(res => {
                 console.log(res,"医生select")

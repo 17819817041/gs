@@ -147,7 +147,7 @@ export default {
                 console.log(res)
                 if (res.data.rtnCode == 200) {
                     localStorage.setItem('adminPlatform',res.data.data.platform)
-                    localStorage.setItem('adminPlatform',res.data.data.userId)
+                    localStorage.setItem('adminUserId',res.data.data.userId)
                     localStorage.setItem('adminToken',res.data.data.token)
                     this.$router.push('/home')
                     this.login = true

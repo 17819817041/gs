@@ -5,13 +5,16 @@
 		<transition name='fade'>
 			<div class="mask flex" v-if="callModal">
 				<div class="confirmBox mg">
-					<div class="flex al mg" style="width:70%">
+					<div class="flex al mg" style="width:90%;height:70px;">
 						<el-image class="IMAGE_HEAD" :src="mask.userHead" fit="cover">
 							<div slot="error" class="image-slot ju al" style="height: 100%;width:100%">
 								<i class="el-icon-picture-outline" style="font-size:40px;color:gray"></i>
 							</div>
 						</el-image> 
-						<div style="margin-left:30px">{{mask.doctorName}}</div>
+						<div style="margin-left:20px;height:100%;line-height:109px;">
+							<span style="font-size:22px;" class="bold">Dr.</span> 
+							{{mask.doctorName}}
+						</div>
 					</div>
 					<div class="loading ju" v-if="!callLoading">
 						Are you sure to call?
@@ -19,10 +22,6 @@
 					<div class="loading ju al" v-else>
 						Waiting for the answer...
 					</div>
-					<!-- <div class="wrap_btn sa">
-						<div class="btn al ju cursor" @click="cancel">Cancel</div>
-						<div class="btn al ju cursor" v-if="sureCall" @click="sure">Dial</div>
-					</div> -->
 					<div class="wrap_btn sa">
 						<div class="btn al ju cursor" @click="cancel">
 							<el-button class="width100 cancelBtn" round size="mini">Cancel</el-button>
@@ -38,8 +37,14 @@
 		<transition name='fade'>
 			<div class="mask flex" v-if="callModal2">
 				<div class="confirmBox mg">
-					<div class="sa al">
-						<el-image class="IMAGE_HEAD" :src="caller.userImage" fit="cover"></el-image> {{caller.userName}}
+					<div class="flex al mg"  style="width:80%;height:70px;">
+						<div>
+							<el-image class="IMAGE_HEAD" :src="caller.userImage" fit="cover"></el-image>
+						</div>
+						<div style="margin-left:20px;height:100%;line-height:109px">{{caller.userName}}</div>
+					</div>
+					<div class="loading ju al">
+						Whether to answer the call
 					</div>
 					<div class="wrap_btn sa">
 						<div class="btn al ju cursor" @click="cancel2">
@@ -56,7 +61,7 @@
 </template>
 
 <script>
-import { min } from "@/axios/request.js"
+import { min, addMetting } from "@/axios/request.js"
 export default {
 	data () {
 		return {
@@ -153,8 +158,8 @@ export default {
             		supportWechatMiniProgram: true //是否允许小程序加入会议
 				}
 			}
-
 			const user_room = await emedia.mgr.joinRoom(params);
+			this.addConfr(user_room.confrId)
 			console.log("room",user_room,params)
 			let constraints = { audio: true, video: true };
 			const stream = await emedia.mgr.publish(constraints)
@@ -167,6 +172,7 @@ export default {
 			let data = {
                 type: "Call",
 				user: this.userDetail,
+				platform: localStorage.getItem('platform'),
 				params
             }
             let id = this.$conn.getUniqueId();                 // 生成本地消息id
@@ -185,6 +191,7 @@ export default {
                 }
             });
             this.$conn.send(msg.body);
+            this.$store.commit("setUser",{ key: 'callerIM', value: this.userDetail.userId + 'A' + localStorage.getItem('platform') })
 		},
 		cancel () {
 			this.sureCall = true
@@ -202,7 +209,7 @@ export default {
                 chatType: 'singleChat',                  // 设置为单聊   
             });
             this.$conn.send(msg.body);
-			this.$router.back()
+			// this.$router.back()
 		},
 		async sure2 () {
 			this.$router.push("/agora")
@@ -210,7 +217,7 @@ export default {
 			setTimeout(async function ()  {
 				
 				const user_room = await emedia.mgr.joinRoom(that.joinParams);
-			
+				
 
 				let constraints = { audio: true, video: true };
 				const stream = await emedia.mgr.publish(constraints)
@@ -233,6 +240,19 @@ export default {
 
 			},500)
 			
+		},
+		addConfr (val) {
+			let data = {
+				'jo': [{
+					confrId: val,
+					userId: this.userDetail.userId + 'A' + localStorage.getItem('platform'),
+					doctorId: this.callTo.doctorId + 'A2',
+					password: '123456'
+				}]
+			}
+			addMetting(data).then(res => {
+				console.log(res)
+			})
 		},
 		cancel2 () {
 			this.callModal2 = false
@@ -264,6 +284,10 @@ export default {
 	}
 	div {
 		box-sizing: border-box;
+	}
+	.flexEnd {
+		display: flex;
+		justify-content: flex-end;
 	}
 	.el-input .el-input__inner {
 		outline: none !important;
@@ -321,8 +345,8 @@ export default {
 	.form_select .el-form-item__label {
 		color: #B6B7B7 !important;
 	}
-	
 
+	
 	.el-select {
 		width: 100% !important;
 		
@@ -404,9 +428,9 @@ export default {
 	.person .el-input__inner {
 		background: white !important;
 	}
-	.person .el-icon-time, .person .el-input__suffix {
-		display: none !important;
-	}
+	// .person .el-icon-time, .person .el-input__suffix {
+	// 	display: none !important;
+	// }
 	.person .el-input__inner {
 		height: 100% !important;
 		background: white !important;
@@ -544,9 +568,9 @@ export default {
 		width: 300px;
 		border-radius: 10px;
 	}
-	// .wrap_btn {
-	// 	padding-top: 40px;
-	// }
+	.wrap_btn {
+		padding-top: 10px;
+	}
 	.btn {
 		width: 90px;
 		border-radius: 8px;
@@ -571,8 +595,9 @@ export default {
 	}
 	.loading {
 		padding: 20px 0;
+		font-size: 14px;
+		color: gray;
 	}
-
 	.calendar .calendarMini .el-calendar-day {
 		height: 30px !important;
 		text-align: center;

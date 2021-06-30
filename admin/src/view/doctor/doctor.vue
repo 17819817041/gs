@@ -131,7 +131,7 @@
 </template>
 
 <script>
-import { doctorList } from "@/axios/request.js"
+import { doctorList, getMetting, addMetting } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -144,7 +144,7 @@ export default {
         }
     },
     created () {
-        // this.getDoctorList()
+        this.getDoctorList()
     },
     computed: {
         callModal: {
@@ -174,8 +174,8 @@ export default {
         },
         getDoctorList () {
             const doctor = {
-                platform: 1,
-                userId: 430,
+                platform: localStorage.getItem('adminPlatform'),
+                userId: localStorage.getItem('adminUserId'),
                 pageNum:1,
                 pageSize: 10
             }

@@ -10,6 +10,9 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "easemob-emedia": "^3.4.1",
+    "easemob-webrtc": "^3.4.1",
+    "easemob-websdk": "^3.6.0",
     "element-ui": "^2.15.2",
     "less": "^4.1.1",
     "less-loader": "^7.2.1",

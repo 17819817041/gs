@@ -59,7 +59,7 @@
     }
     .pet_message {
         flex: 10;
-        padding-top: 10px;
+        // padding-top: 10px;
         // border: solid red 1px;
         height: 100%;
         overflow: auto;

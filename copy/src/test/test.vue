@@ -181,7 +181,7 @@ export default {
            */
           function listUpcomingEvents() {
             gapi.client.calendar.events.list({
-              'calendarId': 'primary',
+              'calendarId': 'pvhs.k12.nj.us_r6jaor04o80hpsaldf17civeio@group.calendar.google.com',
               'timeMin': (new Date()).toISOString(),
               'showDeleted': false,
               'singleEvents': true,
@@ -206,6 +206,11 @@ export default {
             });
           }
         },
+
+
+
+
+        
 
         listens () {
             let that = this

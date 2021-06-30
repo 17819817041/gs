@@ -1,7 +1,7 @@
 <template>
     <div class="myDoctor flex">
-        <div class="doctorList noBar">
-            <div class="width102 clear" v-if="!loading">
+        <div class="doctorList noBar" @scroll="docScroll" ref="doctorList">
+            <div class="width102 clear" ref="doctorList_height">
                 <div class="doctor_item float" v-for="(item) in doctorList" :key="item.doctorId" @click="getDetail(item)">
                     <div class="image flex">
                         <div class="doctor_head">
@@ -41,8 +41,11 @@
                         </div>
                     </div>
                 </div>
+                <div class="acting float ju al" v-if="loading">
+                    <div class="loading" v-loading="true"></div>
+                </div>
             </div>
-            <div v-else class="loading" v-loading="loading"></div>
+            
         </div>
         <div class="doctorDetails noBar">
             <div class="details_item mg">
@@ -126,7 +129,7 @@
 </template>
 
 <script>
-import { bookingId } from "@/axios/request.js"
+import { bookingId, doctorList } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -134,10 +137,15 @@ export default {
             change:true,
             rate:0,
             detail: {},
+            pageNum: 1,
         }
     },
     created () {
+        this.doctorList = []
+        // if (!this.doctorList.length ) {
         this.getDoctorList()
+        // }
+        
     },
     watch: {
         doctorList: {
@@ -169,6 +177,7 @@ export default {
             }
         },
         loading () { return this.$store.state.user.loading },
+        totalRecordsCount () { return this.$store.state.user.totalRecordsCount }
     },
     methods: {
         getDetail (item) {
@@ -183,36 +192,22 @@ export default {
                 value: item
             })
         },
+        docScroll () {
+            if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
+                if (this.doctorList.length >= this.totalRecordsCount) {
+                    
+                } else {
+                    if (!this.loading) {
+                        this.pageNum += 1
+                        this.getDoctorList()
+                    }
+                    
+                }
+            }
+        },
         getDoctorList () {
-            this.$store.dispatch('getDoctorList',this)
-            // const doctor = {
-            //     platform: localStorage.getItem("platform"),
-            //     userId: localStorage.getItem("userId"),
-            //     pageNum:1,
-            //     pageSize: 10
-            // }
-            // doctorList(doctor).then(res => {
-            //     if (res.data.rtnCode == 200) {
-            //         console.log(res,"医生列表")
-            //         this.doctorList = res.data.data.pageT
-            //         this.loading = false
-            //     } else if (res.data.rtnCode == 500 ) {
-            //         this.doctorList = []
-            //         this.loading = false
-            //         localStorage.removeItem("Token")
-            //         localStorage.removeItem("userId")
-            //         localStorage.removeItem("paltform")
-            //         localStorage.removeItem("IMtoken")
-            //         localStorage.removeItem('IM')
-            //         this.$router.replace('/customerLogin')
-            //         this.$message.error('Login expired, please log in again !');
-            //     }
-            // }).catch(e => {
-            //     console.log(e)
-            //     this.doctorList = []
-            //     this.loading = false
-            //     this.$message.error('Fail to load !');
-            // })
+            console.log(this.pageNum,'pageNum')
+            this.$store.dispatch('getDoctorList',this.pageNum)
         },
         edit () {
             this.change = !this.change
@@ -250,6 +245,7 @@ export default {
 
 <style lang="less" scoped>
 @import "@/less/css.less";
+.clearfix:after{content:'';display:block;clear:both;}
 video {
     width: 300px;
     height: 200px;
@@ -482,5 +478,10 @@ video {
         -webkit-box-orient: vertical;
         overflow : hidden; 
         word-break: break-all;/*在任何地方换行*/
+    }
+    .acting {
+        width: 100%;
+        padding: 50px 0;
+        // border: solid 1px;
     }
 </style>

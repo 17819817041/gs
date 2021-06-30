@@ -5,12 +5,12 @@
         </div>
         <div class="div sb al">
             <div class="search al sa" v-if="login">
-                <div class="top cursor">All Doctors</div>
-                <div class="top cursor">All Patients</div>
+                <div class="top cursor" @click="doctor">All Doctors</div>
+                <div class="top cursor" @click="patient">All Pets</div>
                 <div class="select top" >
-                    <div class="category">
+                    <div class="category al">
                         Category
-                        <img class="dropimg" src="@/assets/img/drop.png" alt="">
+                        <img class="dropimg" src="@/assets/img/arrow.png" alt="">
                     </div>
                 </div>
                 <div class="input" >
@@ -39,10 +39,10 @@
                         </div>
 
                         <div class="sa" style="padding-left:14px;">
-                            <div class="informationImg cursor al" @click="notice">
+                            <div class="informationImg cursor al">
                                 <img src="@/assets/img/information.png" alt="">
                             </div>
-                            <div class="homeImg al cursor" @click="home">
+                            <div class="homeImg al cursor">
                                 <img src="@/assets/img/home.png" alt="">
                             </div>
                         </div>
@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import { getUserDetails } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -95,12 +96,24 @@ export default {
             },
         }
     },
+    created () {
+        this.getUser()
+    },
     methods: {
+        getUser () {
+            this.$store.dispatch('getUser')
+        },
         logout () {
             console.log('login')
         },
         support () {
-            console.log('support')
+            this.$router.push('/support')
+        },
+        doctor () {
+            this.$router.push("/doctor")
+        },
+        patient () {
+            this.$router.push("/petPage")
         }
     }
 }
@@ -193,7 +206,9 @@ export default {
 
 
     .dropimg {
+        width: 20px;
         padding-left: 5px;
+        margin-top: 5px;
     }
     .category {
         color: white;

@@ -215,7 +215,7 @@
         .user_content {
             width: 100%;
             height: 520px;
-            transform: rotateY(180deg);
+            overflow: auto;
         }
     }
     .chat {
@@ -348,11 +348,12 @@
     .wrap_message {
         width: 100%;
         height: 300px;
+        overflow: auto;
+        transition: 0.2s;
     }
     .message_item {
         width: 100%;
         height: 100%;
-        transform: rotateY(180deg);
     }
     .arrow_drawer {
         width: 15px;
@@ -361,6 +362,31 @@
     .rotate {
         transform: rotateZ(180deg);
         transition: 0.3s;
+    }
+    .msgItem {
+        margin-top: 15px;
+        >div {
+            max-width: 80%;
+            // border: solid red 1px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+    }
+    .mySend {
+        background: rgb(47,187,240);
+        border-radius: 12px 12px 0px 12px;
+        padding: 3px 10px;
+        word-wrap: break-word;
+    }
+    .Mright {
+        margin-right: 10px;
+        margin-left: 0px !important;
+    }
+    .adverse {
+        background: #EEEEEE;
+        border-radius: 0px 12px 12px 12px;
+        padding: 3px 10px;
+        word-wrap: break-word;
     }
 </style>
 
@@ -381,7 +407,6 @@
                     <agoraMsg></agoraMsg>
                 </div>
             </div>
-
             <div class="showVideo">
                 <div class="video_wrap">
                     <div class="answer sb">
@@ -393,7 +418,6 @@
                     <video :class="['video_child']" autoplay id="localVideo"></video>
                 </div>
             </div>
-
             <div :class="[ 'doctorMessage_wrap' ]">
                 <div class="drawer cursor" @click="DRAWER">
                     <div class="box1"></div>
@@ -442,9 +466,16 @@
                             </div>
                         </div>
                         <div class="chat_user mg">
-                            <!-- <img style="width:100%;height:100%" src="@/assets/img/chatPage.png" alt=""> -->
-                            <div class="user_content" ref="customerChat">
-
+                            <div ref="customerChat" class="user_content noBar">
+                                <div ref="CmsgHeight" >
+                                    <div v-for="(item,i) in messageList" :key="i" 
+                                        :class="['msgItem',{'flexEnd': item.type==1},]">
+                                        <div :class="[ { Mright: item.type == 1 } ]">
+                                            <div :class="[ { flexEnd: item.type == 1 } ]">{{userDetailMessage.userName}}</div>
+                                            <div :class="[ {mySend: item.type == 1},{ adverse: item.type == 2 } ]">{{item.value}}</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="INP sa al">
                                 <div class="INP_item al ju">
@@ -495,8 +526,18 @@
                             </div>
                         </div>
                         <div class="chat mg">
-                            <div class="wrap_message">
-                                <div class="message_item" ref="vetChat"></div>
+                            <div class="wrap_message noBar" ref="vetChat">
+                                <div class="message_item" ref="VmsgHeight">
+                                    <div>
+                                        <div v-for="(item,i) in messageList" :key="i" 
+                                            :class="['msgItem',{'flexEnd': item.type==1},]">
+                                            <div :class="[ { Mright: item.type == 1 } ]">
+                                                <div :class="[ { flexEnd: item.type == 1 } ]">{{userDetailMessage.doctorName}}</div>
+                                                <div :class="[ {mySend: item.type == 1},{ adverse: item.type == 2 } ]">{{item.value}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="INP sa al">
                                 <div class="INP_item al ju">
@@ -552,7 +593,9 @@ export default {
             ],
             customerInp: '',
             vetInp: "",
-            drawer: false
+            drawer: false,
+            msgRecord: {},
+            
         }
     },
     mounted () {
@@ -561,26 +604,87 @@ export default {
         // setTimeout(() => {
         //     this.initVideo()
         // },10)
+        
     },
     created () {
         this.callToDoctor = this.callTo
         this.userDetailMessage = this.userDetail
         this.getDay()
-        // this.listens()
+        console.log(this.callTo,this.userDetail)
     },
     computed: {
         remoteStream () { return this.$store.state.app.remoteStream },
         localStream () { return this.$store.state.app.localStream },
         callTo () {return this.$store.state.user.callTo},
         userDetail () {return this.$store.state.user.userDetail},
-        caller () { return this.$store.state.user.caller }
+        caller () { return this.$store.state.user.caller },
+        callerIM () { return this.$store.state.user.callerIM },
+        messageList: {
+            get () { return this.$store.state.user.messageList },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "messageList",
+                    value: val
+                })
+            },
+        },
+    },
+    watch: {
+        messageList: {
+            handler (val) {
+                if (val) {
+                    this.messageList = val
+                    this.saveRecord(val)
+                }
+            },
+        },
+        callerIM: {
+            handler (val) {
+                if (val) {
+                    this.initRecord()
+                }
+            },
+            immediate: true
+        }
     },
     methods: {
+        saveRecord (val) {
+            let that = this
+            var record = {
+                [that.callerIM]:{
+                    messageList: val
+                }
+            }
+            this.msgRecord = record
+            localStorage.setItem('msgRecord',JSON.stringify(this.msgRecord))
+            console.log(record,localStorage.getItem('msgRecord'))
+        },
+        initRecord () {
+            // {
+            //     "123A2":{
+            //         messageList: []
+            //     },
+            //     "321A1": {
+            //         messageList: []
+            //     }
+            // }
+            let msgRecord = localStorage.getItem('msgRecord')
+            console.log(msgRecord)
+            if (msgRecord) {
+                this.msgRecord = JSON.parse(msgRecord)
+                console.log(2222222222222222,this.msgRecord,this.callerIM,this.msgRecord[this.callerIM])
+
+                if (this.msgRecord[this.callerIM]) {
+                    console.log(this.msgRecord[this.callerIM])
+                    this.messageList = this.msgRecord[this.callerIM].messageList
+                }
+                
+            }
+        },
         DRAWER () {
             this.drawer = !this.drawer
         },
         endCall () {
-
             window.eMedia.mgr.exitConference()
             this.$router.back()
         },
@@ -605,176 +709,108 @@ export default {
                 this.day = this.daySelect.length
             }
         },
-        sss () {
-            console.log(456)
-        },
         customerSend () {
-            console.log(JSON.stringify(this.callToDoctor.doctorId),JSON.stringify(this.callToDoctor.doctorId) + '_2','322_2')
-            this.createdCustomerMessage()
-            let data = {
-                type: "danmu",
-                value: this.customerInp
-            }
-            let id = this.$conn.getUniqueId();                 // 生成本地消息id
-            let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
-            msg.set({
-                msg: data.value,                  // 消息内容
-                to: JSON.stringify(this.callToDoctor.doctorId) + '_2',     
-                // to: '322_2',                     // 接收消息对象（用户id）
-                chatType: 'singleChat',                  // 设置为单聊    
-                ext: {
-                    key: this.userDetailMessage.userName
-                },                    
-                success: function (id, serverMsgId) {
-                    console.log('send private text Success',id,serverMsgId);  
-                }, 
-                fail: function(e){
-                    console.log(e)
-                    // 失败原因:
-                    // e.type === '603' 被禁言
-                    // e.type === '605' 群组不存在
-                    // e.type === '602' 不在群组或聊天室中
-                    // e.type === '504' 撤回消息时超出撤回时间
-                    // e.type === '505' 未开通消息撤回
-                    // e.type === '506' 没有在群组或聊天室白名单
-                    // e.type === '503' 未知错误
-                    console.log("Send private text error");  
+            if (this.customerInp == '') {
+                this.$message({
+                    type: 'info',
+                    message: 'The content cannot be empty!'
+                })
+            } else {
+                this.messageList.push({
+                    type: 1,
+                    value: this.customerInp
+                })
+                let data = {
+                    type: "danmu",
+                    value: this.customerInp,
+                    key: this.userDetailMessage,
+                    platform: localStorage.getItem('platform')
                 }
-            });
-            this.$conn.send(msg.body);
-            this.customerInp = ''
-        },
-        createdCustomerMessage () {                 //客户输入内容并且发送
-            var name = document.createElement('div')
-            var msg = document.createElement("span")
-            name.innerHTML = this.userDetailMessage.userName
-            name.style.margin = 'auto'
-            name.style.width = '95%'
-            name.style.textAlign = 'end'
-            name.style.transform = `rotateY(${ 180 + 'deg'})`
-            
-            msg.innerHTML = this.customerInp
-            msg.style.background = "rgb(47,187,240)"
-            msg.style.borderRadius = '12px 12px 0px 12px'
-            msg.style.padding = '3px 10px'
-            msg.style.marginLeft = "10px"
-            msg.style.display = 'inline-block'
-            msg.style.transform = `rotateY(${ 180 + 'deg' })`
-            
-            this.$refs.customerChat.appendChild(name)
-            this.$refs.customerChat.appendChild(msg)
-            if (msg.offsetWidth >= 350) {
-                msg.style.display = 'inline-block'
-                msg.style.width = '80%'
-                msg.style.wordBreak = 'break-word';
-            }
-        },
-
-        listens () {
-            let that = this
-            this.$conn.listen({
-                onTextMessage: function ( e ) {
-                    console.log("对方发来消息", e)
-                    that.createItem(e)
-                },    //收到文本消息
-            });
-        },
-        
-        createItem (data) {
-            var wrap = document.createElement('div')
-            var name = document.createElement('div')
-            var msg = document.createElement("span")
-            wrap.style.width = '100%'
-            wrap.style.transform = `rotateY(${ 180 + 'deg' })`
-
-            name.innerHTML = data.ext.key
-            name.style.margin = 'auto'
-            name.style.width = '95%'
-            // name.style.transform = `rotateY(${ 180 + 'deg'})`
-            name.style.marginBottom = '5px'
-
-            msg.innerHTML = data.data
-            msg.style.background = "#EEEEEE"
-            msg.style.borderRadius = '0px 12px 12px 12px'
-            msg.style.padding = '3px 10px'
-            msg.style.marginLeft = "10px"
-            msg.style.display = 'inline-block'
-            // msg.style.transform = `rotateY(${ 180 + 'deg'})`
-            if (localStorage.getItem("platform") == 2) {
-                this.$refs.vetChat.appendChild(wrap)
-            } else if (localStorage.getItem("platform") == 1) {
-                this.$refs.customerChat.appendChild(wrap)
-            }
-            
-            wrap.appendChild(name)
-            wrap.appendChild(msg)
-            
-            if (msg.offsetWidth >= 350) {
-                msg.style.display = 'inline-block'
-                msg.style.width = '80%'
-                msg.style.wordBreak = 'break-word';
-            }
-        },
-
-        createdVetMessage () {                                    //兽医输入内容并且发送
-            var name = document.createElement('div')
-            var msg = document.createElement("span")
-            name.innerHTML = this.userDetailMessage.userName
-            name.style.margin = 'auto'
-            name.style.width = '95%'
-            name.style.textAlign = 'end'
-            name.style.transform = `rotateY(${ 180 + 'deg' })`
-            
-            msg.innerHTML = this.vetInp
-            msg.style.background = "rgb(47,187,240)"
-            msg.style.borderRadius = '12px 12px 0px 12px'
-            msg.style.padding = '3px 10px'
-            msg.style.marginLeft = "10px"
-            msg.style.display = 'inline-block'
-            msg.style.transform = `rotateY(${ 180 + 'deg' })`
-            
-            this.$refs.vetChat.appendChild(name)
-            this.$refs.vetChat.appendChild(msg)
-            if (msg.offsetWidth >= 350) {
-                msg.style.display = 'inline-block'
-                msg.style.width = '80%'
-                msg.style.wordBreak = 'break-word';
+                let id = this.$conn.getUniqueId();                 // 生成本地消息id
+                let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+                msg.set({
+                    msg: JSON.stringify(data),                // 消息内容
+                    to: JSON.stringify(this.callToDoctor.doctorId) + 'A2',     
+                    // to: '322_2',                     // 接收消息对象（用户id）
+                    chatType: 'singleChat',                  // 设置为单聊    
+                    ext: {
+                        
+                    },                    
+                    success: function (id, serverMsgId) {
+                        console.log('send private text Success',id,serverMsgId);  
+                    }, 
+                    fail: function(e){
+                        console.log(e)
+                        // 失败原因:
+                        // e.type === '603' 被禁言
+                        // e.type === '605' 群组不存在
+                        // e.type === '602' 不在群组或聊天室中
+                        // e.type === '504' 撤回消息时超出撤回时间
+                        // e.type === '505' 未开通消息撤回
+                        // e.type === '506' 没有在群组或聊天室白名单
+                        // e.type === '503' 未知错误
+                        console.log("Send private text error");  
+                    }
+                });
+                this.$conn.send(msg.body);
+                this.$nextTick(() => {
+                    this.$refs.customerChat.scrollTop = this.$refs.CmsgHeight.scrollHeight
+                    this.customerInp = ''
+                })
+                
             }
         },
         vetSend () {
-            console.log(JSON.stringify(this.userDetailMessage.userId) + '_1')
-            this.createdVetMessage()
-            let data = {
-                type: "danmu",
-                value: this.vetInp
-            }
-            let id = this.$conn.getUniqueId();                 // 生成本地消息id
-            let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
-            msg.set({
-                msg: data.value,                  // 消息内容
-                to: this.caller,                          // 接收消息对象（用户id）
-                chatType: 'singleChat',                  // 设置为单聊    
-                ext: {
-                    key: this.userDetailMessage.doctorName
-                },                    
-                success: function (id, serverMsgId) {
-                    console.log('send private text Success',id,serverMsgId);  
-                }, 
-                fail: function(e){
-                    console.log(e,66666)
-                    // 失败原因:
-                    // e.type === '603' 被禁言
-                    // e.type === '605' 群组不存在
-                    // e.type === '602' 不在群组或聊天室中
-                    // e.type === '504' 撤回消息时超出撤回时间
-                    // e.type === '505' 未开通消息撤回
-                    // e.type === '506' 没有在群组或聊天室白名单
-                    // e.type === '503' 未知错误
-                    console.log("Send private text error");  
+            console.log(this.caller,666)
+            if (this.vetInp == '') {
+                this.$message({
+                    type: 'info',
+                    message: 'The content cannot be empty!'
+                })
+            } else {
+                this.messageList.push({
+                    type: 1,
+                    value: this.vetInp
+                })
+                let data = {
+                    type: "danmu",
+                    value: this.vetInp,
+                    key: this.userDetailMessage,
+                    platform: localStorage.getItem('platform')
                 }
-            });
-            this.$conn.send(msg.body);
-            this.vetInp = ''
+                let id = this.$conn.getUniqueId();                 // 生成本地消息id
+                let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+                msg.set({
+                    msg: JSON.stringify(data),                  // 消息内容
+                    to: this.caller.userId + 'A1',                          // 接收消息对象（用户id）
+                    chatType: 'singleChat',                  // 设置为单聊    
+                    ext: {
+                        
+                    },                    
+                    success: function (id, serverMsgId) {
+                        console.log('send private text Success',id,serverMsgId);  
+                    }, 
+                    fail: function(e){
+                        console.log(e,66666)
+                        // 失败原因:
+                        // e.type === '603' 被禁言
+                        // e.type === '605' 群组不存在
+                        // e.type === '602' 不在群组或聊天室中
+                        // e.type === '504' 撤回消息时超出撤回时间
+                        // e.type === '505' 未开通消息撤回
+                        // e.type === '506' 没有在群组或聊天室白名单
+                        // e.type === '503' 未知错误
+                        console.log("Send private text error");  
+                    }
+                });
+                this.$nextTick(() => {
+                    this.vetInp = ''
+                    this.$refs.vetChat.scrollTop = this.$refs.VmsgHeight.scrollHeight
+                })
+                this.$conn.send(msg.body);
+                
+            }
+            
         },
 
         

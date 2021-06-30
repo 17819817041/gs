@@ -30,29 +30,45 @@ conn.listen({
     },         //连接关闭回调
     onTextMessage: function ( e ) {
         console.log("收到消息", e)
-        let data = JSON.parse(e.data)
+        let data = JSON.parse(e.data)    
+        console.log("收到消息", data)
+        // if (data.type)
+        // 收到来电
+        if (data.type == 'danmu') {
+            var obj = {
+                type: 2,
+                value: data.value
+            }
+            var messageList = JSON.parse(JSON.stringify(store.state.user.messageList))
+            messageList.push(obj)
+            store.commit("setUser",{ key: 'messageList', value: messageList })
+        }
         if (data.type == 'Call') {
             store.commit("setUser",{ key: 'callModal2', value: true })
             store.commit("setUser",{ key: 'caller', value: data.user })
             store.commit("setUser",{ key: 'joinParams', value: data.params })
+            store.commit("setUser",{ key: 'callerIM', value: data.user.userId + 'A' + data.platform })
         }
+        // 被呼叫者拒接
         if (data.type == 'HangUp') {
             store.commit("setUser",{ key: 'callModal', value: false })
             store.commit("setUser",{ key: 'callLoading', value: false })
+            router.back()
             Message({
                 type: 'info',
                 message: 'The other party refused to answer the call!'
             })
             window.eMedia.mgr.exitConference()
         }
+        // 呼叫着主动挂断
         if (data.type == 'HangUp1') {
             store.commit("setUser",{ key: 'callModal2', value: false })
         }
+        // 被呼叫者接通
         if (data.type == 'confirmCall') {
             store.commit("setUser",{ key: 'callModal', value: false })
             store.commit("setUser",{ key: 'callLoading', value: false })
             // router.push("/agora")
-            
         }
     },    //收到文本消息
 });
@@ -120,11 +136,11 @@ var rtcCall = new webrtc.Call({
             localStorage.setItem('endTime',endTime)
             store.commit("setUser",{ key: 'sureCall', value: true })
             // router.back()
-            if (router.name == 'agora') {
-                router.back()
-            } else {
+            // if (router.name == 'agora') {
+            //     router.back()
+            // } else {
 
-            }
+            // }
         },
         onIceConnectionStateChange: function (iceState) {
             console.log('onIceConnectionStateChange::', 'iceState:', iceState);

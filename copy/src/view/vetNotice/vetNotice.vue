@@ -13,11 +13,33 @@
     }
     .vetNotice_item {
         width: 98%;
-        margin: 15px auto;
+        margin: auto;
+        margin-bottom: 15px;
         padding: 10px 10px;
         background: white;
+        overflow: hidden;
         border-radius: 10px;
         box-shadow: 0 2px 2px 1px rgb(192, 191, 191);
+        position: relative;
+        .state {
+            position: absolute;
+            right: -69px;
+            top: 23px;
+            transform: rotateZ(45deg);
+            width: 200px;
+        }
+    }
+    .read {
+        width: 100%;
+        background: gray;
+        color: white;
+        font-size: 12px;
+    }
+    .unRead {
+        width: 100%;
+        background: @denger;
+        color: white;
+        font-size: 12px;
     }
     .vetNotice_content_item {
         height: 100%;
@@ -31,6 +53,7 @@
         padding-left: 20px;
         .vetNotice_date {
             color: #60A1E0;
+            margin-top: 5px;
         }
     }
 </style>
@@ -41,12 +64,16 @@
             <div class="vetNotice_content_wrap">
                 <div class="explan al"><img src="@/assets/img/information.png" alt="">Notice</div>
                 <div class="vetNotice_content_item flex">
-                    <div v-if="active" style="width:100%">
-                        <div class="vetNotice_item flex al" v-for="(item,i) in vetNoticeList" :key="i">
-                            <div><img class="john" src="@/assets/img/john.png" alt=""></div> 
+                    <div v-if="vetNoticeList" style="width:100%">
+                        <div class="vetNotice_item flex al" v-for="(item,i) in vetNoticeList" :key="i" @click="checkNotice(item)">
+                            <div class="state"> 
+                                <div class="read tc" v-if="item.noticeState == 1">Have read</div>
+                                <div class="unRead tc" v-else-if="item.noticeState == 2">Unread</div>
+                            </div>
+                            <div><img class="john" :src="item.fromImage" alt=""></div> 
                             <div class="vetNotice_information">
-                                <div>{{item.title}}</div>
-                                <div class="vetNotice_date">{{item.date}}</div>
+                                <div v-if="item.noticeType == 1">{{item.fromName}} initiated an appointment with you</div>
+                                <div class="vetNotice_date">{{item.createdAt}}</div>
                             </div>
                         </div>
                     </div>
@@ -58,19 +85,32 @@
 </template>
 
 <script>
+import { notice, updateNoticeState } from "@/axios/request.js"
 export default {
     data () {
         return {
-            vetNoticeList: [
-                {img:'@/assets/img/john.png',title:'Dr. Vinay Misra sent you the picture.',date:'Today 13:00'},
-                {img:'@/assets/img/john.png',title:'Dr. Vinay Misra sent you the picture.',date:'Today 13:00'},
-                {img:'@/assets/img/john.png',title:'Dr. Vinay Misra sent you the picture.',date:'Today 13:00'},
-            ],
-            active: true
+            vetNoticeList: [],
+            active: true,
+            noticeList: [],
+            pageNum: 1,
+            pageSize: 10,
         }
     },
     created () {
         this.message()
+        this.getNoticeList()
+        // let arr = [
+        //     {a: false},
+        //     {a: false},
+        //     {a: false},
+        // ]
+        // arr.forEach(item=> {
+        //     if (item.a == true) {
+        //         console.log('true')
+        //     } else {
+        //         console.log('false')
+        //     }
+        // })
     },
     methods: {
         message () {
@@ -78,7 +118,58 @@ export default {
                 this.active = false
             }
         },
-        
+        getNoticeList () {
+            let data = {
+                userId: localStorage.getItem('userId'),
+                pageNum: this.pageNum,
+                pageSize: this.pageSize
+            }
+            notice(data).then(res => {
+                console.log(res,'notice')
+                if (res.data.rtnCode == 200) {
+                    this.vetNoticeList = res.data.data.pageT
+                    res.data.data.pageT.forEach(item => {
+                        var time = item.createdAt
+                        let a = time.split(' ')[0]
+                        let b = time.split(' ')[1]
+                        // let En = new Date(a).toDateString()
+                        // let arr = En.split(' ')
+                        // let bb = b.split(':')
+                        // item.createdAt = arr[2] + ' ' + arr[1] + ','+ arr[3] + ' ' + bb[0] + ':' + bb[1]
+                        
+                        let arr = a.split('-').join('/')
+                        let bb = b.split(':')
+                        item.createdAt = arr + ' ' + bb[0] + ':' + bb[1]
+
+                        if (item.noticeState == 2) {
+                            this.$store.commit('setUser', {  
+                                key: 'noticeState',
+                                value: true
+                            })
+                        } else {
+                            this.$store.commit('setUser',{
+                                key: 'noticeState',
+                                value: false
+                            })
+                        }
+                    })
+                } else if (res.data.rtnCode == 201) {
+                    this.vetNoticeList = null
+                }
+            })
+        },
+        checkNotice (item) {
+            if (item.noticeType == 1) {
+                let data = {
+                    noticeId: item.id
+                }
+                updateNoticeState(data).then(res => {
+                    console.log(res)
+                })
+                this.$router.push('/appointment')
+            }
+            
+        }
     }
 }
 </script>

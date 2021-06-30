@@ -77,48 +77,70 @@
         font-size: 20px;
         color: #767676;
     }
+    .Info {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+    .NoMessage {
+        height: 100%;
+    }
 </style>
 <template>
     <div class="myAppointment" v-loading="loading">            <!-- //客户 -->
         <div class="myAppointment_wrap noBar">
             <div class="explan al"><img src="@/assets/img/appointment.png" alt="">Appointment</div>
-            <div class="myAppointment_item mg"  @click="appointmentDetalis(item.booking.bookingId)" v-for="(item) in bookingList" :key="item.bookingId">
-                <div class="myAppointment_item_message mg al">
-                    <div class="head_image ju al">
-                        <div class="head_image_wrap ju al">
-                            <img v-if="item.docImage" :src="item.docImage" alt="">
-                            <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
+            <div v-if="bookingList">
+                <div class="myAppointment_item mg" @click="appointmentDetalis(item.booking.bookingId,item.docImage)" v-for="(item) in bookingList" :key="item.bookingId">
+                    <div class="myAppointment_item_message mg al">
+                        <div class="head_image ju al">
+                            <div class="head_image_wrap ju al">
+                                <img v-if="item.docImage" :src="item.docImage" alt="">
+                                <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
+                            </div>
                         </div>
-                    </div>
-                    <div class="message_wrap">
-                        <div class="nameAndWay">
-                            <div class="doctor_name size23">Dr. {{item.booking.bookingDoctor}}</div>
-                            <div class="telOrVideo size20">Phone Counsultation</div>
-                        </div>
-                        <div class="flex dateAndPet">
-                            <div class="dateAndPet_date">
-                                <div class="size20">Date and Time</div>
-                                <div class="size23">
-                                    <span>{{item.booking.bookingDate}}</span>
-                                    <span style="margin: 0 5px">-</span>
-                                    <span>{{item.booking.bookingStartTime}}{{item.booking.APM}}</span>    
+                        <div class="message_wrap">
+                            <div class="nameAndWay">
+                                <div class="doctor_name size23">Dr. {{item.booking.bookingDoctor}}</div>
+                                <div class="telOrVideo size20">Phone Counsultation</div>
+                            </div>
+                            <div class="flex dateAndPet">
+                                <div class="dateAndPet_date">
+                                    <div class="size20">Date and Time</div>
+                                    <div class="size23">
+                                        <span>{{item.booking.bookingDate}}</span>
+                                        <span style="margin: 0 5px">-</span>
+                                        <span>{{item.booking.bookingStartTime}}{{item.booking.APM}}</span>    
+                                    </div>
+                                </div>
+                                <div class="dateAndPet_pet" style="padding-left:30px;">
+                                    <div class="size20">Pet Name</div>
+                                    <div class="size23">{{item.booking.petName}}</div>
                                 </div>
                             </div>
-                            <div class="dateAndPet_pet" style="padding-left:30px;">
-                                <div class="size20">Pet Name</div>
-                                <div class="size23">{{item.booking.petName}}</div>
+                        </div>
+                        <div class="Way">
+                            <div class="video_btn ju al cursor" @click.stop="">
+                                <img src="@/assets/img/video1.png" alt="">
+                                Video Consultation
+                            </div>
+                            <div class="chat_btn ju al cursor" @click.stop="">
+                                <img src="@/assets/img/chat1.png" alt="">
+                                Chat
                             </div>
                         </div>
                     </div>
-                    <div class="Way">
-                        <div class="video_btn ju al cursor" @click.stop="">
-                            <img src="@/assets/img/video1.png" alt="">
-                            Video Consultation
-                        </div>
-                        <div class="chat_btn ju al cursor" @click.stop="">
-                            <img src="@/assets/img/chat1.png" alt="">
-                            Chat
-                        </div>
+                </div>
+            </div>
+            <div v-else-if="bookingList === null" class="NoMessage flex">
+                <div class="mg">
+                    <div class="Info mg">
+                        <img style="height:100%" src="@/assets/img/info.png" alt="">
+                    </div>
+                    <div class="tc size14">
+                        No appointment record temporarily!
                     </div>
                 </div>
             </div>
@@ -142,12 +164,13 @@ export default {
         this.bookingUserId()
     },
     methods: {
-        appointmentDetalis (id) {
+        appointmentDetalis (id,url) {
             console.log(id)
             this.$router.push({
                 name: 'cusAppointmentDetalis',
                 query: {
-                    key: id
+                    key: id,
+                    headUrl: url
                 }
             })
         },
@@ -161,28 +184,37 @@ export default {
             allBooking(data).then(res => {
                 console.log(res,'booking')
                 if (res.data.rtnCode == 200) {
+                    res.data.data.reverse()
                     res.data.data.forEach(item => {
-                        let date = item.booking.bookingDate
-                        let En = new Date(date).toDateString()
-                        let arr = En.split(' ')
-                        item.booking.bookingDate = arr[2] + ' ' + arr[1] + ','+ arr[3]
-                        item.booking.APM = ''
-                        var hour = Number(item.booking.bookingStartTime.split(':')[0])
-                        var minute = Number(item.booking.bookingStartTime.split(':')[1])
-                        if ( hour >= 12 && minute >= 1) {
-                            item.booking.APM = 'PM'
-                        } else {
-                            item.booking.APM = 'AM'
+                        if (item.booking.bookingState == 1 || item.booking.bookingState == 2 ) {
+                            let date = item.booking.bookingDate
+                            let En = new Date(date).toDateString()
+                            let arr = En.split(' ')
+                            item.booking.bookingDate = arr[2] + ' ' + arr[1] + ','+ arr[3]
+                            item.booking.APM = ''
+                            var hour = Number(item.booking.bookingStartTime.split(':')[0])
+                            var minute = Number(item.booking.bookingStartTime.split(':')[1])
+                            if ( hour >= 12 && minute >= 0) {
+                                item.booking.APM = 'PM'
+                            } else {
+                                item.booking.APM = 'AM'
+                            }
+                            this.bookingList.push(item)
                         }
                     })
+                    // this.bookingList = res.data.data
+                    this.loading = false
+                } else if (res.data.rtnCode == 201 ) {
                     this.bookingList = res.data.data
                     this.loading = false
-                } else {
-
                 }
             }).catch(e => {
                 console.log(e)
                 this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: 'Fail to load!'
+                })
             })
         },
         getDAY () {

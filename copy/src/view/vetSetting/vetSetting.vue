@@ -26,7 +26,7 @@
                     <div class="profile_message">
                         <div class="message_wrap flex">
                             <div class="title al">User ID</div>
-                            <div class="mean al">0000001</div>
+                            <div class="mean al">{{userDetail.userId}}</div>
                         </div>
                         <div class="message_wrap flex">
                             <div class="title al">Name</div>
@@ -38,11 +38,20 @@
                             <div v-if="edit" class="mean al">{{userDetail.age? userDetail.age:'None'}}</div>
                             <div v-else class="inp mean al"><input type="text" v-model="userDetail.age"></div>
                         </div>
+
                         <div class="message_wrap flex">
                             <div  class="title al">Location</div>
-                            <div v-if="edit" class="mean al">{{userDetail.location? userDetail.location: "None"}}</div>
-                            <div v-else class="inp mean al"><input type="text" v-model="userDetail.location"></div>
+                            <div v-if="edit" class="mean al">{{
+                                address.find(ad => ad.areaId == userDetail.addressId) ? 
+                                address.find(ad => ad.areaId == userDetail.addressId).addressName : ""
+                            }}</div>
+                            <div v-else class="inp mean al">
+                                <el-select v-model="userDetail.addressId">
+                                    <el-option v-for="(add) in address" :key="add.id" :value="add.areaId" :label="add.addressName"></el-option>
+                                </el-select>
+                            </div>
                         </div>
+
                         <div class="message_wrap flex">
                             <div class="title al">Mobile</div>
                             <div v-if="edit" class="mean al">{{userDetail.mobile? userDetail.mobile: "None"}}</div>
@@ -50,14 +59,33 @@
                         </div>
                         <div class="message_wrap flex">
                             <div class="title al">Gender</div>
-                            <div class="mean al" v-if="edit">{{userDetail.genderId? userDetail.genderId: "None"}}</div>
-                            <div v-else class="inp mean al"><input type="text" v-model="userDetail.genderId"></div>
+                            <div class="mean al" v-if="edit">
+                                <span v-if="userDetail.genderId == 1">Male</span>
+                                <span v-else-if="userDetail.genderId == 2">Female</span>
+                            </div>
+                            <div v-else class="inp mean al">
+                                <el-select v-model="sex" >
+                                    <el-option value="1" label="Male"></el-option>
+                                    <el-option value="2" label="Female"></el-option>
+                                </el-select>
+                            </div>
                         </div>
                         <div class="message_wrap flex">
                             <div class="title al">Education</div>
-                            <div class="mean al" v-if="edit">{{userDetail.workExperience}}</div>                                              <!--   //学历   -->
+                            <div class="mean al" v-if="edit">
+                                <span v-if="userDetail.education">{{userDetail.education}}</span>
+                                <span v-else>No data</span>
+                            </div>                                              <!--   //学历   -->
                             <div v-else class="inp mean al">
-                                <input type="text" v-model="userDetail.workExperience">
+                                <el-select v-model="userDetail.education" >
+                                    <el-option value="Doctor´s Degree" label="Doctor´s Degree"></el-option>
+                                    <el-option value="Master´s Degree" label="Master´s Degree"></el-option>
+                                    <el-option value="Normal Courses" label="Normal Courses"></el-option>
+                                    <el-option value="Short-cycle Courses" label="Short-cycle Courses"></el-option>
+                                    <el-option value="Regular Senior Secondary Schools" label="Regular Senior Secondary Schools"></el-option>
+                                    <el-option value="Regular Specialized Secondary Schools" label="Regular Specialized Secondary Schools"></el-option>
+                                    <el-option value="Regular Junior Secondary Schools" label="Regular Junior Secondary Schools"></el-option>
+                                </el-select>
                             </div>
                         </div>
                         <div class="message_wrap flex">
@@ -67,7 +95,10 @@
 
                         <div class="aboutMe">
                             <div>More about you</div>
-                            <div>KKKKKKKKKKKKKKKKKKKKK</div>
+                            <div v-if="edit">KKKKKKKKKKKKKKKKKKKKK</div>
+                            <div v-else class="aboutMe_text">
+                                <textarea name="" id="" cols="30" v-model="userDetail.extend" rows="10"></textarea>
+                            </div>
                         </div>
                     </div>
                     <div class="profile_message1">
@@ -88,7 +119,7 @@
                             </div>
                             <div class="message_wrap flex">
                                 <div class="title al">Work experience</div>
-                                <div class="mean al" v-if="edit">{{userDetail.workExperience? userDetail.workExperience: "None"}}</div>
+                                <div class="mean al" v-if="edit">{{userDetail.workExperience? userDetail.workExperience: "None"}}+ years</div>
                                 <div v-else class="inp mean al"><input type="text" 
                                 @input="userDetail.workExperience=userDetail.workExperience.replace(/[^\d]/g,'')" v-model="userDetail.workExperience"></div>
                             </div>
@@ -148,13 +179,27 @@
 </template>
 
 <script>
-import { updateVetDetails, HospitalList } from "@/axios/request.js"
+import { updateVetDetails, HospitalList, address } from "@/axios/request.js"
 export default {
     data () {
         return {
             edit: true,
             hospitalName: '',
-            hospitalList: []
+            hospitalList: [],
+            sex: '',
+            address: []
+        }
+    },
+    watch: {
+        userDetail: {
+            handler (val) {
+                if (val.genderId == 1) {
+                    this.sex = 'Male'
+                } else if (val.genderId == 2) {
+                    this.sex = 'Female'
+                }
+            },
+            immediate: true
         }
     },
     computed: {
@@ -162,8 +207,22 @@ export default {
     },
     created () {
         this.getHospitalList()
+        this.getAddress()
     },
     methods: {
+        changeAddress (e) {
+            console.log(e)
+            this.userDetail.location = e
+        },
+        getAddress () {
+            address().then(res => {
+                // console.log(res)
+                // res.data.data.forEach(item => {
+                //     item.areaId = String(item.areaId)
+                // })
+                this.address = res.data.data
+            })
+        },
         getHospital (val) {
             console.log(val)
             this.userDetail.vetrtinaryHospitalId = val
@@ -315,6 +374,21 @@ export default {
             margin-top: 50px;
         }
     }
+    .aboutMe_text {
+        border: solid 1px gray;
+        height: 100px;
+        border-radius: 20px;
+        overflow: hidden;
+        padding: 5px;
+        background: #F2F2F2;
+        textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #F2F2F2;
+            outline: none;
+        }
+    }
     .profile_img {
         width: 25%;
     }
@@ -335,7 +409,7 @@ export default {
 
     .inp {
         width: 140px;
-        border: solid 1px ;
+        border: solid 1px rgb(187, 182, 182);
         border-radius: 10px;
         overflow: hidden;
         height: 29px;

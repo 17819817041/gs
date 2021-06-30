@@ -39,9 +39,13 @@
         <div class="customer_content flex">
             <div class="present_message">
                 <div class="present_item">
-                    
+                    <!-- conference -->
                 </div>
                 <div class="administrator mg">
+                    <div class="administrator_item cursor flex al" @click="Conference">
+                        <div><img src="@/assets/img/date.png" alt=""></div>
+                        <div>Conference</div>
+                    </div>
                     <div class="administrator_item cursor flex al" @click="appointment">
                         <div><img src="@/assets/img/date.png" alt=""></div>
                         <div>Doctor Appointments</div>
@@ -59,7 +63,7 @@
                         <div>Setting</div>
                     </div>
                     <div>
-                        <img class="physical" src="@/assets/img/chat.png" alt="">
+                        <img class="physical cursor" src="@/assets/img/chatLogo.png" alt="" @click="adminChat">
                     </div>
                 </div>
             </div>
@@ -84,6 +88,12 @@ export default {
     },
     
     methods: {
+        Conference () {
+            this.$router.push("/conference")
+        },
+        adminChat () {
+            this.$router.push('/chatRoom')
+        },
         setting () {
             this.$router.push("/vetSetting")
         },

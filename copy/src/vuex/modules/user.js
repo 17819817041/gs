@@ -10,7 +10,7 @@ export default {
         pet: {},
         doctorList: [],
         searchList: [],
-        loading: true,
+        loading: false,
         callModal: false,
         callModal2: false,
         callTo: {},
@@ -28,10 +28,17 @@ export default {
         userBooking: [],
         callLoading: false,    //等待接听
         joinParams: {},
+        callerIM: '',
+        messageList: [],
+        totalRecordsCount: 0,
+        noticeState: false
     },
     mutations: {
         setUser (state,data) {
             state[data.key] = data.value
+        },
+        pageAdd (state,data) {
+            state.doctorList = state.doctorList.concat(data)
         }
     },
     actions: {
@@ -88,10 +95,10 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
-                        // if (vm.$route.name !== 'customerLogin') {
-                        //     router.replace('/customerLogin')
-                        //     vm.$message.error('Login expired, please log in again !');
-                        // }
+                        if (vm.$route.name !== 'customerLogin') {
+                            router.replace('/customerLogin')
+                            vm.$message.error('Login expired, please log in again !');
+                        }
                         store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }
@@ -104,7 +111,7 @@ export default {
                     userId: localStorage.getItem("userId"),
                 }
                 vetDetails(data).then(res => {
-                    // console.log(res,"医生详情")
+                    console.log(res,"医生详情")
                     if (res.data.rtnCode == 200) {
                         res.data.data.userImage = res.data.data.headUr
                         res.data.data.userName = res.data.data.doctorName
@@ -118,10 +125,10 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
-                        // if (vm.$route.name !== 'customerLogin') {
-                        //     router.replace('/vetLogin')
-                        //     vm.$message.error('Login expired, please log in again !');
-                        // }
+                        if (vm.$route.name !== 'vetLogin') {
+                            router.replace('/vetLogin')
+                            vm.$message.error('Login expired, please log in again !');
+                        }
                         store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }
@@ -131,41 +138,6 @@ export default {
                 })
             }
         },
-        // IMSignUp (store) {
-        //     var options = { 
-        //         username: localStorage.getItem("userId") + '_' + localStorage.getItem("platform"),  //430_2
-        //         password: '123456',
-        //         nickname: 'nickName',
-        //         appKey: WebIM.config.appkey,
-        //         success: function () { 
-        //             console.log("注册成功")
-        //             store.dispatch("IMLogin")
-        //         },  
-        //         error: function (err) {
-        //             let errorData = JSON.parse(err.data);
-        //             if (errorData.error === 'duplicate_unique_property_exists') {
-        //                 console.log('用户已存在！');
-        //                 store.dispatch("IMLogin")
-        //             } else if (errorData.error === 'illegal_argument') {
-        //                 if (errorData.error_description === 'USERNAME_TOO_LONG') {
-        //                     console.log('用户名超过64个字节！')
-        //                 }else{
-        //                     console.log('用户名不合法！')
-        //                 }
-        //             } else if (errorData.error === 'unauthorized') {
-        //                 console.log('注册失败，无权限！')
-        //             } else if (errorData.error === 'resource_limited') {
-        //                 console.log('您的App用户注册数量已达上限,请升级至企业版！')
-        //             }
-        //         }, 
-        //     }; 
-        //     // console.log(123,localStorage.getItem('IMtoken'))
-        //     // if (localStorage.getItem('IMtoken')) {
-        //     //     store.dispatch('IMLogin')
-        //     // } else {
-        //         conn.registerUser(options);
-        //     // }
-        // },
         IMLogin (store) {
             console.log('IM登录成功')
             var options = { 
@@ -212,36 +184,41 @@ export default {
                 console.log(e)
             })
         },
-        getDoctorList (store,vm) {
+        getDoctorList (store,num) {
+            console.log(store.state.totalRecordsCount,store.state.doctorList.length )
             const doctor = {
                 platform: localStorage.getItem("platform"),
                 userId: localStorage.getItem("userId"),
-                pageNum:1,
-                pageSize: 10
+                pageNum: num,
+                pageSize:30
             }
-            doctorList(doctor).then(res => {
-                if (res.data.rtnCode == 200) {
-                    console.log(res,"医生列表")
-                    store.commit("setUser",{ key: "doctorList", value: res.data.data.pageT })
-                    store.commit("setUser",{ key: "searchList", value: store.state.doctorList })
-                    store.commit("setUser",{ key: "loading", value: false })
-                } else if (res.data.rtnCode == 500) {
-                    localStorage.removeItem("Token")
-                    localStorage.removeItem("userId")
-                    localStorage.removeItem("paltform")
-                    localStorage.removeItem("IMtoken")
-                    localStorage.removeItem('IM')
-                    if (vm.$route.name !== 'customerLogin') {
-                        // router.replace('/customerLogin')
-                    }
-                    // vm.$message.error('Login expired, please log in again !');
-                }
-            }).catch(e => {
-                console.log(e)
+            store.commit("setUser",{ key: "loading", value: true })
+            if ((store.state.totalRecordsCount == store.state.doctorList.length) &&store.state.totalRecordsCount !=0 ) {
                 store.commit("setUser",{ key: "loading", value: false })
-                store.commit("setUser",{ key: "doctorList", value: [] })
-                vm.$message.error('Fail to load !');
-            })
+            } else {
+                doctorList(doctor).then(res => {
+                    if (res.data.rtnCode == 200) {
+                        console.log(res,"医生列表")
+                        store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
+                        store.commit("pageAdd", res.data.data.pageT )
+
+                        store.commit("setUser",{ key: "searchList", value: store.state.doctorList })
+                        store.commit("setUser",{ key: "loading", value: false })
+                    } else if (res.data.rtnCode == 500) {
+                        localStorage.removeItem("Token")
+                        localStorage.removeItem("userId")
+                        localStorage.removeItem("paltform")
+                        localStorage.removeItem("IMtoken")
+                        localStorage.removeItem('IM')
+                    }
+                }).catch(e => {
+                    console.log(e)
+                    store.commit("setUser",{ key: "loading", value: false })
+                    store.commit("setUser",{ key: "doctorList", value: [] })
+                    vm.$message.error('Fail to load !');
+                })
+            }
+            
         },
         search (store,data) {
             store.state.searchList = []

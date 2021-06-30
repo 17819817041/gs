@@ -15,15 +15,25 @@
         }
     }
     .chat_content {
-        height: calc(100% - 113px);
+        height: calc(100% - 120px);
     }
     .inpMessage {
         padding: 5px 10px;
         border: solid rgb(240, 239, 239) 1px;
     }
+    .add {
+        position: relative;
+        .arrowon {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+            width: 22px;
+            height: 26px;
+        }
+    }
     .add img {
-        width: 40px;
-        height: 40px;
+        height: 36px;
         padding-left: 10px;
     }
     .Input {
@@ -59,10 +69,11 @@
                 <input type="text" class="width100" placeholder="Type a message" @keydown.enter="Esend">
             </div>
             <div class="add al">
-                <img src="@/assets/img/clip.png" alt="">
+                <img class="cursor" src="@/assets/img/clip.png" alt="">
             </div>
             <div class="add al">
-                <img class="cursor" @click="send" src="@/assets/img/sendImg.png" alt="">
+                <img class="cursor" @click="send" src="@/assets/img/Ball.png" alt="">
+                <img class="arrowon" @click="send" src="@/assets/img/arrowon.png" alt="">
             </div>
         </div>
     </div>
