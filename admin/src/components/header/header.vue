@@ -29,8 +29,8 @@
                             <label for="ava" class="cursor label_img ju al">
                                 <input id="ava" v-show="false" type="file" />   <!-- 头像路径-->
                                 <div class="ju al headimg_wrap">
-                                    <!-- <img style="height:100%;" v-if="userDetails.userImage" :src="userDetails.userImage" alt=""> -->
-                                    <!-- <img src="@/assets/img/setimg.svg" alt=""> -->
+                                    <!-- <img style="height:100%;" v-if="userDetail.image" :src="userDetail.image" alt=""> -->
+                                    <img src="@/assets/img/settings.png" alt="">
                                     <!-- <i class="el-icon-picture-outline" style="font-size:30px;color:gray"></i> -->
                                 </div>
                             </label>

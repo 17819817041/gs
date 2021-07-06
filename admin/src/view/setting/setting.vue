@@ -135,7 +135,7 @@
                 </div>
             </div>
             <div class="head ju al">
-                <!-- <img class="set_img" src="@/assets/img/set_img.png" alt=""> -->
+                <img class="set_img" src="@/assets/img/settings.png" alt="">
             </div>
             <div class="msg_item flex al">
                 <div class="title_a">

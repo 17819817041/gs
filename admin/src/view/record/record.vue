@@ -85,7 +85,7 @@
             <div class="recordContent_item">
                 <div class="itemChild mg">
                     <div class="explan al">
-                        <!-- <img src="@/assets/img/recordImg.png" alt=""> -->
+                        <img src="@/assets/img/recordImg.png" alt="">
                         Medical Record History
                     </div>
                     <div class="record_message">
