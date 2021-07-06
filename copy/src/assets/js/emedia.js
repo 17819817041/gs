@@ -41,6 +41,7 @@ emedia.mgr.onMemberJoined = function (member) {
 };
 
 emedia.mgr.onMemberLeave = function (member, reason, failed) {
+    if (member.memName.includes('admin')) {return false}
     router.back()
     console.log('onMemberLeave', member, reason, failed);
     window.eMedia.mgr.exitConference()

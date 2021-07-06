@@ -75,14 +75,14 @@ export default {
         }
     },
     computed: {
-        IMuser () { return this.$store.state.user.IMuser }
+        // IMuser () { return this.$store.state.user.IMuser }
     },
     created () {
         // this.message()
-        this.listens()
+        // this.listens()
     },
     mounted () {
-        this.calander()
+        // this.calander()
     },
     methods: {
         calander () {

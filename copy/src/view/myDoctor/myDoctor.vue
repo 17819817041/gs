@@ -148,12 +148,12 @@ export default {
         
     },
     watch: {
-        doctorList: {
-            handler (val) {
-                this.doctorList = val
-            },
-            immediate: true
-        }
+        // doctorList: {
+        //     handler (val) {
+        //         this.doctorList = val
+        //     },
+        //     immediate: true
+        // }
     },
     computed: {
         callModal: {

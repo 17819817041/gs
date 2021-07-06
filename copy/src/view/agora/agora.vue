@@ -557,18 +557,6 @@
 export default {
     data () {
         return {
-            // client:null,
-            // localTracks : {
-            //     videoTrack: null,
-            //     audioTrack: null
-            // },
-            // remoteUsers : {},
-            // options: {
-            //     appid: '0bc95e1145da4b729993725eb55b319a',
-            //     channel: '654',
-            //     uid: 888,
-            //     token: '0060bc95e1145da4b729993725eb55b319aIABktH+02bSfhRnt1IbqwSWGHtt2CLSt2SYNHo683uu1BjN2IlwAAAAAEAD/3NMfIxqyYAEAAQAjGrJg'
-            // }
             platform: localStorage.getItem("platform"),
             callToDoctor: {},
             userDetailMessage: {},
@@ -599,12 +587,7 @@ export default {
         }
     },
     mounted () {
-        // console.log(AgoraRTC)
-        // this.createClient()
-        // setTimeout(() => {
-        //     this.initVideo()
-        // },10)
-        
+
     },
     created () {
         this.callToDoctor = this.callTo
@@ -669,13 +652,10 @@ export default {
             //     }
             // }
             let msgRecord = localStorage.getItem('msgRecord')
-            console.log(msgRecord)
             if (msgRecord) {
                 this.msgRecord = JSON.parse(msgRecord)
-                console.log(2222222222222222,this.msgRecord,this.callerIM,this.msgRecord[this.callerIM])
 
                 if (this.msgRecord[this.callerIM]) {
-                    console.log(this.msgRecord[this.callerIM])
                     this.messageList = this.msgRecord[this.callerIM].messageList
                 }
                 
@@ -814,56 +794,6 @@ export default {
         },
 
         
-        // createClient () {
-        //     this.client = this.$V.createClient({  //进入页面自动调用 mounted
-        //         mode: "rtc",
-        //         codec: "vp8"
-        //     })
-        //     this.client.on("user-published", this.handleUserPublished);    //点击join触发
-        // },
-        // handleUserPublished (user, mediaType) {
-        //     console.log(1233333, user.uid, mediaType)
-        //     const id = user.uid;
-        //     this.remoteUsers[id] = user;
-        //     this.subscribe(user, mediaType);
-        // },
-        // async subscribe (user, mediaType) {
-        //     const uid = user.uid;
-        //     await this.client.subscribe(user, mediaType);
-        //     if (mediaType === 'video') {
-        //         console.log("subscribe success" , uid, this.client.uid);
-        //         user.videoTrack.play(`player2`);
-        //     }
-        //     if (mediaType === 'audio') {
-        //         user.audioTrack.play();
-        //     }
-        // },
-        // async join () {
-        //     [ this.options.uid, this.localTracks.audioTrack, this.localTracks.videoTrack ] = await Promise.all([
-        //         // join the channel
-        //         this.client.join(this.options.appid, this.options.channel, this.options.token || null),
-        //         // create local tracks, using microphone and camera
-        //         this.$V.createMicrophoneAudioTrack(),
-        //         this.$V.createCameraVideoTrack()
-        //     ]);
-        //     this.localTracks.videoTrack.play("player1");
-        //     await this.client.publish(Object.values(this.localTracks));
-        //     console.log("publish success");
-        // },
-        // async leave() {
-        //     for (var trackName in this.localTracks) {
-        //         var track = this.localTracks[trackName];
-        //         if(track) {
-        //             track.stop();
-        //             track.close();
-        //             this.localTracks[trackName] = undefined;
-        //         }
-        //     }
-        //     // remove remote users and player views
-        //     this.remoteUsers = {};
-        //     // leave the channel
-        //     await this.client.leave();
-        // }
     }
 }
 </script>

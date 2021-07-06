@@ -61,6 +61,7 @@
         
         <button id="signout" ref="signout">Sign Out</button>
         <pre id="content"></pre>
+        
     </div>
 </template>
 
@@ -80,10 +81,25 @@ export default {
     },
     created () {
         // this.message()
-        this.listens()
+        // this.listens()
     },
     mounted () {
-        this.calander()
+        // paypal.Buttons().render('#paypal-button-container');
+        // paypal.Buttons({
+        //     createOrder: function(data, actions) {
+        //     // This function sets up the details of the transaction, including the amount and line item details.
+        //     return actions.order.create({
+        //         purchase_units: [{
+        //         amount: {
+        //             value: '0.01'
+        //         }
+        //         }]
+        //     });
+        //     }
+        // }).render('#paypal-button-container');
+
+        
+        // this.calander()
     },
     methods: {
         calander () {
@@ -206,12 +222,6 @@ export default {
             });
           }
         },
-
-
-
-
-        
-
         listens () {
             let that = this
             this.$conn.listen({

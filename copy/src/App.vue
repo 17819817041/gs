@@ -76,6 +76,7 @@ export default {
 			this.$store.dispatch("IMLogin")
 		}
 		this.start()
+		this.getNotice()
 	},
 	watch: {
 		callModal: {
@@ -84,7 +85,24 @@ export default {
 					this.loading = false
 				}
 			}
-		}
+		},
+		adminList: {
+            handler (val) {
+                if (val) {
+                    console.log(val,1312132131236666666666666666666666666666666666666666666661)
+                    this.adminList = val
+                    this.saveRecord(val)
+                }
+            },
+            deep: true
+        },
+		petId: {
+            handler (val) {
+                if (val) {
+                    this.petId = val
+                }
+            }
+        },
 	},
 	computed: {
         callModal: {
@@ -92,6 +110,15 @@ export default {
             set (val) {
                 this.$store.commit("setUser", {
                     key: "callModal",
+                    value: val
+                })
+            },
+        },
+		adminList: {
+            get () { return this.$store.state.user.adminList },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "adminList",
                     value: val
                 })
             },
@@ -120,6 +147,16 @@ export default {
 		userDetail () { return this.$store.state.user.userDetail },
 		IMuser () { return this.$store.state.user.IMuser },
 		mask () {return this.$store.state.user.mask},
+		petId: {
+			get () { return this.$store.state.user.petId },
+			set (val) {
+				this.$store.commit("setUser", {
+                    key: "petId",
+                    value: val
+                })
+			}
+		},
+		pet () {return this.$store.state.user.pet},
 		sureCall: {
 			get () { return this.$store.state.user.sureCall },
             set (val) {
@@ -131,6 +168,18 @@ export default {
 		}
     },
 	methods: {
+		saveRecord (val) {
+            localStorage.setItem('adminList',JSON.stringify(this.adminList))
+        },
+		getNotice () {
+			let that = this
+			let page = {
+				vm: that,
+				pageNum: 1,
+				pageSize: 100
+			}
+			this.$store.dispatch('getNoticeList', page)
+		},
 		start(){
 			this.timer = setInterval(this.valChange, 60000); // 注意: 第一个参数为方法名的时候不要加括号;
 		},
@@ -173,6 +222,7 @@ export default {
                 type: "Call",
 				user: this.userDetail,
 				platform: localStorage.getItem('platform'),
+				petId: this.petId,
 				params
             }
             let id = this.$conn.getUniqueId();                 // 生成本地消息id
@@ -213,19 +263,14 @@ export default {
 		},
 		async sure2 () {
 			this.$router.push("/agora")
+			this.callModal2 = false
 			let that = this
 			setTimeout(async function ()  {
-				
 				const user_room = await emedia.mgr.joinRoom(that.joinParams);
-				
-
 				let constraints = { audio: true, video: true };
 				const stream = await emedia.mgr.publish(constraints)
 				console.log(stream)
 				// this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
-				that.callModal2 = false
-				
-
 				let data = {
 					type: "confirmCall"
 				}
@@ -242,12 +287,23 @@ export default {
 			
 		},
 		addConfr (val) {
+			let D = new Date
+			var date = D.toLocaleDateString()
+			let detail = {
+				petName: this.pet.name,
+				petId: this.petId,                 
+				caller: this.userDetail,
+				callTo: this.callTo,
+				createdTime: date,
+				password: '123456'
+			}
 			let data = {
 				'jo': [{
 					confrId: val,
 					userId: this.userDetail.userId + 'A' + localStorage.getItem('platform'),
 					doctorId: this.callTo.doctorId + 'A2',
-					password: '123456'
+					password: JSON.stringify(detail),
+					// password: '123456',
 				}]
 			}
 			addMetting(data).then(res => {

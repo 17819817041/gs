@@ -4,11 +4,19 @@ import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 export default {
     state: {
         login: false,
-        IMuser: {}
+        IMuser: {},
+        userDetail: {},
+        messageList: [],
+        fromIM: '',
+        agoraPet: {},
+        message: {}
     },
     mutations: {
         setUser (state,data) {
             state[data.key] = data.value
+        },
+        addFriend (state,data) {
+            state[data.key].push(data.value)
         }
     },
     actions: {
@@ -42,11 +50,11 @@ export default {
             })
         },
         IMLogin (store) {
-            console.log('IM登录成功')
+            // console.log('IM登录成功')
             var options = { 
                 // user: localStorage.getItem("adminAserId") + 'A' + localStorage.getItem("adminPlatform"),
                 user: 'admin',
-                pwd: localStorage.getItem('IM'),
+                pwd: 123,
                 appKey: WebIM.config.appkey,
                 success (res) {
                     console.log(res,'IM登录成功')

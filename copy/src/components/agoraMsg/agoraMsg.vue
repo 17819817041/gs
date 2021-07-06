@@ -64,17 +64,17 @@
                 <div class="present_item">
                     
                     <div class="pet_img mg ju al">
-                        <img :src="pet.image" alt="" v-if="pet.image">
+                        <img :src="pet.petHeadUrl" alt="" v-if="pet.petHeadUrl">
                         <i class="el-icon-picture-outline Icon" v-else></i>
                     </div>
-                    <div class="pet_name size21 tc">{{pet.name}}</div>
+                    <div class="pet_name size21 tc">{{pet.petName}}</div>
                     <div class="details size12 tc">
-                        <div>Pet ID : {{pet.id}}</div>
-                        <div>Age : {{pet.age}}</div>
+                        <div>Pet ID : {{pet.petId}}</div>
+                        <div>Age : {{pet.petAge}}</div>
                         <div>Breed : {{pet.breed}}</div>
-                        <div>Sex :  <span v-if="pet.gender == 1">Male</span> <span v-else-if="pet.gender == 2">Female</span> </div>
-                        <div>Neutered status : {{pet.petJueYu}}</div>
-                        <div>Weight : {{pet.weight}}</div>
+                        <div>Sex :  {{pet.petGenderName}}</div>
+                        <div>Neutered status : <span v-if="pet.neuteredState == 1">Sterilization</span><span v-else-if="pet.neuteredState == 2">Unneutered</span> </div>
+                        <div>Weight : {{pet.petWeight}} kg</div>
                     </div>
                     <div class="more_message size12 cursor" @click="petDetails">
                         More...
@@ -110,10 +110,12 @@
 </template>
 
 <script>
+import { getUserByPetId } from "@/axios/request.js"
 export default {
     data () {
         return {
-            showDetails: false
+            showDetails: false,
+            pet: {}
         }
     },
     mounted () {
@@ -122,10 +124,35 @@ export default {
     created () {
         
     },
+    watch: {
+        petId: {
+            handler (val) {
+                if (val) {
+                    this.getUserByPetId1()
+                }
+            },
+            immediate: true
+        }
+    },
     computed: {
-        pet () { return this.$store.state.user.pet }
+        // pet () { return this.$store.state.user.pet },
+        petId () { return this.$store.state.user.petId },
     },
     methods: {
+        getUserByPetId1 () {
+            let data = {
+                petId: this.petId
+                // petId: 48
+            }
+            getUserByPetId(data).then(res => {
+                console.log(res,'petAndUser')
+                if (res.data.rtnCode == 200) {
+                    this.pet = res.data.data
+                }
+            }).catch(e => {
+                console.log(e)
+            })
+        },
         setting () {
             this.$router.push("/vetSetting")
         },

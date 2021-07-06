@@ -31,6 +31,7 @@ conn.listen({
     onTextMessage: function ( e ) {
         console.log("收到消息", e)
         let data = JSON.parse(e.data)    
+        let from = e.from
         console.log("收到消息", data)
         // 收到来电
         if (data.type == 'danmu') {
@@ -41,6 +42,25 @@ conn.listen({
             var messageList = JSON.parse(JSON.stringify(store.state.user.messageList))
             messageList.push(obj)
             store.commit("setUser",{ key: 'messageList', value: messageList })
+        }
+        if (data.type == 'needHelp') {
+            console.log(111)
+            var obj = {
+                type: 2,
+                value: data.value
+            }
+            var message = JSON.parse(JSON.stringify(store.state.user.message))
+            if (message[from]) {
+                console.log(222)
+                message[from].messageList.push(obj)
+            } else {
+                message[from] = {
+                    user: e.from,
+                    userDetail: data.key,
+                    messageList: [ obj ]
+                }
+            }
+            store.commit("setUser",{ key: 'message', value: message })
         }
         if (data.type == 'Call') {
             store.commit("setUser",{ key: 'callModal2', value: true })

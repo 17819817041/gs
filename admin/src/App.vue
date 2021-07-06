@@ -8,8 +8,70 @@
 
 export default {
 	name: 'App',
-	components: {
-
+	watch: {
+        message: {
+            handler (val) {
+                if (val) {
+                    this.message = val
+                    this.saveRecord(val)
+                }
+            },
+            deep: true
+        },
+		fromIM: {
+            handler (val) {
+                if (val) {
+                    this.fromIM = val
+                }
+            },
+            deep: true
+        },
+		messageList: {
+            handler (val) {
+                if (val) {
+                    this.messageList = val
+                    // this.saveRecord(val)
+                }
+            },
+            deep: true
+        }
+    },
+    computed: {
+        message: {
+            get () { return this.$store.state.user.message },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "message",
+                    value: val
+                })
+            },
+        },
+		messageList: {
+            get () { return this.$store.state.user.messageList },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "messageList",
+                    value: val
+                })
+            },
+        },
+		fromIM: {
+            get () { return this.$store.state.user.fromIM },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "fromIM",
+                    value: val
+                })
+            },
+        },
+    },
+	methods: {
+		saveRecord (val) {
+			if (this.fromIM) {
+                this.messageList = this.message[this.fromIM].messageList
+            }
+            localStorage.setItem('message',JSON.stringify(this.message))
+        },
 	}
 }
 </script>
@@ -22,6 +84,10 @@ export default {
 	}
 	div {
 		box-sizing: border-box;
+	}
+	.flexEnd {
+		display: flex;
+		justify-content: flex-end;
 	}
 	#app {
 		height: 100%;
@@ -66,6 +132,12 @@ export default {
 	}
 	.tc {
 		text-align: center;
+	}
+	.te {
+		text-align: end;
+	}
+	.ts {
+		text-align: start;
 	}
 	.mg {
 		margin: auto;

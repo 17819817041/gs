@@ -3,7 +3,6 @@
         <div class="booking mg">
             <div class="size21 tc" style="margin-top:30px;">Booking</div>
             <div class="size12 tc" style="margin:10px auto">Select an option to book</div>
-            
             <div class="form_select">
                 <el-form label-position="top" ref="form" :model="form" :rules="rules">
                     <el-form-item class="typeFlex ju tc" prop="WAY">
@@ -36,15 +35,16 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="location">
-                        <el-select v-model="form.location" placeholder="Location">
-                            <el-option v-for="(item,i) in locationSelect" :key="i" :label="item.addressName" :value="item.id"></el-option>
+                        <el-select v-model="form.location" @change="getAddressId" placeholder="Location">
+                            <el-option v-for="(item,i) in locationSelect" :key="i" :label="item.addressName" :value="item.areaId"></el-option>
                         </el-select>
                     </el-form-item>
 
                     <div class="sb">
                         <el-form-item prop="doctor" class="pet">
                             <div class=" width100">
-                                <el-select v-model="form.doctor" placeholder="Select the doctor" @change="getDoctorId">
+                                <el-select v-model="form.doctor" placeholder="Select the doctor" @change="getDoctorId" 
+                                    no-data-text=" Please select a region first ">
                                     <el-option v-for="(item,i) in doctorSelect" :key="i" :label="item.doctorName" :value="item.doctorId"></el-option>
                                 </el-select>
                             </div>
@@ -116,7 +116,7 @@
 </template>
 
 <script>
-import { doctorList, booking, address } from "@/axios/request.js"
+import { doctorList, booking, address, getDoctorByLocationId } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -202,7 +202,7 @@ export default {
         }
     },
     created () {
-        this.docSelect()
+        // this.docSelect()
         this.getPetSelect()
         this.getDay()
         this.getAddress()
@@ -283,16 +283,37 @@ export default {
                         }
                     }).catch(e => {
                         console.log(e)
+                        that.loading = false
                         that.$message({
                             type: 'error',
                             message: 'Please complete the information'
                         })
                     })
                 } else {
+                    that.loading = false
                     that.$message({
                         type: 'error',
                         message: 'Please complete the information'
                     })
+                }
+            })
+        },
+        getAddressId (val) {
+            this.doctorSelect = []
+            let data = {
+                addressId: val
+            }
+            getDoctorByLocationId(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.doctorSelect = res.data.data
+                } else {
+                    if (res.data.rtnCode == 201) {
+                        this.$message({
+                            type: 'info',
+                            message: 'No doctors in this area!'
+                        })
+                    }
                 }
             })
         },

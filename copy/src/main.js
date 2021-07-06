@@ -26,33 +26,21 @@ import store from "@/vuex/store.js"
 
 
 
-import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
+import {conn, WebIM} from "@/assets/js/websdk.js"
 Vue.prototype.$WebIM = WebIM
 Vue.prototype.$conn = conn
-Vue.prototype.$rtcCall = rtcCall
-
-
 
 
 
 import { google } from "@/assets/js/google.js"
-// Vue.prototype.$google = google
 
-
-// import { facebook } from "@/assets/js/facebook.js"
-// Vue.prototype.$facebook = facebook
 
 import FBSignInButton from 'vue-facebook-signin-button'
 Vue.use(FBSignInButton)
 
-import Stripe from "@/assets/js/stripe.js"
 
-
-import Agora from "@/assets/js/Agora.js"
-Vue.prototype.$V = Agora
 
 import element from "element-ui"
-// import 'element-ui/lib/theme-chalk/index.css'; 
 import "@/assets/theme/index.css"
 import locale from 'element-ui/lib/locale/lang/en'
 Vue.use(element,{locale})

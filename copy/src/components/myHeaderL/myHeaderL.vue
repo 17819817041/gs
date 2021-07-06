@@ -282,7 +282,7 @@ export default {
                     this.$store.commit('getUser',val)
                 }
             },
-            immediate: true
+            // immediate: true
         },
     },
     computed: {
@@ -337,46 +337,47 @@ export default {
             this.$store.dispatch("getUser",this)
         },
         getImage (e) {
-            if (localStorage.getItem("platform") == 1) {
-                var formData = new FormData();
-                formData.append('file', e.target.files[0]);
-                file(formData).then(res => {
-                    if (res.data.rtnCode == 200) {
-                        this.userDetails.userImage = res.data.data
+            this.$router.push('/setting')
+            // if (localStorage.getItem("platform") == 1) {
+            //     var formData = new FormData();
+            //     formData.append('file', e.target.files[0]);
+            //     file(formData).then(res => {
+            //         if (res.data.rtnCode == 200) {
+            //             this.userDetails.userImage = res.data.data
                         
-                        updateUserDetails(this.userDetails).then(res => {
-                            if (res.data.rtnCode == 200) {
-                                this.getUser()
-                            } else {
+            //             updateUserDetails(this.userDetails).then(res => {
+            //                 if (res.data.rtnCode == 200) {
+            //                     this.getUser()
+            //                 } else {
                                 
-                            }
-                        }).catch(e => {
-                            console.log(e)
-                        })
-                    } else {
-                        this.userDetails = {}
-                    }
-                })
-            } else if (localStorage.getItem("platform") == 2) {
-                var formData = new FormData();
-                formData.append('file', e.target.files[0]);
-                file(formData).then(res => {
-                    if (res.data.rtnCode == 200) {
-                        this.userDetails.doctorImage = res.data.data
-                        this.userDetails.doctorName = "Beck"
-                        updateVetDetails(this.userDetails).then(res => {
-                            console.log(res,"更换医生头像",this.userDetails)
-                            if (res.data.rtnCode == 200) {
-                                this.getUser()
-                            }
-                        }).catch(e => {
-                            console.log(e)
-                        })
-                    } else {
-                        this.userDetails = {}
-                    }
-                })
-            }
+            //                 }
+            //             }).catch(e => {
+            //                 console.log(e)
+            //             })
+            //         } else {
+            //             this.userDetails = {}
+            //         }
+            //     })
+            // } else if (localStorage.getItem("platform") == 2) {
+            //     var formData = new FormData();
+            //     formData.append('file', e.target.files[0]);
+            //     file(formData).then(res => {
+            //         if (res.data.rtnCode == 200) {
+            //             this.userDetails.doctorImage = res.data.data
+            //             this.userDetails.doctorName = "Beck"
+            //             updateVetDetails(this.userDetails).then(res => {
+            //                 console.log(res,"更换医生头像",this.userDetails)
+            //                 if (res.data.rtnCode == 200) {
+            //                     this.getUser()
+            //                 }
+            //             }).catch(e => {
+            //                 console.log(e)
+            //             })
+            //         } else {
+            //             this.userDetails = {}
+            //         }
+            //     })
+            // }
         },
         test () {
             this.$router.push("/test")

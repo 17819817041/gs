@@ -105,15 +105,24 @@
                     
                     <div class="pet_img mg ju al">
                         <img :src="pet.image" alt="" v-if="pet.image">
-                        <i class="el-icon-picture-outline Icon" v-else></i>
+                        <i class="el-icon-picture-outline Icon" style="font-size: 40px;color:gray" v-else></i>
                     </div>
-                    <div class="pet_name size21 tc">{{pet.name}}</div>
+                    <div class="pet_name size21 tc" v-if="pet.name">{{pet.name}}</div>
+                    <div class="pet_name size21 tc" v-else>No Name</div>
                     <div class="details size12 tc">
                         <div>Pet ID : {{pet.id}}</div>
                         <div>Age : {{pet.age}}</div>
-                        <div>Breed : {{pet.breed}}</div>
+                        <div>Breed : {{breed}}</div>
+                        <!-- <div>Breed : {{
+                            options.find(op => op.petTypeId == pet.petTypeId)? 
+                            options.find(op => op.petTypeId == pet.petTypeId).petTypeName
+                            : ''
+                        }}</div> -->
                         <div>Sex :  <span v-if="pet.gender == 1">Male</span> <span v-else-if="pet.gender == 2">Female</span> </div>
-                        <div>Neutered status : {{pet.petJueYu}}</div>
+                        <div>Neutered status : 
+                            <span v-if="pet.petJueYue == 1">Sterilization</span> 
+                            <span v-else-if="pet.petJueYu == 2">Unneutered</span> 
+                        </div>
                         <div>Weight : {{pet.weight}}</div>
                     </div>
                     <div class="more_message size12 cursor" @click="petDetails">
@@ -151,13 +160,13 @@
 </template>
 
 <script>
-import { getUserPetForOne } from "@/axios/request.js"
+import { getUserPetForOne, petType } from "@/axios/request.js"
 export default {
     data () {
         return {
             petId:'0000001',
             age:"2 yrs S mo",
-            breed:'Husky',
+            breed:'',
             sex:"M",
             neuteredStatus:'None',
             weight: "33.5kg",
@@ -167,11 +176,13 @@ export default {
             rotate: false,
             pageNum: 1,
             timer: null,
-            pageSize: 100
+            pageSize: 100,
+            options: []
         }
     },
     created () {
         this.getPetList()
+        this.getPetType()
     },
     watch: {
         petList: {
@@ -183,7 +194,14 @@ export default {
                 // }
             },
             immediate: true
-        }
+        },
+        petId1: {
+            handler (val) {
+                if (val) {
+                    this.getPetType()
+                }
+            }
+        },
     },
     computed: {
         petList: {
@@ -194,6 +212,15 @@ export default {
                     value: val
                 })
             },
+        },
+        petId1: {
+            get () {return this.$store.state.user.petId},
+            // set (val) {
+            //     this.$store.commit("setUser", {
+            //         key: "petId",
+            //         value: val
+            //     })
+            // },
         },
         pet () { return this.$store.state.user.pet }
     },
@@ -216,6 +243,39 @@ export default {
                 pageSize: this.pageSize
             }
             this.$store.dispatch("getPetList",data)
+        },
+        getPetType () {
+            let data = {
+                userId: localStorage.getItem('userId'),
+                platform: localStorage.getItem('platform'),
+                token: localStorage.getItem('Token')
+            }
+            petType(data).then(res => {
+                console.log(res)
+                res.data.forEach(item => {
+                    item.children.forEach(child => {
+                        child.children = []
+                    })
+                })
+                this.options = res.data
+                this.TYPE()
+            })
+        },
+        TYPE () {
+            this.options.forEach(op => {
+                if (this.pet.petType == op.petTypeId) {
+                    this.breed = child.petTypeName
+                    console.log(child.petTypeName,656666666)
+                }
+                if (op.children) {
+                    op.children.forEach(child => {
+                        if (this.pet.petType == child.petTypeId) {
+                            console.log(child.petTypeName,656666666)
+                            this.breed = child.petTypeName
+                        }
+                    })
+                }
+            })
         },
         edit () {
             this.change = !this.change

@@ -68,16 +68,15 @@ export default [
                 component: () => import("@/view/conference/conference.vue")
             },
             {
-                path: "/agora",
-                name: "agora",
-                component: () => import("@/view/agora/agora.vue")
-            },
-            {
                 path: "/appointment",
                 name: "appointment",
                 component: () => import("@/view/appointment/appointment.vue")
             },
         ]
-    }
-    
+    },
+    {
+        path: "/agora",
+        name: "agora",
+        component: () => import("@/view/agora/agora.vue")
+    },
 ]

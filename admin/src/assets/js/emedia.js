@@ -13,12 +13,18 @@ emedia.mgr.onStreamAdded = function(member, stream) {
     // member：发布流人员的信息、stream：流信息
     // setTimeout(() => {
         if(!stream.located()) {
+            var dom = document.getElementsByClassName('mutual_video')[0]
+            console.log(dom)
+            var video = document.createElement('video')
+            video.classList.add('mutual_video_item')
+            video.autoplay = true
+            dom.appendChild(video)
             var option = {
                 member: member, 
                 stream: stream, 
                 subVideo: true,
                 subAudio: true,
-                videoTag: document.getElementById('video')
+                videoTag: video
             }
             emedia.mgr.subscribe(option.member, option.stream, option.subVideo, option.subAudio, option.videoTag)    
             console.log('----------------------------------远程',option.stream)

@@ -36,11 +36,14 @@
                             </label>
                             <!-- <div class="name al">{{userDetails.userName}}</div> -->
                             <div class="name white al">666</div>
+                            <div class="al">
+                                <img class="online_img cursor"  @click="Conference" src="@/assets/img/online.png" alt="">
+                            </div>
                         </div>
 
-                        <div class="sa" style="padding-left:14px;">
+                        <div class="sa">
                             <div class="informationImg cursor al">
-                                <img src="@/assets/img/information.png" alt="">
+                                <img src="@/assets/img/information1.png" alt="">
                             </div>
                             <div class="homeImg al cursor">
                                 <img src="@/assets/img/home.png" alt="">
@@ -100,8 +103,11 @@ export default {
         this.getUser()
     },
     methods: {
+        Conference () {
+            this.$router.push("/conference")
+        },
         getUser () {
-            this.$store.dispatch('getUser')
+            this.$store.dispatch('getUser',this)
         },
         logout () {
             console.log('login')
@@ -270,5 +276,9 @@ export default {
     }
     .myMessage {
         flex: 10;
+    }
+    .online_img {
+        height: 20px;
+        margin: 0 5px 0 10px;
     }
 </style>

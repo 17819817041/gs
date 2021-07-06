@@ -16,6 +16,11 @@
     }
     .chat_content {
         height: calc(100% - 120px);
+        padding: 5px 15px;
+        overflow: auto;
+    }
+    .msg_item_wrap {
+        height: 100%;
     }
     .inpMessage {
         padding: 5px 10px;
@@ -27,14 +32,14 @@
             position: absolute;
             left: 50%;
             top: 50%;
-            transform: translate(-50%,-50%);
-            width: 22px;
-            height: 26px;
+            transform: translate(-77%,-50%);
+            width: 19px;
+            height: 23px;
         }
     }
     .add img {
         height: 36px;
-        padding-left: 10px;
+        margin-left: 10px;
     }
     .Input {
         width: 100%;
@@ -53,6 +58,38 @@
             padding-left: 15px;
         }
     }
+    .msg_item {
+        padding: 5px 10px;
+        
+    }
+    .msg_child {
+        max-width: 80%;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+    .mySend {
+        background: #1976D2;
+        border-radius: 12px 12px 0px 12px;
+        padding: 3px 35px 30px 15px;
+        word-wrap: break-word;
+        color: white;
+    }
+    .theySend {
+        background: #EEEEEE;
+        border-radius: 0px 12px 12px 12px;
+        padding: 3px 35px 30px 15px;
+        word-wrap: break-word;
+    }
+    .adverse_img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 25px;
+        img {
+            height: 100%;
+        }
+    }
 </style>
 
 <template>
@@ -61,19 +98,25 @@
             <div class="chat_img"><img src="@/assets/img/chatLogo.png" alt=""></div>
             <h2>Chat with Admin</h2>
         </div>
-        <div class="chat_content" ref="Cus">
-
+        <div class="chat_content noBar" ref="Cus">
+            <div class="msg_item_wrap">
+                <div v-for="(item,i) in adminList['admin'].messageList" :key="i" :class="[{ 'flexEnd':item.type == 1 }]">
+                    <div :class="['msg_child', { mySend: item.type == 1 }, 
+                        { theySend: item.type == 2 },]"
+                    >{{item.value}}</div>
+                </div>
+            </div>
         </div>
         <div class="inpMessage al">
             <div class="Input al">
-                <input type="text" class="width100" placeholder="Type a message" @keydown.enter="Esend">
+                <input type="text" v-model="customerInp" class="width100" placeholder="Type a message" @keydown.enter="send">
             </div>
             <div class="add al">
                 <img class="cursor" src="@/assets/img/clip.png" alt="">
             </div>
             <div class="add al">
                 <img class="cursor" @click="send" src="@/assets/img/Ball.png" alt="">
-                <img class="arrowon" @click="send" src="@/assets/img/arrowon.png" alt="">
+                <img class="arrowon cursor" @click="send" src="@/assets/img/arrowon.png" alt="">
             </div>
         </div>
     </div>
@@ -83,47 +126,101 @@
 export default {
     data () {
         return {
-
+            customerInp: ''
         }
     },
     created () {
-
+        
     },
     mounted () {
-
+      this.initRecord()  
+    },
+    watch: {
+        adminList: {
+            handler (val) {
+                if (val) {
+                    this.adminList = val
+                    this.saveRecord(val)
+                }
+            },
+            deep: true
+            // immediate: true
+        }
+    },
+    computed: {
+        adminList: {
+            get () { return this.$store.state.user.adminList },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "adminList",
+                    value: val
+                })
+            },
+        },
+        userDetail () {return this.$store.state.user.userDetail}
     },
     methods: {
-        send () {
-            console.log(123)
+        saveRecord (val) {
+            this.$nextTick(() => {
+                this.$refs.Cus.scrollTop = 10000
+            })
+            // this.adminList = val
         },
-        Esend () {
-            console.log(666)
-        },
-        createdCustomerMessage () {                 //客户输入内容并且发送
-            var name = document.createElement('div')
-            var msg = document.createElement("span")
-            name.innerHTML = this.userDetailMessage.userName
-            name.style.margin = 'auto'
-            name.style.width = '95%'
-            name.style.textAlign = 'end'
-            name.style.transform = `rotateY(${ 180 + 'deg'})`
-            
-            msg.innerHTML = this.customerInp
-            msg.style.background = "rgb(47,187,240)"
-            msg.style.borderRadius = '12px 12px 0px 12px'
-            msg.style.padding = '3px 10px'
-            msg.style.marginLeft = "10px"
-            msg.style.display = 'inline-block'
-            msg.style.transform = `rotateY(${ 180 + 'deg' })`
-            
-            this.$refs.Cus.appendChild(name)
-            this.$refs.Cus.appendChild(msg)
-            if (msg.offsetWidth >= 350) {
-                msg.style.display = 'inline-block'
-                msg.style.width = '80%'
-                msg.style.wordBreak = 'break-word';
+        initRecord () {
+            if (localStorage.getItem('adminList')) {
+                this.adminList = JSON.parse(localStorage.getItem('adminList'))
+                this.$nextTick(() => {
+                    this.$refs.Cus.scrollTop = 10000
+                })
             }
         },
+        send () {
+            if (this.customerInp) {
+                this.adminList['admin'].messageList.push({
+                    type: 1,
+                    value: this.customerInp
+                })
+                let data = {
+                    type: "needHelp",
+                    value: this.customerInp,
+                    key: this.userDetail,
+                    platform: localStorage.getItem('platform')
+                }
+                let id = this.$conn.getUniqueId();                 // 生成本地消息id
+                let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+                msg.set({
+                    msg: JSON.stringify(data),                // 消息内容
+                    to: 'admin',     
+                    // to: '322_2',                     // 接收消息对象（用户id）
+                    chatType: 'singleChat',                  // 设置为单聊    
+                    ext: {
+                        
+                    },                    
+                    success: function (id, serverMsgId) {
+                        console.log('send private text Success',id,serverMsgId);  
+                    }, 
+                    fail: function(e){
+                        console.log(e)
+                        // 失败原因:
+                        // e.type === '603' 被禁言
+                        // e.type === '605' 群组不存在
+                        // e.type === '602' 不在群组或聊天室中
+                        // e.type === '504' 撤回消息时超出撤回时间
+                        // e.type === '505' 未开通消息撤回
+                        // e.type === '506' 没有在群组或聊天室白名单
+                        // e.type === '503' 未知错误
+                        console.log("Send private text error");  
+                    }
+                });
+                this.$conn.send(msg.body);
+                this.$nextTick(() => {
+                    this.$refs.Cus.scrollTop = 10000
+                })
+                this.customerInp = ''
+            } else {
+
+            }
+        }
     }
 }
 </script>

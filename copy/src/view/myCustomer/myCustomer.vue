@@ -1,5 +1,5 @@
 <template>
-    <div class="myCustomer flex">
+    <div class="myCustomer flex" v-loading="!loading">
         <div class="animal">
             <div class="wrap noBar clear">
                 <!-- <div class="wrap_item ju float cursor"  @click="toPatients">
@@ -12,7 +12,7 @@
                         </div>
                     </div>
                 </div> -->
-                <div class="wrap_item float" v-for="(item,i) in List" :key="item.id"   @click="toPatients(item,i)">
+                <div class="wrap_item float" v-for="(item) in List" :key="item.id" @click="toPatients(item)">
                     <div class="flex al">
                         <div class="ju al Personal">
                             <img class="personal_img" style="height:100%;" v-if="item.image" :src="item.image" alt="">
@@ -48,28 +48,36 @@
                             <div class="size19">Pet Details</div>
                         </div>
                         <div class="ju mg al PET_IMG">
-                            <img class="Img" :src="changePage.image" alt="" v-if="changePage.image">
+                            <img class="Img" :src="petAndUser.petHeadUrl" alt="" v-if="petAndUser.petHeadUrl">
                             <i class=" el-icon-picture-outline Icon" style="font-size:60px;color:gray;" v-else></i>
                         </div>
                         <div class="pet_information">
-                            <div class="pet_name size19" v-if="changePage.name">{{changePage.name}}</div>
+                            <div class="pet_name size19" v-if="petAndUser.petName">{{petAndUser.petName}}</div>
                             <div class="pet_name size19" v-else>None</div>
-                            <div class="size15bl">Pet ID : {{changePage.id}}</div>
-                            <div class="size15bl">Age : {{changePage.age}}</div>
-                            <div class="size15bl">Sex : {{changePage.gender}}</div>
-                            <div class="size15bl">neutered status : None</div>
-                            <div class="size15bl">Weight : {{changePage.weight}}kg</div>
+                            <div class="size15bl">Pet ID : {{petAndUser.petId}}</div>
+                            <div class="size15bl">Age : {{petAndUser.petAge}}</div>
+                            <div class="size15bl">Sex : {{petAndUser.petGenderName}}</div>
+                            <div class="size15bl">neutered status : 
+                                <span v-if="petAndUser.neuteredState == 1">Sterilization</span> 
+                                <span v-else-if="petAndUser.neuteredState == 2">Unneutered</span> 
+                            </div>
+                            <div class="size15bl">Weight : {{petAndUser.petWeight}}kg</div>
                         </div>
-                        <div class="petMore te cursor"><span>More...</span></div>
+                        <!-- <div class="petMore te cursor"><span>More...</span></div> -->
                     </div>
                 </div>
                 <div>
                     <div class="guardianDetails mg size19">Guardian Details</div>
-                    <div class="ju"><img class="patients_img" src="@/assets/img/customerHead1.png" alt=""></div>
-                    <div class="size19 tc personal_name">Betty Wong</div>
+                    <div class="ju al patients_img_wrap mg">
+                        <img class="patients_img" v-if="petAndUser.userHead" :src="petAndUser.userHead" alt="">
+                        <i class=" el-icon-picture-outline Icon" style="font-size:40px;color:gray;" v-else></i>
+                    </div>
+                    <div class="size19 tc personal_name">{{petAndUser.userName}}</div>
                     <div class="address ju">
-                        <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
-                        <div class="size13">Chai Wan, Hong Kong</div>
+                        <div>
+                            <img class="address_img" src="@/assets/img/location.png" alt="">
+                        </div>
+                        <div class="size13">{{petAndUser.address}}</div>
                     </div>
                     <div class="ju">
                         <div><img class="relationWay cursor" src="@/assets/img/chat.png" alt=""></div>
@@ -78,15 +86,15 @@
                     <div class="message_list size15bl">
                         <div style="width:100%" class="flex al ts">
                             <div class="const">User ID</div>
-                            <div class="event">666</div>
+                            <div class="event">{{petAndUser.userId}}</div>
                         </div>
                         <div style="width:100%" class="flex al ts">
                             <div class="const">Name</div>
-                            <div class="event">Tom</div>
+                            <div class="event">{{petAndUser.userName}}</div>
                         </div>
                         <div style="width:100%" class="flex al ts">
                             <div class="const">Age</div>
-                            <div class="event">21</div>
+                            <div class="event">{{petAndUser.age}}</div>
                         </div>
                         <div style="width:100%" class="flex al ts">
                             <div class="const">Location</div>
@@ -94,10 +102,10 @@
                         </div>
                         <div style="width:100%" class="flex al ts">
                             <div class="const">Mobile</div>
-                            <div class="event">12138</div>
+                            <div class="event">{{petAndUser.moble}}</div>
                         </div>
                     </div>
-                    <div class="personMore mg te cursor"><span>More...</span></div>
+                    <div class="personMore mg te cursor"><span @click="moreDetail">More...</span></div>
                 </div>
             </div>
         </div>
@@ -105,25 +113,15 @@
 </template>
 
 <script>
+import { getUserByPetId } from "@/axios/request.js"
 export default {
     data () {
         return {
-            // client:null,
-            // localTracks : {
-            //     videoTrack: null,
-            //     audioTrack: null
-            // },
-            // remoteUsers : {},
-            // options: {
-            //     appid: '0bc95e1145da4b729993725eb55b319a',
-            //     channel: '654',
-            //     uid: 888,
-            //     token: '0060bc95e1145da4b729993725eb55b319aIABktH+02bSfhRnt1IbqwSWGHtt2CLSt2SYNHo683uu1BjN2IlwAAAAAEAD/3NMfIxqyYAEAAQAjGrJg'
-            // },
             List: {},
             pageNum: 0,
             pageSize: 100,
-            changePage: {}
+            changePage: {},
+            petAndUser: {},
         }
     },
     mounted () {
@@ -155,73 +153,34 @@ export default {
                     value: val
                 })
             },
-        }
+        },
+        loading () { return this.$store.state.user.loading },
     },
     methods: {
-        toPatients (item,i) {
-            if (i == 0) {
-                this.$router.push("/patients")
+        getUserByPetId (id) {
+            let data = {
+                petId: id
             }
-            this.changePage = item
-            console.log(this.changePage)
+            getUserByPetId(data).then(res => {
+                console.log(res,'petAndUser')
+                if (res.data.rtnCode == 200) {
+                    this.petAndUser = res.data.data
+                }
+            }).catch(e => {
+                console.log(e)
+            })
         },
+        toPatients (item,i) {
+            this.changePage = item
+            this.getUserByPetId(item.id)
+        },
+        moreDetail () {
+            if (this.changePage.id) {
+                this.$router.push("/patients?id=" + this.petAndUser.id)
+            } else {
 
-
-
-
-
-
-
-        // createClient () {
-        //     this.client = this.$V.createClient({  //进入页面自动调用 mounted
-        //         mode: "rtc",
-        //         codec: "vp8"
-        //     })
-        //     this.client.on("user-published", this.handleUserPublished);    //点击join触发
-        // },
-        // handleUserPublished (user, mediaType) {
-        //     console.log(1233333, user.uid, mediaType)
-        //     const id = user.uid;
-        //     this.remoteUsers[id] = user;
-        //     this.subscribe(user, mediaType);
-        // },
-        // async subscribe (user, mediaType) {
-        //     const uid = user.uid;
-        //     await this.client.subscribe(user, mediaType);
-        //     if (mediaType === 'video') {
-        //         console.log("subscribe success" , uid, this.client.uid);
-        //         user.videoTrack.play(`player2`);
-        //     }
-        //     if (mediaType === 'audio') {
-        //         user.audioTrack.play();
-        //     }
-        // },
-        // async join () {
-        //     [ this.options.uid, this.localTracks.audioTrack, this.localTracks.videoTrack ] = await Promise.all([
-        //         // join the channel
-        //         this.client.join(this.options.appid, this.options.channel, this.options.token || null),
-        //         // create local tracks, using microphone and camera
-        //         this.$V.createMicrophoneAudioTrack(),
-        //         this.$V.createCameraVideoTrack()
-        //     ]);
-        //     this.localTracks.videoTrack.play("player1");
-        //     await this.client.publish(Object.values(this.localTracks));
-        //     console.log("publish success");
-        // },
-        // async leave() {
-        //     for (var trackName in this.localTracks) {
-        //         var track = this.localTracks[trackName];
-        //         if(track) {
-        //             track.stop();
-        //             track.close();
-        //             this.localTracks[trackName] = undefined;
-        //         }
-        //     }
-        //     // remove remote users and player views
-        //     this.remoteUsers = {};
-        //     // leave the channel
-        //     await this.client.leave();
-        // }
+            }
+        }
     }
 }
 </script>
@@ -280,6 +239,14 @@ export default {
         //     width: 80%;
         //     margin: 0 3.5% 5px 8.5%;
         // }
+    }
+    .patients_img_wrap {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-top: 5px;
+        border: solid 1px rgb(211, 208, 208);
     }
     .Personal {
         width: 65px;
@@ -345,7 +312,7 @@ export default {
         font-size: 15px;
     }
     .patients_img {
-        margin-top: 5px;
+        height: 100%;
     }
     .message_list {
         width: 65%;

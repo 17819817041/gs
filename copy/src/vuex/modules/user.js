@@ -1,4 +1,4 @@
-import { petList, getUserDetails, vetDetails, doctorList, login, bookingUserId } from "@/axios/request.js"
+import { petList, getUserDetails, vetDetails, doctorList, login, bookingUserId,notice } from "@/axios/request.js"
 import router from "@/router/router/router.js"
 import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 import Vue from "vue"
@@ -8,6 +8,7 @@ export default {
         login: false,
         petList:[],
         pet: {},
+        petId: null,
         doctorList: [],
         searchList: [],
         loading: false,
@@ -31,7 +32,16 @@ export default {
         callerIM: '',
         messageList: [],
         totalRecordsCount: 0,
-        noticeState: false
+        noticeState: false,
+        vetNoticeList: [],
+        adminList: {
+            'admin': {
+                messageList: [
+                    // { type: 1, value: "12123" },
+                    // { type: 2, value: "12123" },
+                ]
+            }
+        }
     },
     mutations: {
         setUser (state,data) {
@@ -54,10 +64,9 @@ export default {
                     }
                     store.commit("setUser",{ key: "petList", value: [] })
                 } else if (res.data.rtnCode == 200) {
-                    // if (localStorage.getItem('platform') == 1) {
-                    //     router.push('/customerhomepage')
-                    // }
                     store.commit("setUser",{ key: "pet", value: res.data.data.pageT[store.state.firstPet] })
+                    store.commit("setUser",{ key: "petId", value: res.data.data.pageT[0].id })
+                    store.commit("setUser",{ key: "loading", value: true })
                     res.data.data.pageT.forEach(item => {
                         item.change = true
                         if (item.age) {
@@ -89,7 +98,7 @@ export default {
                         store.dispatch("IMLogin")
                         store.commit("setUser",{ key: "login", value: true })
                     } else if (res.data.rtnCode == 500) {
-                        store.commit("setUser",{ key: "login", value: true })
+                        store.commit("setUser",{ key: "login", value: false })
                         localStorage.removeItem("Token")
                         localStorage.removeItem("userId")
                         localStorage.removeItem("paltform")
@@ -104,7 +113,14 @@ export default {
                     }
                 }).catch(e => {
                     console.log(e)
+                    localStorage.removeItem("Token")
+                    localStorage.removeItem("userId")
+                    localStorage.removeItem("paltform")
+                    localStorage.removeItem("IMtoken")
+                    localStorage.removeItem('IM')
+                    vm.$message.error('Login expired, please log in again !');
                     store.commit("setUser",{ key: "login", value: false }) 
+                    router.replace('/login')
                 })
             } else if (localStorage.getItem("platform") == 2) {
                 var data = {
@@ -210,12 +226,13 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
+                        vm.$message.error('Fail to load !');
                     }
                 }).catch(e => {
                     console.log(e)
                     store.commit("setUser",{ key: "loading", value: false })
                     store.commit("setUser",{ key: "doctorList", value: [] })
-                    vm.$message.error('Fail to load !');
+                    
                 })
             }
             
@@ -241,6 +258,45 @@ export default {
                     store.commit("setUser",{ key: "userBooking", value: res.data.data })
                 }
             })
-        }
+        },
+        getNoticeList (store,page) {
+            let data = {
+                userId: localStorage.getItem('userId'),
+                pageNum: page.pageNum,
+                pageSize: page.pageSize
+            }
+            notice(data).then(res => {
+                console.log(res,'notice')
+                if (res.data.rtnCode == 200) {
+                    store.state.vetNoticeList = res.data.data.pageT
+                    res.data.data.pageT.forEach(item => {
+                        var time = item.createdAt
+                        let a = time.split(' ')[0]
+                        let b = time.split(' ')[1]
+                        // let En = new Date(a).toDateString()
+                        // let arr = En.split(' ')
+                        // let bb = b.split(':')
+                        // item.createdAt = arr[2] + ' ' + arr[1] + ','+ arr[3] + ' ' + bb[0] + ':' + bb[1]
+                        let arr = a.split('-').join('/')
+                        let bb = b.split(':')
+                        item.createdAt = arr + ' ' + bb[0] + ':' + bb[1]
+
+                        if (item.noticeState == 2) {
+                            store.commit('setUser', {  
+                                key: 'noticeState',
+                                value: true
+                            })
+                        } else {
+                            store.commit('setUser',{
+                                key: 'noticeState',
+                                value: false
+                            })
+                        }
+                    })
+                } else if (res.data.rtnCode == 201) {
+                    store.state.vetNoticeList = null
+                }
+            })
+        },
     }
 }

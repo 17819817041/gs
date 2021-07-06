@@ -449,7 +449,7 @@ export default {
     .aboutUs {
         width: 80%;
         margin: auto;
-        padding-top: 40px;
+        padding-top: 10px;
         .child {
             padding: 10px 0;
         }

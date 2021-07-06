@@ -164,9 +164,9 @@
             padding: 20px;
         }
         .card {
-            // width: 65%;
-            flex: 10;
-            padding: 20px;
+            width: 70%;
+            min-height: 250px;
+            padding: 20px 130px 20px 130px;
             border-radius: 12px;
             box-shadow: 0 2px 2px 2px #e7e4e4;
             margin-left: 25px;
@@ -258,6 +258,95 @@
             padding: 6px;
         }
     }
+    .select_way {
+        width: 180px;
+        border: solid 1px rgb(201, 198, 198);
+        border-radius: 12px;
+        overflow: hidden;
+        margin: 15px 0;
+    }
+    .p_select {
+        margin-left: 7px;
+    }
+    .show_detail {
+        border-radius: 12px;
+        width: 200px;
+        height: 170px;
+        box-shadow: 0 3px 3px 0px rgb(214, 214, 214);
+        border: solid 1px rgb(185, 175, 175);
+    }
+    .w_way {
+        flex: 10;
+    }
+    .card_inp {
+        margin: 25px 0;
+        div {
+            width: 48%;
+            // height: 40px;
+            min-width: 200px;
+            padding: 0 10px;
+            margin: 0 0px 15px 0;
+            border: solid 1px gray;
+            border-radius: 12px;
+        }
+    }
+    .p_title {
+        color: @logout;
+        font-size: 17px;
+        margin-left: 7px;
+    }
+    .p_title1 {
+        color: @logout;
+        font-size: 17px;
+        margin-left: 7px;
+        padding: 10px 0;
+    }
+    .pay_btn {
+        // width: 70%;
+        border-radius: 12px;
+        // margin-top: 100px;
+        background: #F7B030;
+        padding: 10px;
+    }
+    .Alipay, .WeChatPay {
+        width: 230px;
+        height: 210px;
+        border: solid 1px rgb(197, 197, 197);
+        box-shadow: 0 1px 1px 0 gray;
+        border-radius: 13px;
+        margin-top: 15px;
+    }
+    .way_item {
+        flex: 10;
+    }
+    .switch {
+        height: 50px;
+        border-radius: 12px;
+        position: relative;
+        z-index: 100;
+    }
+    .paypal_img {
+        padding: 7px 20px 7px 20px;
+        transition: 0.1s;
+    }
+    .paypal_img:hover {
+        background: rgb(240, 240, 240);
+    }
+    // .paypal_wrap {
+    //     transform: translate(0px, -50px);
+    // }
+    .bottom_c {
+        border-bottom: solid 3px rgb(54, 54, 54) !important;
+    }
+    .ali_title, .weChat_title {
+        padding: 25px 0;
+    }
+
+
+    .PAY {
+        border: solid 1px;
+        padding: 5px 10px;
+    }
 </style>
 
 <template>
@@ -332,9 +421,12 @@
                                             </select>
                                         </div>  
                                         <div v-if="editBtn">{{user.userChoiceDoctor}} <span style="color:white">-</span> </div> <!-- null -->
-                                        <div v-else class="inp"><input type="text" v-model="user.userChoiceDoctor"></div>
+                                        <div v-else class="inp al"><input type="text" v-model="user.userChoiceDoctor"></div>
 
-                                        <div v-if="editBtn">{{user.extend}}-</div>
+                                        <div v-if="editBtn">
+                                            <span v-if="user.extend">{{user.extend}}</span>
+                                            <span v-else-if="user.extend === null">No remark</span>
+                                        </div>
                                         <div v-else style="color:white">-</div>
                                     </div>
                                 </div>
@@ -342,13 +434,13 @@
                                     <el-button class="width100 cursor btnColor" type="primary" :loading="loading">Reset Password</el-button>
                                 </div>
                                 <div v-else class="Remark">
-                                    <textarea name="" id="" cols="30" rows="10"></textarea>
+                                    <textarea name="" id="" cols="30" rows="10" v-model="user.extend"></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="payment mg">
+                <div class="payment mg" v-show="false">
                     <div class="payment_item mg">
                         <div class="payment_title ju bold al">
                             <img src="@/assets/img/account.png" alt="">
@@ -356,7 +448,10 @@
                         </div>      
                         <div class="sa payment_wrap mg">
                             <div class="balance">
-                                <div class="tc balance_title">My Balance</div>
+                                <div class="tc p_title flex" style="height: 115px;">
+                                    <div class="ju"><img style="height: 95px;margin-right: 20px" src="@/assets/img/logo.png" alt=""></div>
+                                    <div style="line-height: 172px"> My Balance</div>
+                                </div>
                                 <div class="HK mg ju">
                                     <div class="hk">$</div>
                                     <div class="balance_show">{{payment}}</div>
@@ -369,17 +464,109 @@
                                 </div>
                             </div>
                             <div class="card">
-                                <div class="sb balance_title">
-                                    <div>Saved Cards</div>
-                                    <div>+ Add New</div>
+                                <div class="switch flexEnd">
+                                    <div class="flex">
+                                        <div :class="['paypal_img', { bottom_c: type_pay == 1 }]"><img class="cursor" @click="type_pay = 1" src="@/assets/img/Paypal.png" alt=""></div>
+                                        <div :class="['paypal_img', { bottom_c: type_pay == 2 }]"><img class="cursor" @click="type_pay = 2" src="@/assets/img/stripe.png" alt=""></div>
+                                        <div :class="['paypal_img', { bottom_c: type_pay == 3 }]">
+                                            <div class="cursor" @click="type_pay = 3">
+                                                <img src="@/assets/img/chatpay.png" alt=""> 
+                                                <img style="margin-left:5px" src="@/assets/img/alipay.png" alt=""> 
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card_img">
-                                    <img src="@/assets/img/cardimg.png" alt="">
+                                <div class="flex paypal_wrap">
+                                    <div class="balance_title w_way" v-show="type_pay == 1">
+                                        <div class="way_item">
+                                            <div class="p_title">Credit cars details</div>
+                                            <div class="clear card_inp">
+                                                <div class="float" id="cardNumber"></div>
+                                                <div class="float" style="margin-left:4%" id="cardExpiry"></div>
+                                                <div class="float" id="cardCvc"></div>
+                                            </div>
+                                        </div>
+                                        <div class="pay_btn white tc mg cursor" @click="submit">
+                                            Pay
+                                        </div>
+                                        <div class=" tc bold ju al" style="margin-top: 12px;font-size:12px;color:black">
+                                            <img style="width:20px;" src="@/assets/img/lock.png" alt="">
+                                            Card details will be saved securely,based of the industry standard
+                                        </div>
+                                    </div>  
+                                    <div style="width:100%" v-show="type_pay == 2">
+                                        <div class="p_title" style="padding: 25px 0;">Paypal details</div>
+                                        <div id="paypal-button-container"></div>
+                                    </div>
+                                    <div v-show="type_pay == 3" class="sa way_item">
+                                        <div>
+                                            <div class="p_title ali_title">Alipay or WeChat Pay details</div>
+                                            <div class="Alipay">
+
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class=" weChat_title white">-</div>
+                                            <div class="WeChatPay">
+
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div>
 
+                        </div>
+                    </div>
+                </div>
+                <div class="payment mg">
+                    <div class="payment_item mg">
+                        <div class="payment_title ju bold al">
+                            <img src="@/assets/img/account.png" alt="">
+                            Payment
+                        </div>      
+                        <div class="sa payment_wrap mg">
+                            <div class="balance">
+                                <div class="tc ju p_title flex">
+                                    <!-- <div class="ju"><img style="height: 95px;margin-right: 20px" src="@/assets/img/logo.png" alt=""></div> -->
+                                    <div> My Balance</div>
+                                </div>
+                                <div class="HK mg ju">
+                                    <div class="hk">$</div>
+                                    <div class="balance_show">{{payment}}</div>
+                                    <div class="hk">HKD</div>
+                                </div>
+                                <div class="active_current mg">is your current balance</div>
+                                <div class="drawal sb mg">
+                                    <div class="drawal_btn tc cursor">Withdrawal</div>
+                                    <div class="top_up tc cursor">Top Up</div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="switch flexEnd">
+                                    <div class="flex">
+                                        <div :class="['paypal_img cursor', { bottom_c: type_pay == 5 }]" @click="type_pay = 5">
+                                            <img src="@/assets/img/Paypal.png" alt="">
+                                        </div>
+                                        <div :class="['paypal_img cursor', { bottom_c: type_pay == 2 }]" @click="type_pay = 2">
+                                            <img src="@/assets/img/stripe.png" alt="">
+                                        </div>
+                                        <div :class="['paypal_img cursor', { bottom_c: type_pay == 3 }]" @click="type_pay = 3">
+                                            <img src="@/assets/img/alipay.png" alt="">
+                                        </div>
+                                        <div :class="['paypal_img cursor', { bottom_c: type_pay == 4 }]" @click="type_pay = 4">
+                                            <img src="@/assets/img/chatpay.png" alt=""> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex paypal_wrap">
+                                    <div class="PAY" @click="pay_p">
+                                        $100
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -389,10 +576,11 @@
 </template>
 
 <script>
-import { getUserDetails, updateUserDetails, file } from "@/axios/request.js"
+import { pay, updateUserDetails, file } from "@/axios/request.js"
 export default {
     data () {
         return {
+            value: 'Bank card',
             load: false,
             loading:false,
             editBtn: true,
@@ -405,6 +593,7 @@ export default {
             stripe:'',
             payment: 8504,
             user:{},
+            type_pay: 5
         }
     },
     watch: {
@@ -416,7 +605,6 @@ export default {
         },
     },
     created () {
-        // this.getStripe()
         // let star = localStorage.getItem("starTime")
         // let end = localStorage.getItem("endTime")
         let star = Date.now()
@@ -424,8 +612,11 @@ export default {
         let check = end - star
         this.payment = this.payment - check/1000
         this.payment = this.payment.toLocaleString()
-        // console.log(this.payment.toLocaleString())
         
+    },
+    mounted () {
+        this.getStripe()
+        // this.paypal()
     },
     computed: {
         AllDetail: {
@@ -439,6 +630,51 @@ export default {
         },
     },
     methods: {
+        pay_p () {
+            var stripe = Stripe("pk_test_51J3CWvILx2JTyAxM0WSRmJP9b9dXD4bZ6f2lwpx2BWJU2c2AXFBSuX3irI5nFGU3Xd5kyB3np1IBkbEH8ebhDbEh00wLNKvYbN"); //测试
+            // var userId = localStorage.getItem('userId');
+            var userId = 313;
+            //用户信息
+            var orderTypeId = 4;
+            //用户信息
+            var goodsId = 9;
+            //paymentTypeId  1账户余额 2信用卡 3支付宝 4微信 5paypal
+            var paymentTypeId = this.type_pay;
+
+            let data = {
+                userId,
+                orderTypeId,
+                goodsId,
+                paymentTypeId
+            }
+            pay(data).then(res => {
+                stripe.redirectToCheckout({ sessionId: res.data.id });
+            }).catch(e => {
+                console.log(e,666)
+            })
+        },
+        paypal () {
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                // This function sets up the details of the transaction, including the amount and line item details.
+                return actions.order.create({
+                    purchase_units: [{
+                    amount: {
+                        value: '0.01'
+                    }
+                    }]
+                });
+                },
+                onApprove: function(data, actions) {
+                // This function captures the funds from the transaction.
+                return actions.order.capture().then(function(details) {
+                    // This function shows a transaction success message to your buyer.
+                    // alert('Transaction completed by ' + details.payer.name.given_name);
+                    console.log(details)
+                });
+                }
+            }).render('#paypal-button-container');
+        },
         getGender (val) {
             this.user.userGender = val.target.value
         },

@@ -321,3 +321,11 @@ export function getUserByPetId (data) {            //宠物id获取客户?petId=
         params: data
     })
 }
+
+export function pay (data) {            
+    return request({
+        url: "/stripe/create-checkout-session",
+        method: "POST",
+        params: data
+    })
+}

@@ -85,32 +85,24 @@
 </template>
 
 <script>
-import { notice, updateNoticeState } from "@/axios/request.js"
+import { updateNoticeState } from "@/axios/request.js"
 export default {
     data () {
         return {
-            vetNoticeList: [],
             active: true,
-            noticeList: [],
-            pageNum: 1,
-            pageSize: 10,
+            noticeList: []
         }
     },
     created () {
         this.message()
-        this.getNoticeList()
-        // let arr = [
-        //     {a: false},
-        //     {a: false},
-        //     {a: false},
-        // ]
-        // arr.forEach(item=> {
-        //     if (item.a == true) {
-        //         console.log('true')
-        //     } else {
-        //         console.log('false')
-        //     }
-        // })
+    },
+    computed: {
+        vetNoticeList: {
+            get () { return this.$store.state.user.vetNoticeList },
+            set (val) {
+                this.vetNoticeList = val
+            }
+        }
     },
     methods: {
         message () {
@@ -118,46 +110,7 @@ export default {
                 this.active = false
             }
         },
-        getNoticeList () {
-            let data = {
-                userId: localStorage.getItem('userId'),
-                pageNum: this.pageNum,
-                pageSize: this.pageSize
-            }
-            notice(data).then(res => {
-                console.log(res,'notice')
-                if (res.data.rtnCode == 200) {
-                    this.vetNoticeList = res.data.data.pageT
-                    res.data.data.pageT.forEach(item => {
-                        var time = item.createdAt
-                        let a = time.split(' ')[0]
-                        let b = time.split(' ')[1]
-                        // let En = new Date(a).toDateString()
-                        // let arr = En.split(' ')
-                        // let bb = b.split(':')
-                        // item.createdAt = arr[2] + ' ' + arr[1] + ','+ arr[3] + ' ' + bb[0] + ':' + bb[1]
-                        
-                        let arr = a.split('-').join('/')
-                        let bb = b.split(':')
-                        item.createdAt = arr + ' ' + bb[0] + ':' + bb[1]
-
-                        if (item.noticeState == 2) {
-                            this.$store.commit('setUser', {  
-                                key: 'noticeState',
-                                value: true
-                            })
-                        } else {
-                            this.$store.commit('setUser',{
-                                key: 'noticeState',
-                                value: false
-                            })
-                        }
-                    })
-                } else if (res.data.rtnCode == 201) {
-                    this.vetNoticeList = null
-                }
-            })
-        },
+        
         checkNotice (item) {
             if (item.noticeType == 1) {
                 let data = {
@@ -165,6 +118,13 @@ export default {
                 }
                 updateNoticeState(data).then(res => {
                     console.log(res)
+                    let that = this
+                    let page = {
+                        vm: that,
+                        pageNum: 1,
+                        pageSize: 100
+                    }
+                    this.$store.dispatch('getNoticeList', page)
                 })
                 this.$router.push('/appointment')
             }

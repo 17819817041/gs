@@ -171,6 +171,8 @@ export default {
         cutPet (item,i) {
             this.firstPet = i
             this.$store.commit("setUser", { key: "pet",value: item })
+            this.$store.commit("setUser", { key: "petId",value: item.id })
+            this.rotate = !this.rotate
             this.show = false
         },
         scroll (val) {

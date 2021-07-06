@@ -285,7 +285,6 @@
                                     : ''
                                 }}</div>
                                 <div class="editInp al" v-else>
-                                    <!-- <el-cascader class="width100" :options="options" @change="cascader" placeholder="pet Type"></el-cascader> -->
                                     <el-select @change="selectType($event,i)" v-model="item.petTypeParentId">
                                         <el-option v-for="(op) in options" :value="op.petTypeId" :key="op.petTypeId" :label="op.petTypeName"></el-option>
                                     </el-select>
@@ -303,7 +302,7 @@
                                     }}</div>
                                 </div>
                                 <div class="editInp al" v-else>
-                                    <el-select v-model="item.petType">
+                                    <el-select v-model="item.breed">
                                         <el-option v-for="(breed,i) in item.breedList? item.breedList:[]" :key="i" 
                                         :label="breed.petTypeName"
                                         :value="breed.petTypeId"></el-option>
@@ -429,6 +428,13 @@ export default {
             },
             immediate: true
         },
+        petId: {
+            handler (val) {
+                if (val) {
+                    this.getPetType()
+                }
+            }
+        },
         firstPet: {
             handler (val) {
                 this.petLists = JSON.parse(JSON.stringify(this.petList))
@@ -446,6 +452,15 @@ export default {
                     value: val
                 })
             },
+        },
+        petId: {
+            get () {return this.$store.state.user.petId},
+            // set (val) {
+            //     this.$store.commit("setUser", {
+            //         key: "petId",
+            //         value: val
+            //     })
+            // },
         },
         petTypeList () { return this.$store.state.user.petType },
         firstPet () { return this.$store.state.user.firstPet },
