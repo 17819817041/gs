@@ -106,7 +106,7 @@
                             <div class="event">{{changePage.Mobile}}</div>
                         </div>
                     </div>
-                    <div class="personMore"><span class="cursor">More...</span></div>
+                    <div class="personMore"><span class="cursor" @click="pet_user_d">More...</span></div>
                 </div>
             </div>
         </div>
@@ -131,11 +131,9 @@ export default {
             //     token: '0060bc95e1145da4b729993725eb55b319aIABktH+02bSfhRnt1IbqwSWGHtt2CLSt2SYNHo683uu1BjN2IlwAAAAAEAD/3NMfIxqyYAEAAQAjGrJg'
             // },
             // List: {},
-            petList: [],
             pageNum: 1,
             pageSize: 100,
             changePage: {},
-            loading: true
         }
     },
     mounted () {
@@ -143,25 +141,27 @@ export default {
     },
     created () {
         this.getPetLists()
+        
     },
     watch: {
         // petList: {
         //     handler (val) {
-        //         this.List = JSON.parse(JSON.stringify(this.petList))
+
         //     },
         //     immediate: true
         // }
     },
     computed: {
-        // petList: {
-        //     get () {return this.$store.state.user.petList},
-        //     set (val) {
-        //         this.$store.commit("setUser", {
-        //             key: "petList",
-        //             value: val
-        //         })
-        //     },
-        // }
+        petList: {
+            get () {return this.$store.state.user.petList},
+            // set (val) {
+            //     this.$store.commit("setUser", {
+            //         key: "petList",
+            //         value: val
+            //     })
+            // },
+        },
+        loading () { return this.$store.state.user.loading }
     },
     methods: {
         toPatients (item,i) {
@@ -181,27 +181,23 @@ export default {
                 })
             })
         },
+        pet_user_d () {
+            if (this.changePage) {
+                this.$router.push({
+                    path: '/patients?id=' + this.changePage.petId
+                })
+            }
+        },
         getPetLists () {
-            var data = {
+            let data = {
+                vm: this,
                 userId: localStorage.getItem("adminUserId"),
-                pageNum: 3,
+                pageNum: 1,
                 pageSize: 1000
             }
-            allPet(data).then(res => {
-                console.log(res)
-                if (res.data.rtnCode == 200) {
-                    this.petList = res.data.data.pageT
-                    this.loading = false
-                }
-            }).catch(e => {
-                this.loading = false
-                this.$message({
-                    type: "error",
-                    message: "Fail load!"
-                })
-            })
-        }
-
+            this.$store.dispatch('getPetList',data)
+        },
+        
 
 
 

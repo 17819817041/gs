@@ -27,4 +27,5 @@ new Vue({
 import element from "element-ui"
 // import 'element-ui/lib/theme-chalk/index.css'; 
 import "@/assets/theme/index.css"
-Vue.use(element)
+import locale from 'element-ui/lib/locale/lang/en'
+Vue.use(element,{locale})

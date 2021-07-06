@@ -158,7 +158,7 @@ export default {
             this.$router.push('/chatRoom')
         },
         setting () {
-            this.$router.push("/vetSetting")
+            this.$router.push("/setting")
         },
         petDetails () {
             this.$router.push("/petDetails")

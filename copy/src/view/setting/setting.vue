@@ -2,6 +2,20 @@
 @import "@/less/css.less";
     .setting {
         width: 100%;
+        height: 100%;
+        overflow: auto;
+        position: relative;
+        .top_up_mask {
+            position: absolute;
+            width: 560px;
+            top: 50%;
+            left: 50%;
+            background: white;
+            box-shadow: 0px 3px 3px 0px #D0D0D0;
+            border-radius: 15px;
+            z-index: 1000;
+            transform: translate(-50%,-50%);
+        }
     }
     .setting_content {
         height: 100%;
@@ -69,7 +83,7 @@
     .wrap_save {
         position: absolute;
         right: 20px;
-        top: 20px;
+        top: 0px;
         font-size: 15px;
     }
     .detail {
@@ -320,14 +334,18 @@
         flex: 10;
     }
     .switch {
-        height: 50px;
+        height: 40px;
         border-radius: 12px;
         position: relative;
         z-index: 100;
     }
     .paypal_img {
+        border-bottom: solid 3px white;
         padding: 7px 20px 7px 20px;
         transition: 0.1s;
+        img {
+            height: 100%;
+        }
     }
     .paypal_img:hover {
         background: rgb(240, 240, 240);
@@ -336,7 +354,7 @@
     //     transform: translate(0px, -50px);
     // }
     .bottom_c {
-        border-bottom: solid 3px rgb(54, 54, 54) !important;
+        border-bottom: #dfdfdf 3px solid !important;
     }
     .ali_title, .weChat_title {
         padding: 25px 0;
@@ -347,10 +365,94 @@
         border: solid 1px;
         padding: 5px 10px;
     }
+    .mask_title {
+        padding: 30px 60px;
+        .back_check {
+            img {
+                width: 12px;
+            }
+        }
+    }
+    .Amount {
+        padding: 10px 50px;
+        .select_item {
+            width: 100%;
+        }
+    }
+    .amount_item {
+        width: 30%;
+        padding: 5px 10px;
+        color: #0C4E76;
+        border: solid gray 1px;
+        border-radius: 7px;
+        margin-top: 15px;
+        margin: 15px 1.5% 0px 1.7%;
+    }
+    .amount_item:hover {
+        background: rgb(243, 243, 243);
+    }
+    .pay_btn {
+        width: 60%;
+        padding: 10px;
+        background: @helpBtn;
+        border-radius: 9px;
+        color: white;
+        margin: 30px auto;
+    }
+    .pay_W {
+        padding: 0  50px;
+    }
+    .much {
+        background: rgb(240, 240, 240);
+    }
 </style>
 
 <template>
-    <div class="setting" v-loading="load">
+    <div class="setting noBar" v-loading="load">
+        <div class="top_up_mask">
+            <div class="mask_title sb al">
+                <div class="back_check al size12 bold" style="opacity: 0">
+                    <img src="@/assets/img/arrowL.png" alt="">Back to checkout
+                </div>
+                <!-- <div class="payment_d bold size25">Payment details</div> -->
+                <div class="back_check al bold size12 cursor">
+                    <img src="@/assets/img/arrowL.png" style="margin-right: 5px;" alt="">Back to checkout
+                </div>
+            </div>
+            <div class="Amount">
+                <div class="p_title" style="padding-left: 15px">Select Amount</div>
+                <div class="select_item clear">
+                    <div @click="HK = 5" :class="['amount_item float cursor', { much: HK == 5 }]">HK$ 5</div>
+                    <div @click="HK = 10" :class="['amount_item float cursor', { much: HK == 10 }]">HK$ 10</div>
+                    <div @click="HK = 20" :class="['amount_item float cursor', { much: HK == 20 }]">HK$ 20</div>
+                    <div @click="HK = 50" :class="['amount_item float cursor', { much: HK == 50 }]">HK$ 50</div>
+                    <div @click="HK = 100" :class="['amount_item float cursor', { much: HK == 100 }]">HK$ 100</div>
+                    <div @click="HK = 200" :class="['amount_item float cursor', { much: HK == 200 }]">HK$ 200</div>
+                </div>
+            </div>
+            <div class="pay_W">
+                <div class="p_title" style="padding: 30px 0 7px 15px">Select Payment Method</div>
+                <div class="switch flexEnd">
+                    <div class="flex">
+                        <div :class="['paypal_img cursor', { bottom_c: type_pay == 5 }]" @click="type_pay = 5">
+                            <img src="@/assets/img/Paypal.png" alt="">
+                        </div>
+                        <div :class="['paypal_img cursor', { bottom_c: type_pay == 2 }]" @click="type_pay = 2">
+                            <img src="@/assets/img/stripe.png" alt="">
+                        </div>
+                        <div :class="['paypal_img cursor', { bottom_c: type_pay == 3 }]" @click="type_pay = 3">
+                            <img src="@/assets/img/alipay.png" alt="">
+                        </div>
+                        <div :class="['paypal_img cursor', { bottom_c: type_pay == 4 }]" @click="type_pay = 4">
+                            <img src="@/assets/img/chatpay.png" alt=""> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pay_btn tc bold cursor">
+                Continue
+            </div>
+        </div>
         <div class="setting_content flex">
             <div class="setting_message">
                 <div class="explan al Explan_title">
@@ -440,7 +542,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="payment mg" v-show="false">
+                <div class="payment mg" v-show="false">             <!-- //delete -->
                     <div class="payment_item mg">
                         <div class="payment_title ju bold al">
                             <img src="@/assets/img/account.png" alt="">
@@ -466,8 +568,8 @@
                             <div class="card">
                                 <div class="switch flexEnd">
                                     <div class="flex">
-                                        <div :class="['paypal_img', { bottom_c: type_pay == 1 }]"><img class="cursor" @click="type_pay = 1" src="@/assets/img/Paypal.png" alt=""></div>
-                                        <div :class="['paypal_img', { bottom_c: type_pay == 2 }]"><img class="cursor" @click="type_pay = 2" src="@/assets/img/stripe.png" alt=""></div>
+                                        <div :class="['paypal_img', { bottom_c: type_pay == 5 }]"><img class="cursor" @click="type_pay = 5" src="@/assets/img/Paypal.png" alt=""></div>
+                                        <div :class="['paypal_img', { bottom_c: type_pay == 1 }]"><img class="cursor" @click="type_pay = 1" src="@/assets/img/stripe.png" alt=""></div>
                                         <div :class="['paypal_img', { bottom_c: type_pay == 3 }]">
                                             <div class="cursor" @click="type_pay = 3">
                                                 <img src="@/assets/img/chatpay.png" alt=""> 
@@ -495,7 +597,7 @@
                                             Card details will be saved securely,based of the industry standard
                                         </div>
                                     </div>  
-                                    <div style="width:100%" v-show="type_pay == 2">
+                                    <div style="width:100%" v-show="type_pay == 5">
                                         <div class="p_title" style="padding: 25px 0;">Paypal details</div>
                                         <div id="paypal-button-container"></div>
                                     </div>
@@ -541,7 +643,7 @@
                                 <div class="active_current mg">is your current balance</div>
                                 <div class="drawal sb mg">
                                     <div class="drawal_btn tc cursor">Withdrawal</div>
-                                    <div class="top_up tc cursor">Top Up</div>
+                                    <div class="top_up tc cursor" @click="top_up">Top Up</div>
                                 </div>
                             </div>
                             <div class="card">
@@ -593,7 +695,9 @@ export default {
             stripe:'',
             payment: 8504,
             user:{},
-            type_pay: 5
+            type_pay: 5,
+            top_up_mask: true,
+            HK: 5
         }
     },
     watch: {
@@ -630,10 +734,13 @@ export default {
         },
     },
     methods: {
+        top_up () {
+            this.top_up_mask = true
+        },
         pay_p () {
             var stripe = Stripe("pk_test_51J3CWvILx2JTyAxM0WSRmJP9b9dXD4bZ6f2lwpx2BWJU2c2AXFBSuX3irI5nFGU3Xd5kyB3np1IBkbEH8ebhDbEh00wLNKvYbN"); //测试
-            // var userId = localStorage.getItem('userId');
-            var userId = 313;
+            var userId = localStorage.getItem('userId');
+            // var userId = 313;
             //用户信息
             var orderTypeId = 4;
             //用户信息
@@ -659,9 +766,9 @@ export default {
                 // This function sets up the details of the transaction, including the amount and line item details.
                 return actions.order.create({
                     purchase_units: [{
-                    amount: {
-                        value: '0.01'
-                    }
+                        amount: {
+                            value: '0.01'
+                        }
                     }]
                 });
                 },

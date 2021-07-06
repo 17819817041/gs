@@ -1,4 +1,4 @@
-import { petList, getAdminDetails, vetDetails, doctorList, login, bookingUserId } from "@/axios/request.js"
+import { allPet, getAdminDetails, vetDetails, doctorList, login, bookingUserId } from "@/axios/request.js"
 import router from "@/router/router.js"
 import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 export default {
@@ -9,7 +9,9 @@ export default {
         messageList: [],
         fromIM: '',
         agoraPet: {},
-        message: {}
+        message: {},
+        petList: [],
+        loading: true
     },
     mutations: {
         setUser (state,data) {
@@ -69,6 +71,26 @@ export default {
             };
             conn.open(options);
         },
+        getPetList (store,data) {
+            var data1 = {
+                userId: data.userId,
+                pageNum: data.pageNum,
+                pageSize: data.pageSize
+            }
+            allPet(data1).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    store.state.petList = res.data.data.pageT
+                    store.state.loading = false
+                }
+            }).catch(e => {
+                store.state.loading = false
+                data.vm.$message({
+                    type: "error",
+                    message: "Fail load!"
+                })
+            })
+        },
         getDoctorList (store,vm) {
             const doctor = {
                 platform: localStorage.getItem("adminPlatform"),
@@ -94,6 +116,30 @@ export default {
                 store.commit("setUser",{ key: "loading", value: false })
                 store.commit("setUser",{ key: "doctorList", value: [] })
                 vm.$message.error('Fail to load !');
+            })
+        },
+        logout (store,vm) {
+            vm.$confirm('Are you sure to log out?', 'Attention', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                localStorage.removeItem("IMtoken")
+                localStorage.removeItem("adminUserId")
+                localStorage.removeItem("adminPaltform")
+                localStorage.removeItem("adminToken")
+                vm.$router.replace("/index")
+                store.commit("setUser", {
+                    key: "login",
+                    value: false
+                })
+                store.commit("setUser", {
+                    key: "IMuser",
+                    value: {}
+                })
+                conn.close()
+            }).catch (e => {
+                console.log(e)
             })
         },
     }

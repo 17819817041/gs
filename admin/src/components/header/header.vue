@@ -30,12 +30,12 @@
                                 <input id="ava" v-show="false" type="file" />   <!-- 头像路径-->
                                 <div class="ju al headimg_wrap">
                                     <!-- <img style="height:100%;" v-if="userDetails.userImage" :src="userDetails.userImage" alt=""> -->
-                                    <img src="@/assets/img/head.png" alt="">
+                                    <!-- <img src="@/assets/img/setimg.svg" alt=""> -->
                                     <!-- <i class="el-icon-picture-outline" style="font-size:30px;color:gray"></i> -->
                                 </div>
                             </label>
                             <!-- <div class="name al">{{userDetails.userName}}</div> -->
-                            <div class="name white al">666</div>
+                            <div class="name white al">{{userDetail.name}}</div>
                             <div class="al">
                                 <img class="online_img cursor"  @click="Conference" src="@/assets/img/online.png" alt="">
                             </div>
@@ -54,12 +54,12 @@
                         <div >Logout</div>     
                     </div>
                 </div>
-                <div class="helpBtn cursor al ju" @click="support" v-if="login">
+                <!-- <div class="helpBtn cursor al ju" @click="support" v-if="login">
                     <div class="al">
                         <img src="@/assets/img/what.png" alt="">
                     </div>
                     <div class="suppot"> Help & Support </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -97,6 +97,15 @@ export default {
                     value: val
                 })
             },
+        },
+        userDetail: {
+            get () { return this.$store.state.user.userDetail },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "userDetail",
+                    value: val
+                })
+            },
         }
     },
     created () {
@@ -110,7 +119,11 @@ export default {
             this.$store.dispatch('getUser',this)
         },
         logout () {
-            console.log('login')
+            this.$store.dispatch("logout", this)
+            // var auth2 = gapi.auth2.getAuthInstance();
+            // auth2.signOut().then(function(res) {
+            //     console.log(res)
+            // });
         },
         support () {
             this.$router.push('/support')
@@ -204,10 +217,14 @@ export default {
     }
 
     .headimg_wrap {
+        width: 55px;
         height:55px;
         overflow:hidden;
         margin-right: 10px;
         border-radius:50%;
+        img {
+            height: 100%;
+        }
     }
 
 
@@ -278,7 +295,7 @@ export default {
         flex: 10;
     }
     .online_img {
-        height: 20px;
+        height: 25px;
         margin: 0 5px 0 10px;
     }
 </style>

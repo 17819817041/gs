@@ -182,4 +182,19 @@ export default {
 		font-size: 12px;
 		color: white;
 	}
+
+	.calendar .calendarMini .el-calendar-day {
+		height: 30px !important;
+		text-align: center;
+	}
+	.calendar .calendarMini .el-calendar-table__row .prev, .calendar .calendarMini .el-calendar-table__row .current, 
+	.calendar .calendarMini .el-calendar-table__row .next {
+		border: none !important;
+	}
+	.calendar .calendarMini thead {
+		font-size: 14px !important;
+	}
+	.calendar .calendarMini tbody {
+		font-size: 12px !important;
+	}
 </style>

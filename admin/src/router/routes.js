@@ -72,6 +72,16 @@ export default [
                 name: "appointment",
                 component: () => import("@/view/appointment/appointment.vue")
             },
+            {
+                path: "/record",
+                name: "record",
+                component: () => import("@/view/record/record.vue")
+            },
+            {
+                path: "/setting",
+                name: "setting",
+                component: () => import("@/view/setting/setting.vue")
+            },
         ]
     },
     {

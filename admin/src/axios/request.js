@@ -80,6 +80,14 @@ export function delMetting (data) {            //删除会议?webId=3
     })
 }
 
+export function petType (data) {                           //宠物类型列表
+    return request({
+        url: '/pettype/getPetTypeList',
+        method: "POST",
+        params: data
+    })
+}
+
 export function allPet (data) {            //所有宠物?pageSize=20&pageNum=0
     return request({
         url: "/pet/getPetAll",

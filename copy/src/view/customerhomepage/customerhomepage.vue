@@ -13,6 +13,16 @@
             z-index: 600;
             transform: translate(0,-119px);
         }
+        .background {
+            position: absolute;
+            top: -119px;
+            left: 0;
+            width: calc(100%);
+            height: calc(100% + 119px);
+            z-index: 900;
+            background: gray;
+            opacity: 0.5;
+        }
     }
     .present_message {
         background: white;
@@ -98,7 +108,8 @@
     <div class="customerhomepage">
         <div><myHeaderL></myHeaderL></div>
         <div class="customer_content flex">
-        <div class="list_wrap" v-if="show" @click="showPetList"></div>
+            <div class="background"></div>
+            <div class="list_wrap" v-if="show" @click="showPetList"></div>
             <div class="list" v-show="nameList">
                 <img class="img1" @click="showPetList" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
                 <!-- <img class="img2" @click="showPetList" v-show="showList" :class="[ 'cursor', {rotate1: rotate} ]" src="@/assets/img/arrow.png" alt=""> -->

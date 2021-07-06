@@ -462,7 +462,6 @@ export default {
             //     })
             // },
         },
-        petTypeList () { return this.$store.state.user.petType },
         firstPet () { return this.$store.state.user.firstPet },
     },
     methods: {
