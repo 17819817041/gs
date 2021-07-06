@@ -34,6 +34,7 @@ export default {
         totalRecordsCount: 0,
         noticeState: false,
         vetNoticeList: [],
+        showback: false,
         adminList: {
             'admin': {
                 messageList: [

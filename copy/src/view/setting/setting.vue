@@ -409,7 +409,7 @@
 
 <template>
     <div class="setting noBar" v-loading="load">
-        <div class="top_up_mask">
+        <div class="top_up_mask" v-show="top_up_mask">
             <div class="mask_title sb al">
                 <div class="back_check al size12 bold" style="opacity: 0">
                     <img src="@/assets/img/arrowL.png" alt="">Back to checkout
@@ -696,7 +696,7 @@ export default {
             payment: 8504,
             user:{},
             type_pay: 5,
-            top_up_mask: true,
+            top_up_mask: false,
             HK: 5
         }
     },
@@ -735,7 +735,9 @@ export default {
     },
     methods: {
         top_up () {
+            console.log(123)
             this.top_up_mask = true
+            this.$store.commit('setUser', { key: 'showback', value: true })
         },
         pay_p () {
             var stripe = Stripe("pk_test_51J3CWvILx2JTyAxM0WSRmJP9b9dXD4bZ6f2lwpx2BWJU2c2AXFBSuX3irI5nFGU3Xd5kyB3np1IBkbEH8ebhDbEh00wLNKvYbN"); //测试

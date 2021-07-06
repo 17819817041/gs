@@ -108,7 +108,7 @@
     <div class="customerhomepage">
         <div><myHeaderL></myHeaderL></div>
         <div class="customer_content flex">
-            <div class="background"></div>
+            <div v-show="showback" class="background"></div>
             <div class="list_wrap" v-if="show" @click="showPetList"></div>
             <div class="list" v-show="nameList">
                 <img class="img1" @click="showPetList" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
@@ -176,7 +176,8 @@ export default {
         },
         active () { return this.$store.state.user.rotate },
         showList () { return this.$store.state.user.showList },
-        nameList () { return this.$store.state.user.nameList }
+        nameList () { return this.$store.state.user.nameList },
+        showback () { return this.$store.state.user.showback },
     },
     methods: {
         cutPet (item,i) {
