@@ -105,11 +105,11 @@
                     </div>
                 </div>
                 <div class="introduce">
-                    <span>Dr. Vinay Misra is a General Obstetrics & Gynecology in new delhi and
-                        has an experience of 8+ years in this field. We provide services in hospitalsonline 
-                        consultation as video and audio...
+                    <span>Dr. Vinay Misra is a General Obstetrics & Gynecology in new delhi andhas an experience of 8+ years in this field. We provide services in hospitalsonline consultation as video and audio666666666666666666666666666666666666666666666666666
                     </span>
-                    <span class="blue cursor">more</span>
+                </div>
+                <div class="blue flexEnd">
+                    <span class="cursor">more</span>
                 </div>
                 <div class="aboutUs">
                     <div class="child al flex">
@@ -430,10 +430,6 @@ export default {
         border-left: 1px #DCDDE0 solid;
         border-right: 1px #DCDDE0 solid;
     }
-    .blue {
-        font-size: 13px;
-        color: #1976D2;
-    }
     .working {
         width: 80%;
         margin: auto;
@@ -444,7 +440,17 @@ export default {
         margin: auto;
         font-size: 14;
         color: #656565;
-        margin-bottom: 35px;
+        max-height: 250px;
+        text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+        display: -webkit-box;
+        -webkit-line-clamp: 3;/*规定超过两行的部分截断*/
+        -webkit-box-orient: vertical;
+        overflow : hidden; 
+        word-break: break-all;/*在任何地方换行*/
+    }
+    .blue {
+        font-size: 13px;
+        color: #1976D2;
     }
     .aboutUs {
         width: 80%;
