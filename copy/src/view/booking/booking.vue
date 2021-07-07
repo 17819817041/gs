@@ -45,7 +45,7 @@
                             <div class=" width100">
                                 <el-select v-model="form.doctor" placeholder="Select the doctor" @change="getDoctorId" 
                                     no-data-text=" Please select a region first ">
-                                    <el-option v-for="(item,i) in doctorSelect" :key="i" :label="item.doctorName" :value="item.doctorId"></el-option>
+                                    <el-option v-for="(item,i) in doctorSelect" :key="i" :label="item.doctorName" :value="item.userId"></el-option>
                                 </el-select>
                             </div>
                         </el-form-item>
@@ -202,7 +202,7 @@ export default {
         }
     },
     created () {
-        // this.docSelect()
+        this.docSelect()
         this.getPetSelect()
         this.getDay()
         this.getAddress()
@@ -233,7 +233,7 @@ export default {
                     that.date = that.form.years + '-' + that.form.month + '-' + that.form.day
                     var data = {
                         bookingType: that.form.WAY,
-                        doctorHead: that.doctorHead,
+                        // doctorHead: that.doctorHead,
                         bookingDoctor: that.form.doctor,
                         bookingDoctorId: that.doctorId,
                         locationId: that.form.location,
@@ -256,7 +256,7 @@ export default {
                             that.loading = false
                             that.$message({
                                 type: 'success',
-                                message: 'Book successfully '
+                                message: 'Book successfully!'
                             })
                             // that.information()
                             that.$router.push({
@@ -352,11 +352,12 @@ export default {
             this.form.duration = val
         },
         getDoctorId (val) {
+            console.log(val)
             this.doctorSelect.forEach(item => {
-                if (item.doctorId == val) {
+                if (item.userId == val) {
                     this.form.doctor = item.doctorName
-                    this.doctorId = item.doctorId
-                    this.doctorHead = item.userHead
+                    this.doctorId = item.userId
+                    // this.doctorHead = item.userHead
                 }
             })
         },
@@ -377,7 +378,7 @@ export default {
             }
             doctorList(doctor).then(res => {
                 console.log(res,"医生select")
-                this.doctorSelect = res.data.data.pageT
+                // this.doctorSelect = res.data.data.pageT
             })
         },
         getPetSelect () {

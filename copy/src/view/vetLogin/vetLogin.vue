@@ -53,7 +53,7 @@
 </style>
 
 <template>
-    <div class="login">
+    <div class="login" v-loading='loading'>
         <div>
             <myHeaderL></myHeaderL>
         </div>
@@ -207,12 +207,20 @@ export default {
                             })
                             that.login = true
                             that.loading = false
-                        } else {
+                        } else if (res.data.rtnCode == 202) {
                             this.loading = false
+                            this.$message({
+                                type: 'error',
+                                message: 'Incorrect username or password!'
+                            })
                         }
                     }).catch(e => {
                         console.log(e)
                         this.loading = false
+                        this.$message({
+                            type: 'error',
+                            message: 'Failed to login!'
+                        })
                     })
                 }
             })

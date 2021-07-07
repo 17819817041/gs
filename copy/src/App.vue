@@ -186,8 +186,8 @@ export default {
 		valChange() {
 			this.value++;
 			let data = {
-				platform: 1,
-				userId: 486
+				userId: localStorage.getItem('userId'),
+				platform: localStorage.getItem('platform')
 			}
 			min(data).then(res => {
 				console.log(res)
@@ -413,6 +413,11 @@ export default {
 	}
 	.el-rate__icon {
 		margin-right: 0 !important;
+	}
+
+
+	.vetSetting .el-icon-time, .vetSetting .el-input__suffix {
+		display: none !important;
 	}
 
 

@@ -18,7 +18,7 @@
                     <div class="profile_img">
                         <label for="avaSet">
                             <div style="width:50%;margin:auto">
-                                <img :class="['profileimg mg', {cursor: !edit}]" src="@/assets/img/profileimg.png" alt="" mode="widthFix">
+                                <img :class="['profileimg mg', {cursor: !edit}]" :src="userDetail.userImage" alt="" mode="widthFix">
                             </div>
                             <input type="file" id="avaSet" v-if="!edit" v-show="false">
                         </label>
@@ -95,7 +95,10 @@
 
                         <div class="aboutMe">
                             <div>More about you</div>
-                            <div v-if="edit">KKKKKKKKKKKKKKKKKKKKK</div>
+                            <div v-if="edit">
+                                <span v-if="userDetail.extend">{{userDetail.extend}}</span>
+                                <span v-else>No data</span>
+                            </div>
                             <div v-else class="aboutMe_text">
                                 <textarea name="" id="" cols="30" v-model="userDetail.extend" rows="10"></textarea>
                             </div>
@@ -130,8 +133,8 @@
                                 <div v-if="edit">{{userDetail.workingAddress}}</div>
                                 <div v-else class="address_inp al"><input type="text" v-model="userDetail.workingAddress"></div>
                             </div>
-                            <div class="message_wrap">
-                                <div v-if="edit" style="margin-top:10px;color: #7c7878;">{{userDetail.startTime}} - {{userDetail.endTime}} </div>
+                            <div class="message_wrap_work">
+                                <div v-if="edit" style="margin-top:10px;color: #7c7878;">{{userDetail.startTime}} - {{userDetail.endTime}} {{wookingDay}} </div>   <!--{{userDetail.remake}}-->
                                 <div v-else class="timeInp_wrap sb al">
                                     <div class="timeInp al">
                                         <!-- <input type="text" v-model="userDetail.startTime"> -->
@@ -145,7 +148,7 @@
                                             }"
                                             placeholder="Booking Star Time">
                                         </el-time-select>
-                                    </div> --
+                                    </div> -
                                     <div class="timeInp al">
                                         <!-- <input type="text" v-model="userDetail.endTime"> -->
                                         <el-time-select 
@@ -159,11 +162,40 @@
                                             placeholder="Booking Star Time">
                                         </el-time-select>
                                     </div>
+
+                                    <div class="timeInp al">
+                                        <!-- userDetail.remake -->
+                                        <el-select v-model="s_week">    
+                                            <el-option label="Monday" value="Monday" ></el-option>
+                                            <el-option label="Tuesday" value="Tuesday" ></el-option>
+                                            <el-option label="Wednesday" value="Wednesday" ></el-option>
+                                            <el-option label="Thursday " value="Thursday " ></el-option>
+                                            <el-option label="Friday" value="Friday" ></el-option>
+                                            <el-option label="Saturday" value="Saturday" ></el-option>
+                                            <el-option label="Sunday" value="Sunday" ></el-option>
+                                        </el-select>
+                                    </div> to
+                                    <div class="timeInp al">
+                                        <!-- userDetail.remake -->
+                                        <el-select v-model="e_week">    
+                                            <el-option label="Monday" value="Monday" ></el-option>
+                                            <el-option label="Tuesday" value="Tuesday" ></el-option>
+                                            <el-option label="Wednesday" value="Wednesday" ></el-option>
+                                            <el-option label="Thursday " value="Thursday " ></el-option>
+                                            <el-option label="Friday" value="Friday" ></el-option>
+                                            <el-option label="Saturday" value="Saturday" ></el-option>
+                                            <el-option label="Sunday" value="Sunday" ></el-option>
+                                        </el-select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="message_wrap flex">
                                 <div class="title al">Professional field</div>
-                                <div class="mean al">-</div>
+                                <div class="mean al" v-if="edit">
+                                    <span v-if="userDetail.prdfessionalField">{{userDetail.prdfessionalField}}</span>
+                                    <span v-else>-</span>
+                                </div>
+                                <div v-else class="prdfessionalField al"><input type="text" v-model="userDetail.prdfessionalField"></div>
                             </div>
                         </div>
 
@@ -187,7 +219,10 @@ export default {
             hospitalName: '',
             hospitalList: [],
             sex: '',
-            address: []
+            address: [],
+            wookingDay: '',
+            s_week: 'Monday',
+            e_week: 'Friday',
         }
     },
     watch: {
@@ -231,6 +266,7 @@ export default {
             this.edit = false
         },
         saveBtn () {
+            // this.wookingDay = this.s_week + ' to ' + this.e_week
             this.update()
             this.edit = true
         },
@@ -241,6 +277,7 @@ export default {
             this.$router.push("/vetReset")
         },
         update () {
+            // this.userDetail.remake = 'Monday to Friday'
             updateVetDetails(this.userDetail).then(res => {
                 console.log(res)
                 if (res.data.rtnCode == 200) {
@@ -305,6 +342,19 @@ export default {
             box-shadow: 0 2px 2px 1px gray;
         }
     }
+    .prdfessionalField {
+        width: 170px;
+        height: 29px;
+        border: solid 1px;
+        border-radius: 10px;
+        overflow: hidden;
+        input {
+            border: none;
+            outline: none;
+            width: 100%;
+            height: 100%;
+        }
+    }
     .vetSetting_content_item_title {
         position: relative;
     }
@@ -349,6 +399,17 @@ export default {
             .mean {
                 width: 200px;
             }
+        }
+    }
+    .message_wrap_work {
+        width: 460px;
+        height: 69px;
+        padding: 20px 0;
+        .title{    
+            width: 260px;
+        }
+        .mean {
+            width: 200px;
         }
     }
     .option {
@@ -420,7 +481,7 @@ export default {
         }
     }
     .timeInp_wrap {
-        width: 220px;
+        width: 100%;
         margin-top: 10px;
     }
     .timeInp {

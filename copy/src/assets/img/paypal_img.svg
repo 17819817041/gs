@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="87.484" height="87.689" viewBox="0 0 87.484 87.689">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Background" width="30.953" height="30.953" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Group_9_Copy_3" data-name="Group 9 Copy 3" transform="translate(0.5 0.5)">
+    <rect id="Rectangle_3" data-name="Rectangle 3" width="86.484" height="63.725" rx="10" fill="#ccefff" stroke="#a6e3ff" stroke-miterlimit="10" stroke-width="1"/>
+    <text id="Type_something" data-name="Type something" transform="translate(42.577 83.189)" fill="#595959" font-size="12" font-family="Poppins-Regular, Poppins"><tspan x="-20.496" y="0">Paypal</tspan></text>
+    <g id="paypal_1_" data-name="paypal (1)" transform="translate(27.129 16.66)">
+      <rect id="Background-2" data-name="Background" width="30.953" height="30.953" fill="none"/>
+      <g id="paypal_1_2" data-name="paypal (1)" clip-path="url(#clip-path)">
+        <path id="Shape" d="M17.574.089a.644.644,0,0,0-.967.486c-.023.212-.059.423-.1.645C15.24,6.95,12.7,9.738,8.749,9.738h-5.8a.645.645,0,0,0-.631.516L.38,19.321.034,21.63a1.935,1.935,0,0,0,1.892,2.294H5.808a1.926,1.926,0,0,0,1.877-1.469l1.568-6.269h3.365c3.971,0,6.716-3.166,7.728-8.916h0A6.74,6.74,0,0,0,17.574.089Z" transform="translate(8.147 7.029)" fill="#03a9f4"/>
+        <path id="Shape-2" data-name="Shape" d="M22.237,2.3A6.786,6.786,0,0,0,17.207,0H6.528A3.207,3.207,0,0,0,3.338,2.742L.022,24.862a1.935,1.935,0,0,0,1.915,2.222H6.889a.645.645,0,0,0,.631-.516l1.825-8.512h5.288c4.589,0,7.621-3.208,9.014-9.544a7.593,7.593,0,0,0,.129-.765A6.659,6.659,0,0,0,22.237,2.3Z" transform="translate(2.268 0)" fill="#283593"/>
+      </g>
+    </g>
+  </g>
+</svg>

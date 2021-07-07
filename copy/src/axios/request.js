@@ -171,14 +171,6 @@ export function getUserByPId (data) {               //通过宠物ID获取用户
     })
 }
 
-export function min (data) {
-    return request({
-        url: "/lstener/OnlineHeartbeat",
-        method: 'POST',
-        params: data
-    })
-}
-
 export function token (data) {                         //返回服务器token
     return request({
         url: "/user/ThirdPartyLogin",
@@ -322,10 +314,26 @@ export function getUserByPetId (data) {            //宠物id获取客户?petId=
     })
 }
 
-export function pay (data) {            
+export function pay (data) {                  //支付
     return request({
         url: "/stripe/create-checkout-session",
         method: "POST",
+        params: data
+    })
+}
+
+export function onlineState (data) {                    //在线状态
+    return request({
+        url: "/user/loginOut",
+        method: "POST",
+        params: data
+    })
+}
+
+export function min (data) {
+    return request({
+        url: "/listener/OnlineHeartbeat",
+        method: 'POST',
         params: data
     })
 }

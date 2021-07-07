@@ -28,7 +28,7 @@
                     <div class="workTime al sb">
                         <div>
                             <div class="size14">Experience</div>
-                            <div><span class="size16">{{item.experience}}</span> <span class="size14"> Years</span></div>
+                            <div><span v-if="item.experience">{{item.experience}}</span> <span class="size14" v-else>0 </span>Years</div>
                         </div>
                         <div>
                             <div class="size14">Likes</div>

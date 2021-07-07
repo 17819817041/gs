@@ -1,4 +1,4 @@
-import { petList, getUserDetails, vetDetails, doctorList, login, bookingUserId,notice } from "@/axios/request.js"
+import { petList, getUserDetails, vetDetails, doctorList, login, bookingUserId, notice, onlineState } from "@/axios/request.js"
 import router from "@/router/router/router.js"
 import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 import Vue from "vue"
@@ -33,8 +33,9 @@ export default {
         messageList: [],
         totalRecordsCount: 0,
         noticeState: false,
-        vetNoticeList: [],
         showback: false,
+        noticeList: [],
+        n_loading: true,
         adminList: {
             'admin': {
                 messageList: [
@@ -182,21 +183,41 @@ export default {
                 cancelButtonText: 'Cancel',
                 type: 'warning'
             }).then(() => {
-                localStorage.removeItem("Token")
-                localStorage.removeItem("userId")
-                localStorage.removeItem("paltform")
-                localStorage.removeItem("IMtoken")
-                localStorage.removeItem('IM')
-                vm.$router.replace("/login")
-                store.commit("setUser", {
-                    key: "login",
-                    value: false
+                var data = {
+                    userId: localStorage.getItem('userId'),
+                    type:localStorage.getItem('platform')
+                }
+                onlineState(data).then(res => {
+                    console.log(res,'离线')
+                    if (res.data.rtnCode == 200) {
+                        localStorage.removeItem("Token")
+                        localStorage.removeItem("userId")
+                        localStorage.removeItem("paltform")
+                        localStorage.removeItem("IMtoken")
+                        localStorage.removeItem('IM')
+                        vm.$router.replace("/login")
+                        store.commit("setUser", {
+                            key: "login",
+                            value: false
+                        })
+                        store.commit("setUser", {
+                            key: "IMuser",
+                            value: {}
+                        })
+                        conn.close()
+                        vm.$message({
+                            type: 'info',
+                            message: 'Account has been signed out!'
+                        })
+                    }
+                }).catch(e => {
+                    console.log(e)
+                    vm.$message({
+                        type: 'error',
+                        message: 'Exit failed!'
+                    })
                 })
-                store.commit("setUser", {
-                    key: "IMuser",
-                    value: {}
-                })
-                conn.close()
+                
             }).catch (e => {
                 console.log(e)
             })
@@ -269,7 +290,6 @@ export default {
             notice(data).then(res => {
                 console.log(res,'notice')
                 if (res.data.rtnCode == 200) {
-                    store.state.vetNoticeList = res.data.data.pageT
                     res.data.data.pageT.forEach(item => {
                         var time = item.createdAt
                         let a = time.split(' ')[0]
@@ -281,22 +301,30 @@ export default {
                         let arr = a.split('-').join('/')
                         let bb = b.split(':')
                         item.createdAt = arr + ' ' + bb[0] + ':' + bb[1]
-
-                        if (item.noticeState == 2) {
-                            store.commit('setUser', {  
-                                key: 'noticeState',
-                                value: true
-                            })
-                        } else {
-                            store.commit('setUser',{
-                                key: 'noticeState',
-                                value: false
-                            })
-                        }
                     })
+                    if (localStorage.getItem('platform') == 2) {
+                        store.commit('setUser',{
+                            key: "noticeState",
+                            value: res.data.data.pageT.find(item => item.noticeState==2)
+                        })
+                    } else if (localStorage.getItem('platform') == 1) {
+                        store.commit('setUser',{
+                            key: "noticeState",
+                            value: res.data.data.pageT.find(item => item.noticeState==2)
+                        })
+                    }
+                    store.state.noticeList = res.data.data.pageT
+                    store.state.loading = false
+                    store.commit("setUser",{ key: "n_loading", value: false })
                 } else if (res.data.rtnCode == 201) {
-                    store.state.vetNoticeList = null
+                    store.state.noticeList = null
+                    store.state.loading = false
+                    store.commit("setUser",{ key: "n_loading", value: false })
                 }
+            }).catch(e => {
+                console.log(e)
+                store.state.loading = false
+                store.commit("setUser",{ key: "n_loading", value: false })
             })
         },
     }

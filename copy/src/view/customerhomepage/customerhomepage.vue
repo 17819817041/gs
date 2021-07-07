@@ -108,7 +108,7 @@
     <div class="customerhomepage">
         <div><myHeaderL></myHeaderL></div>
         <div class="customer_content flex">
-            <div v-show="showback" class="background"></div>
+            <div v-show="showback" class="background" @click="closeback"></div>
             <div class="list_wrap" v-if="show" @click="showPetList"></div>
             <div class="list" v-show="nameList">
                 <img class="img1" @click="showPetList" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
@@ -180,6 +180,12 @@ export default {
         showback () { return this.$store.state.user.showback },
     },
     methods: {
+        closeback () {
+            this.$store.commit("setUser", {
+                key: "showback",
+                value: false
+            })
+        },
         cutPet (item,i) {
             this.firstPet = i
             this.$store.commit("setUser", { key: "pet",value: item })

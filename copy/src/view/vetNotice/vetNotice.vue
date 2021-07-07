@@ -59,20 +59,23 @@
 </style>
 
 <template>
-    <div class="vetNotice">
+    <div class="vetNotice" v-loading="loading">
         <div class="vetNotice_content">
             <div class="vetNotice_content_wrap">
                 <div class="explan al"><img src="@/assets/img/information.png" alt="">Notice</div>
                 <div class="vetNotice_content_item flex">
                     <div v-if="vetNoticeList" style="width:100%">
-                        <div class="vetNotice_item flex al" v-for="(item,i) in vetNoticeList" :key="i" @click="checkNotice(item)">
+                        <div class="vetNotice_item flex al cursor" v-for="(item,i) in vetNoticeList" :key="i" @click="checkNotice(item)">
                             <div class="state"> 
                                 <div class="read tc" v-if="item.noticeState == 1">Have read</div>
                                 <div class="unRead tc" v-else-if="item.noticeState == 2">Unread</div>
                             </div>
-                            <div><img class="john" :src="item.fromImage" alt=""></div> 
+                            <div>
+                                <img class="john" v-if="item.fromImage" :src="item.fromImage" alt="">
+                                <i class="el-icon-picture-outline Icon" style="font-size: 30px;color:gray" v-else></i>
+                            </div> 
                             <div class="vetNotice_information">
-                                <div v-if="item.noticeType == 1">{{item.fromName}} initiated an appointment with you</div>
+                                <div>{{item.fromName}} initiated an appointment with you</div>
                                 <div class="vetNotice_date">{{item.createdAt}}</div>
                             </div>
                         </div>
@@ -85,24 +88,25 @@
 </template>
 
 <script>
-import { updateNoticeState } from "@/axios/request.js"
+import { updateNoticeState, notice } from "@/axios/request.js"
 export default {
     data () {
         return {
             active: true,
-            noticeList: []
         }
     },
     created () {
+        // this.getNoticeList()
         this.message()
     },
     computed: {
         vetNoticeList: {
-            get () { return this.$store.state.user.vetNoticeList },
+            get () { return this.$store.state.user.noticeList },
             set (val) {
                 this.vetNoticeList = val
             }
-        }
+        },
+        loading () { return this.$store.state.user.n_loading },
     },
     methods: {
         message () {
@@ -110,14 +114,14 @@ export default {
                 this.active = false
             }
         },
-        
         checkNotice (item) {
-            if (item.noticeType == 1) {
+            if (item.noticeState == 1) {
+                this.$router.push('/appointment')
+            } else if (item.noticeState == 2) {
                 let data = {
                     noticeId: item.id
                 }
                 updateNoticeState(data).then(res => {
-                    console.log(res)
                     let that = this
                     let page = {
                         vm: that,
@@ -128,8 +132,43 @@ export default {
                 })
                 this.$router.push('/appointment')
             }
-            
-        }
+        },
+        getNoticeList () {
+            let data = {
+                vm: this,
+                pageNum: 1,
+                pageSize: 100
+            }
+            notice(data).then(res => {
+                console.log(res,'notice')
+                if (res.data.rtnCode == 200) {
+                    res.data.data.pageT.forEach(item => {
+                        var time = item.createdAt
+                        let a = time.split(' ')[0]
+                        let b = time.split(' ')[1]
+                        // let En = new Date(a).toDateString()
+                        // let arr = En.split(' ')
+                        // let bb = b.split(':')
+                        // item.createdAt = arr[2] + ' ' + arr[1] + ','+ arr[3] + ' ' + bb[0] + ':' + bb[1]
+                        let arr = a.split('-').join('/')
+                        let bb = b.split(':')
+                        item.createdAt = arr + ' ' + bb[0] + ':' + bb[1]
+                    })
+                    this.$store.commit('setUser',{
+                        key: "noticeState",
+                        value: (res.data.data.pageT.find(item => item.noticeState==2)) && (localStorage.getItem('platform') == 2)
+                    })
+                    this.vetNoticeList = res.data.data.pageT
+                    this.loading = false
+                } else if (res.data.rtnCode == 201) {
+                    this.vetNoticeList = null
+                    this.loading = false
+                }
+            }).catch(e => {
+                console.log(e)
+                this.loading = false
+            })
+        },
     }
 }
 </script>
