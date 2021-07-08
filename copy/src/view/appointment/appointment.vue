@@ -138,19 +138,13 @@
                                         <template
                                             slot="dateCell"
                                             slot-scope="{date, data}">
-                                            <div>
-                                                <div class="calendar-day">{{ data.day.split('-').slice(2).join('-') }}</div>
-                                                    <div v-for="(item,i) in booking" :key="i">
-                                                    <div v-if="(item.months).indexOf(data.day.split('-').slice(1)[0])!=-1">
-                                                        <div v-if="(item.days).indexOf(data.day.split('-').slice(2).join('-'))!=-1">
-                                                            <el-tooltip class="item" effect="dark" :content="item.bookingDoctor" placement="right">
-                                                                <div class="is-selected">{{item.bookingDoctor}}666</div>
-                                                            </el-tooltip>
-                                                        </div>
-                                                        <div v-else></div>
-                                                    </div>
-                                                <div v-else></div>
-                                                </div>
+                                            <div >
+                                                <div>{{data.day.slice(5)}}</div>
+                                                <div>{{
+                                                    booking.find(b => b.booking.calanderDate==data.day) ? 
+                                                    booking.find(b => b.booking.calanderDate==data.day).booking.bookingDoctor : 
+                                                    ''
+                                                }}</div>
                                             </div>
                                         </template>
                                     </el-calendar>
@@ -180,8 +174,8 @@
                                     <div class="size13">Daisy</div>
                                 </div>
                                 <div>
-                                    <div class="Reschedule size13 cursor tc" @click="reschedule(item)">Reschedule</div>
-                                    <div class="Cancel size13 cursor tc">Cancel</div>
+                                    <div class="Reschedule size13 cursor tc" @click="reschedule(item.booking.bookingId)">Reschedule</div>
+                                    <div class="Cancel size13 cursor tc" @click="cancelBook(item)">Cancel</div>
                                 </div>
                             </div>
                         </div>
@@ -197,7 +191,7 @@
 </template>
 
 <script>
-import { bookingUserId, allBooking } from "@/axios/request.js"
+import { bookingUserId, allBooking,deleteBooking } from "@/axios/request.js"
 import holiday from "@/assets/js/holiday.js"
 export default {
     data () {
@@ -216,12 +210,35 @@ export default {
     methods: {
         reschedule (key) {
             console.log(key)
-            return false
             this.$router.push({
                 name: "reschedule",
                 query: {
-                    key: s
+                    id: key
                 }
+            })
+        },
+        cancelBook (item) {
+            this.$confirm('Are you sure to log out?', 'Attention', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                let data = {
+                    bookingId: item.booking.bookingId
+                }
+                deleteBooking(data).then(res => {
+                    console.log(res)
+                    if (res.data.rtnCode == 200) {
+                        this.$message({
+                            type: 'info',
+                            message: 'Cancel the appointment successfully!'
+                        })
+                    }
+                }).catch(e => {
+                    console.log(e)
+                })
+            }).catch (e => {
+                console.log(e)
             })
         },
         getBooking () {
@@ -237,8 +254,7 @@ export default {
                         let date = item.booking.bookingDate.split('-')
                         item.booking.bookingDate = date[2] + '/' + date[1] + '/'+ date[0]
                         item.booking.APM = ''
-                        item.booking.months = [date[1]]
-                        item.booking.days = [date[3]]
+    
                         var hour = Number(item.booking.bookingStartTime.split(':')[0])
                         var minute = Number(item.booking.bookingStartTime.split(':')[1])
                         if ( hour >= 12 && minute >= 0) {
@@ -246,6 +262,7 @@ export default {
                         } else {
                             item.booking.APM = 'AM'
                         }
+                        item.booking.calanderDate = date[0] + "-" + date[1] + "-" + date[2]
                     })
                     this.booking = res.data.data
                     this.loading = false

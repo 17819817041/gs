@@ -34,8 +34,8 @@
                             </div>
                             <div class="calendar_item">
                                 <div class="size16">Practice Detail</div>
-                                <div class="size17">Fortis Hospital</div>
-                                <div class="size16">728, Sarita vihar, New delhi-110076</div>
+                                <div class="size17">{{confirmKey.veterinaryHospitalName}}</div>
+                                <div class="size16">{{confirmKey.veterinaryHospitalAddress}} </div>
                             </div>
                             <div class="calendar_item">
                                 <div class="size16">Booked for</div>
@@ -67,7 +67,9 @@ export default {
     data () {
         return {
             bookingDate: '',
-            confirmKey: {}
+            confirmKey: {
+                booking: {}
+            }
         }
     },
     created () {
@@ -79,20 +81,21 @@ export default {
                 bookingId: this.$route.query.key
             }
             bookingId(data).then(res => {
-                console.log(res,666)
-                res.data.data.APM = ''
-                let a = '09:30'
-                let aa = a.split(':')
-                if ( Number(aa[0]) > 12 && Number(aa[1]) >= 1 ) {
-                    res.data.data.APM = 'PM'
-                } else {
-                    res.data.data.APM = 'AM'
+                if (res.data.rtnCode == 200) {
+                    res.data.data.APM = ''
+                    let a = '09:30'
+                    let aa = a.split(':')
+                    if ( Number(aa[0]) > 12 && Number(aa[1]) >= 1 ) {
+                        res.data.data.APM = 'PM'
+                    } else {
+                        res.data.data.APM = 'AM'
+                    }
+                    let date = res.data.data.bookingDate
+                    let En = new Date(date).toDateString()
+                    let arr = En.split(' ')
+                    res.data.data.bookingDate = arr[0] + ',' + arr[2] + ' ' + arr[1] + ','+ arr[3]
+                    this.confirmKey = res.data.data
                 }
-                let date = res.data.data.bookingDate
-                let En = new Date(date).toDateString()
-                let arr = En.split(' ')
-                res.data.data.bookingDate = arr[0] + ',' + arr[2] + ' ' + arr[1] + ','+ arr[3]
-                this.confirmKey = res.data.data
             })
         },
         deleteBook () {

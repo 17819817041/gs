@@ -296,7 +296,8 @@ video {
         .doctorList {
             width: 74%;      //医生列表
             height: 100%;
-            overflow: auto;
+            overflow-y: auto;
+            overflow-x: hidden;
             // padding: 30px;
             border: #F3F3F3 solid 1px;
             border-radius: 4px;

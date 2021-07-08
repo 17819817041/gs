@@ -56,14 +56,7 @@ import { bookingId } from "@/axios/request.js"
 export default {
     data () {
         return {
-            referenceId: 'MQ50355404',
-            bookingDate: '',
-            bookingStarTime: '',
-            doctorName: '',
-            doctorURL: '',
-            price: '',
             bookSuccess: {},
-            confirmKey: {}
         }
     },
     created () {
@@ -72,31 +65,9 @@ export default {
     },
     methods: {
         getMsg () {
+            var D = new Date(this.$route.query.date).toDateString()
+            this.$route.query.date = D.split(' ')[0] + ',' + D.split(' ')[2] + ' ' + D.split(' ')[1] + ' ' + D.split(' ')[3]
             this.bookSuccess = this.$route.query
-
-            this.doctorURL = this.$route.query.head
-            let data = {
-                bookingId: this.$route.query.key
-            }
-            bookingId(data).then(res => {
-                console.log(res,666)
-                this.confirmKey = res.data.data
-                this.bookingStarTime = this.confirmKey.bookingStartTime
-                let a = '09:30'
-                let aa = a.split(':')
-                console.log(Number(aa[0]),Number(aa[1]))
-                if ( Number(aa[0]) > 12 && Number(aa[1]) >= 0 ) {
-                    console.log('PM')
-                } else {
-                    console.log('AM')
-                }
-                this.doctorName = this.confirmKey.bookingDoctor
-                this.price = this.confirmKey.bookingPrice
-                let date = this.confirmKey.bookingDate
-                let En = new Date(date).toDateString()
-                let arr = En.split(' ')
-                this.bookingDate = arr[0] + ',' + arr[2] + ' ' + arr[1] + ','+ arr[3]
-            })
         },
         ensure () {
             this.$router.replace('/booking')
