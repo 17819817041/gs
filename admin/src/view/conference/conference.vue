@@ -7,7 +7,7 @@
             Online meeting
         </div>
         <div v-if="room.length !==0">
-            <div class="conference_item mg sb al" v-for="(item,i) in room" :key="i" @click="dele(item)">
+            <div class="conference_item mg sb al" v-for="(item,i) in room" :key="i">
                 <!-- <div>Confrid: {{item.confrid}}</div> -->
                         <div class="sb">
                             <div class="appointment_details_img_wrap ju al">
@@ -54,8 +54,8 @@ export default {
         }
     },
     created () {
+        // this.dele()
         this.getMetting()
-        
     },
     methods: {
         agora (item) {
@@ -65,14 +65,13 @@ export default {
             localStorage.setItem('confr',JSON.stringify(item))
         },
         dele (item) {
-            console.log(item)
-            // let data = {
-            //     webId: item.id
-            // }
-            // delMetting(data).then(res => {
-            //     console.log(res,'删除')
-            //     this.getMetting()
-            // })
+            let data = {
+                webId: 108
+            }
+            delMetting(data).then(res => {
+                console.log(res,'删除')
+                this.getMetting()
+            })
         },
         getMetting () {
             getMetting().then(res => {

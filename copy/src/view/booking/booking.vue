@@ -216,7 +216,7 @@ export default {
     },
     computed: {
         userDetails () { return this.$store.state.user.userDetail },
-        petList () { return this.$store.state.user.petList }
+        petList () { return this.$store.state.user.petList },
     },
     methods: {
         videoWay () {
@@ -233,7 +233,6 @@ export default {
                     that.date = that.form.years + '-' + that.form.month + '-' + that.form.day
                     var data = {
                         bookingType: that.form.WAY,
-                        // doctorHead: that.doctorHead,
                         bookingDoctor: that.form.doctor,
                         bookingDoctorId: that.doctorId,
                         locationId: that.form.location,
@@ -261,10 +260,7 @@ export default {
                             // that.information()
                             that.$router.push({
                                 name: 'confirm',
-                                query: {
-                                    key: res.data.data.bookingId,
-                                    head: that.doctorHead
-                                }
+                                query: res.data.data
                             })
                         } else if (res.data.rtnCode == 201 && res.data.msg !== 'The appointment time you choose needs to be confirmed by your doctor') {
                             that.loading = false
@@ -300,6 +296,7 @@ export default {
         },
         getAddressId (val) {
             this.doctorSelect = []
+            this.form.doctor = ''
             let data = {
                 addressId: val
             }
@@ -307,6 +304,8 @@ export default {
                 console.log(res)
                 if (res.data.rtnCode == 200) {
                     this.doctorSelect = res.data.data
+                    this.form.doctor = res.data.data[0].doctorName
+                    this.doctorId = res.data.data[0].userId
                 } else {
                     if (res.data.rtnCode == 201) {
                         this.$message({

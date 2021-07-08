@@ -259,7 +259,7 @@ export default {
                 chatType: 'singleChat',                  // 设置为单聊   
             });
             this.$conn.send(msg.body);
-			// this.$router.back()
+			this.$router.push('/myDoctor')
 		},
 		async sure2 () {
 			this.$router.push("/agora")
@@ -282,9 +282,7 @@ export default {
 					chatType: 'singleChat',                  // 设置为单聊   
 				});
 				that.$conn.send(msg.body);
-
 			},500)
-			
 		},
 		addConfr (val) {
 			let D = new Date

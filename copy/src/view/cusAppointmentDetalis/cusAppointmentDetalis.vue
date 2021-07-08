@@ -9,23 +9,27 @@
                     </div>
                     <div class="calendar mg flex">
                         <div>
-                            <div class="head_image">
-                                <img class="Appointment_img" :src="headURL" alt="">
+                            <div class="head_image ju al">
+                                <img class="Appointment_img" v-if="confirmKey.docImage" :src="confirmKey.docImage" alt="">
+                                <i v-else class="el-icon-picture-outline" style="font-size:75px;color:gray"></i>
                             </div>
                         </div>
                         <div class="calendar_wrap">
                             <div class="calendar_item">
-                                <div class="size23">{{confirmKey.bookingDoctor}}</div>
+                                <div class="size23">
+                                    <span v-if="confirmKey.booking.bookingDoctor">{{confirmKey.booking.bookingDoctor}}</span>
+                                    <span v-else>No Name</span>
+                                </div>
                                 <div class="size17" style="color:#9F9F9F">Video Consultation</div>
                             </div>
                             <div class="calendar_item sb">
                                 <div>
                                     <div class="size16">Date and Time</div>
-                                    <div class="size17">{{confirmKey.bookingDate}} - {{confirmKey.APM}}</div>
+                                    <div class="size17">{{confirmKey.booking.bookingDate}} - {{confirmKey.booking.bookingStartTime}}  {{confirmKey.APM}}</div>
                                 </div>
                                 <div>
                                     <div class="size16">Pet Name</div>
-                                    <div class="size17">{{confirmKey.petName}}</div>
+                                    <div class="size17">{{confirmKey.booking.petName}}</div>
                                 </div>
                             </div>
                             <div class="calendar_item">
@@ -35,11 +39,11 @@
                             </div>
                             <div class="calendar_item">
                                 <div class="size16">Booked for</div>
-                                <div class="size17">{{confirmKey.userName}}</div>
+                                <div class="size17">{{confirmKey.booking.userName}}</div>
                             </div>
                             <div class="calendar_item">
                                 <div class="size16">Appointment ID</div>
-                                <div class="size17">{{confirmKey.bookingId}}</div>
+                                <div class="size17">{{confirmKey.booking.bookingId}}</div>
                             </div>
                             <div class="flex calendar_item">
                                 <div class="Reschedule size13 cursor tc">Reschedule</div>
@@ -63,10 +67,6 @@ export default {
     data () {
         return {
             bookingDate: '',
-            bookingStarTime: '',
-            doctorName: '',
-            headURL: '',
-            price: '',
             confirmKey: {}
         }
     },
@@ -75,8 +75,6 @@ export default {
     },
     methods: {
         getMsg () {
-            this.headURL = this.$route.query.headUrl
-            console.log(this.$route.query.headUrl)
             let data = {
                 bookingId: this.$route.query.key
             }
@@ -86,10 +84,8 @@ export default {
                 let a = '09:30'
                 let aa = a.split(':')
                 if ( Number(aa[0]) > 12 && Number(aa[1]) >= 1 ) {
-                    console.log('PM')
                     res.data.data.APM = 'PM'
                 } else {
-                    console.log('AM')
                     res.data.data.APM = 'AM'
                 }
                 let date = res.data.data.bookingDate
@@ -97,10 +93,6 @@ export default {
                 let arr = En.split(' ')
                 res.data.data.bookingDate = arr[0] + ',' + arr[2] + ' ' + arr[1] + ','+ arr[3]
                 this.confirmKey = res.data.data
-                this.bookingStarTime = this.confirmKey.bookingStartTime
-                
-                this.doctorName = this.confirmKey.bookingDoctor
-                this.price = this.confirmKey.bookingPrice
             })
         },
         deleteBook () {

@@ -89,23 +89,23 @@
         }
         .drawer {
             position: absolute;
-            left: 0px;
+            left: -15px;
             height: 109px;
             overflow: hidden;
-            width: 0px;
+            width: 15px;
             top: 10px;
             z-index: 900;
             user-select: none;
             transition: 0.1s;
         }
     }
-    .drawer {
-        @media screen and (max-width: 1500px) {
-            width: 15px !important;
-            left: -30px !important;
-            transform: translate(100%,0) !important;
-        }
-    }
+    // .drawer {
+    //     @media screen and (max-width: 1500px) {
+    //         width: 15px !important;
+    //         left: -30px !important;
+    //         transform: translate(100%,0) !important;
+    //     }
+    // }
     .box1 {
         width: 0;
         height: 0;

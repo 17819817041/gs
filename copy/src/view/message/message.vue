@@ -265,12 +265,10 @@ export default {
             this.options.forEach(op => {
                 if (this.pet.petType == op.petTypeId) {
                     this.breed = child.petTypeName
-                    console.log(child.petTypeName,656666666)
                 }
                 if (op.children) {
                     op.children.forEach(child => {
                         if (this.pet.petType == child.petTypeId) {
-                            console.log(child.petTypeName,656666666)
                             this.breed = child.petTypeName
                         }
                     })
@@ -299,7 +297,12 @@ export default {
             this.$router.push("/myDoctor")
         },
         Record () {
-            this.$router.push("/record")
+            this.$router.push({
+                name: 'record',
+                query: {
+                    pet: this.petId1
+                }
+            })
         },
         paymentHistory () {
             this.$router.push("/paymentHistory")

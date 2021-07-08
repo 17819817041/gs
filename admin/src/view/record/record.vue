@@ -178,12 +178,7 @@
                                     <div>Date: 2021/5/24</div>
                                     <div>Vet: Dr Beck</div>
                                     <div class="vetRecord">
-                                        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                                        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                                        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                                        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                                        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                                        XXXXXXXXXXXXXXXXXXXXXXXXX
+                                        No Data
                                     </div>
                                 </div>
                             </div>
@@ -206,7 +201,8 @@ export default {
     created () {
         this.userAndPet = this.$route.params.pet
         console.log(this.$route.params.pet)
-    }
+    },
+    methods: {}
 }
 </script>
 

@@ -94,6 +94,21 @@
         height: 25px;
         padding: 20px 20px;
     }
+
+    .calendar-day{
+        text-align: center;
+        color: #202535;
+        line-height: 30px;
+        font-size: 12px;
+    }
+    .is-selected{
+        color: #F8A535;
+        font-size: 10px;
+        margin-top: 5px;
+    }
+    #calendar .el-button-group>.el-button:not(:first-child):not(:last-child):after{
+        content: '当月';
+    }
 </style>
 
 <template>
@@ -101,7 +116,7 @@
         <div class="appointment_content flex">
             <div class="appointment_content_item">
                 <div class="appointment_content_item_wrap mg noBar">
-                    <div class="explan al">
+                    <div class="explan bold al">
                         <img src="@/assets/img/appointment.png" alt="">
                         Appointment
                     </div>
@@ -118,25 +133,28 @@
                                     <el-calendar v-model="value"></el-calendar>
                                 </div>
                                 <div class="calendarX">
+
                                     <el-calendar v-model="value">
-                                        <!-- <template
+                                        <template
                                             slot="dateCell"
                                             slot-scope="{date, data}">
-                                            <div
-                                                class="item"
-                                                :disabled="!holiday.hasOwnProperty(data.day)"
-                                                effect="dark"
-                                                placement="top-start">
-                                                <div slot="content"  v-for="(item,i) in holiday[data.day]" :key="i">
-                                                    <p>{{item}}</p>
+                                            <div>
+                                                <div class="calendar-day">{{ data.day.split('-').slice(2).join('-') }}</div>
+                                                    <div v-for="(item,i) in booking" :key="i">
+                                                    <div v-if="(item.months).indexOf(data.day.split('-').slice(1)[0])!=-1">
+                                                        <div v-if="(item.days).indexOf(data.day.split('-').slice(2).join('-'))!=-1">
+                                                            <el-tooltip class="item" effect="dark" :content="item.bookingDoctor" placement="right">
+                                                                <div class="is-selected">{{item.bookingDoctor}}666</div>
+                                                            </el-tooltip>
+                                                        </div>
+                                                        <div v-else></div>
+                                                    </div>
+                                                <div v-else></div>
                                                 </div>
-                                                <p class="day" :class="data.isSelected ? 'is-selected' : ''">
-                                                    <span>{{ Number(data.day.split('-')[2]) }}</span>
-                                                    <span class="dots" v-if="holiday.hasOwnProperty(data.day)"></span>
-                                                </p>
                                             </div>
-                                        </template> -->
+                                        </template>
                                     </el-calendar>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -219,6 +237,8 @@ export default {
                         let date = item.booking.bookingDate.split('-')
                         item.booking.bookingDate = date[2] + '/' + date[1] + '/'+ date[0]
                         item.booking.APM = ''
+                        item.booking.months = [date[1]]
+                        item.booking.days = [date[3]]
                         var hour = Number(item.booking.bookingStartTime.split(':')[0])
                         var minute = Number(item.booking.bookingStartTime.split(':')[1])
                         if ( hour >= 12 && minute >= 0) {

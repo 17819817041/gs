@@ -321,7 +321,6 @@ export default {
         margin-right: 10px;
     }
     .personal_img {
-        padding-right: 8px;
         height: 70px;
     }
     .personWithAnimal {
@@ -411,7 +410,6 @@ export default {
     }
     .Img {
         height: 100%;
-        padding: 2px 0 5px 0;
     }
     .pet_information {
         width: 70%;

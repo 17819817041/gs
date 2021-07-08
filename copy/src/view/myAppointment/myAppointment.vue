@@ -91,7 +91,7 @@
 <template>
     <div class="myAppointment" v-loading="loading">            <!-- //客户 -->
         <div class="myAppointment_wrap noBar">
-            <div class="explan al"><img src="@/assets/img/appointment.png" alt="">Appointment</div>
+            <div class="explan bold al"><img src="@/assets/img/appointment.png" alt="">Appointment</div>
             <div v-if="bookingList">
                 <div class="myAppointment_item mg" @click="appointmentDetalis(item.booking.bookingId,item.docImage)" v-for="(item) in bookingList" :key="item.bookingId">
                     <div class="myAppointment_item_message mg al">
@@ -169,8 +169,7 @@ export default {
             this.$router.push({
                 name: 'cusAppointmentDetalis',
                 query: {
-                    key: id,
-                    headUrl: url
+                    key: id
                 }
             })
         },

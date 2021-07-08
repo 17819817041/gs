@@ -28,7 +28,7 @@
                     <div class="workTime al sb">
                         <div>
                             <div class="size14">Experience</div>
-                            <div><span v-if="item.experience">{{item.experience}}</span> <span class="size14" v-else>0 </span>Years</div>
+                            <div><span class="size14" v-if="item.experience">{{item.experience}}</span> <span class="size14" v-else>0 </span>Years</div>
                         </div>
                         <div>
                             <div class="size14">Likes</div>
@@ -105,11 +105,13 @@
                     </div>
                 </div>
                 <div class="introduce">
-                    <span>Dr. Vinay Misra is a General Obstetrics & Gynecology in new delhi andhas an experience of 8+ years in this field. We provide services in hospitalsonline consultation as video and audio666666666666666666666666666666666666666666666666666
+                    <span v-if="detail.doctorContent">
+                        {{detail.doctorContent}}
                     </span>
+                    <span v-else>The doctor has no introduction!</span>
                 </div>
                 <div class="blue flexEnd">
-                    <span class="cursor">more</span>
+                    <span  class="cursor">more</span>
                 </div>
                 <div class="aboutUs">
                     <div class="child al flex">

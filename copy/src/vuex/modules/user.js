@@ -1,4 +1,4 @@
-import { petList, getUserDetails, vetDetails, doctorList, login, bookingUserId, notice, onlineState } from "@/axios/request.js"
+import { petList, getUserDetails, vetDetails, doctorList, login, bookingUserId, notice, onlineState, balance } from "@/axios/request.js"
 import router from "@/router/router/router.js"
 import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 import Vue from "vue"
@@ -12,6 +12,7 @@ export default {
         doctorList: [],
         searchList: [],
         loading: false,
+        vloading: true,
         callModal: false,
         callModal2: false,
         callTo: {},
@@ -20,6 +21,8 @@ export default {
         mask: {},
         headImg: {},
         rotate: false,
+        vDetail: {},
+        rate: 0,
         sureCall: true,
         showList: true,
         nameList: true,
@@ -69,6 +72,7 @@ export default {
                     store.commit("setUser",{ key: "pet", value: res.data.data.pageT[store.state.firstPet] })
                     store.commit("setUser",{ key: "petId", value: res.data.data.pageT[0].id })
                     store.commit("setUser",{ key: "loading", value: true })
+                    store.commit("setUser",{ key: "vloading", value: false })
                     res.data.data.pageT.forEach(item => {
                         item.change = true
                         if (item.age) {
@@ -85,6 +89,7 @@ export default {
                     store.commit("setUser",{ key: "petList", value: res.data.data.pageT })
                 }
             }).catch(e => {
+                store.commit("setUser",{ key: "vloading", value: false })
                 console.log(e)
             })
         },
@@ -187,28 +192,29 @@ export default {
                     userId: localStorage.getItem('userId'),
                     type:localStorage.getItem('platform')
                 }
+                localStorage.removeItem("Token")
+                localStorage.removeItem("userId")
+                localStorage.removeItem("paltform")
+                localStorage.removeItem("IMtoken")
+                localStorage.removeItem('IM')
+                vm.$router.replace("/login")
+                store.commit("setUser", {
+                    key: "login",
+                    value: false
+                })
+                store.commit("setUser", {
+                    key: "IMuser",
+                    value: {}
+                })
+                conn.close()
+                vm.$message({
+                    type: 'info',
+                    message: 'Account has been signed out!'
+                })
                 onlineState(data).then(res => {
                     console.log(res,'离线')
                     if (res.data.rtnCode == 200) {
-                        localStorage.removeItem("Token")
-                        localStorage.removeItem("userId")
-                        localStorage.removeItem("paltform")
-                        localStorage.removeItem("IMtoken")
-                        localStorage.removeItem('IM')
-                        vm.$router.replace("/login")
-                        store.commit("setUser", {
-                            key: "login",
-                            value: false
-                        })
-                        store.commit("setUser", {
-                            key: "IMuser",
-                            value: {}
-                        })
-                        conn.close()
-                        vm.$message({
-                            type: 'info',
-                            message: 'Account has been signed out!'
-                        })
+                        
                     }
                 }).catch(e => {
                     console.log(e)
@@ -239,6 +245,10 @@ export default {
                         console.log(res,"医生列表")
                         store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
                         store.commit("pageAdd", res.data.data.pageT )
+                        if (doctor.pageNum <= 1) {
+                            store.commit("setUser", { key: 'vDetail', value: res.data.data.pageT[0] } )
+                            store.commit("setUser", { key: 'rate', value: res.data.data.pageT[0].baseScore } )
+                        }
 
                         store.commit("setUser",{ key: "searchList", value: store.state.doctorList })
                         store.commit("setUser",{ key: "loading", value: false })
@@ -259,14 +269,19 @@ export default {
             }
             
         },
-        search (store,data) {
-            store.state.searchList = []
-            store.state.doctorList.forEach(item => {
-                if (item.doctorName.toUpperCase().includes(store.state.inp.toUpperCase())) {    //item.doctorName == data 
-                    store.state.searchList.push(item)
-                } else if (data == '') {
-                    store.state.searchList = store.state.doctorList
-                }
+        // search (store,data) {
+        //     store.state.searchList = []
+        //     store.state.doctorList.forEach(item => {
+        //         if (item.doctorName.toUpperCase().includes(store.state.inp.toUpperCase())) {    //item.doctorName == data 
+        //             store.state.searchList.push(item)
+        //         } else if (data == '') {
+        //             store.state.searchList = store.state.doctorList
+        //         }
+        //     })
+        // },
+        getBalance (store,data) {
+            balance(data).then(res => {
+                console.log(res)
             })
         },
         Booking (store,vm) {

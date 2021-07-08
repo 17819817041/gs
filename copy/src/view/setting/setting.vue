@@ -13,7 +13,7 @@
             box-shadow: 0px 3px 3px 0px #D0D0D0;
             border-radius: 15px;
             z-index: 1000;
-            transform: translate(-50%,-50%);
+            transform: translate(-72%,-50%);
         }
     }
     .setting_content {
@@ -747,7 +747,7 @@ export default {
         let check = end - star
         this.payment = this.payment - check/1000
         this.payment = this.payment.toLocaleString()
-        
+        this.getBalance()
     },
     mounted () {
         // this.getStripe()
@@ -766,6 +766,12 @@ export default {
         top_up_mask () { return this.$store.state.user.showback },
     },
     methods: {
+        getBalance () {
+            let data = {
+                userId: localStorage.getItem('userId')
+            }
+            this.$store.dispatch('getBalance',data)
+        },
         closeback () {
             this.$store.commit("setUser", {
                 key: "showback",

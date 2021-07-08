@@ -3,10 +3,10 @@
         <div class=" first_item">
             <div class="firstAid_title tc">EMERGENCY FIRST AID CALL</div>
             <div class="choose tc">Choose the Pet</div>
-            <div class="sb">
-                <div><img src="@/assets/img/petImage.png" alt=""></div>
-                <div><img src="@/assets/img/petImage1.png" alt=""></div>
-                <div><img src="@/assets/img/other.png" alt=""></div>
+            <div class="sb first_pet">
+                <div><img class="cursor" src="@/assets/img/petImage.png" alt=""></div>
+                <div><img class="cursor" src="@/assets/img/petImage1.png" alt=""></div>
+                <div><img class="cursor" src="@/assets/img/other.png" alt=""></div>
             </div>
         </div>
     </div>
@@ -36,5 +36,11 @@ export default {
     }
     .first_item {
         width: 1300px;
+    }
+    .first_pet {
+        div {
+            border-radius: 50%;
+            overflow: hidden;
+        }
     }
 </style>

@@ -337,3 +337,26 @@ export function min (data) {
         params: data
     })
 }
+
+export function PetMedicalRecord (data) {            //add pet Medical Record
+    return request({
+        url: "/PetMedicalRecord/addPetMedicalRecord",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function medicine () {            //药物Id
+    return request({
+        url: "/medicine/getMedicine",
+        method: 'GET'
+    })
+}
+
+export function balance (data) {            //获取余额
+    return request({
+        url: "/userAccount/getUserAccount",
+        method: 'POST',
+        params: data
+    })
+}

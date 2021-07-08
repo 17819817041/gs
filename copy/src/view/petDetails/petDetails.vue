@@ -377,7 +377,7 @@
                                 <div class="flex about">
                                     <div class="al">
                                         <div class=" record_active">66666666666666666666... </div>
-                                        <div class="morePetDetalis cursor" @click="record">More</div>
+                                        <div class="morePetDetalis cursor" @click="record(item)">More</div>
                                     </div>
                                 </div>
                                 <div class="flex about">
@@ -665,8 +665,15 @@ export default {
                 name:'petmessage'
             })
         },
-        record () {
-            this.$router.push("/record")
+        record (item) {
+            console.log(item)
+            this.$router.push({
+                name: 'record',
+                query: {
+                    pet: item.id
+                }
+            })
+            // this.$router.push("/record")
         }
     }
 }

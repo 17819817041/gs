@@ -5,7 +5,7 @@
         <div class="size13 tc" style="padding:0 0 30px 0">We have received your request and confirm you after few minutes.</div>
         <div class="ju al" style="padding:20px 0"> 
             <div class="size14">REFERENCE ID </div> 
-            <div> {{referenceId}}</div> 
+            <div> {{bookSuccess.bookingId}}</div> 
         </div>
         <svg class="width100" style="height:22px" xmlns="http://www.w3.org/2000/svg" version="1.1">
             <line x1="100%" y1="0" x2="0" y2="0" style="stroke :rgb(192,192,192);stroke-width:5" stroke-dasharray="10,5" />
@@ -14,35 +14,34 @@
         <div class="confirm_message sa">
             <div class="confirm_item ju">
                 <div class="docHead_wrap ju">
-                    <img class="docHead" :src="doctorURL" alt="">
+                    <img class="docHead" :src="bookSuccess.docImage" alt="">
                 </div>
             </div>
             <div class="DATE confirm_item" style="padding-left:20px">
                 <div class="confirm_date">
                     <div class="size14">Date</div>
-                    <div class="size19">{{bookingDate}}</div>
+                    <div class="size19">{{bookSuccess.date}}</div>
                     <div class="size14">in 3 days</div>
                 </div>
                 <div class="margin">
                     <div class="size14">TO</div>
-                    <div class="size19">Dr. {{doctorName}}</div>
+                    <div class="size19">Dr. {{bookSuccess.to}}</div>
                     <div class="size14">General Obstetrics</div>
                 </div>
                 <div>
                     <div class="size14">FEES</div>
-                    <div class="size19">${{price}} per/sesstion</div>
+                    <div class="size19">{{bookSuccess.fees}}</div>
                 </div>
             </div>
             <div class="confirm_item">
                 <div style="padding-left:50px">
                     <div class="size14">APPTS. TIME</div>
-                    <div class="size19">{{bookingStarTime}} AM</div>
+                    <div class="size19">{{bookSuccess.time}} AM</div>
                     <div style="height:19px"></div>
                 </div>
                 <div class="margin" style="padding-left:50px">
                     <div class="size14">CONST. TYPE</div>
-                    <div class="size19" v-if="confirmKey.bookingType == 1" >Video</div>
-                    <div class="size19" v-else-if="confirmKey.bookingType == 2" >Visit</div>
+                    <div class="size19" >{{bookSuccess.constType}}</div>
                 </div>
             </div>
         </div>
@@ -63,6 +62,7 @@ export default {
             doctorName: '',
             doctorURL: '',
             price: '',
+            bookSuccess: {},
             confirmKey: {}
         }
     },
@@ -72,6 +72,8 @@ export default {
     },
     methods: {
         getMsg () {
+            this.bookSuccess = this.$route.query
+
             this.doctorURL = this.$route.query.head
             let data = {
                 bookingId: this.$route.query.key

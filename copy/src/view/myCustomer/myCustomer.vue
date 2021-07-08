@@ -1,5 +1,5 @@
 <template>
-    <div class="myCustomer flex" v-loading="!loading">
+    <div class="myCustomer flex" v-loading="loading">
         <div class="animal">
             <div class="wrap noBar clear">
                 <!-- <div class="wrap_item ju float cursor"  @click="toPatients">
@@ -120,8 +120,8 @@ export default {
             List: {},
             pageNum: 0,
             pageSize: 100,
-            changePage: {},
             petAndUser: {},
+            changePage: {}
         }
     },
     mounted () {
@@ -154,7 +154,7 @@ export default {
                 })
             },
         },
-        loading () { return this.$store.state.user.loading },
+        loading () { return this.$store.state.user.vloading },
     },
     methods: {
         getUserByPetId (id) {
@@ -175,8 +175,8 @@ export default {
             this.getUserByPetId(item.id)
         },
         moreDetail () {
-            if (this.changePage.id) {
-                this.$router.push("/patients?id=" + this.petAndUser.id)
+            if (this.changePage) {
+                this.$router.push("/patients?id=" + this.changePage.id)
             } else {
 
             }
@@ -257,7 +257,6 @@ export default {
         margin-right: 10px;
     }
     .personal_img {
-        padding-right: 8px;
         height: 70px;
     }
     .personWithAnimal {
@@ -339,7 +338,6 @@ export default {
     }
     .Img {
         height: 100%;
-        padding: 2px 0 5px 0;
     }
     .pet_information {
         width: 70%;

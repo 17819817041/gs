@@ -1,6 +1,6 @@
 <template>
     <div class="myDoctor flex">
-        <div class="doctorList noBar" @scroll="docScroll" ref="doctorList">
+        <div class="doctorList" @scroll="docScroll" ref="doctorList">
             <div class="width102 clear" ref="doctorList_height">
                 <div class="doctor_item float" v-for="(item) in doctorList" :key="item.doctorId" @click="getDetail(item)">
                     <div class="image flex">
@@ -103,11 +103,13 @@
                     </div>
                 </div>
                 <div class="introduce">
-                    <span>Dr. Vinay Misra is a General Obstetrics & Gynecology in new delhi and
-                        has an experience of 8+ years in this field. We provide services in hospitalsonline 
-                        consultation as video and audio...
+                    <span v-if="detail.doctorContent">
+                        {{detail.doctorContent}}
                     </span>
-                    <span class="blue cursor">more</span>
+                    <span v-else>No introduction!</span>
+                </div>
+                <div class="blue flexEnd">
+                    <span  class="cursor">more</span>
                 </div>
                 <div class="aboutUs">
                     <div class="child al flex">
@@ -135,8 +137,8 @@ export default {
         return {
             active:true,
             change:true,
-            rate:0,
-            detail: {},
+            // rate:0,
+            // detail: {},
             pageNum: 1,
         }
     },
@@ -147,14 +149,14 @@ export default {
         // }
         
     },
-    watch: {
-        // doctorList: {
-        //     handler (val) {
-        //         this.doctorList = val
-        //     },
-        //     immediate: true
-        // }
-    },
+    // watch: {
+    //     doctorList: {
+    //         handler (val) {
+    //             this.doctorList = val
+    //         },
+    //         immediate: true
+    //     }
+    // },
     computed: {
         callModal: {
             get () { return this.$store.state.user.callModal },
@@ -168,10 +170,21 @@ export default {
         // remoteStream () { return this.$store.state.app.remoteStream },
         // localStream () { return this.$store.state.app.localStream },
         doctorList: { 
-            get () { return this.$store.state.user.searchList },
+            get () { return this.$store.state.user.doctorList },
             set (val) {
                 this.$store.commit("setUser", {
-                    key: "searchList",
+                    key: "doctorList",
+                    value: val
+                })
+            }
+        },
+        detail () { return this.$store.state.user.vDetail },
+        rate () { return this.$store.state.user.rate },
+        rate: { 
+            get () { return this.$store.state.user.rate },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "rate",
                     value: val
                 })
             }
@@ -185,8 +198,14 @@ export default {
                 item.doctorName = 'No name'
             }
             console.log(item)
-            this.detail = item
-            this.rate = this.detail.baseScore
+            this.$store.commit("setUser",{
+                key: "vDetail",
+                value: item
+            })
+            this.$store.commit("setUser",{
+                key: "rate",
+                value: item.baseScore
+            })
             this.$store.commit("setUser",{
                 key: "mask",
                 value: item
@@ -219,22 +238,32 @@ export default {
         },
         toVideo () {
             // this.$router.push('agora')
-            
-            if (this.detail.doctorId) {
-                this.$store.commit("setUser", {
-                    key: "callTo",
-                    value: this.detail
-                    // value: {
-                    //     doctorId: 322
-                    // }
-                })
-                this.callModal = true
-            } else {
+            console.log(this.detail)
+            if (this.detail.doctorOnLineState === 0) {
                 this.$message({
-                    type: "error",
-                    message: "Please choose a doctor"
+                    type: 'info',
+                    message: "The doctor is temporarily offline!"
                 })
+            } else {
+                if (this.detail.doctorOnLineState == 1) {
+                    if (this.detail.doctorId) {
+                        this.$store.commit("setUser", {
+                            key: "callTo",
+                            value: this.detail
+                            // value: {
+                            //     doctorId: 322
+                            // }
+                        })
+                        this.callModal = true
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: "Please choose a doctor"
+                        })
+                    }
+                }
             }
+            
         },
         booking () {
             this.$router.push("/booking")
@@ -274,6 +303,13 @@ video {
             @media screen and (max-width:1050px) {
                 width: 100%;
             }
+        }
+        .doctorList::-webkit-scrollbar {
+            width: 8px;
+        }
+        .doctorList::-webkit-scrollbar-thumb {
+            border-radius: 15px;
+            background: rgb(216, 216, 216);
         }
         .doctorDetails {
             width: 26%;
@@ -448,7 +484,13 @@ video {
         margin: auto;
         font-size: 14;
         color: #656565;
-        margin-bottom: 35px;
+        max-height: 250px;
+        text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+        display: -webkit-box;
+        -webkit-line-clamp: 3;/*规定超过两行的部分截断*/
+        -webkit-box-orient: vertical;
+        overflow : hidden; 
+        word-break: break-all;/*在任何地方换行*/
     }
     .aboutUs {
         width: 80%;
