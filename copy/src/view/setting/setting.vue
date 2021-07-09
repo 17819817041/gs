@@ -457,12 +457,12 @@
             <div class="Amount">
                 <div class="p_title" style="padding-left: 15px">Select Amount</div>
                 <div class="select_item clear">
-                    <div @click="HK = 5,goodId = 5" :class="['amount_item float cursor', { much: HK == 5 }]">HK$ 5</div>
-                    <div @click="HK = 10,goodId = 6" :class="['amount_item float cursor', { much: HK == 10 }]">HK$ 10</div>
-                    <div @click="HK = 20,goodId = 7" :class="['amount_item float cursor', { much: HK == 20 }]">HK$ 20</div>
-                    <div @click="HK = 50,goodId = 8" :class="['amount_item float cursor', { much: HK == 50 }]">HK$ 50</div>
-                    <div @click="HK = 100,goodId = 9" :class="['amount_item float cursor', { much: HK == 100 }]">HK$ 100</div>
-                    <div @click="HK = 200,goodId = 10" :class="['amount_item float cursor', { much: HK == 200 }]">HK$ 200</div>
+                    <div @click="HK = 5,goodId = 5,getGoodsId(5)" :class="['amount_item float cursor', { much: HK == 5 }]">HK$ 5</div>
+                    <div @click="HK = 10,goodId = 6,getGoodsId(4)" :class="['amount_item float cursor', { much: HK == 10 }]">HK$ 10</div>
+                    <div @click="HK = 20,goodId = 7,getGoodsId(7)" :class="['amount_item float cursor', { much: HK == 20 }]">HK$ 20</div>
+                    <div @click="HK = 50,goodId = 8,getGoodsId(8)" :class="['amount_item float cursor', { much: HK == 50 }]">HK$ 50</div>
+                    <div @click="HK = 100,goodId = 9,getGoodsId(9)" :class="['amount_item float cursor', { much: HK == 100 }]">HK$ 100</div>
+                    <div @click="HK = 200,goodId = 10,getGoodsId(10)" :class="['amount_item float cursor', { much: HK == 200 }]">HK$ 200</div>
                 </div>
             </div>
             <div class="pay_W">
@@ -820,21 +820,7 @@ export default {
             }
         },
         getPaypal () {
-            var userId = localStorage.getItem('userId');
-            var goodsId = this.goodId;
-            var paymentTypeId = 5;
-            let data = {
-                userId,
-                goodsId,
-                paymentTypeId
-            }
-            paypals(data).then(res => {
-                console.log(res,'paypal')
-                this.data = res.data.data
-            }).catch(e => {
-                console.log(e)
-                this.pay_loading = false
-            })
+            this.getGoodsId()
             let that = this
             paypal.Buttons({
                 // env: 'sandbox', /* sandbox | production */
@@ -892,6 +878,24 @@ export default {
                 }
 
             }).render('#paypal-button-container');
+        },
+        getGoodsId (id) {
+            var userId = localStorage.getItem('userId');
+            var goodsId = id
+            console.log()
+            var paymentTypeId = 5;
+            let data = {
+                userId,
+                goodsId,
+                paymentTypeId
+            }
+            paypals(data).then(res => {
+                console.log(res,'paypal')
+                this.data = res.data.data
+            }).catch(e => {
+                console.log(e)
+                this.pay_loading = false
+            })
         },
         getGender (val) {
             this.user.userGender = val.target.value
