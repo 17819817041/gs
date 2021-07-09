@@ -27,11 +27,11 @@
                         
                         <div class="myMessage al">
                             <label for="ava" class="cursor label_img ju al">
-                                <input id="ava" v-show="false" type="file" />   <!-- 头像路径-->
+                                <input id="ava" v-show="false" type="file" @change="getImage"/>   <!-- 头像路径-->
                                 <div class="ju al headimg_wrap">
-                                    <!-- <img style="height:100%;" v-if="userDetail.image" :src="userDetail.image" alt=""> -->
-                                    <img src="@/assets/img/settings.png" alt="">
-                                    <!-- <i class="el-icon-picture-outline" style="font-size:30px;color:gray"></i> -->
+                                    <img style="height:100%;" v-if="userDetail.image" :src="userDetail.image" alt="">
+                                    <!-- <img src="@/assets/img/settings.png" alt=""> -->
+                                    <i class="el-icon-picture-outline" style="font-size:30px;color:gray" v-else></i>
                                 </div>
                             </label>
                             <!-- <div class="name al">{{userDetails.userName}}</div> -->
@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { getUserDetails } from "@/axios/request.js"
+import { getUserDetails, file, updateAdmin } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -133,6 +133,42 @@ export default {
         },
         patient () {
             this.$router.push("/petPage")
+        },
+        getImage (e) {
+            var formData = new FormData();
+            formData.append('file', e.target.files[0]);
+            file(formData).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.userDetail.image = res.data.data
+                    let data = {
+                        userId: localStorage.getItem('adminUserId'),
+                        image: this.userDetail.image
+                    }
+                    updateAdmin(data).then(res => {
+                        if (res.data.rtnCode == 200) {
+                            this.$store.dispatch('getUser',this)
+                            this.$message({
+                                type: 'success',
+                                message: 'Successfully modified!'
+                            })
+                            this.edit = 1
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: 'Fail to edit!'
+                            })
+                        }
+                    }).catch(e => {
+                        this.$message({
+                            type: 'error',
+                            message: 'Fail to edi!'
+                        })
+                    })
+                } else {
+                    this.userDetail.image = ''
+                }
+            })
         }
     }
 }

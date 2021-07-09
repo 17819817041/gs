@@ -4,26 +4,61 @@
             <img src="@/assets/img/account.png" alt="">
             My Payment History
         </div>
-        <div class="paymentHistory_content">
-            <div class="paymentHistory_content_item sb mg">
+        <div class="paymentHistory_content" v-if="orderList">
+            <div class="paymentHistory_content_item sb mg" v-for="(item,i) in orderList" :key="i">
                 <div class="flex al">
-                    <div class="payment_man_img"><img src="@/assets/img/john.png" alt=""></div>
+                    <div class="payment_man_img ju al">
+                        <img :src="item.imageUrl" v-if="item.imageUrl" alt="">
+                        <i class="el-icon-picture-outline" style="color: gray;font-size: 20px" v-else></i>
+                    </div>
                     <div class="payment_details">
-                        <div class="size17">Mukesh Raut</div>
-                        <div class="size16">Money recieved - Pending</div>
+                        <div class="size17">
+                            <span v-if="item.paymentUserName">{{item.paymentUserName}}</span>
+                            <span v-else>No Name</span>
+                        </div>
+                        <div class="size16">{{item.paymentName}}</div>
                     </div>
                 </div>
                 <div class="much al">
-                    +666
+                    <div>
+                        <div class="flexEnd">$100</div>
+                        <div>{{item.paymentTime}}</div>
+                    </div>
                 </div>
             </div>
+        </div>
+        <div class="paymentHistory_content" v-else>
+            <div class="tc noThing">No records!</div>
         </div>
     </div>
 </template>
 
 <script>
+import { pay, updateUserDetails, file, allOrder } from "@/axios/request.js"
 export default {
-
+    data () {
+        return {
+            orderList: []
+        }
+    },
+    created () {
+        this.getAllOrder()
+    },
+    methods: {
+        getAllOrder () {
+            let data = {
+                userId: localStorage.getItem('userId'),
+                pageNum: 0,
+                pageSize: 10
+            }
+            allOrder(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.orderList = res.data.data.pageT
+                }
+            })
+        },
+    }
 }
 </script>
 
@@ -43,13 +78,15 @@ export default {
         background: white;
         border-radius: 7px;
         box-shadow: 0 2px 2px 1px rgb(207, 206, 206);
+        margin-bottom: 12px;
     }
     .payment_man_img {
         width: 50px;
         height: 50px;
+        overflow: hidden;
+        border-radius: 50%;
         margin: 10px 20px;
         img {
-            width: 100%;
             height: 100%;
         }
     }
@@ -62,5 +99,11 @@ export default {
     }
     .size17 {
         font-size: 17px;
+    }
+    .noThing {
+        font-size: 19px;
+        color: gray;
+        font-weight: bold;
+        margin-top: 30px;
     }
 </style>

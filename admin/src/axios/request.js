@@ -103,3 +103,13 @@ export function getUserByPetId (data) {            //宠物id获取客户?petId=
         params: data
     })
 }
+
+export function file (data) {          //上传头像
+    return request(
+        {
+            url: '/imageUpload/uploadImage',
+            method: 'POST',
+            data: data, // 上传formdata封装的数据
+        }
+    )
+}

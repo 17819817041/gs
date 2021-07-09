@@ -25,7 +25,27 @@
                             <div class="calendar_item sb">
                                 <div>
                                     <div class="size16">Date and Time</div>
-                                    <div class="size17">{{confirmKey.booking.bookingDate}} - {{confirmKey.booking.bookingStartTime}}  {{confirmKey.APM}}</div>
+                                    <div class="size17" v-if="change">{{confirmKey.booking.bookingDate}} - {{confirmKey.booking.bookingStartTime}}  {{confirmKey.APM}}</div>
+                                    <div class="flex changeDate_t" v-else>
+                                        <div>
+                                            <el-date-picker class="width100"
+                                                v-model="value1"
+                                                type="date"
+                                                placeholder="选择日期">
+                                            </el-date-picker>
+                                        </div>
+                                        <div style="margin-left:15px">
+                                            <el-time-select class="width100"
+                                                v-model="value"
+                                                :picker-options="{
+                                                    start: '08:30',
+                                                    step: '00:15',
+                                                    end: '18:30'
+                                                }"
+                                                placeholder="选择时间">
+                                            </el-time-select>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div>
                                     <div class="size16">Pet Name</div>
@@ -34,8 +54,14 @@
                             </div>
                             <div class="calendar_item">
                                 <div class="size16">Practice Detail</div>
-                                <div class="size17">{{confirmKey.veterinaryHospitalName}}</div>
-                                <div class="size16">{{confirmKey.veterinaryHospitalAddress}} </div>
+                                <div class="size17">
+                                    <span v-if="confirmKey.veterinaryHospitalName">{{confirmKey.veterinaryHospitalName}}</span>
+                                    <span v-else>No data</span>
+                                </div>
+                                <div class="size16">
+                                    <span v-if="confirmKey.veterinaryHospitalAddress">{{confirmKey.veterinaryHospitalAddress}}</span>
+                                    <span v-else>No data</span>
+                                </div>
                             </div>
                             <div class="calendar_item">
                                 <div class="size16">Booked for</div>
@@ -46,8 +72,9 @@
                                 <div class="size17">{{confirmKey.booking.bookingId}}</div>
                             </div>
                             <div class="flex calendar_item">
-                                <div class="Reschedule size13 cursor tc">Reschedule</div>
+                                <div class="Reschedule size13 cursor tc" @click="update">Reschedule</div>
                                 <div class="cancel size13 cursor tc" @click="deleteBook">Cancel</div>
+                                <div class="sureUpdate size13 cursor tc" v-show="!change" @click="sureUpdate">Sure</div>
                             </div>
                         </div>
                         <div class="telephone_or_video">
@@ -62,20 +89,50 @@
 </template>
 
 <script>
-import { bookingId, deleteBooking } from "@/axios/request.js"
+import { bookingId, deleteBooking, updateBooking } from "@/axios/request.js"
 export default {
     data () {
         return {
             bookingDate: '',
             confirmKey: {
                 booking: {}
-            }
+            },
+            change: true,
+            value: '',
+            value1: ''
         }
     },
     created () {
         this.getMsg()
     },
     methods: {
+        sureUpdate () {
+            let data = {
+                bookingId: this.$route.query.key,
+                bookingStartTime:this.value,
+                bookingTime: this.confirmKey.booking.bookingTime,
+                bookingDate: new Date(this.value1).toLocaleDateString()
+            }
+            updateBooking(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: "Successfully modified!"
+                    })
+                    this.getMsg()
+                    this.change = true
+                } else {
+                    this.change = true
+                }
+            }).catch(e => {
+                console.log(e)
+                this.change = true
+            })
+        },
+        update () {
+            this.change = !this.change
+        },
         getMsg () {
             let data = {
                 bookingId: this.$route.query.key
@@ -83,9 +140,9 @@ export default {
             bookingId(data).then(res => {
                 if (res.data.rtnCode == 200) {
                     res.data.data.APM = ''
-                    let a = '09:30'
+                    let a = res.data.data.booking.bookingStartTime
                     let aa = a.split(':')
-                    if ( Number(aa[0]) > 12 && Number(aa[1]) >= 1 ) {
+                    if ( Number(aa[0]) >= 12 && Number(aa[1]) >= 1 ) {
                         res.data.data.APM = 'PM'
                     } else {
                         res.data.data.APM = 'AM'
@@ -186,6 +243,15 @@ export default {
         padding: 5px;
         margin: 0 3px;
     }
+    .sureUpdate {
+        width: 70px;
+        border-radius: 7px;
+        background: @video;
+        font-size: 12px;
+        color: white;
+        padding: 5px;
+        margin: 0 3px;
+    }
     .calendar_item {
         margin-top: 40px;
     }
@@ -230,5 +296,10 @@ export default {
         height: 40px;
         transform: rotateY(180deg);
         margin-bottom: 10px;
+    }
+    .changeDate_t {
+        div {
+            width: 150px;
+        }
     }
 </style>

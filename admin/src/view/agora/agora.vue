@@ -316,7 +316,7 @@
                 <div class="star_e bold cursor tc mg white">
                     17:00 - 18:00
                 </div>
-                <div class="leave_r cursor bold tc white">
+                <div class="leave_r cursor bold tc white" @click="out">
                     Leave the Room
                 </div>
             </div>

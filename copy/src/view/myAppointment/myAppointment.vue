@@ -78,11 +78,12 @@
         color: #767676;
     }
     .Info {
-        width: 150px;
-        height: 150px;
+        width: 100px;
+        height: 100px;
         border-radius: 50%;
         overflow: hidden;
-        margin-bottom: 20px;
+        margin-top: 60px;
+        margin-bottom: 10px;
     }
     .NoMessage {
         height: 100%;
@@ -134,8 +135,8 @@
                     </div>
                 </div>
             </div>
-            <div v-else-if="bookingList === null" class="NoMessage flex">
-                <div class="mg">
+            <div v-else-if="bookingList === null" class="NoMessage ju">
+                <div >
                     <div class="Info mg">
                         <img style="height:100%" src="@/assets/img/info.png" alt="">
                     </div>

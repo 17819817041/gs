@@ -27,6 +27,8 @@
         width: 24%;
         height: 100%;
         border-radius: 50%;
+        position: relative;
+        z-index: 100;
         overflow: hidden;
         .set_img {
             height: 70%;
@@ -135,7 +137,10 @@
                 </div>
             </div>
             <div class="head ju al">
-                <img class="set_img" src="@/assets/img/settings.png" alt="">
+                <label for="img" style="height:100%">
+                    <img :class="['set_img ', { cursor: edit == 2 }]" :src="userDetail.image" alt="">
+                    <input type="file" id="img" v-show="false" v-if="edit == 2" @change="getImage" >
+                </label>
             </div>
             <div class="msg_item flex al">
                 <div class="title_a">
@@ -158,7 +163,7 @@
 </template>
 
 <script>
-import { updateAdmin } from "@/axios/request.js"
+import { updateAdmin, file } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -192,12 +197,14 @@ export default {
             if (this.name == '') {
                 this.$message({
                     type: 'info',
-                    message: 'Name cannot be empty!'
+                    message: 'Name cannot be empty!',
+
                 })
             } else {
                 let data = {
                     userId: localStorage.getItem('adminUserId'),
-                    name: this.name
+                    name: this.name,
+                    image: this.userDetail.image
                 }
                 updateAdmin(data).then(res => {
                     if (res.data.rtnCode == 200) {
@@ -220,6 +227,18 @@ export default {
                     })
                 })
             }
+        },
+        getImage (e) {
+            var formData = new FormData();
+            formData.append('file', e.target.files[0]);
+            file(formData).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.userDetail.image = res.data.data
+                } else {
+                    this.userDetail.image = ''
+                }
+            })
         }
     }
 }

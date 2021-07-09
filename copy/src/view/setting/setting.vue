@@ -315,13 +315,6 @@
         margin-left: 7px;
         padding: 10px 0;
     }
-    .pay_btn {
-        // width: 70%;
-        border-radius: 12px;
-        // margin-top: 100px;
-        background: #F7B030;
-        padding: 10px;
-    }
     .Alipay, .WeChatPay {
         width: 230px;
         height: 210px;
@@ -393,8 +386,6 @@
     }
     .pay_btn {
         width: 60%;
-        padding: 10px;
-        background: @helpBtn;
         border-radius: 9px;
         color: white;
         margin: 30px auto;
@@ -493,9 +484,16 @@
                     </div>
                 </div>
             </div>
-            <div class="pay_btn tc bold cursor" @click="pay_p">
-                Continue
+            <div class="pay_btn tc bold cursor" v-show="type_pay == 5">
+                <div  id="paypal-button-container"></div>
             </div>
+            <div class="pay_btn tc bold cursor" @click="pay_p" v-show="type_pay !==5">
+                <el-button class="googleBtn width100" type="primary" :loading="pay_loading">
+                    <!-- <span class="span">Login</span> -->
+                    Continue
+                </el-button>
+            </div>
+            
         </div>
         <div class="setting_content flex">
             <div class="setting_message noBar">
@@ -601,7 +599,7 @@
                                     </div>
                                     <div class="HK mg ju">
                                         <div class="hk">$</div>
-                                        <div class="balance_show">{{payment}}</div>
+                                        <div class="balance_show">{{my_Balance.balance}}</div>
                                         <div class="hk">HKD</div>
                                     </div>
                                     <div class="active_current mg">is your current balance</div>
@@ -709,7 +707,7 @@
 </template>
 
 <script>
-import { pay, updateUserDetails, file } from "@/axios/request.js"
+import { pay, updateUserDetails, file, allOrder, paypals, orderId, contentId } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -724,11 +722,12 @@ export default {
             cardExpiry:'',
             cardCvc:'',
             stripe:'',
-            payment: 8504,
             user:{},
             type_pay: 5,
             HK: 5,
-            goodId: 1
+            goodId: 1,
+            pay_loading: false,
+            data: 0
         }
     },
     watch: {
@@ -748,10 +747,11 @@ export default {
         this.payment = this.payment - check/1000
         this.payment = this.payment.toLocaleString()
         this.getBalance()
+        this.getAllOrder()
     },
     mounted () {
         // this.getStripe()
-        // this.paypal1()
+        this.getPaypal()
     },
     computed: {
         AllDetail: {
@@ -764,8 +764,19 @@ export default {
             },
         },
         top_up_mask () { return this.$store.state.user.showback },
+        my_Balance () { return this.$store.state.user.balance }
     },
     methods: {
+        getAllOrder () {
+            let data = {
+                userId: localStorage.getItem('userId'),
+                pageNum: 0,
+                pageSize: 10
+            }
+            allOrder(data).then(res => {
+                console.log(res)
+            })
+        },
         getBalance () {
             let data = {
                 userId: localStorage.getItem('userId')
@@ -783,46 +794,104 @@ export default {
             this.$store.commit('setUser', { key: 'showback', value: true })
         },
         pay_p () {
-            var stripe = Stripe("pk_test_51J3CWvILx2JTyAxM0WSRmJP9b9dXD4bZ6f2lwpx2BWJU2c2AXFBSuX3irI5nFGU3Xd5kyB3np1IBkbEH8ebhDbEh00wLNKvYbN"); //测试
-            var userId = localStorage.getItem('userId');
-            //用户信息
-            var goodsId = this.goodId;
-            //paymentTypeId  1账户余额 2信用卡 3支付宝 4微信 5paypal
-            var paymentTypeId = this.type_pay;
+            if (this.type_pay == 5) {
 
+            } else {
+                this.pay_loading = true
+                var stripe = Stripe("pk_test_51J3CWvILx2JTyAxM0WSRmJP9b9dXD4bZ6f2lwpx2BWJU2c2AXFBSuX3irI5nFGU3Xd5kyB3np1IBkbEH8ebhDbEh00wLNKvYbN"); //测试
+                var userId = localStorage.getItem('userId');
+                //用户信息
+                var goodsId = this.goodId;
+                //paymentTypeId  1账户余额 2信用卡 3支付宝 4微信 5paypal
+                var paymentTypeId = this.type_pay;
+
+                let data = {
+                    userId,
+                    goodsId,
+                    paymentTypeId
+                }
+                pay(data).then(res => {
+                    stripe.redirectToCheckout({ sessionId: res.data.id });
+                    this.pay_loading = false
+                }).catch(e => {
+                    console.log(e)
+                    this.pay_loading = false
+                })
+            }
+        },
+        getPaypal () {
+            var userId = localStorage.getItem('userId');
+            var goodsId = this.goodId;
+            var paymentTypeId = 5;
             let data = {
                 userId,
                 goodsId,
                 paymentTypeId
             }
-            pay(data).then(res => {
-                stripe.redirectToCheckout({ sessionId: res.data.id });
+            paypals(data).then(res => {
+                console.log(res,'paypal')
+                this.data = res.data.data
             }).catch(e => {
-                console.log(e,666)
+                console.log(e)
+                this.pay_loading = false
             })
-        },
-        paypal1 () {
-            console.log(paypal)
-            // paypal.Buttons({
-            //     createOrder: function(data, actions) {
-            //     // This function sets up the details of the transaction, including the amount and line item details.
-            //     return actions.order.create({
-            //         purchase_units: [{
-            //             amount: {
-            //                 value: '0.01'
-            //             }
-            //         }]
-            //     });
-            //     },
-            //     onApprove: function(data, actions) {
-            //     // This function captures the funds from the transaction.
-            //     return actions.order.capture().then(function(details) {
-            //         // This function shows a transaction success message to your buyer.
-            //         // alert('Transaction completed by ' + details.payer.name.given_name);
-            //         console.log(details)
-            //     });
-            //     }
-            // }).render('#paypal-button-container');
+            let that = this
+            paypal.Buttons({
+                // env: 'sandbox', /* sandbox | production */
+                style: {
+                layout: 'horizontal',   // 布局方式：vertical: 垂直，horizontal：水平，
+                size:   'responsive',   /* medium | large | responsive*/
+                shape:  'rect',         /* pill | rect*/
+                color:  'gold',         /* gold | blue | silver | black*/
+                label: 'paypal'
+                },
+                commit: false, // Show a 'Pay Now' button
+                /* createOrder() is called when the button is clicked */
+
+                createOrder: function() {
+                /* Set up a url on your server to create the order */
+                var CREATE_URL = '/api/stripe/createOrder?orderId=' + that.data;
+                /* Make a call to your server to set up the payment */
+                return fetch(CREATE_URL,{
+                    method: 'post'
+                }).then(function(res) {
+                    return res.json();
+                }).then(function(data) {
+                    if(data.state == 1)
+                    return data.content.id;
+                    else{
+                    alert(data.msg);
+                    }
+                });
+
+                },
+                /* onApprove() is called when the buyer approves the payment */
+                onApprove: function(data, actions) {
+                /* Set up a url on your server to execute the payment */
+                var EXECUTE_URL = '/api/stripe/executePayment';
+                /* Set up the data you need to pass to your server */
+                /* Make a call to your server to execute the payment */
+                return fetch(EXECUTE_URL, {
+                    method: 'post',
+                    body: JSON.stringify({
+                    orderId: data.orderID
+                    })
+                }).then(function(res) {
+                    return res.json();
+                }).then(function(data) {
+                    if(data.state == 1)
+                    // alert(data.content.id,orderId)
+                    window.location.href='/api/stripe/successs?orderId='+data.content.id+"&petaviorderId="+that.data;
+                    else{
+                    alert(data.msg);
+                    }
+                });
+
+                },onCancel: function() {
+                return window.location.href='/api/stripe/paypalCancel';
+                }
+
+            }).render('#paypal-button-container');
         },
         getGender (val) {
             this.user.userGender = val.target.value

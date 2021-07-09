@@ -172,7 +172,7 @@ export default {
 		});
     },
     created () {
-        // this.judge_login()
+        this.judge_login()
     },  
     methods: {
         judge_login () {

@@ -83,11 +83,11 @@
         color: gray;
         border-bottom: solid 1px #DCDEE1;
     }
-    .calendarMini {
-        width: 30%;
-    }
+    // .calendarMini {
+    //     width: 30%;
+    // }
     .calendarX {
-        width: 70%;
+        width: 100%;
     }
     .calendarList {
         width: 25px;
@@ -129,9 +129,9 @@
                                 <div class="size21 bold al">Calendar</div>
                             </div>
                             <div class="flex">
-                                <div class="calendarMini">
+                                <!-- <div class="calendarMini">
                                     <el-calendar v-model="value"></el-calendar>
-                                </div>
+                                </div> -->
                                 <div class="calendarX">
 
                                     <el-calendar v-model="value">
@@ -140,8 +140,9 @@
                                             slot-scope="{date, data}">
                                             <div >
                                                 <div>{{data.day.slice(5)}}</div>
-                                                <div>{{
+                                                <div class="size12">{{
                                                     booking.find(b => b.booking.calanderDate==data.day) ? 
+                                                    'Have an appointment with' + ' ' +
                                                     booking.find(b => b.booking.calanderDate==data.day).booking.bookingDoctor : 
                                                     ''
                                                 }}</div>

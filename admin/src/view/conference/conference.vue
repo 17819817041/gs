@@ -66,7 +66,7 @@ export default {
         },
         dele (item) {
             let data = {
-                webId: 108
+                webId: item.id
             }
             delMetting(data).then(res => {
                 console.log(res,'删除')

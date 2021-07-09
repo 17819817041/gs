@@ -38,6 +38,7 @@ export default {
         noticeState: false,
         showback: false,
         noticeList: [],
+        balance: {},
         n_loading: true,
         adminList: {
             'admin': {
@@ -281,6 +282,9 @@ export default {
         // },
         getBalance (store,data) {
             balance(data).then(res => {
+                if (res.data.rtnCode == 200) {
+                    store.state.balance = res.data.data
+                }
                 console.log(res)
             })
         },

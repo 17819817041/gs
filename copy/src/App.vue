@@ -61,13 +61,14 @@
 </template>
 
 <script>
-import { min, addMetting } from "@/axios/request.js"
+import { min, addMetting, order, orderDetail, delMetting } from "@/axios/request.js"
 export default {
 	data () {
 		return {
 			loading: false,
 			timer: "",
       		value: 0,
+			mettingId: 0
 		}
 	},
 	created () {
@@ -195,6 +196,16 @@ export default {
 			console.log(this.value);
 		},
 		async sure () {
+			// let data6 = {
+			// 		userId: 486,
+			// 		remarks: '666',
+			// 		doctorId: 324,
+			// 		doctorTypeId: 2,
+			// 		goodsId: 1
+			// 	}
+			// 	order(data6).then(res => {
+			// 		console.log(res,'order')
+			// 	})
 			this.$router.push("/agora")
 			this.callLoading = true
 			let params = {
@@ -209,12 +220,9 @@ export default {
 			}
 			const user_room = await emedia.mgr.joinRoom(params);
 			this.addConfr(user_room.confrId)
-			console.log("room",user_room,params)
 			let constraints = { audio: true, video: true };
 			const stream = await emedia.mgr.publish(constraints)
 			this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
-			// this.callModal = false
-			// this.$router.push("/agora")
 			this.sendMsg(params)
 		},
 		sendMsg (params) {
@@ -223,14 +231,14 @@ export default {
 				user: this.userDetail,
 				platform: localStorage.getItem('platform'),
 				petId: this.petId,
+				mettingId: this.mettingId,
 				params
             }
             let id = this.$conn.getUniqueId();                 // 生成本地消息id
             let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
             msg.set({
                 msg: JSON.stringify(data),                  // 消息内容
-                to: JSON.stringify(this.callTo.doctorId) + 'A2',     
-                // to: '322_2',                     // 接收消息对象（用户id）
+                to: JSON.stringify(this.callTo.doctorId) + 'A2',      // 接收消息对象（用户id）
                 chatType: 'singleChat',                  // 设置为单聊                       
                 success: function (id, serverMsgId) {
                     console.log('send private text Success');  
@@ -260,6 +268,13 @@ export default {
             });
             this.$conn.send(msg.body);
 			this.$router.push('/myDoctor')
+
+			let data1 = {
+                webId: this.mettingId
+            }
+            delMetting(data1).then(res => {
+                console.log(res,'删除')
+            })
 		},
 		async sure2 () {
 			this.$router.push("/agora")
@@ -269,8 +284,17 @@ export default {
 				const user_room = await emedia.mgr.joinRoom(that.joinParams);
 				let constraints = { audio: true, video: true };
 				const stream = await emedia.mgr.publish(constraints)
-				console.log(stream)
 				// this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
+				let data6 = {
+					userId: that.caller.userId,
+					remarks: '666',
+					doctorId: that.callTo.doctorId,
+					doctorTypeId: 2,
+					goodsId: 1
+				}
+				order(data6).then(res => {
+					console.log(res,'order')
+				})
 				let data = {
 					type: "confirmCall"
 				}
@@ -306,6 +330,7 @@ export default {
 			}
 			addMetting(data).then(res => {
 				console.log(res)
+				this.mettingId = res.data.data[0].id
 			})
 		},
 		cancel2 () {

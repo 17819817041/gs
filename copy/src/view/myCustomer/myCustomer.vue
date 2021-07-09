@@ -53,7 +53,7 @@
                         </div>
                         <div class="pet_information">
                             <div class="pet_name size19" v-if="petAndUser.petName">{{petAndUser.petName}}</div>
-                            <div class="pet_name size19" v-else>None</div>
+                            <div class="pet_name size19" v-else>No Name</div>
                             <div class="size15bl">Pet ID : {{petAndUser.petId}}</div>
                             <div class="size15bl">Age : {{petAndUser.petAge}}</div>
                             <div class="size15bl">Sex : {{petAndUser.petGenderName}}</div>
@@ -77,11 +77,14 @@
                         <div>
                             <img class="address_img" src="@/assets/img/location.png" alt="">
                         </div>
-                        <div class="size13">{{petAndUser.address}}</div>
+                        <div class="size13">
+                            <span v-if="petAndUser.address">{{petAndUser.address}}</span>
+                            <span v-else>No Address</span>
+                        </div>
                     </div>
-                    <div class="ju">
-                        <div><img class="relationWay cursor" src="@/assets/img/chat.png" alt=""></div>
-                        <div><img class="relationWay cursor" src="@/assets/img/phone.png" alt=""></div>
+                    <div class="ju CHAT">
+                        <div class="ju al"><img class="relationWay cursor" src="@/assets/img/chat.png" alt=""></div>
+                        <div class="ju al"><img class="relationWay cursor" src="@/assets/img/videoWay.png" alt=""></div>
                     </div>
                     <div class="message_list size15bl">
                         <div style="width:100%" class="flex al ts">
@@ -98,7 +101,10 @@
                         </div>
                         <div style="width:100%" class="flex al ts">
                             <div class="const">Location</div>
-                            <div class="event">HK</div>
+                            <div class="event">
+                                <span v-if="petAndUser.address">{{petAndUser.address}}</span>
+                                <span v-else>No Address</span>
+                            </div>
                         </div>
                         <div style="width:100%" class="flex al ts">
                             <div class="const">Mobile</div>
@@ -140,6 +146,9 @@ export default {
         petList: {
             handler (val) {
                 this.List = JSON.parse(JSON.stringify(this.petList))
+                if (val) {
+                    this.first()
+                }
             },
             immediate: true
         }
@@ -157,6 +166,19 @@ export default {
         loading () { return this.$store.state.user.vloading },
     },
     methods: {
+        first (val) {
+            let data = {
+                petId: this.petList[0].id
+            }
+            getUserByPetId(data).then(res => {
+                console.log(res,'petAndUser')
+                if (res.data.rtnCode == 200) {
+                    this.petAndUser = res.data.data
+                }
+            }).catch(e => {
+                console.log(e)
+            })
+        },
         getUserByPetId (id) {
             let data = {
                 petId: id
@@ -327,7 +349,6 @@ export default {
     }
     .petDetails {
         width: 100%;
-        margin-top:30px;
         .petDetails_item {
             width: 80%;
             margin: auto;
@@ -379,5 +400,16 @@ export default {
         border: solid 1px rgb(218, 210, 210);
         border-radius: 50%;
         overflow: hidden;
+    }
+    .CHAT {
+        div {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            margin: 0 5px;
+            img {
+                height: 100%;
+            }
+        }
     }
 </style>

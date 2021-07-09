@@ -219,6 +219,14 @@ export function allBooking (data) {                     //userId获取所有预�
     })
 }
 
+export function updateBooking (data) {                //修改预约
+    return request({
+        url: "/booking/updateBooking",
+        method: "POST",
+        params: data
+    })
+}
+
 export function deleteBooking (data) {                //取消预约
     return request({
         url: "/booking/cancalBooking",
@@ -322,6 +330,30 @@ export function pay (data) {                  //支付
     })
 }
 
+export function paypals (data) {                  //支付
+    return request({
+        url: "/order/genOrderByPaypal",
+        method: "POST",
+        params: data
+    })
+}
+
+export function orderId (data) {                  //支付
+    return request({
+        url: "/stripe/createOrder",
+        method: "POST",
+        params: data
+    })
+}
+
+export function contentId (data) {                  //支付
+    return request({
+        url: "/stripe/executePayment",
+        method: "POST",
+        data: data
+    })
+}
+
 export function onlineState (data) {                    //在线状态
     return request({
         url: "/user/loginOut",
@@ -360,3 +392,28 @@ export function balance (data) {            //获取余额
         params: data
     })
 }
+
+export function order (data) {            //生成订单?userId=313&remarks=CES&doctorId=314&doctorTypeId=2&goodsId=1
+    return request({
+        url: "/order/gen",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function orderDetail (data) {            //添加订单详情?goodsId=1&orderId=20210530109834 
+    return request({
+        url: "/OrderDetails/addOrderDetails",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function allOrder (data) {            //全部订单
+    return request({
+        url: "/order/getOrderByUserId",
+        method: 'POST',
+        params: data
+    })
+}
+

@@ -1,7 +1,7 @@
 <template>
     <div class="myCustomer flex" v-loading='loading'>
         <div class="animal">
-            <div class="wrap noBar clear">
+            <div class="wrap clear">
                 <!-- <div class="wrap_item ju float cursor"  @click="toPatients">
                     <div><img class="personal_img" src="@/assets/img/customerHead.png" alt=""></div>
                     <div class="name tc">
@@ -279,6 +279,8 @@ export default {
         border: #F3F3F3 solid 1px;
         border-radius: 4px;
         // margin-top: 10px;
+        overflow-y: auto;
+        overflow-x: hidden;
         @media screen and (max-width:1000px) {
             width: 60%;
         }
@@ -286,8 +288,15 @@ export default {
             width: 102.5%;
             padding: 1.8% 1.3% 1.8% 1.8%;
             height: 100%;
-            overflow: auto;
+            
         }
+    }
+    .animal::-webkit-scrollbar {
+        width: 7px;
+    }
+    .animal::-webkit-scrollbar-thumb {
+        border-radius: 12px;
+        background: rgb(212, 212, 212);
     }
     .personal_name {
         padding: 10px 0;
@@ -399,7 +408,6 @@ export default {
     }
     .petDetails {
         width: 100%;
-        margin-top:30px;
         .petDetails_item {
             width: 80%;
             margin: auto;

@@ -165,11 +165,11 @@ export default {
                     this.loading = false
                 } else if (res.data.rtnCode == 201) {
                     this.noticeList = null
-                    this.loading = false
+                    this.$store.commit("setUser",{ key: "loading", value: false })
                 }
             }).catch(e => {
                 console.log(e)
-                this.loading = false
+                this.$store.commit("setUser",{ key: "loading", value: false })
             })
         },
         checkNotice (item) {
