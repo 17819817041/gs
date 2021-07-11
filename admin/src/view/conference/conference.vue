@@ -66,6 +66,7 @@ export default {
         },
         dele (item) {
             let data = {
+
                 webId: item.id
             }
             delMetting(data).then(res => {

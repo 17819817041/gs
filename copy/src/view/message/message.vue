@@ -18,7 +18,7 @@
                 // position: fixed;
                 // top: 100px;
                 // left: 0;
-                width: 167px !important;
+                width: 180px !important;
                 // opacity: 0;
             }
         }

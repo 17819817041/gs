@@ -31,8 +31,8 @@
             transition: 0.25s;
             z-index: 500;
             @media screen and (max-width: 1300px) {
-                width: 75px;
-                height: 85px;
+                width: 88px;
+                height: 98px;
             }
             @media screen and (max-width: 564px) {
                 width: 50px;
@@ -68,21 +68,21 @@
     .myMessage {
         flex: 10;
     }
-    .list_img {
-        position: absolute;
-        width: 25px;
-        height: 25px;
-        bottom: 40px;
-        left: 180px;
-        transition: 0.3s;
-        opacity: 0;
-        @media screen and (max-width: 1300px) {
-            opacity: 1;
-        }
-        @media screen and (max-width: 664px) {
-            opacity: 0;
-        }
-    }
+    // .list_img {
+    //     position: absolute;
+    //     width: 25px;
+    //     height: 25px;
+    //     bottom: 40px;
+    //     left: 180px;
+    //     transition: 0.3s;
+    //     opacity: 0;
+    //     @media screen and (max-width: 1300px) {
+    //         opacity: 1;
+    //     }
+    //     @media screen and (max-width: 664px) {
+    //         opacity: 0;
+    //     }
+    // }
     .input {
         background: white;
         border-radius: 30px;
@@ -180,7 +180,7 @@
         <div class="logo">
             <img class="logo_IMG" @click="test" src="@/assets/img/logo.png" alt=""> <!--  @click="test" -->
 
-            <img :class="[ {rotate: rotate},'list_img' ]" src="@/assets/img/list.png" alt="" @click="showDetails">
+            <!-- <img :class="[ {rotate: rotate},'list_img' ]" src="@/assets/img/list.png" alt="" @click="showDetails"> -->
         </div>
         <div class="div sb al">
             <div class="search al sa" v-if="login">
@@ -327,12 +327,12 @@ export default {
         search () {
             this.$store.dispatch('search',this.inp)
         },
-        showDetails () {
-            this.show = !this.show
-            this.rotate = !this.rotate
-            this.$store.commit("setUser", { key: "rotate", value: this.rotate } )
-            this.$store.commit("setUser", { key: "showList", value: !this.rotate } )
-        },
+        // showDetails () {
+        //     this.show = !this.show
+        //     this.rotate = !this.rotate
+        //     this.$store.commit("setUser", { key: "rotate", value: this.rotate } )
+        //     this.$store.commit("setUser", { key: "showList", value: !this.rotate } )
+        // },
         getUser () {
             this.$store.dispatch("getUser",this)
         },

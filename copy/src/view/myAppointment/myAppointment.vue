@@ -123,7 +123,7 @@
                             </div>
                         </div>
                         <div class="Way">
-                            <div class="video_btn ju al cursor" @click.stop="">
+                            <div class="video_btn ju al cursor" @click.stop="starBook(item)">
                                 <img src="@/assets/img/video1.png" alt="">
                                 Video Consultation
                             </div>
@@ -165,6 +165,18 @@ export default {
         this.bookingUserId()
     },
     methods: {
+        starBook (item) {
+            var D = new Date(item.booking.bookingDate).getTime()
+            var now = Date.now()
+            if ( now >= D ) {
+                
+            } else {
+                this.$message({
+                    type: "info",
+                    message: "It's not time to start!"
+                })
+            }
+        },
         appointmentDetalis (id,url) {
             console.log(id)
             this.$router.push({

@@ -109,7 +109,7 @@
                             <el-input class="input" placeholder="Your Email" v-model="form.email"></el-input>
                         </el-form-item>
                         <el-form-item prop="password">
-                            <el-input class="input" placeholder="Password" show-password v-model="form.password"></el-input>
+                            <el-input class="input" placeholder="Password" show-password @keyup.enter.native="toLogin" v-model="form.password"></el-input>
                         </el-form-item>
                         <el-form-item>
                             <div class="google cursor" @click="toLogin" @keydown.enter="enter">

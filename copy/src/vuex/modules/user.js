@@ -29,6 +29,7 @@ export default {
         petType: [],
         firstPet: 0,
         inp: '',
+        scrollTop: false,
         userBooking: [],
         callLoading: false,    //等待接听
         joinParams: {},
@@ -47,7 +48,8 @@ export default {
                     // { type: 2, value: "12123" },
                 ]
             }
-        }
+        },
+        mettingId: 0
     },
     mutations: {
         setUser (state,data) {
@@ -230,7 +232,6 @@ export default {
             })
         },
         getDoctorList (store,num) {
-            console.log(store.state.totalRecordsCount,store.state.doctorList.length )
             const doctor = {
                 platform: localStorage.getItem("platform"),
                 userId: localStorage.getItem("userId"),

@@ -70,7 +70,7 @@
                         <el-input v-model="form.email" placeholder="Your Email"></el-input>
                     </el-form-item>
                     <el-form-item prop="password">
-                        <el-input v-model="form.password" show-password placeholder="Password"></el-input>
+                        <el-input v-model="form.password" show-password @keyup.enter.native="vetLogin" placeholder="Password"></el-input>
                     </el-form-item>
 
                     <el-form-item>

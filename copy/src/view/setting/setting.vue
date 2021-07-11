@@ -389,6 +389,7 @@
         border-radius: 9px;
         color: white;
         margin: 30px auto;
+        position: relative;
     }
     .pay_W {
         padding: 0  50px;
@@ -440,6 +441,20 @@
         height: 85.67px;
         margin: 5px 15px;
     }
+    .PAY_BTN {
+        background: @googleBtn !important;
+        border: none !important;
+        font-size: 16px;
+        padding: 16.5px 0;
+    }
+    .point {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 500;
+        pointer-events: none;
+    }
 </style>
 
 <template>
@@ -485,10 +500,16 @@
                 </div>
             </div>
             <div class="pay_btn tc bold cursor" v-show="type_pay == 5">
-                <div  id="paypal-button-container"></div>
+                <div id="paypal-button-container"></div>
+                <div class="point cursor">
+                    <el-button class="PAY_BTN width100" type="primary" :loading="pay_loading">
+                        <!-- <span class="span">Login</span> -->
+                        Continue
+                    </el-button>
+                </div>
             </div>
             <div class="pay_btn tc bold cursor" @click="pay_p" v-show="type_pay !==5">
-                <el-button class="googleBtn width100" type="primary" :loading="pay_loading">
+                <el-button class="PAY_BTN width100" type="primary" :loading="pay_loading">
                     <!-- <span class="span">Login</span> -->
                     Continue
                 </el-button>
@@ -709,6 +730,7 @@
 <script>
 import { pay, updateUserDetails, file, allOrder, paypals, orderId, contentId } from "@/axios/request.js"
 export default {
+    name: 'iframe',
     data () {
         return {
             value: 'Bank card',
@@ -725,7 +747,7 @@ export default {
             user:{},
             type_pay: 5,
             HK: 5,
-            goodId: 1,
+            goodId: 5,
             pay_loading: false,
             data: 0
         }
@@ -751,6 +773,7 @@ export default {
     },
     mounted () {
         // this.getStripe()
+        this.getGoodsId(this.goodId)
         this.getPaypal()
     },
     computed: {
@@ -829,7 +852,8 @@ export default {
                 size:   'responsive',   /* medium | large | responsive*/
                 shape:  'rect',         /* pill | rect*/
                 color:  'gold',         /* gold | blue | silver | black*/
-                label: 'paypal'
+                label: 'paypal',
+                tagline: false
                 },
                 commit: false, // Show a 'Pay Now' button
                 /* createOrder() is called when the button is clicked */

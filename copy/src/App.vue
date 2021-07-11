@@ -57,6 +57,10 @@
 				</div>
 			</div>
 		</transition>
+
+		<transition name="fade">
+			<div class="scrollTop cursor tc" v-show="scrollTop" @click="up_top">UP</div>
+		</transition>
 	</div>
 </template>
 
@@ -90,7 +94,6 @@ export default {
 		adminList: {
             handler (val) {
                 if (val) {
-                    console.log(val,1312132131236666666666666666666666666666666666666666666661)
                     this.adminList = val
                     this.saveRecord(val)
                 }
@@ -148,6 +151,7 @@ export default {
 		userDetail () { return this.$store.state.user.userDetail },
 		IMuser () { return this.$store.state.user.IMuser },
 		mask () {return this.$store.state.user.mask},
+		cut_metting () { return this.$store.state.user.mettingId },
 		petId: {
 			get () { return this.$store.state.user.petId },
 			set (val) {
@@ -166,9 +170,28 @@ export default {
                     value: val
                 })
             },
+		},
+		scrollTop: {
+			get () { return this.$store.state.user.scrollTop },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "scrollTop",
+                    value: val
+                })
+            },
 		}
     },
 	methods: {
+		up_top () {
+			// 每0.01秒向上移动100像素，直到小于或等于0结束
+			let timer = setInterval(() => {
+				document.getElementsByClassName('scrollUp')[0].scrollTop -= 100;
+				// 为负数，浏览器会不处理得
+				if (document.getElementsByClassName('scrollUp')[0].scrollTop <= 0) {
+					clearInterval(timer)
+				}
+			}, 10)
+		},
 		saveRecord (val) {
             localStorage.setItem('adminList',JSON.stringify(this.adminList))
         },
@@ -193,7 +216,6 @@ export default {
 			min(data).then(res => {
 				console.log(res)
 			})
-			console.log(this.value);
 		},
 		async sure () {
 			// let data6 = {
@@ -336,7 +358,8 @@ export default {
 		cancel2 () {
 			this.callModal2 = false
 			let data = {
-                type: "HangUp"
+                type: "HangUp",
+				mettingId: this.cut_metting
             }
             let id = this.$conn.getUniqueId();                 // 生成本地消息id
             let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
@@ -360,6 +383,17 @@ export default {
 	}
 	#app {
 		height: 100%;
+		.scrollTop {
+			position: fixed;
+			right: 25px;
+			bottom: 30px;
+			z-index: 100;
+			padding: 12px;
+			color: @callBtn;
+			background: #F2F5F6;
+			overflow: hidden;
+			border-radius: 50%;
+		}
 	}
 	div {
 		box-sizing: border-box;

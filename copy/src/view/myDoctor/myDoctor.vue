@@ -1,6 +1,6 @@
 <template>
     <div class="myDoctor flex">
-        <div class="doctorList" @scroll="docScroll" ref="doctorList">
+        <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList">
             <div class="width102 clear" ref="doctorList_height">
                 <div class="doctor_item float" v-for="(item) in doctorList" :key="item.doctorId" @click="getDetail(item)">
                     <div class="image flex">
@@ -102,13 +102,13 @@
                         <div class="time blue">10:30 Am -07:30Pm</div>
                     </div>
                 </div>
-                <div class="introduce">
-                    <span v-if="detail.doctorContent">
+                <div class="introduce text-overflow">
+                    <span class="text-overflows" v-if="detail.doctorContent">
                         {{detail.doctorContent}}
                     </span>
                     <span v-else>No introduction!</span>
                 </div>
-                <div class="blue flexEnd">
+                <div class="blue flexEnd" v-show="showMore">
                     <span  class="cursor">more</span>
                 </div>
                 <div class="aboutUs">
@@ -140,6 +140,7 @@ export default {
             // rate:0,
             // detail: {},
             pageNum: 1,
+            showMore: false
         }
     },
     created () {
@@ -149,14 +150,30 @@ export default {
         // }
         
     },
-    // watch: {
-    //     doctorList: {
-    //         handler (val) {
-    //             this.doctorList = val
-    //         },
-    //         immediate: true
-    //     }
-    // },
+    mounted () {
+        
+    },
+    watch: {
+        // doctorList: {
+        //     handler (val) {
+        //         this.doctorList = val
+        //     },
+        //     immediate: true
+        // },
+        detail: {
+            handler (val) {
+                this.$nextTick(() => {
+                    var sHeight = document.getElementsByClassName('text-overflow')[0].scrollHeight;
+                    if (sHeight > 63) {
+                        this.showMore = true
+                    } else {
+                        this.showMore = false
+                    }  
+                })
+            },
+            deep: true
+        }
+    },
     computed: {
         callModal: {
             get () { return this.$store.state.user.callModal },
@@ -222,6 +239,11 @@ export default {
                     }
                     
                 }
+            }
+            if ( this.$refs.doctorList.scrollTop > 300 ) {
+                this.$store.commit('setUser', { key: 'scrollTop', value: true } )
+            } else {
+                this.$store.commit('setUser', { key: 'scrollTop', value: false } )
             }
         },
         getDoctorList () {
@@ -485,7 +507,7 @@ video {
         margin: auto;
         font-size: 14;
         color: #656565;
-        max-height: 250px;
+        max-height: 63px;
         text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
         display: -webkit-box;
         -webkit-line-clamp: 3;/*规定超过两行的部分截断*/

@@ -5,7 +5,7 @@
         height: 100%;
         .notice_content {
             height: 100%;
-            overflow: hidden;
+            overflow: auto;
             background: @content;
         }
     }

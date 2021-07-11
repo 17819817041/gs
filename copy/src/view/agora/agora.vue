@@ -67,7 +67,7 @@
         }
         .answer {
             position: absolute;
-            width: 40%;
+            width: 385px;
             bottom: 40px;
             left: 50%;
             transform: translate(-50%,0);
@@ -78,14 +78,22 @@
             @media screen and (max-width: 1200px) {
                 bottom: 85px;
             }
+            @media screen and (max-width: 930px) {
+                width: 100%;
+                bottom: 85px;
+            }
         }
     }
     .doctorMessage_wrap {
+        width: 454px;
         height: 100%;
         position: relative;
         transition: 0.3s;
-        @media screen and (max-width: 1200px) {
+        @media screen and (max-width: 1300px) {
             width: 370px;
+        }
+        @media screen and (max-width: 660px) {
+            display: none;
         }
         .drawer {
             position: absolute;
@@ -339,6 +347,9 @@
     }
     .MESSAGE {
         height: calc(100% );    
+        @media screen and (max-width: 660px) {
+            display: none;
+        }
     }
     .cus_message {
         height: calc(100% - 123px);
@@ -388,6 +399,19 @@
         padding: 3px 10px;
         word-wrap: break-word;
     }
+    .video_fun {
+        width: 30%;
+        margin: 0 8.5%;
+        img {
+            width: 100%;
+        }
+    }
+    .video_fun img {
+        @media screen and (max-width: 930px) {
+            width: 62px;
+            height: 62px;
+        }
+    }
 </style>
 
 <template>
@@ -409,16 +433,16 @@
             </div>
             <div class="showVideo">
                 <div class="video_wrap">
-                    <div class="answer sb">
-                        <div class="cursor"><img src="@/assets/img/answer_audeo.png" alt=""></div>
-                        <div class="cursor"><img src="@/assets/img/answer_video.png" alt=""></div>
-                        <div class="cursor" @click="endCall"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
+                    <div class="answer flex">
+                        <div class="cursor video_fun"><img src="@/assets/img/answer_audeo.png" alt=""></div>
+                        <div class="cursor video_fun"><img src="@/assets/img/answer_video.png" alt=""></div>
+                        <div class="cursor video_fun" @click="endCall"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
                     </div>
                     <video :class="['video_parent']" autoplay width="400px" height="400px" id="video" ref="video"></video>
                     <video :class="['video_child']" autoplay id="localVideo"></video>
                 </div>
             </div>
-            <div :class="[ 'doctorMessage_wrap' ]">
+            <div :class="[ 'doctorMessage_wrap', { Drawer: drawer } ]">
                 <div class="drawer cursor" @click="DRAWER">
                     <div class="box1"></div>
                     <div class="box2 al ju">
@@ -554,6 +578,7 @@
 </template>
 
 <script>
+import { addMetting, delMetting } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -602,6 +627,7 @@ export default {
         userDetail () {return this.$store.state.user.userDetail},
         caller () { return this.$store.state.user.caller },
         callerIM () { return this.$store.state.user.callerIM },
+        mettingId () { return this.$store.state.user.mettingId },
         messageList: {
             get () { return this.$store.state.user.messageList },
             set (val) {
@@ -666,6 +692,12 @@ export default {
         },
         endCall () {
             window.eMedia.mgr.exitConference()
+            let id = {
+                webId: this.mettingId
+            }
+            delMetting(id).then(res => {
+                console.log(res,'挂断删除')
+            })
             this.$router.back()
         },
         getDay () {
