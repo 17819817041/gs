@@ -34,6 +34,7 @@ export default {
         callLoading: false,    //等待接听
         joinParams: {},
         callerIM: '',
+        mettingId: 0,
         messageList: [],
         totalRecordsCount: 0,
         noticeState: false,
@@ -44,12 +45,15 @@ export default {
         adminList: {
             'admin': {
                 messageList: [
-                    // { type: 1, value: "12123" },
+                    { type: 1, value: "star",userId: '486' },
                     // { type: 2, value: "12123" },
                 ]
-            }
+            },
         },
-        mettingId: 0
+        
+
+        message: {},
+        chatList: []
     },
     mutations: {
         setUser (state,data) {
@@ -260,7 +264,6 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
-                        vm.$message.error('Fail to load !');
                     }
                 }).catch(e => {
                     console.log(e)

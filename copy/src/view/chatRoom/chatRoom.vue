@@ -94,10 +94,10 @@ export default {
             },
         },
         messageList: {
-            get () { return this.$store.state.user.messageList },
+            get () { return this.$store.state.user.chatList },
             set (val) {
                 this.$store.commit("setUser", {
-                    key: "messageList",
+                    key: "chatList",
                     value: val
                 })
             },

@@ -64,7 +64,6 @@
                     <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
                 </div>
                 <div class="relation ju">
-                    <div class="cursor"><img src="@/assets/img/chat.png" alt=""></div>
                     <div class="cursor" @click="booking"><img src="@/assets/img/calendar.png" alt=""></div>
                 </div>
                 <div class="toVideo cursor" @click="toVideo">
@@ -121,7 +120,7 @@
                         <div class="size16">Working Address</div>
                     </div>
                     <div class="child flex al">
-                        <img style="width:40px" src="@/assets/img/reviewer1.png" alt="">
+                        <img style="width:40px" src="@/assets/img/reviewer1.png" alt="" @click="chat_t">
                         <div class="size16">Reviewer (230)</div>
                     </div>
                 </div>
@@ -289,6 +288,9 @@ export default {
         },
         booking () {
             this.$router.push("/booking")
+        },
+        chat_t () {
+            this.$router.push('/chatRoom')
         }
     }
 }

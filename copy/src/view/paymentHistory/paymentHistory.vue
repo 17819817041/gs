@@ -1,5 +1,5 @@
 <template>
-    <div class="paymentHistory">
+    <div class="paymentHistory" v-loading="loading">
         <div class="explan al">
             <img src="@/assets/img/account.png" alt="">
             My Payment History
@@ -8,21 +8,22 @@
             <div class="paymentHistory_content_item sb mg" v-for="(item,i) in orderList" :key="i">
                 <div class="flex al">
                     <div class="payment_man_img ju al">
-                        <img :src="item.imageUrl" v-if="item.imageUrl" alt="">
-                        <i class="el-icon-picture-outline" style="color: gray;font-size: 20px" v-else></i>
+                        <img :src="item.userImage" v-if="item.userImage" alt="">
+                        <!-- <i class="el-icon-picture-outline" style="color: gray;font-size: 20px" v-else></i> -->
+                        <img :src="AllDetail.userImage" v-else-if="item.userImage === null" alt="">
                     </div>
                     <div class="payment_details">
                         <div class="size17">
-                            <span v-if="item.paymentUserName">{{item.paymentUserName}}</span>
-                            <span v-else>No Name</span>
+                            <span v-if="item.userName">{{item.userName}}</span>
+                            <span v-else>{{AllDetail.userName}}</span>
                         </div>
-                        <div class="size16">{{item.paymentName}}</div>
+                        <div class="size16">{{item.orderType}}</div>
                     </div>
                 </div>
                 <div class="much al">
                     <div>
-                        <div class="flexEnd">$100</div>
-                        <div>{{item.paymentTime}}</div>
+                        <div class="flexEnd">${{item.paymentRecord.price}}</div>
+                        <div>{{item.paymentRecord.createAt}}</div>
                     </div>
                 </div>
             </div>
@@ -34,15 +35,28 @@
 </template>
 
 <script>
-import { pay, updateUserDetails, file, allOrder } from "@/axios/request.js"
+import { pay, updateUserDetails, file, allOrder, paymentRecord } from "@/axios/request.js"
 export default {
     data () {
         return {
-            orderList: []
+            orderList: [],
+            loading: true
         }
     },
+    computed: {
+        AllDetail: {
+            get () { return this.$store.state.user.userDetail },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "userDetail",
+                    value: val
+                })
+            },
+        },
+    },
     created () {
-        this.getAllOrder()
+        // this.getAllOrder()
+        this.paymentRecord()
     },
     methods: {
         getAllOrder () {
@@ -58,7 +72,34 @@ export default {
                 }
             })
         },
-    }
+        paymentRecord () {
+            let data = {
+                userId: localStorage.getItem('userId'),
+                pageNum: 1,
+                pageSize: 100
+            }
+            paymentRecord(data).then(res => {
+                if (res.data.rtnCode == 200) {
+                    // var D = new Date()
+                    // console.log(res,666666)
+                    // let a = new Date().toLocaleDateString().split('/').join('-')
+                    // console.log(new Date(a).getTime(), new Date(res.data.data.pageT[11].paymentRecord.createAt.split(' ')[0]).getTime())
+                    // res.data.data.pageT.forEach(item => {
+                    //     if (new Date(item.paymentRecord.createAt.split(' ')[0]).getTime() == new Date(a).getTime()) {
+                    //         item.paymentRecord.createAt = 'Today'
+                    //     }
+                    // })
+                    this.orderList = res.data.data.pageT.reverse()
+                    this.loading = false
+                } else {
+                    this.loading = false
+                }
+            }).catch(e => {
+                console.log(e)
+                this.loading = false
+            })
+        }
+    },
 }
 </script>
 

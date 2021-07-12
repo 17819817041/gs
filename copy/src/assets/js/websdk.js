@@ -63,10 +63,7 @@ conn.listen({
             }
             store.commit("setUser",{ key: 'adminList', value: adminList })
         }
-
         let m_id = ''
-
-
         // 收到来电
         if (data.type == 'Call') {
             store.commit("setUser",{ key: 'mettingId', value: JSON.parse(e.data).mettingId })
@@ -104,7 +101,39 @@ conn.listen({
             store.commit("setUser",{ key: 'callLoading', value: false })
             // router.push("/agora")
         }
-    },    //收到文本消息
+
+
+
+
+        // if (data.type == 'danmu') {
+        //     var obj = {
+        //         type: 2,
+        //         value: data.value
+        //     }
+        //     var chatList = JSON.parse(JSON.stringify(store.state.user.chatList))
+        //     chatList.push(obj)
+        //     store.commit("setUser",{ key: 'chatList', value: chatList })
+        // }
+        // if (data.type == 'needHelp') {
+        //     console.log(111)
+        //     var obj = {
+        //         type: 2,
+        //         value: data.value
+        //     }
+        //     var message = JSON.parse(JSON.stringify(store.state.user.message))
+        //     if (message[from]) {
+        //         console.log(222)
+        //         message[from].messageList.push(obj)
+        //     } else {
+        //         message[from] = {
+        //             user: e.from,
+        //             userDetail: data.key,
+        //             messageList: [ obj ]
+        //         }
+        //     }
+        //     store.commit("setUser",{ key: 'message', value: message })
+        // }
+    },    
 });
 
 

@@ -417,3 +417,11 @@ export function allOrder (data) {            //全部订单
     })
 }
 
+export function paymentRecord (data) {            //付款记录
+    return request({
+        url: "/pet/getPaymentRecordByUserId",
+        method: 'POST',
+        params: data
+    })
+}
+

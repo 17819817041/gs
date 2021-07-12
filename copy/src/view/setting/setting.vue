@@ -404,8 +404,9 @@
         box-shadow: 0 2px 2px 2px #e7e4e4;
     }
     .payment_record {
-        width: 75%;
-        margin-left: 25px;
+        width: 100%;
+        // margin-left: 25px;
+        margin: 0 10px;
         border-radius: 12px;
         padding: 0 20px;
         box-shadow: 0 2px 2px 2px #e7e4e4;
@@ -694,9 +695,9 @@
                                 </div>
                             </div>
                             <div class="sa pay_history">
-                                <div class="paypal_account sa">
+                                <!-- <div class="paypal_account sa">
                                     <div class="p_title tc">Other Waller</div>
-                                </div>
+                                </div> -->
                                 <div class="payment_record">
                                     <div class="p_title">My Payments History</div>
                                     <div class="history_pay auto">

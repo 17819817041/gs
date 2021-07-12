@@ -139,8 +139,18 @@ export default {
         adminList: {
             handler (val) {
                 if (val) {
-                    this.adminList = val
-                    this.saveRecord(val)
+                    console.log(val,666666999999)
+                    console.log(val.admin,666666999999)
+                    console.log(val.admin.messageList,666666999999)
+                    console.log(this.adminList,654654654)
+                    console.log(this.adminList.admin.messageList,654654654)
+                    val.admin.messageList.forEach(item => {
+                        if (item.userId == localStorage.getItem('userId')) {
+                            // JSON.stringify(JSON.parse(this.adminList.admin.messageList)).push(item)
+                        }
+                    })
+                    // this.adminList = val
+                    this.saveRecord()
                 }
             },
             deep: true
@@ -164,7 +174,6 @@ export default {
             this.$nextTick(() => {
                 this.$refs.Cus.scrollTop = 10000
             })
-            // this.adminList = val
         },
         initRecord () {
             if (localStorage.getItem('adminList')) {
@@ -178,7 +187,8 @@ export default {
             if (this.customerInp) {
                 this.adminList['admin'].messageList.push({
                     type: 1,
-                    value: this.customerInp
+                    value: this.customerInp,
+                    userId: localStorage.getItem('userId')
                 })
                 let data = {
                     type: "needHelp",
