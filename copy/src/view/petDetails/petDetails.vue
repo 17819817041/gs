@@ -11,7 +11,6 @@
             width: 100%;
             height: 100%;
             background: @content;
-            margin-top: 10px;
             padding-bottom: 30px;
             overflow: auto;
             // @media screen and (max-width:1350px) {
@@ -154,9 +153,9 @@
     }
     .record_active {
         // width: 300px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+        max-width: 230px;
+        height: 25px;
+        overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
     }
     .years_input, .month_input {
         width: 30px;
@@ -176,6 +175,7 @@
         color: @logout;
         font-size: 16px;
         text-decoration: underline;
+        margin-left: 10px;
     }
     .textarea {
         width: 80%;
@@ -210,7 +210,7 @@
     }
 </style>
 <template>
-    <div class="customerPage" v-loading='updating'>
+    <div class="customerPage" v-loading='!updating'>
         <div class="customer_content flex">
             <div class="pet_message noBar">
                 <div class="bold petMessage_title sb al">
@@ -280,12 +280,12 @@
                             </div>
                             <div class="flex about">
                                 <div v-if="item.change">{{
-                                    options.find(op => op.petTypeId == item.petTypeParentId)? 
-                                    options.find(op => op.petTypeId == item.petTypeParentId).petTypeName
-                                    : ''
+                                    options.find(op => op.petTypeId == item.petType)? 
+                                    options.find(op => op.petTypeId == item.petType).petTypeName
+                                    : '0'
                                 }}</div>
                                 <div class="editInp al" v-else>
-                                    <el-select @change="selectType($event,i)" v-model="item.petTypeParentId">
+                                    <el-select @change="selectType($event,i)" v-model="item.petType">
                                         <el-option v-for="(op) in options" :value="op.petTypeId" :key="op.petTypeId" :label="op.petTypeName"></el-option>
                                     </el-select>
                                 </div>
@@ -376,7 +376,7 @@
                                 </div>
                                 <div class="flex about">
                                     <div class="al">
-                                        <div class=" record_active">66666666666666666666... </div>
+                                        <div class=" record_active">{{item.petMedicalRecordDtos[0]? item.petMedicalRecordDtos[0].content: 'No Medical records'}}</div>
                                         <div class="morePetDetalis cursor" @click="record(item)">More</div>
                                     </div>
                                 </div>
@@ -408,12 +408,12 @@ export default {
             i: null,
             petLists: [],
             options: [],
-            petType: '',
-            updating:false,
+            petType: ''
         }
     },
     created () {
         this.getPetType()
+        this.getpet_list()
         this.SEX()
     },
     mounted () {
@@ -463,11 +463,22 @@ export default {
             // },
         },
         firstPet () { return this.$store.state.user.firstPet },
+        updating: {
+            get () { return this.$store.state.user.loading },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "updating",
+                    value: val
+                })
+            },
+        }
     },
     methods: {
         selectType (e,i) {
-            this.petLists[i].petType = ''
+            console.log(e,i)
+            // this.petLists[i].petType = e
             let obj = this.options.find(op => op.petTypeId == e)
+            // console.log(obj,this.petLists[i])
             this.petLists[i].breedList = obj.children
             this.petLists = [...this.petLists]
         },
@@ -511,13 +522,6 @@ export default {
                 this.TYPE()
             })
         },
-        re (op) {
-            this.petLists.forEach(item => {
-                if (item.breed == op.petTypeId) {
-                    item.breedName == op.petTypeName
-                }
-            })
-        },
         TYPE () {
             this.petLists.forEach(item => {
                 this.options.forEach(op => {
@@ -527,12 +531,21 @@ export default {
                                 let obj = this.options.find(op1 => op1.petTypeId == child.petTyepParentId)
                                 item.petTypeParentId = child.petTyepParentId
                                 item.breedList = obj.children
+                                console.log(item,666)
                                 this.petLists = [...this.petLists]
                             }
                         })
                     }
                 })
             })
+        },
+        getpet_list () {
+            var data = {
+                userId: localStorage.getItem("userId"),
+                pageNum: 1,
+                pageSize: 100
+            }
+            this.$store.dispatch("getPetList",data)
         },
         setFirstPet () {
             var current = this.petLists[this.firstPet]
@@ -541,15 +554,6 @@ export default {
                 this.petLists.unshift(current)
             }
         },
-        // getPetDetails () {                                                                  //获取第一只宠物
-        //     petDetails(this.data).then(res => {
-        //         console.log(res,"获取宠物信息")
-        //         if (res.data.rtnCode == 200) {
-        //             this.petDetails = res.data.data
-        //             console.log(this.petDetails,"this")
-        //         }
-        //     })
-        // },
         cancel (item,i) {
             var data = {
                 userId: localStorage.getItem("userId"),
@@ -587,9 +591,9 @@ export default {
         updatePet () {    
             let obj = JSON.parse(JSON.stringify(this.petLists[this.i]))   
             delete obj.breedList
-            delete obj.petTypeParentId                                                               //更新宠物信息
+            delete obj.petTypeParentId        
+            delete obj.petMedicalRecordDtos                                                    //更新宠物信息
             updatePet(obj).then(res => {
-                console.log(res,"geng新完成")
                 if (res.data.rtnCode == 200) {
                     var data = {
                         userId: localStorage.getItem("userId"),

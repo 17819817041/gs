@@ -218,16 +218,6 @@ export default {
 			})
 		},
 		async sure () {
-			// let data6 = {
-			// 		userId: 486,
-			// 		remarks: '666',
-			// 		doctorId: 324,
-			// 		doctorTypeId: 2,
-			// 		goodsId: 1
-			// 	}
-			// 	order(data6).then(res => {
-			// 		console.log(res,'order')
-			// 	})
 			this.$router.push("/agora")
 			this.callLoading = true
 			let params = {

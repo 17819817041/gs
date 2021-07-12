@@ -48,7 +48,8 @@ conn.listen({
         if (data.type == 'fromAdmin') {
             var obj = {
                 type: 2,
-                value: data.value
+                value: data.value,
+                userId: data.userId
             }
             var adminList = JSON.parse(JSON.stringify(store.state.user.adminList))
             // console.log(adminList[from],obj)

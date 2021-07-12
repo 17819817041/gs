@@ -44,20 +44,18 @@ conn.listen({
             store.commit("setUser",{ key: 'messageList', value: messageList })
         }
         if (data.type == 'needHelp') {
-            console.log(111)
             var obj = {
                 type: 2,
                 value: data.value
             }
             var message = JSON.parse(JSON.stringify(store.state.user.message))
             if (message[from]) {
-                console.log(222)
                 message[from].messageList.push(obj)
             } else {
                 message[from] = {
                     user: e.from,
                     userDetail: data.key,
-                    messageList: [ obj ]
+                    messageList: [ obj ],
                 }
             }
             store.commit("setUser",{ key: 'message', value: message })

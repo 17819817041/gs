@@ -1,10 +1,10 @@
 <template>
-    <div class="paymentHistory" v-loading="loading">
+    <div class="paymentHistory noBar" v-loading="loading">
         <div class="explan al">
             <img src="@/assets/img/account.png" alt="">
             My Payment History
         </div>
-        <div class="paymentHistory_content" v-if="orderList">
+        <div class="paymentHistory_content" v-if="orderList.length !== 0">
             <div class="paymentHistory_content_item sb mg" v-for="(item,i) in orderList" :key="i">
                 <div class="flex al">
                     <div class="payment_man_img ju al">
@@ -22,7 +22,10 @@
                 </div>
                 <div class="much al">
                     <div>
-                        <div class="flexEnd">${{item.paymentRecord.price}}</div>
+                        <div :class="[ 'te', {'COLOR': item.paymentRecord.orderTypeId == 1}, {'COLOR1': item.paymentRecord.orderTypeId == 4}]">
+                            <span v-if="item.orderType == 4">-</span>
+                            <span v-else-if="item.orderType !== 4">+</span>
+                            ${{item.paymentRecord.price}}</div>
                         <div>{{item.paymentRecord.createAt}}</div>
                     </div>
                 </div>
@@ -80,15 +83,19 @@ export default {
             }
             paymentRecord(data).then(res => {
                 if (res.data.rtnCode == 200) {
-                    // var D = new Date()
-                    // console.log(res,666666)
-                    // let a = new Date().toLocaleDateString().split('/').join('-')
-                    // console.log(new Date(a).getTime(), new Date(res.data.data.pageT[11].paymentRecord.createAt.split(' ')[0]).getTime())
-                    // res.data.data.pageT.forEach(item => {
-                    //     if (new Date(item.paymentRecord.createAt.split(' ')[0]).getTime() == new Date(a).getTime()) {
-                    //         item.paymentRecord.createAt = 'Today'
-                    //     }
-                    // })
+                    var D = new Date()
+                    let a = new Date().toLocaleDateString()
+                    var k = new Date(a).getTime()
+                    var b = new Date(res.data.data.pageT[11].paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime()
+                    res.data.data.pageT.forEach(item => {
+                        if (new Date( item.paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime() == k) {
+                            item.paymentRecord.createAt = 'Today'
+                        } else {
+                            var D = new Date(item.paymentRecord.createAt.split(' ')[0]).toDateString()
+
+                            item.paymentRecord.createAt = D.split(' ')[0] + ',' + D.split(' ')[2] + ' ' + D.split(' ')[1] + ' ' + D.split(' ')[3]
+                        }
+                    })
                     this.orderList = res.data.data.pageT.reverse()
                     this.loading = false
                 } else {
@@ -109,9 +116,18 @@ export default {
         width: 100%;
         height: 100%;
         background: @content;
+        padding: 0 15px;
+        overflow: auto;
         .paymentHistory_content {
-            height: 100%;
-            
+            height: calc(100% - 59px);
+            overflow: auto;
+        }
+        .paymentHistory_content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .paymentHistory_content::-webkit-scrollbar-thumb {
+            border-radius: 15px;
+            background: rgb(94, 94, 94);
         }
     }
     .paymentHistory_content_item {
@@ -146,5 +162,11 @@ export default {
         color: gray;
         font-weight: bold;
         margin-top: 30px;
+    }
+    .COLOR {
+        color: #FF970F;
+    }
+    .COLOR1 {
+        color: #FF3E61;
     }
 </style>

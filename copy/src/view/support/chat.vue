@@ -100,7 +100,7 @@
         </div>
         <div class="chat_content noBar" ref="Cus">
             <div class="msg_item_wrap">
-                <div v-for="(item,i) in adminList['admin'].messageList" :key="i" :class="[{ 'flexEnd':item.type == 1 }]">
+                <div v-for="(item,i) in list" :key="i" :class="[{ 'flexEnd':item.type == 1 }]">
                     <div :class="['msg_child', { mySend: item.type == 1 }, 
                         { theySend: item.type == 2 },]"
                     >{{item.value}}</div>
@@ -126,7 +126,8 @@
 export default {
     data () {
         return {
-            customerInp: ''
+            customerInp: '',
+            list: []
         }
     },
     created () {
@@ -139,22 +140,17 @@ export default {
         adminList: {
             handler (val) {
                 if (val) {
-                    console.log(val,666666999999)
-                    console.log(val.admin,666666999999)
-                    console.log(val.admin.messageList,666666999999)
-                    console.log(this.adminList,654654654)
-                    console.log(this.adminList.admin.messageList,654654654)
                     val.admin.messageList.forEach(item => {
-                        if (item.userId == localStorage.getItem('userId')) {
-                            // JSON.stringify(JSON.parse(this.adminList.admin.messageList)).push(item)
+                        if ((item.userId == localStorage.getItem('userId'))) {
+                            this.list.push(item)
                         }
                     })
                     // this.adminList = val
                     this.saveRecord()
                 }
             },
-            deep: true
-            // immediate: true
+            deep: true,
+            immediate: true
         }
     },
     computed: {
@@ -171,13 +167,15 @@ export default {
     },
     methods: {
         saveRecord (val) {
+            localStorage.setItem('newsList',JSON.stringify(this.list))
             this.$nextTick(() => {
                 this.$refs.Cus.scrollTop = 10000
             })
         },
         initRecord () {
-            if (localStorage.getItem('adminList')) {
+            if (localStorage.getItem('adminList') || localStorage.getItem('newsList')) {
                 this.adminList = JSON.parse(localStorage.getItem('adminList'))
+                this.list = JSON.parse(localStorage.getItem('newsList'))
                 this.$nextTick(() => {
                     this.$refs.Cus.scrollTop = 10000
                 })

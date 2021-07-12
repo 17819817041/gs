@@ -49,6 +49,18 @@
             padding-right: 3px;
         }
     }
+    .physical_wrap {
+        position: relative;
+        .newMsg {
+            position: absolute;
+            top: 60px;
+            left: 51%;
+            width: 10px;
+            border-radius: 50%;
+            overflow: hidden;
+            height: 10px;
+        }
+    }
     .physical {
         width: 108px;
         margin-top: 50px;
@@ -100,7 +112,8 @@
                         <div><img src="@/assets/img/profile.png" alt=""></div>
                         <div>Setting</div>
                     </div>
-                    <div>
+                    <div class="physical_wrap">
+                        <!-- <img class="newMsg" src="@/assets/img/dot.png" alt=""> -->
                         <img class="physical cursor" src="@/assets/img/chatLogo.png" alt="" @click="adminChat">
                     </div>
                 </div>

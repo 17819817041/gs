@@ -12,6 +12,7 @@
                     <div :class="['friend_item al bold', { 'f-act':i == sendFromIM }]" v-for="(item,i) in message" :key="i" @click="changeWindow(i)">
                         <div class="adverse_img ju"><img :src="item.userDetail.userImage" alt=""></div>
                         <div>{{item.userDetail.userName}}</div>
+                        <div class="newMsg tc" v-show="newData">1</div>
                     </div>
                 </div>
                 <div class="chat_ui">
@@ -20,7 +21,7 @@
                             <div>
                                 <div :class="['msg_item flex', { flexEnd: item.type == 1 }]" 
                                     v-for="(item,i) in messageList" :key="i">
-                                    <div class="fromImg ju"><img :src="headImage" alt=""></div>
+                                    <div class="fromImg ju"><img v-show="item.type == 2" :src="headImage" alt=""></div>
                                     <div :class="['msg_child', { mySend: item.type == 1 }, 
                                         { theySend: item.type == 2 }]"
                                     >{{item.value}}</div>
@@ -137,6 +138,7 @@ export default {
                     type: "fromAdmin",
                     value: this.adminInp,
                     key: this.userDetail,
+                    userId: this.sendFromIM.split('a')[0],
                     platform: localStorage.getItem('platform')
                 }
                 let id = this.$conn.getUniqueId();                 // 生成本地消息id
@@ -200,6 +202,19 @@ export default {
     .friend_item {
         padding: 10px 0;
         // background: @logout;
+        position: relative;
+        .newMsg {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translate(0,-50%);
+            border-radius: 50%;
+            background: red;
+            color: white;
+            width: 15px;
+            height: 15px;
+            font-size: 12px;
+        }
     }
     .f-act {
         background: @logout;

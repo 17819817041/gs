@@ -412,13 +412,20 @@
         box-shadow: 0 2px 2px 2px #e7e4e4;
     }
     .history_pay {
-        height: 70%;
+        max-height: 150px;
         overflow: auto;
         .pay_item {
             margin-bottom: 10px;
             border-bottom: solid 1px rgb(230, 230, 230);
             padding: 10px;
         }
+    }
+    .history_pay::-webkit-scrollbar {
+        width: 8px;
+    }
+    .history_pay::-webkit-scrollbar-thumb {
+        border-radius: 15px;
+        background: rgb(216, 216, 216);
     }
     .payed_head {
         width: 45x;
@@ -455,6 +462,12 @@
         left: 0;
         z-index: 500;
         pointer-events: none;
+    }
+    .COLOR {
+        color: #FF970F;
+    }
+    .COLOR1 {
+        color: #FF3E61;
     }
 </style>
 
@@ -700,18 +713,26 @@
                                 </div> -->
                                 <div class="payment_record">
                                     <div class="p_title">My Payments History</div>
-                                    <div class="history_pay auto">
-                                        <div class="sb pay_item">
+                                    <div class="history_pay auto ">
+                                        <div class="sb pay_item" v-for="(item,i) in payList" :key="i">
                                             <div class="flex">
-                                                <div class="payed_head ju al"><img src="@/assets/img/head.png" alt=""></div>
+                                                <div class="payed_head ju al">
+                                                    <img :src="item.userImage" v-if="item.userImage" alt="">
+                                                    <!-- <i class="el-icon-picture-outline" style="color: gray;font-size: 20px" v-else></i> -->
+                                                    <img :src="AllDetail.userImage" v-else-if="item.userImage === null" alt="">
+                                                </div>
+                                                
                                                 <div>
                                                     <div class="">Money Added</div>
-                                                    <div class="size12">From Credit Card</div>
+                                                    <div class="size12">{{item.orderType}}</div>
                                                 </div>
                                             </div>
                                             <div>
-                                                <div>+$66</div>
-                                                <div class="size12">12:00 AM</div>
+                                                <div :class="[ 'te', {'COLOR': item.paymentRecord.orderTypeId == 1}, {'COLOR1': item.paymentRecord.orderTypeId == 4}]">
+                                                    <span v-if="item.orderType == 4">-</span>
+                                                    <span v-else-if="item.orderType !== 4">+</span>
+                                                    ${{item.paymentRecord.price}}</div>
+                                                <div class="size12">{{item.paymentRecord.createAt}}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -729,7 +750,7 @@
 </template>
 
 <script>
-import { pay, updateUserDetails, file, allOrder, paypals, orderId, contentId } from "@/axios/request.js"
+import { pay, updateUserDetails, file, allOrder, paypals, orderId, contentId, paymentRecord } from "@/axios/request.js"
 export default {
     name: 'iframe',
     data () {
@@ -750,7 +771,8 @@ export default {
             HK: 5,
             goodId: 5,
             pay_loading: false,
-            data: 0
+            data: 0,
+            payList: []
         }
     },
     watch: {
@@ -771,10 +793,11 @@ export default {
         this.payment = this.payment.toLocaleString()
         this.getBalance()
         this.getAllOrder()
+        this.paymentRecord()
     },
     mounted () {
         // this.getStripe()
-        this.getGoodsId(this.goodId)
+        this.getGoodsId()
         this.getPaypal()
     },
     computed: {
@@ -816,6 +839,37 @@ export default {
         top_up () {
             console.log(123)
             this.$store.commit('setUser', { key: 'showback', value: true })
+        },
+        paymentRecord () {
+            let data = {
+                userId: localStorage.getItem('userId'),
+                pageNum: 1,
+                pageSize: 100
+            }
+            paymentRecord(data).then(res => {
+                if (res.data.rtnCode == 200) {
+                    var D = new Date()
+                    console.log(res,666666)
+                    let a = new Date().toLocaleDateString()
+                    var k = new Date(a).getTime()
+                    var b = new Date(res.data.data.pageT[11].paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime()
+                    console.log(k,b)
+                    res.data.data.pageT.forEach(item => {
+                        if (new Date( item.paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime() == k) {
+                            item.paymentRecord.createAt = 'Today'
+                            //  + ' ' + item.paymentRecord.createAt.split(' ')[1]
+                        } else {
+                            var D = new Date(item.paymentRecord.createAt.split(' ')[0]).toDateString()
+                            item.paymentRecord.createAt = D.split(' ')[0] + ',' + D.split(' ')[2] + ' ' + D.split(' ')[1] + ' ' + D.split(' ')[3]
+                        }
+                    })
+                    this.payList = res.data.data.pageT.reverse()
+                } else {
+                    
+                }
+            }).catch(e => {
+                console.log(e)
+            })
         },
         pay_p () {
             if (this.type_pay == 5) {
@@ -906,7 +960,7 @@ export default {
         },
         getGoodsId (id) {
             var userId = localStorage.getItem('userId');
-            var goodsId = id
+            var goodsId = this.goodId
             console.log()
             var paymentTypeId = 5;
             let data = {

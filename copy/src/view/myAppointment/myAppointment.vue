@@ -164,12 +164,74 @@ export default {
         this.getDAY()
         this.bookingUserId()
     },
+    computed: {
+        callModal: {
+            get () { return this.$store.state.user.callModal },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "callModal",
+                    value: val
+                })
+            },
+        },
+        callLoading: {
+            get () { return this.$store.state.user.callLoading },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "callLoading",
+                    value: val
+                })
+            },
+        },
+		callModal2: {
+            get () { return this.$store.state.user.callModal2 },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "callModal2",
+                    value: val
+                })
+            },
+        },
+        callTo () { return this.$store.state.user.callTo },
+		caller () { return this.$store.state.user.caller },
+		joinParams () { return this.$store.state.user.joinParams },
+		userDetail () { return this.$store.state.user.userDetail },
+		IMuser () { return this.$store.state.user.IMuser },
+		mask () {return this.$store.state.user.mask},
+		cut_metting () { return this.$store.state.user.mettingId },
+		petId: {
+			get () { return this.$store.state.user.petId },
+			set (val) {
+				this.$store.commit("setUser", {
+                    key: "petId",
+                    value: val
+                })
+			}
+		},
+		pet () {return this.$store.state.user.pet},
+    },
     methods: {
-        starBook (item) {
+        async starBook (item) {
             var D = new Date(item.booking.bookingDate).getTime()
             var now = Date.now()
             if ( now >= D ) {
-                
+                this.callLoading = true
+                let params = {
+                    roomName: this.$store.state.user.IMuser.username,
+                    password: "123456",
+                    role: 3,
+                    config:{ 
+                        rec: false, 
+                        recMerge:false, //是否开启合并录制
+                        supportWechatMiniProgram: true //是否允许小程序加入会议
+                    }
+                }
+                const user_room = await emedia.mgr.joinRoom(params);
+                this.addConfr(user_room.confrId)
+                let constraints = { audio: true, video: true };
+                const stream = await emedia.mgr.publish(constraints)
+                this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
+                this.sendMsg(params)
             } else {
                 this.$message({
                     type: "info",
@@ -177,6 +239,57 @@ export default {
                 })
             }
         },
+        sendMsg (params) {
+			let data = {
+                type: "Call",
+				user: this.userDetail,
+				platform: localStorage.getItem('platform'),
+				petId: this.petId,
+				mettingId: this.mettingId,
+				params
+            }
+            let id = this.$conn.getUniqueId();                 // 生成本地消息id
+            let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+            msg.set({
+                msg: JSON.stringify(data),                  // 消息内容
+                to: JSON.stringify(this.callTo.doctorId) + 'A2',      // 接收消息对象（用户id）
+                chatType: 'singleChat',                  // 设置为单聊                       
+                success: function (id, serverMsgId) {
+                    console.log('send private text Success');  
+                }, 
+                fail: function(e){
+                    console.log(e)
+                    console.log("Send private text error");  
+                }
+            });
+            this.$conn.send(msg.body);
+            this.$store.commit("setUser",{ key: 'callerIM', value: this.userDetail.userId + 'A' + localStorage.getItem('platform') })
+		},
+        addConfr (val) {
+			let D = new Date
+			var date = D.toLocaleDateString()
+			let detail = {
+				petName: this.pet.name,
+				petId: this.petId,                 
+				caller: this.userDetail,
+				callTo: this.callTo,
+				createdTime: date,
+				password: '123456'
+			}
+			let data = {
+				'jo': [{
+					confrId: val,
+					userId: this.userDetail.userId + 'A' + localStorage.getItem('platform'),
+					doctorId: this.callTo.doctorId + 'A2',
+					password: JSON.stringify(detail),
+					// password: '123456',
+				}]
+			}
+			addMetting(data).then(res => {
+				console.log(res)
+				this.mettingId = res.data.data[0].id
+			})
+		},
         appointmentDetalis (id,url) {
             console.log(id)
             this.$router.push({

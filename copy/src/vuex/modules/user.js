@@ -45,7 +45,7 @@ export default {
         adminList: {
             'admin': {
                 messageList: [
-                    { type: 1, value: "star",userId: '486' },
+                    // { type: 1, value: "star",userId: '486' },
                     // { type: 2, value: "12123" },
                 ]
             },
