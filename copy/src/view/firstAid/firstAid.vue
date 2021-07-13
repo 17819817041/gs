@@ -6,32 +6,34 @@
             <div class="sb first_pet" v-if="more">
                 <div class="first_pet_item sb">
                     <div class="ju al first_pet_item_i">
-                        <div class="ju al img_i">
-                            <img class="cursor" :src="petList[0].image" v-if="petList[0].image" alt="">
+                        <div class="ju al img_ia">
+                            <img class="cursor" :src="petList[0]? petList[0].image:''" v-if="petList[0]" alt="">
                             <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
                         </div>
                     </div>
                     <div class="ju al first_pet_item_i">
-                        <div class="ju al img_i">
-                            <img class="cursor" :src="petList[1].image" v-if="petList[1].image" alt="">
+                        <div class="ju al img_ia">
+                            <img class="cursor" :src="petList[1]? petList[1].image:''" v-if="petList[1]" alt="">
                             <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
                         </div>
                     </div>
                     <div class="ju al first_pet_item_i">
-                        <div class="ju al img_i">
+                        <div class="ju al img_ia">
                             <img class="cursor" src="@/assets/img/other.png" alt="" @click="other">
                         </div>
                     </div>
                 </div>
             </div>
             <div class="sb first_pet" v-else>
-                <div class="first_pet_item sb box" @mousedown="move">
-                    <div v-for="(item,i) in petList" :key="i" class="ju al first_pet_item_i">
-                        <div class="ju al img_i">
-                            <img class="cursor" :src="item.image" v-if="item.image" alt="">
-                            <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
-                        </div>
-                    </div>
+                <div class="first_pet_item" style="border: red"> 
+                    <el-carousel indicator-position="outside" :autoplay='false'>
+                        <el-carousel-item v-for="(item,i) in length1" :key="i">
+                            <div class="ju al img_i float" v-for="(item,i) in petList.slice((i+1)*3-3,(i+1)*3)" :key="i">
+                                <img class="cursor" :src="item.image" v-if="item.image" alt="">
+                                <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
+                            </div>
+                        </el-carousel-item>
+                    </el-carousel>
                 </div>
             </div>
         </div>
@@ -42,11 +44,20 @@
 export default {
     data () {
         return {
-            more: false
+            more: true,
+            length1: 0
         }
     },
     created () {
         
+    },
+    watch: {
+        petList: {
+            handler (val) {
+                this.length1 = Math.ceil(this.petList.length/3)
+            }
+        },
+        immediate: true
     },
     computed: {
         petList: {
@@ -59,23 +70,22 @@ export default {
             },
         },
     },
+    // directives:{
+    //     drag(el,bindings){
+    //         el.onmousedown = function(e){
+    //             var disx = e.pageX - el.offsetLeft;
+    //             document.onmousemove = function (e){
+    //                 el.style.left = e.pageX - disx+'px';
+    //             }
+    //             document.onmouseup = function(){
+    //                 document.onmousemove = document.onmouseup = null;
+    //             }
+    //         }
+    //     }
+    // },
     methods: {
         other () {
             this.more = false
-        },
-        move (e) {
-            console.log(e,123)
-            var box = document.getElementsByClassName("box")[0];//获取元素
-            var x;//存储div的坐标
-            var isDrop = true;//移动状态的判断鼠标按下才能移动
-            x = e.clientX - box.offsetLeft;
-            if(isDrop) {
-    　　　　    var e = e || window.event;
-            　　var moveX = e.clientX - x;//得到距离左边移动距离
-        　　    box.style.left = moveX + "px";
-　　　　　　 } else{
-                return ;
-　　　　　　 }
         }
     }
 }
@@ -84,8 +94,9 @@ export default {
 <style lang="less" scoped>
 @import "@/less/css.less";
     .firstAid {
-        flex: 10;
+        width: 100%;
         height: 100%;
+        overflow: hidden;
         .firstAid_title {
             font-size: 45px;
             font-weight:bold;
@@ -99,7 +110,6 @@ export default {
     }
     .first_item {
         width: 70%;
-        border: solid 1px;
     }
     .first_pet {
         width: 100%;
@@ -107,7 +117,9 @@ export default {
     .first_pet_item {
         width: 100%;
         min-width: 100%;
-        overflow: auto;
+        // position: absolute;
+        // top: 0;
+        // left: 0;
         .first_pet_item_i {
             min-width: 33.33%;
         }
@@ -120,8 +132,17 @@ export default {
         background: rgb(216, 216, 216);
     }
     .img_i {
-        width: 235px;
-        height: 235px;
+        width: 33.3%;
+        height: 100%;
+        border-radius: 50%;
+        overflow: hidden;
+        img {
+            height: 100%;
+        }
+    }
+    .img_ia {
+        width: 100%;
+        height: 100%;
         border-radius: 50%;
         overflow: hidden;
         img {

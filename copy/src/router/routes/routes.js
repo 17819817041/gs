@@ -111,11 +111,6 @@ export default [
                 path:'/reset',
                 name:'reset',
                 component: () => import("@/view/reset/reset.vue")
-            },
-            {
-                path: '/chatRoom',
-                name: 'chatRoom',
-                component: () => import('@/view/chatRoom/chatRoom.vue')
             }
         ]
     },

@@ -178,7 +178,7 @@
 <template>
     <div class="headerLogoPage">
         <div class="logo">
-            <img class="logo_IMG" @click="test" src="@/assets/img/logo.png" alt=""> <!--  @click="test" -->
+            <img class="logo_IMG" @click="backHome" src="@/assets/img/logo.png" alt=""> <!--  @click="test" -->
 
             <!-- <img :class="[ {rotate: rotate},'list_img' ]" src="@/assets/img/list.png" alt="" @click="showDetails"> -->
         </div>
@@ -337,50 +337,50 @@ export default {
             this.$store.dispatch("getUser",this)
         },
         getImage (e) {
-            this.$router.push('/setting')
-            // if (localStorage.getItem("platform") == 1) {
-            //     var formData = new FormData();
-            //     formData.append('file', e.target.files[0]);
-            //     file(formData).then(res => {
-            //         if (res.data.rtnCode == 200) {
-            //             this.userDetails.userImage = res.data.data
+            // this.$router.push('/setting')
+            if (localStorage.getItem("platform") == 1) {
+                var formData = new FormData();
+                formData.append('file', e.target.files[0]);
+                file(formData).then(res => {
+                    if (res.data.rtnCode == 200) {
+                        this.userDetails.userImage = res.data.data
                         
-            //             updateUserDetails(this.userDetails).then(res => {
-            //                 if (res.data.rtnCode == 200) {
-            //                     this.getUser()
-            //                 } else {
+                        updateUserDetails(this.userDetails).then(res => {
+                            if (res.data.rtnCode == 200) {
+                                this.getUser()
+                            } else {
                                 
-            //                 }
-            //             }).catch(e => {
-            //                 console.log(e)
-            //             })
-            //         } else {
-            //             this.userDetails = {}
-            //         }
-            //     })
-            // } else if (localStorage.getItem("platform") == 2) {
-            //     var formData = new FormData();
-            //     formData.append('file', e.target.files[0]);
-            //     file(formData).then(res => {
-            //         if (res.data.rtnCode == 200) {
-            //             this.userDetails.doctorImage = res.data.data
-            //             this.userDetails.doctorName = "Beck"
-            //             updateVetDetails(this.userDetails).then(res => {
-            //                 console.log(res,"更换医生头像",this.userDetails)
-            //                 if (res.data.rtnCode == 200) {
-            //                     this.getUser()
-            //                 }
-            //             }).catch(e => {
-            //                 console.log(e)
-            //             })
-            //         } else {
-            //             this.userDetails = {}
-            //         }
-            //     })
-            // }
+                            }
+                        }).catch(e => {
+                            console.log(e)
+                        })
+                    } else {
+                        this.userDetails = {}
+                    }
+                })
+            } else if (localStorage.getItem("platform") == 2) {
+                var formData = new FormData();
+                formData.append('file', e.target.files[0]);
+                file(formData).then(res => {
+                    if (res.data.rtnCode == 200) {
+                        this.userDetails.doctorImage = res.data.data
+                        this.userDetails.doctorName = "Beck"
+                        updateVetDetails(this.userDetails).then(res => {
+                            console.log(res,"更换医生头像",this.userDetails)
+                            if (res.data.rtnCode == 200) {
+                                this.getUser()
+                            }
+                        }).catch(e => {
+                            console.log(e)
+                        })
+                    } else {
+                        this.userDetails = {}
+                    }
+                })
+            }
         },
-        test () {
-            this.$router.push("/test")
+        backHome () {
+            this.$router.push("/myDoctor")
         },
         support () {
             this.$router.push({
@@ -412,6 +412,8 @@ export default {
             if (localStorage.getItem("platform") == 2) {
                 this.identity = false
                 this.$router.push("/vetDoctor")
+            } else {
+                this.$router.push("/myDoctor")
             }
         },
         patient () {

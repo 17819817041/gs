@@ -226,7 +226,6 @@
                         <div class="cancel cursor tc" @click="cancel(item,i)">cancel</div>
                     </div>
                     <div class="details_image ju">
-                        
                         <label for="ava1">
                             <div class="wrap_IMG ju al">
                                 <img :class="['pet_IMG', { cursor: !item.change }]" v-if="item.image" :src="item.image" alt="">
@@ -282,7 +281,9 @@
                                 <div v-if="item.change">{{
                                     options.find(op => op.petTypeId == item.petTypeParentId)? 
                                     options.find(op => op.petTypeId == item.petTypeParentId).petTypeName
-                                    : options.find(op => op.petTypeId == item.petType).petTypeName
+                                    : options.find(op => op.petTypeId == item.petType)? 
+                                    options.find(op => op.petTypeId == item.petType).petTypeName :
+                                    ''
                                 }}</div>
                                 <div class="editInp al" v-else>
                                     <el-select @change="selectType($event,i)" v-model="item.pet_name">

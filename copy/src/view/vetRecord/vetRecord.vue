@@ -261,6 +261,9 @@ export default {
                 this.loading = false
                 this.userAndPet = res.data.data
                 this.getPetType()
+            }).catch(e => {
+                console.log(e)
+                this.loading = false
             })
         },
         getPetType () {

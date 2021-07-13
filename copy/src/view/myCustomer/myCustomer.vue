@@ -2,17 +2,7 @@
     <div class="myCustomer flex" v-loading="loading">
         <div class="animal">
             <div class="wrap noBar clear">
-                <!-- <div class="wrap_item ju float cursor"  @click="toPatients">
-                    <div><img class="personal_img" src="@/assets/img/customerHead.png" alt=""></div>
-                    <div class="name tc">
-                        <div class="size25">Betty Wong</div>
-                        <div class="address flex">
-                            <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
-                            <div class="size17">Chai Wan, Hong Kong</div>
-                        </div>
-                    </div>
-                </div> -->
-                <div class="wrap_item float" v-for="(item) in List" :key="item.id" @click="toPatients(item)">
+                <!-- <div class="wrap_item float" v-for="(item) in List" :key="item.id">
                     <div class="flex al">
                         <div class="ju al Personal">
                             <img class="personal_img" style="height:100%;" v-if="item.image" :src="item.image" alt="">
@@ -34,6 +24,32 @@
                             <div class="address flex">
                                 <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
                                 <div class="size_14 address_name">Chai Wan, Hong Kong</div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <div class="wrap_item float" v-for="(item,i) in getDoctorMedicalLimitList" :key="i" @click="toPatients(item)">
+                    <div class="flex al">
+                        <div class="ju al Personal">
+                            <img class="personal_img" style="height:100%;" v-if="item.pet" :src="item.pet? item.pet.petImage: '' " alt="">
+                            <i class="el-icon-picture-outline Icon" v-else></i>
+                        </div>
+                        <div class="name">
+                            <div class="size18 petName flex" v-if="item.pet">
+                                <div class="address_img"></div>
+                                <div>{{item.pet? item.pet.petName: ""}}</div>
+                            </div>
+                            <div class="size18 flex" v-else>
+                                <div class="address_img"></div>
+                                <div>No Name</div>
+                            </div>
+                            <div class="size_14 flex">
+                                <div class="address_img"></div>
+                                <div>{{item.pet? item.pet.petId: 'No Id'}}</div>
+                            </div>
+                            <div class="address flex">
+                                <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
+                                <div class="size_14 address_name">{{item.pet? item.pet.address: "No Address"}}</div>
                             </div>
                         </div>
                     </div>
@@ -83,7 +99,6 @@
                         </div>
                     </div>
                     <div class="ju CHAT">
-                        <div class="ju al"><img class="relationWay cursor" src="@/assets/img/chat.png" alt=""></div>
                         <div class="ju al"><img class="relationWay cursor" src="@/assets/img/videoWay.png" alt=""></div>
                     </div>
                     <div class="message_list size15bl">
@@ -119,7 +134,7 @@
 </template>
 
 <script>
-import { getUserByPetId } from "@/axios/request.js"
+import { getUserByPetId, getDoctorMedicalLimit, delPetMedicalRecordById } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -127,7 +142,9 @@ export default {
             pageNum: 0,
             pageSize: 100,
             petAndUser: {},
-            changePage: {}
+            changePage: {},
+            getDoctorMedicalLimitListStatus: true,
+            getDoctorMedicalLimitList: []
         }
     },
     mounted () {
@@ -141,14 +158,22 @@ export default {
             pageSize: 10
         }
         this.$store.dispatch("getPetList",data)
+        this.getDoctorMedicalLimit()
     },
     watch: {
         petList: {
             handler (val) {
-                this.List = JSON.parse(JSON.stringify(this.petList))
                 if (val) {
-                    this.first()
+                    if (this.petList[0]) {
+                        this.first()
+                    } else {
+
+                    }
                 }
+                this.$nextTick(() => {
+                    
+                    this.List = JSON.parse(JSON.stringify(this.petList))
+                })
             },
             immediate: true
         }
@@ -166,6 +191,21 @@ export default {
         loading () { return this.$store.state.user.vloading },
     },
     methods: {
+        getDoctorMedicalLimit () {
+            let data = {
+                userId: localStorage.getItem('userId'),
+                pageNum: 1,
+                pageSize: 100
+            }
+            getDoctorMedicalLimit(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.getDoctorMedicalLimitList = res.data.data.pageT
+                } else if (res.data.rtnCode == 201) {
+                    this.getDoctorMedicalLimitListStatus = false
+                }
+            })
+        },
         first (val) {
             let data = {
                 petId: this.petList[0].id
@@ -193,12 +233,19 @@ export default {
             })
         },
         toPatients (item,i) {
-            this.changePage = item
-            this.getUserByPetId(item.id)
+            console.log(item)
+            this.changePage = item.pet
+            this.getUserByPetId(item.pet.petId)
+            // let data = {
+            //     petMedicalRecordId: item.id
+            // }
+            // delPetMedicalRecordById (data).then(res => {
+            //     console.log(res)
+            // })
         },
         moreDetail () {
             if (this.changePage) {
-                this.$router.push("/patients?id=" + this.changePage.id)
+                this.$router.push("/patients?id=" + this.changePage.petId)
             } else {
 
             }

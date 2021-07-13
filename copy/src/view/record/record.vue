@@ -12,6 +12,7 @@
         background: @content;
         flex: 10;
         height: 100%;
+        overflow: auto;
         .itemChild {
             width: 98%;
         }
@@ -100,7 +101,7 @@
 <template>
     <div class="record" v-loading="loading">
         <div class="recordContent">
-            <div class="recordContent_item">
+            <div class="recordContent_item noBar">
                 <div class="itemChild mg">
                     <div class="explan bold al">
                         <img src="@/assets/img/recordImg.png" alt="">
@@ -193,7 +194,7 @@
                                     </div>
                                 </div>
                                 <div class="medialRecord">
-                                    <div class="medialRecord_item" v-for="(item,i) in userAndPet.petMedicalRecords" :key="i">
+                                    <div class="medialRecord_item" v-for="(item,i) in userAndPet.petMedicalRecordDtos" :key="i">
                                         <div class=" size19">Medical Record</div>
                                         <div style="padding: 5px 0 5px 15px"> 
                                             <span class=" size19">Date: </span>
@@ -201,7 +202,7 @@
                                         </div>
                                         <div style="padding-top: 10px">
                                             <span class=" size19">Vet: </span>
-                                            <span class="size15">Dr Beck</span>
+                                            <span class="size15">{{item.doctorName}}</span>
                                         </div>
                                         <div class="vetRecord size15" style="padding: 10px 15px">
                                             <span v-if="item.content">{{item.content}}</span>     

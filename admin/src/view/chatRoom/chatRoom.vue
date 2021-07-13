@@ -12,7 +12,7 @@
                     <div :class="['friend_item al bold', { 'f-act':i == sendFromIM }]" v-for="(item,i) in message" :key="i" @click="changeWindow(i)">
                         <div class="adverse_img ju"><img :src="item.userDetail.userImage" alt=""></div>
                         <div>{{item.userDetail.userName}}</div>
-                        <div class="newMsg tc" v-show="newData">1</div>
+                        <!-- <div class="newMsg tc" v-show="newData">1</div> -->
                     </div>
                 </div>
                 <div class="chat_ui">

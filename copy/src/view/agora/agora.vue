@@ -102,7 +102,7 @@
             overflow: hidden;
             width: 15px;
             top: 10px;
-            z-index: 900;
+            z-index: 600;
             user-select: none;
             transition: 0.1s;
         }
@@ -331,18 +331,17 @@
             background: @hdColor;
             width: 30%;
             border-radius: 20px;
-            padding: 7px 10px;
             color: white;
+            overflow: hidden;
         }
         .clipImg {
             padding-left: 15px;
         }
     }
     .submit {
-        background: @helpBtn;
         width: 100px;
         border-radius: 20px;
-        padding: 7px 10px;
+        overflow: hidden;
         color: white;
     }
     .MESSAGE {
@@ -515,36 +514,35 @@
                             <div style="padding:13px 0">Date</div>
                             <div class="get_day flex">
                                 <div class="day_time ju al">
-                                    <!-- day
-                                    <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
-                                    <el-select v-model="day" placeholder="Day">
+                                    <el-select v-model="day" placeholder="Day" :disabled="!disabled">
                                         <el-option v-for="(item,i) in daySelect" :key="i" :value="item"></el-option>
                                     </el-select>
                                 </div>
                                 <div class="time al ju">
-                                    <!-- month
-                                    <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
-
-                                    <el-select v-model="month" placeholder="Month" @change="chooseMonth">
+                                    <el-select v-model="month" placeholder="Month" @change="chooseMonth" :disabled="!disabled">
                                         <el-option v-for="(item,i) in monthSelect" :key="i" :label="item.label" :value="item.value"></el-option>
                                     </el-select>
                                 </div>
                                 <div class="time al ju">
                                     <!-- year
                                     <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
-                                    <el-select v-model="years" placeholder="Year">
+                                    <el-select v-model="years" placeholder="Year" :disabled="!disabled">
                                         <el-option v-for="(item,i) in yearsSelect" :key="i" :value="item"></el-option>
                                     </el-select>
                                 </div>
                             </div>
                             <div style="padding:25px 0 10px 0">Details</div>
                             <div class="textarea">
-                                <textarea name="" id="" cols="30" rows="10"></textarea>
+                                <textarea name="" id="" cols="30" rows="10" v-model="content"></textarea>
                             </div>
                             <div class="button sb tc">
-                                <div class="save ju cursor al">Save</div>
+                                <div class="save ju cursor al">
+                                    <el-button type="primary" :disabled="disabled" @click="editPetMedicalRecord" class="width100">Edit</el-button>
+                                </div>
                                 <div class="sb tc">
-                                    <div class="submit ju cursor al">Submit</div>
+                                    <div class="submit ju cursor al">
+                                        <el-button type="warning" @click="addPetMedicalRecord" :disabled="!disabled" class="width100">Submit</el-button>
+                                    </div>
                                     <div><img class="clipImg cursor" src="@/assets/img/clip.png" alt=""></div>
                                 </div>
                             </div>
@@ -578,7 +576,7 @@
 </template>
 
 <script>
-import { addMetting, delMetting } from "@/axios/request.js"
+import { addMetting, delMetting, PetMedicalRecord, updatePetMedicalRecord, s_online } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -608,7 +606,9 @@ export default {
             vetInp: "",
             drawer: false,
             msgRecord: {},
-            
+            content: '',
+            recordDate: '',
+            disabled: true
         }
     },
     mounted () {
@@ -619,6 +619,11 @@ export default {
         this.userDetailMessage = this.userDetail
         this.getDay()
         console.log(this.callTo,this.userDetail)
+        console.log(new Date().toLocaleDateString())
+        let D = new Date().toLocaleDateString().split('/')
+        this.years = D[0]
+        this.month = D[1]
+        this.day = D[2]
     },
     computed: {
         remoteStream () { return this.$store.state.app.remoteStream },
@@ -637,6 +642,15 @@ export default {
                 })
             },
         },
+        petId: {
+			get () { return this.$store.state.user.petId },
+			set (val) {
+				this.$store.commit("setUser", {
+                    key: "petId",
+                    value: val
+                })
+			}
+		},
     },
     watch: {
         messageList: {
@@ -657,6 +671,37 @@ export default {
         }
     },
     methods: {
+        addPetMedicalRecord () {
+            this.disabled = false
+            this.recordDate = this.years + '-' + this.month + '-' + this.day + ' ' + '12:00:36'
+            let data = {
+                // userId: this.caller.userId,
+                userId: 486,
+                doctorId: localStorage.getItem('userId'),
+                // petId: this.petId,
+                petId: 40,
+                content: this.content,
+                createdAt: this.recordDate,
+                medicineIds: 2
+            }
+            PetMedicalRecord(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.disabled = false
+                    this.$message({
+                        type:'success',
+                        message: 'Added successfully!'
+                    })
+                } else {
+
+                }
+            }).catch(e =>{
+                console.log(e)
+            })
+        },
+        editPetMedicalRecord () {
+            this.disabled = true
+        },
         saveRecord (val) {
             let that = this
             var record = {
@@ -695,8 +740,13 @@ export default {
             let id = {
                 webId: this.mettingId
             }
-            delMetting(id).then(res => {
-                console.log(res,'挂断删除')
+            delMetting(id).then(res => {})
+            let data = {
+                userId: localStorage.getItem('userId'),
+                platform: localStorage.getItem('platform')
+            }
+            s_online(data).then(res => {
+                console.log(res,'在线')
             })
             this.$router.back()
         },

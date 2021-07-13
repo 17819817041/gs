@@ -127,10 +127,6 @@
                                 <img src="@/assets/img/video1.png" alt="">
                                 Video Consultation
                             </div>
-                            <div class="chat_btn ju al cursor" @click.stop="">
-                                <img src="@/assets/img/chat1.png" alt="">
-                                Chat
-                            </div>
                         </div>
                     </div>
                 </div>

@@ -720,4 +720,20 @@ export default {
 	.calendar .calendarMini tbody {
 		font-size: 12px !important;
 	}
+	.el-carousel__item h3 {
+        color: #475669;
+        font-size: 14px;
+        opacity: 0.75;
+        line-height: 150px;
+        margin: 0;
+    }
+	.first_pet .el-carousel__container {
+		height: 250px;
+	}
+	.agora .el-button {
+		border-radius: 20px !important;
+	}
+	.agora .el-button--submit {
+		background: @hdColor !important;
+	}
 </style>

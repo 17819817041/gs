@@ -3,10 +3,18 @@
     .notice {
         flex: 10;
         height: 100%;
+        background: @content;
+        padding: 0 10px;
         .notice_content {
             height: 100%;
             overflow: auto;
-            background: @content;
+        }
+        .notice_content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .notice_content::-webkit-scrollbar-thumb {
+            border-radius: 15px;
+            background: rgb(187, 187, 187);
         }
     }
     .notice_content_wrap {
@@ -69,12 +77,17 @@
         overflow: hidden;
         margin: 10px 5px;
     }
+    .acting {
+        width: 100%;
+        padding: 50px 0;
+        // border: solid 1px;
+    }
 </style>
 
 <template>
-    <div class="notice" v-loading="loading">
-        <div class="notice_content noBar">
-            <div class="notice_content_wrap">
+    <div class="notice">
+        <div class="notice_content" @scroll="docScroll" ref="doctorList">
+            <div class="notice_content_wrap" ref="doctorList_height">
                 <div class="explan al"><img src="@/assets/img/information.png" alt=""> Notice</div>
                 <div class="notice_content_item flex">
                     <div v-if="noticeList" class="notice_list">
@@ -93,11 +106,14 @@
                             </div>
                         </div>
                     </div>
-                    <div v-else-if="noticeList === null" class="noData">
+                    <!-- <div v-else-if="noticeList === null" class="noData">
                         <div class="ju"><img style="width:100px; margin: 15px" src="@/assets/img/info.png" alt=""></div>
                         <div class="tc " style="font-size: 20px;color:gray;">No notice</div>
-                    </div>
-                    <div v-else class="mg size21">No New Message</div>
+                    </div> -->
+                    <div v-else class="mg size21 bold" style="font-weight:bold;color:gray">No New Message</div>
+                </div>
+                <div class="acting float ju al" v-if="l_loading">
+                    <div class="loading" v-loading="true"></div>
                 </div>
             </div>
         </div>
@@ -114,12 +130,12 @@ export default {
             // ],
             active: true,
             pageNum: 1,
-            pageSize: 10
+            pageSize: 15
         }
     },
     created () {
         // this.getNotice()
-        this.message()
+        // this.message()
     },
     computed: {
         noticeList: {
@@ -128,7 +144,8 @@ export default {
                 this.noticeList = val
             }
         },
-        loading () { return this.$store.state.user.n_loading },
+        l_loading () { return this.$store.state.user.loading },
+        totalRecordsCount () { return this.$store.state.user.totalRecordsCount1 }
     },
     methods: {
         message () {
@@ -136,41 +153,42 @@ export default {
                 this.active = false
             }
         },
-        getNotice () {
-            let data = {
-                userId: localStorage.getItem('userId'),
-                pageNum: 1,
-                pageSize: 100
-            }
-            notice(data).then(res => {
-                console.log(res,'notice')
-                if (res.data.rtnCode == 200) {
-                    res.data.data.pageT.forEach(item => {
-                        var time = item.createdAt
-                        let a = time.split(' ')[0]
-                        let b = time.split(' ')[1]
-                        // let En = new Date(a).toDateString()
-                        // let arr = En.split(' ')
-                        // let bb = b.split(':')
-                        // item.createdAt = arr[2] + ' ' + arr[1] + ','+ arr[3] + ' ' + bb[0] + ':' + bb[1]
-                        let arr = a.split('-').join('/')
-                        let bb = b.split(':')
-                        item.createdAt = arr + ' ' + bb[0] + ':' + bb[1]
-                    })
-                    this.$store.commit('setUser',{
-                        key: "noticeState",
-                        value: (res.data.data.pageT.find(item => item.noticeState==2)) && (localStorage.getItem('platform') == 1)
-                    })
-                    this.noticeList = res.data.data.pageT
-                    this.loading = false
-                } else if (res.data.rtnCode == 201) {
-                    this.noticeList = null
-                    this.$store.commit("setUser",{ key: "loading", value: false })
+        docScroll (e) {
+            if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
+                if (this.noticeList.length >= this.totalRecordsCount) {
+                    // if (localStorage.getItem('platform') == 2) {
+                    //     this.$store.commit('setUser',{
+                    //         key: "noticeState",
+                    //         value: this.noticeList.find(item => item.noticeState==2)
+                    //     })
+                    // } else if (localStorage.getItem('platform') == 1) {
+                    //     this.$store.commit('setUser',{
+                    //         key: "noticeState",
+                    //         value: this.noticeList.find(item => item.noticeState==2)
+                    //     })
+                    // }
+                } else {
+                    this.pageNum += 1
+                    let page = {
+                        vm: this,
+                        pageNum: this.pageNum
+                    }
+                    this.$store.dispatch('getNoticeList', page)
                 }
-            }).catch(e => {
-                console.log(e)
-                this.$store.commit("setUser",{ key: "loading", value: false })
-            })
+            }
+            if ( this.$refs.doctorList.scrollTop > 300 ) {
+                this.$store.commit('setUser', { key: 'scrollTop', value: true } )
+            } else {
+                this.$store.commit('setUser', { key: 'scrollTop', value: false } )
+            }
+        },
+        getNotice () {
+            let page = {
+                vm: this,
+                pageNum: this.pageNum,
+                pageSize: this.pageSize
+            }
+            this.$store.dispatch('getNoticeList', page)
         },
         checkNotice (item) {
             if (item.noticeState == 1) {
@@ -184,8 +202,8 @@ export default {
                     let that = this
                     let page = {
                         vm: that,
-                        pageNum: 1,
-                        pageSize: 100
+                        pageNum: this.pageNum,
+                        pageSize: this.pageSize
                     }
                     this.$store.dispatch('getNoticeList', page)
                 })

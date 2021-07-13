@@ -362,9 +362,17 @@ export function onlineState (data) {                    //在线状态
     })
 }
 
-export function min (data) {
+export function min (data) {                       //更新在线
     return request({
         url: "/listener/OnlineHeartbeat",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function s_online (data) {                       //更新状态为在线
+    return request({
+        url: "/listener/updateOnlineState",
         method: 'POST',
         params: data
     })
@@ -373,6 +381,22 @@ export function min (data) {
 export function PetMedicalRecord (data) {            //add pet Medical Record
     return request({
         url: "/PetMedicalRecord/addPetMedicalRecord",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function updatePetMedicalRecord (data) {            //update pet Medical Record
+    return request({
+        url: "/PetMedicalRecord/updatePetMedicalRecord",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function delPetMedicalRecordById (data) {            //delete pet Medical Record
+    return request({
+        url: "/PetMedicalRecord/delPetMedicalRecordById",
         method: 'POST',
         params: data
     })
@@ -425,3 +449,10 @@ export function paymentRecord (data) {            //付款记录
     })
 }
 
+export function getDoctorMedicalLimit (data) {            //医生治疗记录
+    return request({
+        url: "/pet/getDoctorMedicalLimit",
+        method: 'POST',
+        params: data
+    })
+}

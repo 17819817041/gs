@@ -13,7 +13,7 @@ export default {
         searchList: [],
         loading: false,
         vloading: true,
-        p_loading: true,
+        p_loading: false,
         callModal: false,
         callModal2: false,
         callTo: {},
@@ -38,11 +38,11 @@ export default {
         mettingId: 0,
         messageList: [],
         totalRecordsCount: 0,
+        totalRecordsCount1: 0,
         noticeState: false,
         showback: false,
         noticeList: [],
         balance: {},
-        n_loading: true,
         adminList: {
             'admin': {
                 messageList: [
@@ -62,6 +62,9 @@ export default {
         },
         pageAdd (state,data) {
             state.doctorList = state.doctorList.concat(data)
+        },
+        pageAdd_n (state,data) {
+            state.noticeList = state.noticeList.concat(data)
         }
     },
     actions: {
@@ -83,6 +86,9 @@ export default {
                     store.commit("setUser",{ key: "vloading", value: false })
                     store.commit("setUser",{ key: "p_loading", value: false })
                     res.data.data.pageT.forEach(item => {
+                        // if (item.petMedicalRecordDtos) {
+                        //     item.petMedicalRecordDtos = item.petMedicalRecordDtos.reverse()
+                        // }
                         item.change = true
                         if (item.age) {
                             let date = item.age.split('yrs')
@@ -257,8 +263,7 @@ export default {
                             store.commit("setUser", { key: 'vDetail', value: res.data.data.pageT[0] } )
                             store.commit("setUser", { key: 'rate', value: res.data.data.pageT[0].baseScore } )
                         }
-
-                        store.commit("setUser",{ key: "searchList", value: store.state.doctorList })
+                        // store.commit("setUser",{ key: "searchList", value: store.state.doctorList })
                         store.commit("setUser",{ key: "loading", value: false })
                     } else if (res.data.rtnCode == 500) {
                         localStorage.removeItem("Token")
@@ -274,7 +279,6 @@ export default {
                     
                 })
             }
-            
         },
         // search (store,data) {
         //     store.state.searchList = []
@@ -310,47 +314,52 @@ export default {
             let data = {
                 userId: localStorage.getItem('userId'),
                 pageNum: page.pageNum,
-                pageSize: page.pageSize
+                pageSize: 15
             }
-            notice(data).then(res => {
-                console.log(res,'notice')
-                if (res.data.rtnCode == 200) {
-                    res.data.data.pageT.forEach(item => {
-                        var time = item.createdAt
-                        let a = time.split(' ')[0]
-                        let b = time.split(' ')[1]
-                        // let En = new Date(a).toDateString()
-                        // let arr = En.split(' ')
-                        // let bb = b.split(':')
-                        // item.createdAt = arr[2] + ' ' + arr[1] + ','+ arr[3] + ' ' + bb[0] + ':' + bb[1]
-                        let arr = a.split('-').join('/')
-                        let bb = b.split(':')
-                        item.createdAt = arr + ' ' + bb[0] + ':' + bb[1]
-                    })
-                    if (localStorage.getItem('platform') == 2) {
-                        store.commit('setUser',{
-                            key: "noticeState",
-                            value: res.data.data.pageT.find(item => item.noticeState==2)
+            store.commit("setUser",{ key: "loading", value: true })
+            if ((store.state.totalRecordsCount1 == store.state.noticeList.length) &&store.state.totalRecordsCount1 !=0 ) {
+                store.commit("setUser",{ key: "loading", value: false })
+            } else {
+                // alert(456)
+                notice(data).then(res => {
+                    console.log(res,'notice')
+                    if (res.data.rtnCode == 200) {
+                        res.data.data.pageT.forEach(item => {
+                            var time = item.createdAt
+                            let a = time.split(' ')[0]
+                            let b = time.split(' ')[1]
+                            // let En = new Date(a).toDateString()
+                            // let arr = En.split(' ')
+                            // let bb = b.split(':')
+                            // item.createdAt = arr[2] + ' ' + arr[1] + ','+ arr[3] + ' ' + bb[0] + ':' + bb[1]
+                            let arr = a.split('-').join('/')
+                            let bb = b.split(':')
+                            item.createdAt = arr + ' ' + bb[0] + ':' + bb[1]
                         })
-                    } else if (localStorage.getItem('platform') == 1) {
-                        store.commit('setUser',{
-                            key: "noticeState",
-                            value: res.data.data.pageT.find(item => item.noticeState==2)
-                        })
+                        store.commit("pageAdd_n", res.data.data.pageT )
+                        if (localStorage.getItem('platform') == 2) {
+                            store.commit('setUser',{
+                                key: "noticeState",
+                                value: store.state.noticeList.find(item => item.noticeState==2)
+                            })
+                        } else if (localStorage.getItem('platform') == 1) {
+                            store.commit('setUser',{
+                                key: "noticeState",
+                                value: store.state.noticeList.find(item => item.noticeState==2)
+                            })
+                        }
+                        // store.commit("setUser",{ key: "noticeList", value: res.data.data.pageT })
+                        store.commit("setUser",{ key: "totalRecordsCount1", value: res.data.data.totalRecordsCount })
+                        store.commit("setUser",{ key: "loading", value: false })
+                    } else if (res.data.rtnCode == 201) {
+                        store.commit("setUser",{ key: "noticeList", value: null })
+                        store.commit("setUser",{ key: "loading", value: false })
                     }
-                    store.state.noticeList = res.data.data.pageT
-                    store.state.loading = false
-                    store.commit("setUser",{ key: "n_loading", value: false })
-                } else if (res.data.rtnCode == 201) {
-                    store.state.noticeList = null
-                    store.state.loading = false
-                    store.commit("setUser",{ key: "n_loading", value: false })
-                }
-            }).catch(e => {
-                console.log(e)
-                store.state.loading = false
-                store.commit("setUser",{ key: "n_loading", value: false })
-            })
+                }).catch(e => {
+                    console.log(e)
+                    sstore.commit("setUser",{ key: "loading", value: false })
+                })
+            }
         },
     }
 }
