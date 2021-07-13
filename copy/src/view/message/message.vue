@@ -273,6 +273,11 @@ export default {
                         }
                     })
                 }
+                // if (op.children.length == 0) {
+                //     if (this.pet.petType == op.petTypeId) {
+                //         item.pet_name = op.petTypeName
+                //     }
+                // }
             })
         },
         edit () {

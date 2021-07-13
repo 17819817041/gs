@@ -13,6 +13,7 @@ export default {
         searchList: [],
         loading: false,
         vloading: true,
+        p_loading: true,
         callModal: false,
         callModal2: false,
         callTo: {},
@@ -80,6 +81,7 @@ export default {
                     store.commit("setUser",{ key: "petId", value: res.data.data.pageT[0].id })
                     store.commit("setUser",{ key: "loading", value: true })
                     store.commit("setUser",{ key: "vloading", value: false })
+                    store.commit("setUser",{ key: "p_loading", value: false })
                     res.data.data.pageT.forEach(item => {
                         item.change = true
                         if (item.age) {

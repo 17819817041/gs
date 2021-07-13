@@ -210,7 +210,7 @@
     }
 </style>
 <template>
-    <div class="customerPage" v-loading='!updating'>
+    <div class="customerPage" v-loading='p_loading'>
         <div class="customer_content flex">
             <div class="pet_message noBar">
                 <div class="bold petMessage_title sb al">
@@ -280,29 +280,29 @@
                             </div>
                             <div class="flex about">
                                 <div v-if="item.change">{{
-                                    options.find(op => op.petTypeId == item.petType)? 
-                                    options.find(op => op.petTypeId == item.petType).petTypeName
-                                    : '0'
+                                    options.find(op => op.petTypeId == item.petTypeParentId)? 
+                                    options.find(op => op.petTypeId == item.petTypeParentId).petTypeName
+                                    : options.find(op => op.petTypeId == item.petType).petTypeName
                                 }}</div>
                                 <div class="editInp al" v-else>
-                                    <el-select @change="selectType($event,i)" v-model="item.petType">
+                                    <el-select @change="selectType($event,i)" v-model="item.pet_name">
                                         <el-option v-for="(op) in options" :value="op.petTypeId" :key="op.petTypeId" :label="op.petTypeName"></el-option>
                                     </el-select>
                                 </div>
                             </div>
                             <div class="flex about">
                                 <div v-if="item.change">
-                                    <div v-if="item.petTypeName">{{item.petTypeName}}</div>
-                                    <div v-else>{{
+                                    <!-- <div v-if="item.petTypeName">{{item.petTypeName}}</div> -->
+                                    <div>{{
                                         item.breedList?
                                         item.breedList.find(breed => item.petType == breed.petTypeId)?
                                         item.breedList.find(breed => item.petType == breed.petTypeId).petTypeName:
-                                        ''
+                                        'No More'
                                         : ''
                                     }}</div>
                                 </div>
                                 <div class="editInp al" v-else>
-                                    <el-select v-model="item.breed">
+                                    <el-select v-model="item.breed_name" @change="cutBreed($event,item)">
                                         <el-option v-for="(breed,i) in item.breedList? item.breedList:[]" :key="i" 
                                         :label="breed.petTypeName"
                                         :value="breed.petTypeId"></el-option>
@@ -372,7 +372,7 @@
                                     </div>
                                 </div>
                                 <div class="flex about">
-                                    <div>2021/05/01 </div>
+                                    <div>{{item.petMedicalRecordDtos[0]? item.petMedicalRecordDtos[0].createdAt: 'No Date'}}</div>
                                 </div>
                                 <div class="flex about">
                                     <div class="al">
@@ -407,8 +407,7 @@ export default {
             pageSize: 100,
             i: null,
             petLists: [],
-            options: [],
-            petType: ''
+            options: []
         }
     },
     created () {
@@ -463,22 +462,34 @@ export default {
             // },
         },
         firstPet () { return this.$store.state.user.firstPet },
-        updating: {
-            get () { return this.$store.state.user.loading },
+        p_loading: {
+            get () { return this.$store.state.user.p_loading },
             set (val) {
                 this.$store.commit("setUser", {
-                    key: "updating",
+                    key: "p_loading",
                     value: val
                 })
             },
         }
     },
     methods: {
+        cutBreed (e,item) {
+            item.petType = e
+            this.options.forEach(op => {
+                if (op.children.length !== 0) {
+                    op.children.forEach(child => {
+                        if (item.petType == child.petTypeId) {
+                            item.breed_name = child.petTypeName
+                            this.petLists = [...this.petLists]
+                        }
+                    })
+                }
+            })
+        },
         selectType (e,i) {
-            console.log(e,i)
-            // this.petLists[i].petType = e
+            this.petLists[i].petType = e
+            this.petLists[i].breed_name = ''
             let obj = this.options.find(op => op.petTypeId == e)
-            // console.log(obj,this.petLists[i])
             this.petLists[i].breedList = obj.children
             this.petLists = [...this.petLists]
         },
@@ -528,13 +539,20 @@ export default {
                     if (op.children) {
                         op.children.forEach(child => {
                             if (item.petType == child.petTypeId) {
+                                item.pet_name = op.petTypeName
+                                item.breed_name = child.petTypeName
                                 let obj = this.options.find(op1 => op1.petTypeId == child.petTyepParentId)
                                 item.petTypeParentId = child.petTyepParentId
                                 item.breedList = obj.children
-                                console.log(item,666)
                                 this.petLists = [...this.petLists]
                             }
                         })
+                    }
+                    if (op.children.length == 0) {
+                        if (item.petType == op.petTypeId) {
+                            item.breedList = []
+                            item.pet_name = op.petTypeName
+                        }
                     }
                 })
             })
