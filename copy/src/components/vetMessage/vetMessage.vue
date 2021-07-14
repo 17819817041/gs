@@ -106,7 +106,7 @@ export default {
             this.$router.push("/myPaymentHistory")
         },
         vetRecord () {
-            this.$router.push("/vetRecord")
+            this.$router.push("/medical")
         }
     }
 }

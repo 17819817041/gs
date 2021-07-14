@@ -29,7 +29,7 @@
         position: relative;
         background: white;
         border-radius: 8px;
-        padding: 70px 0;
+        padding: 70px 3px;
         box-shadow: 0px 3px 3px 0px #D0D0D0;
         .edit {
             width: 70px;
@@ -70,20 +70,33 @@
         width: 97%;
         margin: auto;
         padding: 15px 0;
-        color: #5E5E5E;
         z-index: 100;
         background: @content;
+        transition: 0.1s;
     }
     .details_image {
         width: 25%;
-        // padding: 0 50px;
         .wrap_IMG {
-            width: 200px;
-            height: 200px;
-            border: solid 1px rgb(223, 201, 201);
+            width: 182px;
+            height:182px;
             border-radius: 50%;
             margin-left: 50px;
             overflow: hidden;
+            transition: 0.2s;
+            @media screen and (max-width: 1300px){
+                width: 150px;
+                height: 150px;
+                border-radius: 50%;
+                margin-left: 0px;
+                overflow: hidden;
+            }
+            @media screen and (max-width: 1000px){
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                margin-left: 0px;
+                overflow: hidden;
+            }
         }
     }
     .pet_IMG {
@@ -91,6 +104,7 @@
         display: block;
     }
     .details_message {
+        min-width: 195px;
         width: 21%;
         position: relative;
         .delete {
@@ -103,27 +117,31 @@
             margin-top: 30px;
             border-radius: 10px;
         }
-        .about {
-            height: 36px;
-            padding: 0 0 7px 30px;
-        }
+        // .about {
+        //     height: 36px;
+        //     padding: 0 0 7px 30px;
+        // }
     }
     .noPadding {
         padding: 0 0 4px 30px !important;
     }
     .details_message1 {
-        width: 40%;
+        width: 54%;
+        margin-left: 15px;
     }
     .about {
         height: 36px;
-        padding: 0 0 12px 30px;
+        padding: 0 0 12px 0px;
+        transition: 0.2s;
         white-space: nowrap;
+        @media screen and (max-width: 1000px){
+            height: 30px;
+            padding: 0 0 12px 0px;
+            white-space: nowrap;
+        }
     }
-    // .message1_child {
-    //     border: solid 1px;
-    // }
     .editInp {
-        width: 160px;
+        // width: 100%;
         border-radius: 10px;
         border: solid 1px gray;
         height: 30px;
@@ -133,6 +151,9 @@
             border: none;
             outline: none;
             font-size: 16px;
+        }
+        @media screen and (max-width: 1000px){
+            height: 25px;
         }
     }
     .editInp1 {
@@ -146,6 +167,9 @@
             border: none;
             outline: none;
             font-size: 16px;
+        }
+        @media screen and (max-width: 1000px){
+            height: 25px;
         }
     }
     .details_images, .details_message, .details_message1 {
@@ -173,7 +197,7 @@
     }
     .morePetDetalis {
         color: @logout;
-        font-size: 16px;
+        font-size: 13px;
         text-decoration: underline;
         margin-left: 10px;
     }
@@ -193,8 +217,14 @@
             font-size: 17px;
         }
     }
-    .size19 {
-        font-size: 19px;
+    .size17 {
+        font-size: 17px;
+        font-weight: bold;
+        transition: 0.1s;
+        @media screen and (max-width: 1000px){
+            font-size: 14px;
+            font-weight: bold;
+        }
     }
     .remarktext {
         width: 96%;
@@ -207,6 +237,18 @@
         border-radius: 20px;
         background: @video;
         color: white;
+    }
+
+    .size16 {
+        font-size: 16px;
+        color: rgb(70, 70, 70);
+        padding-left: 20px;
+        transition: 0.1s;
+        @media screen and (max-width: 1000px){
+            font-size: 12px;
+            color: rgb(70, 70, 70);
+            padding-left: 20px;
+        }
     }
 </style>
 <template>
@@ -233,14 +275,13 @@
                             </div>
                             <input id="ava1" type="file" v-if="!item.change" v-show="false" @change="petImage">
                         </label>
-
                     </div>
                     <div class="details_message flex">
                         <div class="delete cursor size15" v-if="!item.change" @click="Delete(item)">
                             Delete information
                         </div>
                         <div>
-                            <div>
+                            <div class="size17">
                                 <div class="flex about al">
                                     <div>Pet ID</div>
                                 </div>
@@ -258,22 +299,22 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div class="size16">
                             <div class="flex about">
-                                <div>{{item.id}}</div>
+                                <div class="al">{{item.id}}</div>
                             </div>
-                            <div :class="['flex', 'al', 'about', {noPadding:!item.change}]">
+                            <div :class="['flex', 'al', 'about']">
                                 <div v-if="item.change">{{item.name}}</div>
                                 <div class="editInp al" v-else>
-                                    <input type="text" v-model="item.name">
+                                    <input type="text" class="width100" v-model="item.name">
                                 </div>
                             </div>
-                            <div :class="['flex', 'about', {noPadding:!item.change}]">
+                            <div :class="['flex', 'about']">
                                 <div v-if="item.change">{{item.age}}</div>
                                 <div class="al" v-else>
-                                    <div class="years_input al"><input class="tc" type="text" v-model="item.yrs"/></div>
+                                    <div class="years_input al"><input class="tc width100" type="text" v-model="item.yrs"/></div>
                                     <div>yrs</div>
-                                    <div class="month_input al"><input class="tc" type="text" v-model="item.mo" ></div>
+                                    <div class="month_input al"><input class="tc width100" type="text" v-model="item.mo" ></div>
                                     <div>mo</div>
                                 </div>
                             </div>
@@ -315,7 +356,7 @@
                     </div>
                     <div class="details_message1">
                         <div class="flex">
-                            <div class="message1_child">
+                            <div class="message1_child size17">
                                 <div class="flex about">
                                     <div>Gender</div>
                                 </div>
@@ -335,7 +376,7 @@
                                     <div>Remarks</div>
                                 </div>
                             </div>
-                            <div>
+                            <div class="size16">
                                 <div class="flex about">
                                     <div v-if="item.change">
                                         <span v-if="item.gender == 1">Male</span>
@@ -408,7 +449,8 @@ export default {
             pageSize: 100,
             i: null,
             petLists: [],
-            options: []
+            options: [],
+            p_loading: true
         }
     },
     created () {
@@ -463,15 +505,15 @@ export default {
             // },
         },
         firstPet () { return this.$store.state.user.firstPet },
-        p_loading: {
-            get () { return this.$store.state.user.p_loading },
-            set (val) {
-                this.$store.commit("setUser", {
-                    key: "p_loading",
-                    value: val
-                })
-            },
-        }
+        // p_loading: {
+        //     get () { return this.$store.state.user.p_loading },
+        //     set (val) {
+        //         this.$store.commit("setUser", {
+        //             key: "p_loading",
+        //             value: val
+        //         })
+        //     },
+        // }
     },
     methods: {
         cutBreed (e,item) {
@@ -546,14 +588,23 @@ export default {
                                 item.petTypeParentId = child.petTyepParentId
                                 item.breedList = obj.children
                                 this.petLists = [...this.petLists]
+                                this.p_loading = false
+                            } else {
+                                this.p_loading = false
                             }
                         })
+                    } else {
+                        this.p_loading = false
                     }
                     if (op.children.length == 0) {
                         if (item.petType == op.petTypeId) {
                             item.breedList = []
                             item.pet_name = op.petTypeName
+                        } else {
+                            this.p_loading = false
                         }
+                    } else {
+                        this.p_loading = false
                     }
                 })
             })

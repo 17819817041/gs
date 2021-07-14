@@ -34,7 +34,6 @@
     }
     .second, .last {
         background: @helpBtn;
-        color: #686760;
         display: block;
         padding: 17px 0px;
         border-radius: 15px;

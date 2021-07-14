@@ -50,12 +50,49 @@
     .signUp {
         margin-top: 65px;
     }
+
+    .headimg_wrap {
+        position: relative;
+        .logo {
+            background: rgb(255, 255, 255);
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 600;
+            padding: 15px 30px 0 62px;
+            @media screen and (max-width: 564px) {
+                height: 70px;
+                padding: 10px 10px 0 10px;
+            }
+        }
+    }
+    .logo .logo_IMG {
+        width: 110px;
+        height: 123px;
+        transition: 0.25s;
+        z-index: 500;
+        @media screen and (max-width: 1300px) {
+            width: 88px;
+            height: 98px;
+        }
+        @media screen and (max-width: 564px) {
+            width: 50px;
+            height: 60px;
+        }
+    }
 </style>
 
 <template>
     <div class="login" v-loading='loading'>
-        <div>
+        <!-- <div>
             <myHeaderL></myHeaderL>
+        </div> -->
+        <div class="headimg_wrap">
+            <div class="logo">
+                <img class="logo_IMG" src="@/assets/img/logo.png" alt=""> <!--  @click="test" -->
+            </div>
+            <!-- <myHeaderL></myHeaderL> -->
+            <myHeader></myHeader>
         </div>
         <div class="size21 tc title">
             Vet Login

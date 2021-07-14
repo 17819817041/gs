@@ -11,11 +11,11 @@
         height: 100%;
         background: @content;
         flex: 10;
+        overflow: auto;
     }
     .appointment_content_item_wrap {
         width: 98%;
-        height: 100%;
-        overflow: auto;
+        height: calc(100% - 60px);
     }
     .calendar {
         width: 100%;
@@ -114,8 +114,8 @@
 <template>
     <div class="appointment">      <!-- 医生 -->
         <div class="appointment_content flex">
-            <div class="appointment_content_item">
-                <div class="appointment_content_item_wrap mg noBar">
+            <div class="appointment_content_item noBar">
+                <div class="appointment_content_item_wrap mg">
                     <div class="explan bold al">
                         <img src="@/assets/img/appointment.png" alt="">
                         Appointment

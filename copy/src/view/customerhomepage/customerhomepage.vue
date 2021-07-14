@@ -43,8 +43,8 @@
     }
     .list {
         @media screen and (max-width:1300px) {
-            left: 130px !important;
-            top: 80px !important;
+            left: 141px !important;
+            top: 65px !important;
         }
     }
     .list .img1 {

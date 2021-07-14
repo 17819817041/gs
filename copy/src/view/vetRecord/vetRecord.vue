@@ -12,11 +12,14 @@
         background: @content;
         flex: 10;
         height: 100%;
+        overflow: auto;
         .itemChild {
             width: 98%;
         }
     }
     .record_message {
+        margin-bottom: 20px;
+        white-space: nowrap;
         .record_item {
             margin-bottom: 15px;
             width: 98%;
@@ -40,19 +43,30 @@
         margin-left: 60px;
         width: 50%;
         position: relative;
+        white-space: nowrap;
+        @media screen and (max-width: 1000px){
+            margin-left: 20px;
+        }
     }
     .record_image {
-        width: 15%;
-    } 
-    .dog_img{
+        width: 21%;
+    }
+    .record_image div {
         padding: 25px 0;
-        width: 200px;
-        height: 200px;
+        width: 230px;
+        height: 230px;
         transition: 0.25s;
-        @media screen and (max-width:1500px) {
+        @media screen and (max-width:1300px) {
+            width: 190px;
+            height: 190px;
+        }
+        @media screen and (max-width: 1000px){
             width: 150px;
             height: 150px;
         }
+    } 
+    .dog_img{
+        height: 100%;
     }
     .children {
         transition: 0.25s;
@@ -62,16 +76,34 @@
     }
     .about {
         padding: 0 0 12px 30px;
+        height: 33px;
         transition: 0.25s;
         @media screen and (max-width:1299px) {
             padding: 0 0 11px 20px !important;
         }
+        @media screen and (max-width: 1000px){
+            height: 30px;
+        }
     }
-    .size22 {
-        font-size: 22px;
+    .size17 {
+        font-size: 17px;
+        font-weight: bold;
+        transition: 0.1s;
+        @media screen and (max-width: 1000px){
+            font-size: 14px;
+            font-weight: bold;
+        }
     }
-    .size19 {
-        font-size: 19px;
+    .size16 {
+        font-size: 16px;
+        color: rgb(70, 70, 70);
+        padding-left: 20px;
+        transition: 0.1s;
+        @media screen and (max-width: 1000px){
+            font-size: 12px;
+            color: rgb(70, 70, 70);
+            padding-left: 20px;
+        }
     }
     .medialRecord {
         max-height: 321px;
@@ -113,8 +145,8 @@
                             </div>
                             <div style="flex:10">
                                 <div class="record_wrap flex">
-                                    <div class="record_message flex size22">
-                                        <div>
+                                    <div class="record_message flex ">
+                                        <div class="size17">
                                             <div class="flex about">
                                                 <div>Pet ID</div>
                                             </div>
@@ -131,7 +163,7 @@
                                                 <div>Breed</div>
                                             </div>
                                         </div>
-                                        <div>
+                                        <div class="size16">
                                             <div class="flex about">
                                                 <div v-if="userAndPet.id">{{userAndPet.id}}</div>
                                                 <div v-else>No data</div>
@@ -153,7 +185,7 @@
                                         </div>
                                     </div>
                                     <div class="record_message1 flex">
-                                        <div class="children size22">
+                                        <div class="children size17">
                                             <div class="about">
                                                 <div>Gender</div>
                                             </div>
@@ -167,7 +199,7 @@
                                                 <div>Remarks</div>
                                             </div>
                                         </div>
-                                        <div class="children size22">
+                                        <div class="children size16">
                                             <div class="flex about">
                                                 <div >
                                                     <span v-if="userAndPet.gender == 1">Male</span>
@@ -194,13 +226,13 @@
                                 </div>
                                 <div class="medialRecord" v-if="userAndPet.petMedicalRecords">
                                     <div class="medialRecord_item" v-for="(item,i) in userAndPet.petMedicalRecords" :key="i">
-                                        <div class=" size19">Medical Record</div>
+                                        <div class=" size17">Medical Record</div>
                                         <div style="padding: 5px 0 5px 15px"> 
-                                            <span class=" size19">Date: </span>
+                                            <span class=" size17">Date: </span>
                                             <span class="size15">{{item.createdAt}}</span>
                                         </div>
                                         <div style="padding-top: 10px">
-                                            <span class=" size19">Vet: </span>
+                                            <span class=" size17">Vet: </span>
                                             <span class="size15">Dr Beck</span>
                                         </div>
                                         <div class="vetRecord size15" style="padding: 10px 15px">
@@ -210,7 +242,7 @@
                                     </div>
                                 </div>
                                 <div class="medialRecord" v-else>
-                                    <div class="medialRecord_item size16">
+                                    <div class="medialRecord_item size17">
                                         No medical records
                                     </div>
                                 </div>

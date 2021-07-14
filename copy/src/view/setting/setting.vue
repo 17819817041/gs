@@ -42,11 +42,30 @@
     }
     .size25 {
         font-size: 25px;
+        transition: 0.1s;
         color: @explanTitle;
+        @media screen and (max-width: 1000px){
+            font-size: 20px;
+        }
     }
-    .size22 {
-        font-size: 22px;
+    .size19 {
+        font-size: 19px;
+        font-weight: bold;
         color: @explanTitle;
+        transition: 0.1s;
+        @media screen and (max-width: 1000px){
+            font-size: 16px;
+            font-weight: bold;
+        }
+    }
+    .size16_s {
+        font-size: 19px;
+        color: gray;
+        transition: 0.1s;
+        @media screen and (max-width: 1000px){
+            font-size: 16px;
+            font-weight: bold;
+        }
     }
     .personal_message_title {
         transform: translate(0,60%);
@@ -101,12 +120,22 @@
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            // border: solid 1px;
             overflow: hidden;
+            transition: 0.1s;
+            @media screen and (max-width: 1300px) {
+                width: 180px;
+                height: 180px;
+            }
+            @media screen and (max-width: 1000px) {
+                width: 140px;
+                height: 140px;
+            }
         }
     } 
     .message1, .message2 {
+        min-width: 220px;
         width: 30%;
+        white-space: nowrap;
     }
     .name1 div{
         margin-bottom: 10px;
@@ -114,7 +143,7 @@
     .name1:nth-child(1) {
         padding-right: 25px;
     }
-    .name2 div {
+    .name2 .name_item {
         margin-bottom: 20px;
     }
     .name2:nth-child(1) {
@@ -469,6 +498,9 @@
     .COLOR1 {
         color: #FF3E61;
     }
+    // .message1_item {
+        
+    // }
 </style>
 
 <template>
@@ -561,14 +593,14 @@
                         <div class="flex" style="width:73%">
                             <div class="message1">   
                                 <div class="message1_item ts flex size22 al">
-                                    <div class="name1">
+                                    <div class="name1 size19">
                                         <div>User ID</div>
                                         <div>Name</div>
                                         <div>Age</div>
                                         <div>Location</div>
                                         <div>Mobile</div>
                                     </div>
-                                    <div class="name1">
+                                    <div class="name1 size16_s">
                                         <div>{{user.userId}}</div>
                                         <div v-if="editBtn">{{user.userName}}</div>
                                         <div v-else class="inp al"><input type="text" v-model="user.userName"></div>
@@ -582,31 +614,31 @@
                                 </div>   
                             </div>
                             <div class="message2">
-                                <div class="message2_item flex ts size22 al">
-                                    <div class="name2">
-                                        <div>Gender</div>
-                                        <div>Preferred Vet</div>
-                                        <div>Remarks</div>
+                                <div class="message2_item flex ts al">
+                                    <div class="name2 size19">
+                                        <div class="name_item">Gender</div>
+                                        <div class="name_item">Preferred Vet</div>
+                                        <div class="name_item">Remarks</div>
                                     </div>
-                                    <div class="name2">
-                                        <div v-if="editBtn">
+                                    <div class="name2 size16_s">
+                                        <div class="name_item" v-if="editBtn">
                                             <span v-if="user.userGender == 1">Male</span>    
                                             <span v-else-if="user.userGender == 2">Female</span>    
                                         </div>  <!-- null -->
-                                        <div v-else class="gender al">
-                                            <select class="option width100" @change="getGender" name="" id="">
-                                                <option value="1">Male</option>
-                                                <option value="2">Female</option>
-                                            </select>
+                                        <div v-else class="gender al name_item">
+                                            <el-select class="option width100" @change="getGender" name="" id="" v-model="Gender">
+                                                <el-option value="1" label="Male"></el-option>
+                                                <el-option value="2" label="Female"></el-option>
+                                            </el-select>
                                         </div>  
-                                        <div v-if="editBtn">{{user.userChoiceDoctor}} <span style="color:white">-</span> </div> <!-- null -->
-                                        <div v-else class="inp al"><input type="text" v-model="user.userChoiceDoctor"></div>
+                                        <div class="name_item" v-if="editBtn">{{user.userChoiceDoctor}} <span style="color:white">-</span> </div> <!-- null -->
+                                        <div v-else class="inp al name_item"><input type="text" v-model="user.userChoiceDoctor"></div>
 
-                                        <div v-if="editBtn">
+                                        <div class="name_item" v-if="editBtn">
                                             <span v-if="user.extend">{{user.extend}}</span>
                                             <span v-else-if="user.extend === null">No remark</span>
                                         </div>
-                                        <div v-else style="color:white">-</div>
+                                        <div class="name_item" v-else style="color:white">-</div>
                                     </div>
                                 </div>
                                 <div @click="reset" v-if="editBtn">
@@ -707,10 +739,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="sa pay_history">
-                                <!-- <div class="paypal_account sa">
-                                    <div class="p_title tc">Other Waller</div>
-                                </div> -->
+                            <!-- <div class="sa pay_history">
                                 <div class="payment_record">
                                     <div class="p_title">My Payments History</div>
                                     <div class="history_pay auto ">
@@ -718,7 +747,6 @@
                                             <div class="flex">
                                                 <div class="payed_head ju al">
                                                     <img :src="item.userImage" v-if="item.userImage" alt="">
-                                                    <!-- <i class="el-icon-picture-outline" style="color: gray;font-size: 20px" v-else></i> -->
                                                     <img :src="AllDetail.userImage" v-else-if="item.userImage === null" alt="">
                                                 </div>
                                                 
@@ -737,7 +765,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>  
+                            </div>   -->
                         </div>
                         <div>
 
@@ -772,13 +800,19 @@ export default {
             goodId: 5,
             pay_loading: false,
             data: 0,
-            payList: []
+            payList: [],
+            Gender: ''
         }
     },
     watch: {
         AllDetail: {
             handler (val) {
                 this.user = JSON.parse(JSON.stringify(this.AllDetail))
+                if (this.user.userGender == 1) {
+                    this.Gender = 'Male'
+                } else if (this.user.userGender == 2) {
+                    this.Gender = 'Female'
+                }
             },
             immediate: true
         },
@@ -977,7 +1011,7 @@ export default {
             })
         },
         getGender (val) {
-            this.user.userGender = val.target.value
+            this.user.userGender = val
         },
         updateDetails () {
             console.log(this.user)

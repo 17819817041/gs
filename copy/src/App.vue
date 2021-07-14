@@ -373,6 +373,7 @@ export default {
 	}
 	#app {
 		height: 100%;
+		min-width: 830px;
 		.scrollTop {
 			position: fixed;
 			right: 25px;
@@ -465,6 +466,13 @@ export default {
 
 	.vetSetting .el-icon-time, .vetSetting .el-input__suffix {
 		display: none !important;
+	}
+	.setting .gender .el-input {
+		height: 100% !important;
+	}
+	.setting .gender .el-input .el-input__inner {
+		height: 100% !important;
+		background: white !important;
 	}
 
 

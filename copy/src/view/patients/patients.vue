@@ -63,10 +63,14 @@
         margin-top: 20px;
     }
     .details_image, .person_image {
-        border-radius: 50%;
-        overflow: hidden;
         width: 27%;
     } 
+    .person_image div, .details_image div {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
     .dog_img, .felame {
         height: 100%;
         border: solid 1px;
@@ -257,9 +261,11 @@
                     <div class="personal_message mg">
                         <div class="size25 bold tc item_title">Guadian Details</div>
                         <div class="detail flex width100 al">
-                            <div class="person_image al ju">
-                                <img class="felame" v-if="userAndPet.userHead" :src="userAndPet.userHead" alt="" mode="widthFix">
-                                <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
+                            <div class="person_image">
+                                <div class=" al ju">
+                                    <img class="felame" v-if="userAndPet.userHead" :src="userAndPet.userHead" alt="" mode="widthFix">
+                                    <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
+                                </div>
                             </div>
                             <div class="flex" style="width:73%">
                                 <div class="message1">   
@@ -305,9 +311,11 @@
                         </div>
                         <div class="details_item flex">
                             <div class="size25 bold tc item_title2">Pet Details</div>
-                            <div class="details_image ju al">
-                                <img class="dog_img" v-if="userAndPet.petHeadUrl" :src="userAndPet.petHeadUrl" alt="" mode="widthFix">
-                                <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
+                            <div class="details_image ">
+                                <div class="ju al">
+                                    <img class="dog_img" v-if="userAndPet.petHeadUrl" :src="userAndPet.petHeadUrl" alt="" mode="widthFix">
+                                    <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
+                                </div>
                             </div>
                             <div class="details_message flex size22">
                                 <div>

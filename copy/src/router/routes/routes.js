@@ -65,6 +65,11 @@ export default [
                 component: () => import("@/view/record/record.vue")
             },
             {
+                path:"/allRecord",
+                name:'allRecord',
+                component: () => import("@/view/record/allRecord.vue")
+            },
+            {
                 path:'/paymentHistory',
                 name:'paymentHistory',
                 component: () => import("@/view/paymentHistory/paymentHistory.vue")
@@ -189,7 +194,12 @@ export default [
                 path: "/vetConfirm",
                 name: "vetConfirm",
                 component: () => import("@/view/vetConfirm/vetConfirm.vue")
-            }
+            },
+            {
+                path: "/medical",
+                name: "medical",
+                component: () => import("@/view/medical/medical.vue")
+            },
         ]
     },
     {

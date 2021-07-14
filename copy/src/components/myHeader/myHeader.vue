@@ -22,7 +22,7 @@ export default {
             height: 70px;
         }
         width: 100%;
-        height: 100px;
+        height: 109px;
         background: @hdColor;
         position: relative;
         .helpBtn {

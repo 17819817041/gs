@@ -2,16 +2,16 @@
     <div class="myCustomer flex" v-loading="loading">
         <div class="animal">
             <div class="wrap noBar clear">
-                <!-- <div class="wrap_item float" v-for="(item) in List" :key="item.id">
+                <div class="wrap_item float" v-for="(item,i) in getDoctorMedicalLimitList" :key="i" @click="toPatients(item)">
                     <div class="flex al">
                         <div class="ju al Personal">
-                            <img class="personal_img" style="height:100%;" v-if="item.image" :src="item.image" alt="">
-                            <i class="el-icon-picture-outline Icon" v-else></i>
+                            <img class="personal_img" style="height:100%;" v-if="item.image" :src="item.image? item.image: null " alt="">
+                            <i class="el-icon-picture-outline" style="font-size:25px;color:gray" v-else></i>
                         </div>
                         <div class="name">
                             <div class="size18 petName flex" v-if="item.name">
                                 <div class="address_img"></div>
-                                <div>{{item.name}}</div>
+                                <div>{{item.name? item.name: "No Name"}}</div>
                             </div>
                             <div class="size18 flex" v-else>
                                 <div class="address_img"></div>
@@ -19,37 +19,11 @@
                             </div>
                             <div class="size_14 flex">
                                 <div class="address_img"></div>
-                                <div>{{item.id}}</div>
+                                <div>{{item.petId? item.petId: 'No Id'}}</div>
                             </div>
                             <div class="address flex">
                                 <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
-                                <div class="size_14 address_name">Chai Wan, Hong Kong</div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-                <div class="wrap_item float" v-for="(item,i) in getDoctorMedicalLimitList" :key="i" @click="toPatients(item)">
-                    <div class="flex al">
-                        <div class="ju al Personal">
-                            <img class="personal_img" style="height:100%;" v-if="item.pet" :src="item.pet? item.pet.petImage: '' " alt="">
-                            <i class="el-icon-picture-outline Icon" v-else></i>
-                        </div>
-                        <div class="name">
-                            <div class="size18 petName flex" v-if="item.pet">
-                                <div class="address_img"></div>
-                                <div>{{item.pet? item.pet.petName: ""}}</div>
-                            </div>
-                            <div class="size18 flex" v-else>
-                                <div class="address_img"></div>
-                                <div>No Name</div>
-                            </div>
-                            <div class="size_14 flex">
-                                <div class="address_img"></div>
-                                <div>{{item.pet? item.pet.petId: 'No Id'}}</div>
-                            </div>
-                            <div class="address flex">
-                                <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
-                                <div class="size_14 address_name">{{item.pet? item.pet.address: "No Address"}}</div>
+                                <div class="size_14 address_name">{{item.address? item.address: "No Address"}}</div>
                             </div>
                         </div>
                     </div>
@@ -134,76 +108,54 @@
 </template>
 
 <script>
-import { getUserByPetId, getDoctorMedicalLimit, delPetMedicalRecordById } from "@/axios/request.js"
+import { getUserByPetId, delPetMedicalRecordById, getPetMedicalRecord } from "@/axios/request.js"
 export default {
     data () {
         return {
-            List: {},
             pageNum: 0,
             pageSize: 100,
             petAndUser: {},
             changePage: {},
             getDoctorMedicalLimitListStatus: true,
-            getDoctorMedicalLimitList: []
+            getDoctorMedicalLimitList: [],
+            pageNum_m: 1,
+            pageSize_m: 100,
+            loading: true
         }
     },
     mounted () {
-        // this.createClient()
+        
     },
     created () {
-        var data = {
-            // userId: localStorage.getItem("userId"),
-            userId: 486,
-            pageNum: 1,
-            pageSize: 10
-        }
-        this.$store.dispatch("getPetList",data)
-        this.getDoctorMedicalLimit()
+        this.PetMedicalRecord()
     },
     watch: {
-        petList: {
-            handler (val) {
-                if (val) {
-                    if (this.petList[0]) {
-                        this.first()
-                    } else {
-
-                    }
-                }
-                this.$nextTick(() => {
-                    
-                    this.List = JSON.parse(JSON.stringify(this.petList))
-                })
-            },
-            immediate: true
-        }
+        
     },
     computed: {
-        petList: {
-            get () {return this.$store.state.user.petList},
-            set (val) {
-                this.$store.commit("setUser", {
-                    key: "petList",
-                    value: val
-                })
-            },
-        },
-        loading () { return this.$store.state.user.vloading },
+        
     },
     methods: {
-        getDoctorMedicalLimit () {
+        PetMedicalRecord () {
             let data = {
-                userId: localStorage.getItem('userId'),
-                pageNum: 1,
-                pageSize: 100
+                doctorId: localStorage.getItem('userId'),
+                pageNum: this.pageNum_m,
+                pageSize: this.pageSize_m
             }
-            getDoctorMedicalLimit(data).then(res => {
-                console.log(res)
+            getPetMedicalRecord(data).then(res => {
+                console.log(res,'PetMedicalRecord')
                 if (res.data.rtnCode == 200) {
                     this.getDoctorMedicalLimitList = res.data.data.pageT
+                    let id = res.data.data.pageT[0].petId
+                    this.getUserByPetId(id)
+                    this.loading = false
                 } else if (res.data.rtnCode == 201) {
                     this.getDoctorMedicalLimitListStatus = false
+                    this.loading = false
                 }
+            }).catch(e => {
+                console.log(e)
+                this.loading = false
             })
         },
         first (val) {
@@ -224,7 +176,6 @@ export default {
                 petId: id
             }
             getUserByPetId(data).then(res => {
-                console.log(res,'petAndUser')
                 if (res.data.rtnCode == 200) {
                     this.petAndUser = res.data.data
                 }
@@ -233,9 +184,7 @@ export default {
             })
         },
         toPatients (item,i) {
-            console.log(item)
-            this.changePage = item.pet
-            this.getUserByPetId(item.pet.petId)
+            this.getUserByPetId(item.petId)
             // let data = {
             //     petMedicalRecordId: item.id
             // }
@@ -245,7 +194,7 @@ export default {
         },
         moreDetail () {
             if (this.changePage) {
-                this.$router.push("/patients?id=" + this.changePage.petId)
+                this.$router.push("/patients?id=" + this.petAndUser.petId)
             } else {
 
             }

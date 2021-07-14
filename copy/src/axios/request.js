@@ -79,7 +79,7 @@ export function file (data) {          //上传头像
     )
 }
 
-export function petDetails (data) {     //宠物ID获取第一条宠物信息
+export function petDetails (data) {     //宠物ID获取宠物信息
     return request(
         {
             url: "/pet/getPet",
@@ -452,6 +452,14 @@ export function paymentRecord (data) {            //付款记录
 export function getDoctorMedicalLimit (data) {            //医生治疗记录
     return request({
         url: "/pet/getDoctorMedicalLimit",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function getPetMedicalRecord (data) {            //医生治疗记录
+    return request({
+        url: "/PetMedicalRecord/getPetMedicalRecordPageByDocId",
         method: 'POST',
         params: data
     })

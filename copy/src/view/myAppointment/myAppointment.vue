@@ -29,21 +29,43 @@
             width: 150px;
             height: 150px;
             overflow: hidden;
+            transition: 0.1s;
             img {
                 height: 100%;
+            }
+            @media screen and (max-width: 1200px){
+                border: solid 1px rgb(224, 223, 223);
+                border-radius: 50%;
+                width: 116px;
+                height: 116px;
+                overflow: hidden;
             }
         }
         
     }
     .dateAndPet {
-        width: 60%;
+        width: 100%;
         margin-top: 50px;
+        @media screen and (max-width: 1200px){
+            width: 100%;
+            margin-top: 36px;
+        }
         .dateAndPet_date, .dateAndPet_pet {
             width: 50%;
         }
     }
+    .dateAndPet_date {
+        min-width: 193px;
+        // @media screen and (max-width: 940px){
+        //     width: 40%;
+        // }
+    }
     .message_wrap {
         width: 60%;
+        transition: 0.1s;
+        @media screen and (max-width: 960px){
+            width: 45%;
+        }
     }
 
     .Way {
@@ -52,9 +74,17 @@
     .video_btn {
         height: 45px;
         border-radius: 7px;
-        margin-bottom: 15px;
+        margin-bottom: 55px;
         width: 220px;
+        transition: 0.1s;
         background: #15BC83;
+        @media screen and (max-width: 1200px){
+            height: 34px;
+            border-radius: 7px;
+            margin-bottom: 55px;
+            width: 192px;
+            background: #15BC83;
+        }
     }
     .phone_btn {
         height: 45px;
@@ -71,11 +101,20 @@
         background: #D7D8D9;
     }
     .size23 {
-        font-size: 23px;
+        font-size: 20px;
+        transition: 0.1s;
+        @media screen and (max-width: 1200px){
+            font-size: 16px;
+        }
     }
     .size20 {
-        font-size: 20px;
+        font-size: 16px;
         color: #767676;
+        transition: 0.1s;
+        @media screen and (max-width: 1200px){
+            font-size: 12px;
+            color: #767676;
+        }
     }
     .Info {
         width: 100px;
@@ -116,7 +155,7 @@
                                         <span>{{item.booking.bookingStartTime}}{{item.booking.APM}}</span>    
                                     </div>
                                 </div>
-                                <div class="dateAndPet_pet" style="padding-left:30px;">
+                                <div class="dateAndPet_pet">
                                     <div class="size20">Pet Name</div>
                                     <div class="size23">{{item.booking.petName}}</div>
                                 </div>

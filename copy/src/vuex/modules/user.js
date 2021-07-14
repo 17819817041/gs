@@ -13,7 +13,7 @@ export default {
         searchList: [],
         loading: false,
         vloading: true,
-        p_loading: false,
+        // p_loading: true,
         callModal: false,
         callModal2: false,
         callTo: {},
@@ -84,11 +84,13 @@ export default {
                     store.commit("setUser",{ key: "petId", value: res.data.data.pageT[0].id })
                     store.commit("setUser",{ key: "loading", value: true })
                     store.commit("setUser",{ key: "vloading", value: false })
-                    store.commit("setUser",{ key: "p_loading", value: false })
+                    // store.commit("setUser",{ key: "p_loading", value: false })
                     res.data.data.pageT.forEach(item => {
-                        // if (item.petMedicalRecordDtos) {
-                        //     item.petMedicalRecordDtos = item.petMedicalRecordDtos.reverse()
-                        // }
+                            if (item.petMedicalRecordDtos) {
+                                item.petMedicalRecordDtos.forEach(child => {
+                                    child.createdAt = child.createdAt.split(' ')[0]
+                                })
+                            }
                         item.change = true
                         if (item.age) {
                             let date = item.age.split('yrs')
@@ -126,10 +128,10 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
-                        if (vm.$route.name !== 'customerLogin') {
-                            router.replace('/customerLogin')
+                        // if (vm.$route.name !== 'customerLogin') {
+                        //     router.replace('/customerLogin')
                             vm.$message.error('Login expired, please log in again !');
-                        }
+                        // }
                         store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }
@@ -163,10 +165,10 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
-                        if (vm.$route.name !== 'vetLogin') {
-                            router.replace('/vetLogin')
+                        // if (vm.$route.name !== 'vetLogin') {
+                        //     router.replace('/vetLogin')
                             vm.$message.error('Login expired, please log in again !');
-                        }
+                        // }
                         store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }
@@ -260,6 +262,10 @@ export default {
                         store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
                         store.commit("pageAdd", res.data.data.pageT )
                         if (doctor.pageNum <= 1) {
+                            store.commit("setUser",{
+                                key: "mask",
+                                value: res.data.data.pageT[0]
+                            })
                             store.commit("setUser", { key: 'vDetail', value: res.data.data.pageT[0] } )
                             store.commit("setUser", { key: 'rate', value: res.data.data.pageT[0].baseScore } )
                         }

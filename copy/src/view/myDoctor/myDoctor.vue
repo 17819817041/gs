@@ -45,7 +45,6 @@
                     <div class="loading" v-loading="true"></div>
                 </div>
             </div>
-            
         </div>
         <div class="doctorDetails noBar">
             <div class="details_item mg">
@@ -58,7 +57,6 @@
                 </div>
                 <div class="doctor_name tc" v-if="detail.doctorName">{{detail.doctorName}}</div>
                 <div class="doctor_name tc" v-else>Name</div>
-
                 <div class="size15 tc">General Obstetrics </div>
                 <div class="star ju">
                     <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
@@ -128,7 +126,6 @@
         </div>
     </div>
 </template>
-
 <script>
 import { bookingId, doctorList } from "@/axios/request.js"
 export default {
@@ -183,8 +180,6 @@ export default {
                 })
             },
         },
-        // remoteStream () { return this.$store.state.app.remoteStream },
-        // localStream () { return this.$store.state.app.localStream },
         doctorList: { 
             get () { return this.$store.state.user.doctorList },
             set (val) {
@@ -236,7 +231,6 @@ export default {
                         this.pageNum += 1
                         this.getDoctorList()
                     }
-                    
                 }
             }
             if ( this.$refs.doctorList.scrollTop > 300 ) {
@@ -260,7 +254,7 @@ export default {
         toVideo () {
             // this.$router.push('agora')
             console.log(this.detail)
-            if (this.detail.doctorOnLineState === 0) {
+            if (this.detail.doctorOnLineState == 0 || this.detail.doctorOnLineState == 2) {
                 this.$message({
                     type: 'info',
                     message: "The doctor is temporarily offline!"
@@ -271,9 +265,6 @@ export default {
                         this.$store.commit("setUser", {
                             key: "callTo",
                             value: this.detail
-                            // value: {
-                            //     doctorId: 322
-                            // }
                         })
                         this.callModal = true
                     } else {
@@ -284,7 +275,6 @@ export default {
                     }
                 }
             }
-            
         },
         booking () {
             this.$router.push("/booking")
@@ -295,7 +285,6 @@ export default {
     }
 }
 </script>
-
 <style lang="less" scoped>
 @import "@/less/css.less";
 .clearfix:after{content:'';display:block;clear:both;}

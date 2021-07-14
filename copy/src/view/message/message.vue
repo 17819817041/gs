@@ -303,10 +303,10 @@ export default {
         },
         Record () {
             this.$router.push({
-                name: 'record',
-                query: {
-                    pet: this.petId1
-                }
+                name: 'allRecord',
+                // query: {
+                //     pet: this.petId1
+                // }
             })
         },
         paymentHistory () {

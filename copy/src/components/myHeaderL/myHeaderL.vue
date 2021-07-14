@@ -135,13 +135,17 @@
         @media screen and (max-width: 1300px) {
             position: absolute;
             transform: scale(0.7);
-            width: 114%;
+            width: 118%;
             bottom: 0px;
             right: -207px;
         }
-        @media screen and (max-width: 1230px) {
+        @media screen and (max-width: 1200px) {
             width: 106%;
             right: -150px;
+        }
+        @media screen and (max-width: 960px) {
+            width: 106%;
+            right: -125px;
         }
         @media screen and (max-width:564px) {
             height: 30px;
@@ -179,8 +183,6 @@
     <div class="headerLogoPage">
         <div class="logo">
             <img class="logo_IMG" @click="backHome" src="@/assets/img/logo.png" alt=""> <!--  @click="test" -->
-
-            <!-- <img :class="[ {rotate: rotate},'list_img' ]" src="@/assets/img/list.png" alt="" @click="showDetails"> -->
         </div>
         <div class="div sb al">
             <div class="search al sa" v-if="login">
