@@ -7,11 +7,22 @@
     .myAppointment_wrap {
         flex: 10;
         height: 100%;
-        overflow: auto;
         background: @content;
+        padding-right: 10px;
         .myAppointment_item {
             width: 98%;
         }
+    }
+    .myAppointment_wrap_item {
+        height: 100%;
+        overflow: auto;
+    }
+    .myAppointment_wrap_item::-webkit-scrollbar {
+        width: 8px;
+    }
+    .myAppointment_wrap_item::-webkit-scrollbar-thumb {
+        border-radius: 15px;
+        background: #5E5E5E;
     }
     .myAppointment_item_message {
         width: 98%;
@@ -130,41 +141,43 @@
 </style>
 <template>
     <div class="myAppointment" v-loading="loading">            <!-- //客户 -->
-        <div class="myAppointment_wrap noBar">
+        <div class="myAppointment_wrap">
             <div class="explan bold al"><img src="@/assets/img/appointment.png" alt="">Appointment</div>
-            <div v-if="bookingList">
-                <div class="myAppointment_item mg" @click="appointmentDetalis(item.booking.bookingId,item.docImage)" v-for="(item) in bookingList" :key="item.bookingId">
-                    <div class="myAppointment_item_message mg al">
-                        <div class="head_image ju al">
-                            <div class="head_image_wrap ju al">
-                                <img v-if="item.docImage" :src="item.docImage" alt="">
-                                <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
+            <div v-if="bookingList" class="myAppointment_wrap_item" @scroll="docScroll" ref="doctorList">
+                <div ref="doctorList_height">
+                    <div class="myAppointment_item mg" @click="appointmentDetalis(item.booking.bookingId,item.docImage)" v-for="(item) in bookingList" :key="item.bookingId">
+                        <div class="myAppointment_item_message mg al">
+                            <div class="head_image ju al">
+                                <div class="head_image_wrap ju al">
+                                    <img v-if="item.docImage" :src="item.docImage" alt="">
+                                    <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div class="message_wrap">
-                            <div class="nameAndWay">
-                                <div class="doctor_name size23">Dr. {{item.booking.bookingDoctor}}</div>
-                                <div class="telOrVideo size20">Phone Counsultation</div>
-                            </div>
-                            <div class="flex dateAndPet">
-                                <div class="dateAndPet_date">
-                                    <div class="size20">Date and Time</div>
-                                    <div class="size23">
-                                        <span>{{item.booking.bookingDate}}</span>
-                                        <span style="margin: 0 5px">-</span>
-                                        <span>{{item.booking.bookingStartTime}}{{item.booking.APM}}</span>    
+                            <div class="message_wrap">
+                                <div class="nameAndWay">
+                                    <div class="doctor_name size23">Dr. {{item.booking.bookingDoctor}}</div>
+                                    <div class="telOrVideo size20">Phone Counsultation</div>
+                                </div>
+                                <div class="flex dateAndPet">
+                                    <div class="dateAndPet_date">
+                                        <div class="size20">Date and Time</div>
+                                        <div class="size23">
+                                            <span>{{item.booking.bookingDate}}</span>
+                                            <span style="margin: 0 5px">-</span>
+                                            <span>{{item.booking.bookingStartTime}}{{item.booking.APM}}</span>    
+                                        </div>
+                                    </div>
+                                    <div class="dateAndPet_pet">
+                                        <div class="size20">Pet Name</div>
+                                        <div class="size23">{{item.booking.petName}}</div>
                                     </div>
                                 </div>
-                                <div class="dateAndPet_pet">
-                                    <div class="size20">Pet Name</div>
-                                    <div class="size23">{{item.booking.petName}}</div>
-                                </div>
                             </div>
-                        </div>
-                        <div class="Way">
-                            <div class="video_btn ju al cursor" @click.stop="starBook(item)">
-                                <img src="@/assets/img/video1.png" alt="">
-                                Video Consultation
+                            <div class="Way">
+                                <div class="video_btn ju al cursor" @click.stop="starBook(item)">
+                                    <img src="@/assets/img/video1.png" alt="">
+                                    Video Consultation
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -246,6 +259,14 @@ export default {
 		pet () {return this.$store.state.user.pet},
     },
     methods: {
+        docScroll (e) {
+            this.$store.commit('setUser',{ key: 'dom', value: 'myAppointment_wrap_item' })
+            if ( this.$refs.doctorList.scrollTop > 300 ) {
+                this.$store.commit('setUser', { key: 'scrollTop', value: true } )
+            } else {
+                this.$store.commit('setUser', { key: 'scrollTop', value: false } )
+            }
+        },
         async starBook (item) {
             var D = new Date(item.booking.bookingDate).getTime()
             var now = Date.now()
@@ -326,7 +347,6 @@ export default {
 			})
 		},
         appointmentDetalis (id,url) {
-            console.log(id)
             this.$router.push({
                 name: 'cusAppointmentDetalis',
                 query: {

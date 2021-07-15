@@ -162,6 +162,7 @@ export default {
 			}
 		},
 		pet () {return this.$store.state.user.pet},
+		dom () {return this.$store.state.user.dom},
 		sureCall: {
 			get () { return this.$store.state.user.sureCall },
             set (val) {
@@ -185,9 +186,9 @@ export default {
 		up_top () {
 			// 每0.01秒向上移动100像素，直到小于或等于0结束
 			let timer = setInterval(() => {
-				document.getElementsByClassName('scrollUp')[0].scrollTop -= 100;
+				document.getElementsByClassName(this.dom)[0].scrollTop -= 100;
 				// 为负数，浏览器会不处理得
-				if (document.getElementsByClassName('scrollUp')[0].scrollTop <= 0) {
+				if (document.getElementsByClassName(this.dom)[0].scrollTop <= 0) {
 					clearInterval(timer)
 				}
 			}, 10)

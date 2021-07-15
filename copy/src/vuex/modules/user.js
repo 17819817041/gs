@@ -24,6 +24,7 @@ export default {
         rotate: false,
         vDetail: {},
         rate: 0,
+        dom: '',
         sureCall: true,
         showList: true,
         nameList: true,
@@ -128,10 +129,10 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
-                        // if (vm.$route.name !== 'customerLogin') {
-                        //     router.replace('/customerLogin')
+                        if (vm.$route.name !== 'customerLogin' && vm.$route.name !== 'relevance') {
+                            router.replace('/customerLogin')
                             vm.$message.error('Login expired, please log in again !');
-                        // }
+                        }
                         store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }
@@ -165,10 +166,10 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
-                        // if (vm.$route.name !== 'vetLogin') {
-                        //     router.replace('/vetLogin')
+                        if (vm.$route.name !== 'vetLogin' && vm.$route.name !== 'relevance') {
+                            router.replace('/vetLogin')
                             vm.$message.error('Login expired, please log in again !');
-                        // }
+                        }
                         store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }
@@ -286,16 +287,6 @@ export default {
                 })
             }
         },
-        // search (store,data) {
-        //     store.state.searchList = []
-        //     store.state.doctorList.forEach(item => {
-        //         if (item.doctorName.toUpperCase().includes(store.state.inp.toUpperCase())) {    //item.doctorName == data 
-        //             store.state.searchList.push(item)
-        //         } else if (data == '') {
-        //             store.state.searchList = store.state.doctorList
-        //         }
-        //     })
-        // },
         getBalance (store,data) {
             balance(data).then(res => {
                 if (res.data.rtnCode == 200) {

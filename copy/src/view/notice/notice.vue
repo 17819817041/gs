@@ -2,27 +2,21 @@
     @import "@/less/css.less";
     .notice {
         flex: 10;
-        height: 100%;
+        height: calc(100%);
         background: @content;
         padding: 0 10px;
         .notice_content {
             height: 100%;
-            overflow: auto;
-        }
-        .notice_content::-webkit-scrollbar {
-            width: 8px;
-        }
-        .notice_content::-webkit-scrollbar-thumb {
-            border-radius: 15px;
-            background: rgb(187, 187, 187);
         }
     }
     .notice_content_wrap {
+        height: 100%;
         flex: 10;
     }
     .notice_item {
         width: 98%;
-        margin: 15px auto;
+        margin: auto;
+        margin-bottom: 15px;
         padding: 10px 10px;
         background: white;
         border-radius: 10px;
@@ -50,7 +44,15 @@
         font-size: 12px;
     }
     .notice_content_item {
-        height: 100%;
+        height: calc(100% - 59px);
+        overflow: auto;
+    }
+    .notice_content_item::-webkit-scrollbar {
+        width: 8px;
+    }
+    .notice_content_item::-webkit-scrollbar-thumb {
+        border-radius: 15px;
+        background: #5E5E5E;
     }
     .john {
         height: 100%;
@@ -68,7 +70,7 @@
     }
     .notice_list {
         width:100%;
-        height: 100%;
+        height: calc(100%);
     }
     .header_i {
         width: 50px;
@@ -86,11 +88,11 @@
 
 <template>
     <div class="notice">
-        <div class="notice_content" @scroll="docScroll" ref="doctorList">
-            <div class="notice_content_wrap" ref="doctorList_height">
+        <div class="notice_content">
+            <div class="notice_content_wrap">
                 <div class="explan al"><img src="@/assets/img/information.png" alt=""> Notice</div>
-                <div class="notice_content_item flex">
-                    <div v-if="noticeList" class="notice_list">
+                <div class="notice_content_item" @scroll="docScroll" ref="doctorList">
+                    <div v-if="noticeList" class="notice_list" ref="doctorList_height">
                         <div class="notice_item flex al" @click="checkNotice(item)" v-for="(item,i) in noticeList" :key="i">
                             <div class="state"> 
                                 <div class="read tc" v-if="item.noticeState == 1">Have read</div>
@@ -105,15 +107,15 @@
                                 <div class="notice_date">{{item.createdAt}}</div>
                             </div>
                         </div>
+                        <div class="acting float ju al" v-if="l_loading">
+                            <div class="loading" v-loading="true"></div>
+                        </div>
                     </div>
                     <!-- <div v-else-if="noticeList === null" class="noData">
                         <div class="ju"><img style="width:100px; margin: 15px" src="@/assets/img/info.png" alt=""></div>
                         <div class="tc " style="font-size: 20px;color:gray;">No notice</div>
                     </div> -->
                     <div v-else class="mg size21 bold" style="font-weight:bold;color:gray">No New Message</div>
-                </div>
-                <div class="acting float ju al" v-if="l_loading">
-                    <div class="loading" v-loading="true"></div>
                 </div>
             </div>
         </div>
@@ -125,16 +127,12 @@ import { notice, updateNoticeState } from "@/axios/request.js"
 export default {
     data () {
         return {
-            // noticeList: [
-            //     {img:'@/assets/img/john.png',title:'Dr. Vinay Misra sent you the picture.',date:'Today 13:00'}
-            // ],
             active: true,
             pageNum: 1,
             pageSize: 15
         }
     },
     created () {
-        // this.getNotice()
         // this.message()
     },
     computed: {
@@ -154,19 +152,9 @@ export default {
             }
         },
         docScroll (e) {
+            this.$store.commit('setUser',{ key: 'dom', value: 'notice_content_item' })
             if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
                 if (this.noticeList.length >= this.totalRecordsCount) {
-                    // if (localStorage.getItem('platform') == 2) {
-                    //     this.$store.commit('setUser',{
-                    //         key: "noticeState",
-                    //         value: this.noticeList.find(item => item.noticeState==2)
-                    //     })
-                    // } else if (localStorage.getItem('platform') == 1) {
-                    //     this.$store.commit('setUser',{
-                    //         key: "noticeState",
-                    //         value: this.noticeList.find(item => item.noticeState==2)
-                    //     })
-                    // }
                 } else {
                     this.pageNum += 1
                     let page = {
@@ -181,14 +169,6 @@ export default {
             } else {
                 this.$store.commit('setUser', { key: 'scrollTop', value: false } )
             }
-        },
-        getNotice () {
-            let page = {
-                vm: this,
-                pageNum: this.pageNum,
-                pageSize: this.pageSize
-            }
-            this.$store.dispatch('getNoticeList', page)
         },
         checkNotice (item) {
             if (item.noticeState == 1) {

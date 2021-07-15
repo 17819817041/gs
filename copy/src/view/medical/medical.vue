@@ -133,7 +133,7 @@
 <template>
     <div class="record" v-loading="loading">
         <div class="recordContent">
-            <div class="recordContent_item">
+            <div class="recordContent_item noBar">
                 <div class="itemChild mg">
                     <div class="explan bold al">
                         <img src="@/assets/img/recordImg.png" alt="">

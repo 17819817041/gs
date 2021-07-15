@@ -223,6 +223,7 @@ export default {
             })
         },
         docScroll () {
+            this.$store.commit('setUser',{ key: 'dom', value: 'scrollUp' })
             if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
                 if (this.doctorList.length >= this.totalRecordsCount) {
                     

@@ -1,33 +1,38 @@
 <template>
-    <div class="paymentHistory noBar" v-loading="loading">
+    <div class="paymentHistory" v-loading="loading">
         <div class="explan al">
             <img src="@/assets/img/account.png" alt="">
             My Payment History
         </div>
-        <div class="paymentHistory_content" v-if="orderList.length !== 0">
-            <div class="paymentHistory_content_item sb mg" v-for="(item,i) in orderList" :key="i">
-                <div class="flex al">
-                    <div class="payment_man_img ju al">
-                        <img :src="item.userImage" v-if="item.userImage" alt="">
-                        <!-- <i class="el-icon-picture-outline" style="color: gray;font-size: 20px" v-else></i> -->
-                        <img :src="AllDetail.userImage" v-else-if="item.userImage === null" alt="">
-                    </div>
-                    <div class="payment_details">
-                        <div class="size17">
-                            <span v-if="item.userName">{{item.userName}}</span>
-                            <span v-else>{{AllDetail.userName}}</span>
+        <div class="paymentHistory_content" @scroll="docScroll" ref="doctorList" v-if="orderList.length !== 0">   
+            <div ref="doctorList_height">
+                <div class="paymentHistory_content_item sb mg" v-for="(item,i) in orderList" :key="i">
+                    <div class="flex al">
+                        <div class="payment_man_img ju al">
+                            <img :src="item.userImage" v-if="item.userImage" alt="">
+                            <!-- <i class="el-icon-picture-outline" style="color: gray;font-size: 20px" v-else></i> -->
+                            <img :src="AllDetail.userImage" v-else-if="item.userImage === null" alt="">
                         </div>
-                        <div class="size16">{{item.orderType}}</div>
+                        <div class="payment_details">
+                            <div class="size17">
+                                <span v-if="item.userName">{{item.userName}}</span>
+                                <span v-else>{{AllDetail.userName}}</span>
+                            </div>
+                            <div class="size16">{{item.orderType}}</div>
+                        </div>
+                    </div>
+                    <div class="much al">
+                        <div>
+                            <div :class="[ 'te', {'COLOR': item.paymentRecord.orderTypeId == 1}, {'COLOR1': item.paymentRecord.orderTypeId == 4}]">
+                                <span v-if="item.consumeType == 0">-</span>
+                                <span v-else-if="item.consumeType == 1">+</span>
+                                ${{item.paymentRecord.price}}</div>
+                            <div>{{item.paymentRecord.createAt}}</div>
+                        </div>
                     </div>
                 </div>
-                <div class="much al">
-                    <div>
-                        <div :class="[ 'te', {'COLOR': item.paymentRecord.orderTypeId == 1}, {'COLOR1': item.paymentRecord.orderTypeId == 4}]">
-                            <span v-if="item.orderType == 4">-</span>
-                            <span v-else-if="item.orderType !== 4">+</span>
-                            ${{item.paymentRecord.price}}</div>
-                        <div>{{item.paymentRecord.createAt}}</div>
-                    </div>
+                <div class="acting float ju al" v-if="l_loading">
+                    <div class="loading" v-loading="true"></div>
                 </div>
             </div>
         </div>
@@ -43,7 +48,10 @@ export default {
     data () {
         return {
             orderList: [],
-            loading: true
+            loading: true,
+            pageNum: 1,
+            pageSize: 15,
+            totalRecordsCount: 0
         }
     },
     computed: {
@@ -56,56 +64,78 @@ export default {
                 })
             },
         },
+        l_loading: {
+            get () { return this.$store.state.user.loading },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "loading",
+                    value: val
+                })
+            },
+        },
     },
     created () {
-        // this.getAllOrder()
         this.paymentRecord()
     },
     methods: {
-        getAllOrder () {
-            let data = {
-                userId: localStorage.getItem('userId'),
-                pageNum: 0,
-                pageSize: 10
-            }
-            allOrder(data).then(res => {
-                console.log(res)
-                if (res.data.rtnCode == 200) {
-                    this.orderList = res.data.data.pageT
-                }
-            })
-        },
         paymentRecord () {
             let data = {
                 userId: localStorage.getItem('userId'),
-                pageNum: 1,
-                pageSize: 100
+                pageNum: this.pageNum,
+                pageSize: 15
             }
-            paymentRecord(data).then(res => {
-                if (res.data.rtnCode == 200) {
-                    var D = new Date()
-                    let a = new Date().toLocaleDateString()
-                    var k = new Date(a).getTime()
-                    var b = new Date(res.data.data.pageT[11].paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime()
-                    res.data.data.pageT.forEach(item => {
-                        if (new Date( item.paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime() == k) {
-                            item.paymentRecord.createAt = 'Today'
-                        } else {
-                            var D = new Date(item.paymentRecord.createAt.split(' ')[0]).toDateString()
+            if ((this.totalRecordsCount == this.orderList.length) && this.totalRecordsCount !=0 ) {
+                this.$store.commit("setUser",{ key: "loading", value: false })
+                
+            } else {
+                paymentRecord(data).then(res => {
+                    console.log(res,'paymentRecord')
+                    if (res.data.rtnCode == 200) {
+                        var D = new Date()
+                        let a = new Date().toLocaleDateString()
+                        var k = new Date(a).getTime()
+                        // var b = new Date(res.data.data.pageT[11].paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime()
+                        res.data.data.pageT.forEach(item => {
+                            if (new Date( item.paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime() == k) {
+                                item.paymentRecord.createAt = 'Today'
+                            } else {
+                                var D = new Date(item.paymentRecord.createAt.split(' ')[0]).toDateString()
 
-                            item.paymentRecord.createAt = D.split(' ')[0] + ',' + D.split(' ')[2] + ' ' + D.split(' ')[1] + ' ' + D.split(' ')[3]
+                                item.paymentRecord.createAt = D.split(' ')[0] + ',' + D.split(' ')[2] + ' ' + D.split(' ')[1] + ' ' + D.split(' ')[3]
+                            }
+                        })
+                        this.totalRecordsCount = res.data.data.totalRecordsCount
+                        this.orderList = this.orderList.concat(res.data.data.pageT)
+                        this.loading = false
+                        console.log(this.totalRecordsCount, this.orderList.length, this.totalRecordsCount !=0)
+                        if ((this.totalRecordsCount == this.orderList.length) && this.totalRecordsCount !=0 ) {
+                            this.$store.commit("setUser",{ key: "loading", value: false })
                         }
-                    })
-                    this.orderList = res.data.data.pageT.reverse()
+                    } else {
+                        this.loading = false
+                    }
+                }).catch(e => {
+                    console.log(e)
                     this.loading = false
+                })
+            }
+            
+        },
+        docScroll (e) {
+            this.$store.commit('setUser',{ key: 'dom', value: 'paymentHistory_content' })
+            if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
+                if (this.orderList.length >= this.totalRecordsCount) {
                 } else {
-                    this.loading = false
+                    this.pageNum += 1
+                    this.paymentRecord()
                 }
-            }).catch(e => {
-                console.log(e)
-                this.loading = false
-            })
-        }
+            }
+            if ( this.$refs.doctorList.scrollTop > 300 ) {
+                this.$store.commit('setUser', { key: 'scrollTop', value: true } )
+            } else {
+                this.$store.commit('setUser', { key: 'scrollTop', value: false } )
+            }
+        },
     },
 }
 </script>
@@ -117,7 +147,6 @@ export default {
         height: 100%;
         background: @content;
         padding: 0 15px;
-        overflow: auto;
         .paymentHistory_content {
             height: calc(100% - 59px);
             overflow: auto;
@@ -168,5 +197,10 @@ export default {
     }
     .COLOR1 {
         color: #FF3E61;
+    }
+    .acting {
+        width: 100%;
+        padding: 50px 0;
+        // border: solid 1px;
     }
 </style>
