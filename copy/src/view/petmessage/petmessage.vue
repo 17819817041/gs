@@ -220,7 +220,7 @@ export default {
         this.getPetType()
     },
     computed: {
-        petStatus () { return this.$store.state.user.petList }
+        // petStatus () { return this.$store.state.user.petList }
     },
     methods: {
         cascader (val) {
@@ -314,13 +314,9 @@ export default {
                         type: 'success',
                         message: "Successfully added !"
                     })
-                    if (this.petStatus.length == 0) {
-                        this.$router.replace('/customerhomepage')
-                    } else {
                         setTimeout(() => {
-                            this.$router.replace('/petDetails')
+                        this.$router.replace('/myDoctor')
                         },500)
-                    }
                 } else {
                     this.loading = false
                     this.$message({

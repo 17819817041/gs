@@ -12,8 +12,9 @@ export default {
         doctorList: [],
         searchList: [],
         loading: false,
+        loading6: false,
         vloading: true,
-        // p_loading: true,
+        n_loading: false,
         callModal: false,
         callModal2: false,
         callTo: {},
@@ -75,12 +76,7 @@ export default {
         getPetList (store,data) {
             petList(data).then(res => {
                 console.log(res,"宠物列表&类别")
-                if (res.data.rtnCode == 201) {
-                    if (localStorage.getItem('platform') == 1) {
-                        router.push('/petmessage')
-                    }
-                    store.commit("setUser",{ key: "petList", value: [] })
-                } else if (res.data.rtnCode == 200) {
+                if (res.data.rtnCode == 200) {
                     store.commit("setUser",{ key: "pet", value: res.data.data.pageT[store.state.firstPet] })
                     store.commit("setUser",{ key: "petId", value: res.data.data.pageT[0].id })
                     store.commit("setUser",{ key: "loading", value: true })
@@ -105,7 +101,12 @@ export default {
                         }
                     })
                     store.commit("setUser",{ key: "petList", value: res.data.data.pageT })
-                }
+                } else if (res.data.rtnCode == 201) {
+                    if (localStorage.getItem('platform') == 1) {
+                        router.push('/petmessage')
+                    }
+                    store.commit("setUser",{ key: "petList", value: [] })
+                } 
             }).catch(e => {
                 store.commit("setUser",{ key: "vloading", value: false })
                 console.log(e)
@@ -129,10 +130,10 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
-                        if (vm.$route.name !== 'customerLogin' && vm.$route.name !== 'relevance') {
-                            router.replace('/customerLogin')
-                            vm.$message.error('Login expired, please log in again !');
-                        }
+                        // if (vm.$route.name !== 'customerLogin' && vm.$route.name !== 'relevance') {
+                        //     router.replace('/customerLogin')
+                            // vm.$message.error('Login expired, please log in again !');
+                        // }
                         store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }
@@ -143,7 +144,7 @@ export default {
                     localStorage.removeItem("paltform")
                     localStorage.removeItem("IMtoken")
                     localStorage.removeItem('IM')
-                    vm.$message.error('Login expired, please log in again !');
+                    // vm.$message.error('Login expired, please log in again !');
                     store.commit("setUser",{ key: "login", value: false }) 
                     router.replace('/login')
                 })
@@ -166,10 +167,10 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
-                        if (vm.$route.name !== 'vetLogin' && vm.$route.name !== 'relevance') {
-                            router.replace('/vetLogin')
-                            vm.$message.error('Login expired, please log in again !');
-                        }
+                        // if (vm.$route.name !== 'vetLogin' && vm.$route.name !== 'relevance') {
+                        //     router.replace('/vetLogin')
+                            // vm.$message.error('Login expired, please log in again !');
+                        // }
                         store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }
@@ -183,7 +184,8 @@ export default {
             console.log('IM登录成功')
             var options = { 
                 user: localStorage.getItem("userId") + 'A' + localStorage.getItem("platform"),
-                pwd: localStorage.getItem('IM'),
+                // pwd: localStorage.getItem('IM'),
+                pwd: 123,
                 appKey: WebIM.config.appkey,
                 success (res) {
                     console.log(res,'IM登录成功')
@@ -253,13 +255,13 @@ export default {
                 pageNum: num,
                 pageSize:30
             }
-            store.commit("setUser",{ key: "loading", value: true })
+            store.commit("setUser",{ key: "loading6", value: true })
             if ((store.state.totalRecordsCount == store.state.doctorList.length) &&store.state.totalRecordsCount !=0 ) {
-                store.commit("setUser",{ key: "loading", value: false })
+                store.commit("setUser",{ key: "loading6", value: false })
             } else {
                 doctorList(doctor).then(res => {
+                    console.log(res,"医生列表")
                     if (res.data.rtnCode == 200) {
-                        console.log(res,"医生列表")
                         store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
                         store.commit("pageAdd", res.data.data.pageT )
                         if (doctor.pageNum <= 1) {
@@ -270,18 +272,20 @@ export default {
                             store.commit("setUser", { key: 'vDetail', value: res.data.data.pageT[0] } )
                             store.commit("setUser", { key: 'rate', value: res.data.data.pageT[0].baseScore } )
                         }
-                        // store.commit("setUser",{ key: "searchList", value: store.state.doctorList })
-                        store.commit("setUser",{ key: "loading", value: false })
-                    } else if (res.data.rtnCode == 500) {
-                        localStorage.removeItem("Token")
-                        localStorage.removeItem("userId")
-                        localStorage.removeItem("paltform")
-                        localStorage.removeItem("IMtoken")
-                        localStorage.removeItem('IM')
+                        if ((store.state.totalRecordsCount == store.state.doctorList.length) &&store.state.totalRecordsCount !=0 ) {
+                            store.commit("setUser",{ key: "loading6", value: false })
+                        }
+                    } else {
+                        store.commit("setUser",{ key: "loading6", value: false })
+                        // localStorage.removeItem("Token")
+                        // localStorage.removeItem("userId")
+                        // localStorage.removeItem("paltform")
+                        // localStorage.removeItem("IMtoken")
+                        // localStorage.removeItem('IM')
                     }
                 }).catch(e => {
                     console.log(e)
-                    store.commit("setUser",{ key: "loading", value: false })
+                    store.commit("setUser",{ key: "loading6", value: false })
                     store.commit("setUser",{ key: "doctorList", value: [] })
                     
                 })
@@ -313,9 +317,9 @@ export default {
                 pageNum: page.pageNum,
                 pageSize: 15
             }
-            store.commit("setUser",{ key: "loading", value: true })
+            store.commit("setUser",{ key: "n_loading", value: true })
             if ((store.state.totalRecordsCount1 == store.state.noticeList.length) &&store.state.totalRecordsCount1 !=0 ) {
-                store.commit("setUser",{ key: "loading", value: false })
+                store.commit("setUser",{ key: "n_loading", value: false })
             } else {
                 // alert(456)
                 notice(data).then(res => {
@@ -347,14 +351,14 @@ export default {
                         }
                         // store.commit("setUser",{ key: "noticeList", value: res.data.data.pageT })
                         store.commit("setUser",{ key: "totalRecordsCount1", value: res.data.data.totalRecordsCount })
-                        store.commit("setUser",{ key: "loading", value: false })
+                        store.commit("setUser",{ key: "n_loading", value: false })
                     } else if (res.data.rtnCode == 201) {
                         store.commit("setUser",{ key: "noticeList", value: null })
-                        store.commit("setUser",{ key: "loading", value: false })
+                        store.commit("setUser",{ key: "n_loading", value: false })
                     }
                 }).catch(e => {
                     console.log(e)
-                    sstore.commit("setUser",{ key: "loading", value: false })
+                    sstore.commit("setUser",{ key: "n_loading", value: false })
                 })
             }
         },

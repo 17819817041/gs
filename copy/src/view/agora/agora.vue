@@ -434,11 +434,14 @@
                 <div class="video_wrap">
                     <div class="answer flex">
                         <div class="cursor video_fun"><img src="@/assets/img/answer_audeo.png" alt=""></div>
-                        <div class="cursor video_fun"><img src="@/assets/img/answer_video.png" alt=""></div>
+                        <div class="cursor video_fun" @click="joinAgora"><img src="@/assets/img/answer_video.png" alt=""></div>
                         <div class="cursor video_fun" @click="endCall"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
                     </div>
-                    <video :class="['video_parent']" autoplay width="400px" height="400px" id="video" ref="video"></video>
-                    <video :class="['video_child']" autoplay id="localVideo"></video>
+                    <!-- <video :class="['video_parent']" autoplay width="400px" height="400px" id="video" ref="video"></video>
+                    <video :class="['video_child']" autoplay id="localVideo"></video> -->
+
+                    <div :class="['video_parent']" autoplay width="400px" height="400px" id="player1" ref="video"></div>
+                    <div :class="['video_child']" autoplay id="player2"></div>
                 </div>
             </div>
             <div :class="[ 'doctorMessage_wrap', { Drawer: drawer } ]">
@@ -464,8 +467,8 @@
                             <div><img style="width:17px;height:22px;margin-left:5px" src="@/assets/img/information.png" alt=""></div>
                         </div>
                         <div class="myOperation sb al">
-                            <div class="outLogo size12 bold cursor al ju">Logout</div>
-                            <div class="helpAbout cursor al ju">
+                            <div class="outLogo size12 bold cursor al ju" @click="join">Logout</div>
+                            <div class="helpAbout cursor al ju" @click="leave">
                                 <img src="@/assets/img/what.png" alt="">
                                 Help & Support
                             </div>
@@ -576,7 +579,7 @@
 </template>
 
 <script>
-import { addMetting, delMetting, PetMedicalRecord, updatePetMedicalRecord, s_online } from "@/axios/request.js"
+import { addMetting, delMetting, PetMedicalRecord, updatePetMedicalRecord, s_online, getAgoraToken } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -608,11 +611,32 @@ export default {
             msgRecord: {},
             content: '',
             recordDate: '',
-            disabled: true
+            disabled: true,
+
+
+
+
+
+
+
+
+            client:null,
+            localTracks : {
+                videoTrack: null,
+                audioTrack: null
+            },
+            remoteUsers : {},
+            options: {
+                appid: 'e65091c05b1b4403b3130bfce4f9e7a1',
+                channel: '666',
+                uid: localStorage.getItem('userId'),
+                token: ''
+            }
         }
     },
     mounted () {
-
+        this.createClient()
+        console.log(this.$V)
     },
     created () {
         this.callToDoctor = this.callTo
@@ -671,6 +695,70 @@ export default {
         }
     },
     methods: {
+        joinAgora () {
+            let data = {
+                userId: localStorage.getItem('userId'),
+                // userId: 486,
+                roomNumber: this.options.channel
+            }
+            getAgoraToken(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.options.token = res.data.data
+                    
+                }
+            })
+        },
+        createClient () {
+            this.client = this.$V.createClient({  //进入页面自动调用 mounted
+                mode: "rtc",
+                codec: "vp8"
+            })
+            this.client.on("user-published", this.handleUserPublished);    //点击join触发
+        },
+        handleUserPublished (user, mediaType) {
+            console.log(1233333, user.uid, mediaType)
+            const id = user.uid;
+            this.remoteUsers[id] = user;
+            this.subscribe(user, mediaType);
+        },
+        async subscribe (user, mediaType) {
+            const uid = user.uid;
+            await this.client.subscribe(user, mediaType);
+            if (mediaType === 'video') {
+                console.log("subscribe success" , uid, this.client.uid);
+                user.videoTrack.play(`player2`);
+            }
+            if (mediaType === 'audio') {
+                user.audioTrack.play();
+            }
+        },
+        async join () {
+            [ this.options.uid, this.localTracks.audioTrack, this.localTracks.videoTrack ] = await Promise.all([
+                // join the channel
+                this.client.join(this.options.appid, this.options.channel, this.options.token || null),
+                // create local tracks, using microphone and camera
+                this.$V.createMicrophoneAudioTrack(),
+                this.$V.createCameraVideoTrack()
+            ]);
+            this.localTracks.videoTrack.play("player1");
+            await this.client.publish(Object.values(this.localTracks));
+            console.log("publish success");
+        },
+        async leave() {
+            for (var trackName in this.localTracks) {
+                var track = this.localTracks[trackName];
+                if(track) {
+                    track.stop();
+                    track.close();
+                    this.localTracks[trackName] = undefined;
+                }
+            }
+            // remove remote users and player views
+            this.remoteUsers = {};
+            // leave the channel
+            await this.client.leave();
+        },
         addPetMedicalRecord () {
             this.disabled = false
             this.recordDate = this.years + '-' + this.month + '-' + this.day + ' ' + '12:00:36'
@@ -729,7 +817,6 @@ export default {
                 if (this.msgRecord[this.callerIM]) {
                     this.messageList = this.msgRecord[this.callerIM].messageList
                 }
-                
             }
         },
         DRAWER () {

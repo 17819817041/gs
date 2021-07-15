@@ -9,7 +9,8 @@
     <div class="agora">
         <div id="player1"></div>
         <div id="player2"></div>
-        <div><button @click="leave">离开</button>
+        <div>
+            <button @click="leave">离开</button>
             <button @click="join">进入</button>
         </div>
     </div>

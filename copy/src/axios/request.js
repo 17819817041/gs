@@ -464,3 +464,11 @@ export function getPetMedicalRecord (data) {            //医生治疗记录
         params: data
     })
 }
+
+export function getAgoraToken (data) {            //agora
+    return request({
+        url: "/token/getAgoraToken",
+        method: 'POST',
+        params: data
+    })
+}

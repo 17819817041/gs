@@ -30,7 +30,8 @@ import {conn, WebIM} from "@/assets/js/websdk.js"
 Vue.prototype.$WebIM = WebIM
 Vue.prototype.$conn = conn
 
-
+import Agora from "@/assets/js/Agora.js"
+Vue.prototype.$V = Agora
 
 import { google } from "@/assets/js/google.js"
 
