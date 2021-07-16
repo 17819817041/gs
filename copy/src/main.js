@@ -33,6 +33,9 @@ Vue.prototype.$conn = conn
 import Agora from "@/assets/js/Agora.js"
 Vue.prototype.$V = Agora
 
+import initRtc from './assets/js/rtcAgora'
+initRtc(Agora)
+
 import { google } from "@/assets/js/google.js"
 
 

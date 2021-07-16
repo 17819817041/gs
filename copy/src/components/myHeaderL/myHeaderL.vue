@@ -365,10 +365,9 @@ export default {
                 formData.append('file', e.target.files[0]);
                 file(formData).then(res => {
                     if (res.data.rtnCode == 200) {
-                        this.userDetails.doctorImage = res.data.data
+                        this.userDetails.headUr = res.data.data
                         this.userDetails.doctorName = "Beck"
                         updateVetDetails(this.userDetails).then(res => {
-                            console.log(res,"更换医生头像",this.userDetails)
                             if (res.data.rtnCode == 200) {
                                 this.getUser()
                             }

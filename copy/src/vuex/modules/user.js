@@ -4,6 +4,14 @@ import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 import Vue from "vue"
 export default {
     state: {
+        rtc: {
+            client: null,
+            joined: false,
+            published: false,
+            localStream: null,
+            remoteStreams: [],
+            params: {}
+          },
         IMuser: {},
         login: false,
         petList:[],
@@ -70,6 +78,81 @@ export default {
         }
     },
     actions: {
+        initRtc (store,data) {
+            var rtc = (store.state.rtc)
+            var option = {
+                appID: data.appId,
+                channel: data.channel,
+                uid: data.uid,
+                token: data.token,
+                mode: "live",
+                codec: "h264"
+            }
+            // rtc.client = data.rtc.createClient({mode: option.mode, codec: option.codec})
+            // store.commit('setUser', { key: 'rtc', value: rtc })
+            rtc.client.init(option.appID, function () {
+                console.log("init success",option)
+                rtc.client.join(option.token ? option.token : null, option.channel, option.uid ? +option.uid : null, function (uid) {
+                //   Toast.notice("join channel: " + option.channel + " success, uid: " + uid)
+                  console.log("join channel: " + option.channel + " success, uid: " + uid)
+                  rtc.joined = true
+                  rtc.params.uid = uid
+                  rtc.localStream = data.rtc.createStream({
+                    streamID: rtc.params.uid,
+                    audio: true,
+                    video: true,
+                    screen: false,
+                    microphoneId: 'default',
+                    // cameraId: option.cameraId
+                  })
+                  console.log(rtc.localStream,666)
+                  rtc.localStream.init(function () {
+                    console.log("init local stream success")
+                    // play stream with html element id "local_stream"
+                    rtc.localStream.play("player_a2")
+        
+                    // publish local stream
+                    // publish(rtc)
+                    rtc.client.publish(rtc.localStream, function (err) {
+                        console.log('publish success')
+                    })
+                  }, function (err)  {
+                    // Toast.error("stream init failed, please open console see more detail")
+                    console.error("init local stream failed ", err)
+                  })
+                }, function(err) {
+                //   Toast.error("client join failed, please open console see more detail")
+                  console.error("client join failed", err)
+                })
+              }, (err) => {
+                // Toast.error("client init failed, please open console see more detail")
+                console.error(err)
+              })
+        },
+
+        removeStream (store,data) {   //退出agora
+            var rtc = store.state.rtc
+            rtc.client.leave(function () {
+                if(rtc.localStream.isPlaying()) {
+                    rtc.localStream.stop()
+                }
+                rtc.localStream.close()
+                rtc.localStream = null
+                rtc.remoteStreams = []
+                rtc.client = null
+                console.log("client leaves channel success")
+                rtc.published = false
+                rtc.joined = false
+            }, function (err) {
+                console.log("channel leave failed")
+                console.error(err)
+            })
+            // router.back()
+        },
+
+
+
+
         login () {
             console.log("login")
         },
@@ -80,7 +163,7 @@ export default {
                     store.commit("setUser",{ key: "pet", value: res.data.data.pageT[store.state.firstPet] })
                     store.commit("setUser",{ key: "petId", value: res.data.data.pageT[0].id })
                     store.commit("setUser",{ key: "loading", value: true })
-                    store.commit("setUser",{ key: "vloading", value: false })
+                    
                     // store.commit("setUser",{ key: "p_loading", value: false })
                     res.data.data.pageT.forEach(item => {
                             if (item.petMedicalRecordDtos) {
@@ -118,6 +201,7 @@ export default {
                   userId: localStorage.getItem("userId")
                 }
                 getUserDetails(data).then(res => {
+                    console.log(res,"user详情")
                     if (res.data.rtnCode == 200) {
                         console.log(res,"user详情")
                         store.commit("setUser",{ key: "userDetail", value: res.data.data }) 
@@ -358,7 +442,7 @@ export default {
                     }
                 }).catch(e => {
                     console.log(e)
-                    sstore.commit("setUser",{ key: "n_loading", value: false })
+                    store.commit("setUser",{ key: "n_loading", value: false })
                 })
             }
         },

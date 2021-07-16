@@ -1,6 +1,6 @@
 <template>
     <div class="myDoctor flex">
-        <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList">
+        <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList[0]">
             <div class="width102 clear" ref="doctorList_height">
                 <div class="doctor_item float" v-for="(item) in doctorList" :key="item.doctorId" @click="getDetail(item)">
                     <div class="image flex">
@@ -154,7 +154,6 @@ export default {
     watch: {
         loading: {
             handler (val) {
-                console.log(val,6666666666666666)
                 this.loading = val
             },
             // deep: true
@@ -263,7 +262,6 @@ export default {
             })
         },
         toVideo () {
-            // this.$router.push('agora')
             console.log(this.detail)
             if (this.detail.doctorOnLineState == 0 || this.detail.doctorOnLineState == 2) {
                 this.$message({

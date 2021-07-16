@@ -434,14 +434,14 @@
                 <div class="video_wrap">
                     <div class="answer flex">
                         <div class="cursor video_fun"><img src="@/assets/img/answer_audeo.png" alt=""></div>
-                        <div class="cursor video_fun" @click="joinAgora"><img src="@/assets/img/answer_video.png" alt=""></div>
-                        <div class="cursor video_fun" @click="endCall"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
+                        <div class="cursor video_fun"><img src="@/assets/img/answer_video.png" alt=""></div>
+                        <div class="cursor video_fun" @click="removeStream"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
                     </div>
                     <!-- <video :class="['video_parent']" autoplay width="400px" height="400px" id="video" ref="video"></video>
                     <video :class="['video_child']" autoplay id="localVideo"></video> -->
 
-                    <div :class="['video_parent']" autoplay width="400px" height="400px" id="player1" ref="video"></div>
-                    <div :class="['video_child']" autoplay id="player2"></div>
+                    <div :class="['video_parent']" autoplay width="400px" height="400px" id="player_a1" ref="video"></div>
+                    <div :class="['video_child']" autoplay id="player_a2"></div>
                 </div>
             </div>
             <div :class="[ 'doctorMessage_wrap', { Drawer: drawer } ]">
@@ -467,8 +467,8 @@
                             <div><img style="width:17px;height:22px;margin-left:5px" src="@/assets/img/information.png" alt=""></div>
                         </div>
                         <div class="myOperation sb al">
-                            <div class="outLogo size12 bold cursor al ju" @click="join">Logout</div>
-                            <div class="helpAbout cursor al ju" @click="leave">
+                            <div class="outLogo size12 bold cursor al ju">Logout</div>
+                            <div class="helpAbout cursor al ju">
                                 <img src="@/assets/img/what.png" alt="">
                                 Help & Support
                             </div>
@@ -614,17 +614,6 @@ export default {
             disabled: true,
 
 
-
-
-
-
-
-
-            client:null,
-            localTracks : {
-                videoTrack: null,
-                audioTrack: null
-            },
             remoteUsers : {},
             options: {
                 appid: 'e65091c05b1b4403b3130bfce4f9e7a1',
@@ -635,8 +624,7 @@ export default {
         }
     },
     mounted () {
-        this.createClient()
-        console.log(this.$V)
+        this.joinAgora()
     },
     created () {
         this.callToDoctor = this.callTo
@@ -697,68 +685,28 @@ export default {
     methods: {
         joinAgora () {
             let data = {
+                expirationTime: 1,
                 userId: localStorage.getItem('userId'),
-                // userId: 486,
-                roomNumber: this.options.channel
+                roomNumber: '777'
             }
             getAgoraToken(data).then(res => {
                 console.log(res)
                 if (res.data.rtnCode == 200) {
                     this.options.token = res.data.data
-                    
+                    this.$store.dispatch('initRtc', {
+                        token: res.data.data,
+                        uid: localStorage.getItem('userId') * 1,
+                        channel: data.roomNumber,
+                        appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
+                        rtc: this.$V
+                    })
                 }
             })
         },
-        createClient () {
-            this.client = this.$V.createClient({  //进入页面自动调用 mounted
-                mode: "rtc",
-                codec: "vp8"
-            })
-            this.client.on("user-published", this.handleUserPublished);    //点击join触发
+        removeStream () {
+            this.$store.dispatch('removeStream', { rtc: this.$V })
         },
-        handleUserPublished (user, mediaType) {
-            console.log(1233333, user.uid, mediaType)
-            const id = user.uid;
-            this.remoteUsers[id] = user;
-            this.subscribe(user, mediaType);
-        },
-        async subscribe (user, mediaType) {
-            const uid = user.uid;
-            await this.client.subscribe(user, mediaType);
-            if (mediaType === 'video') {
-                console.log("subscribe success" , uid, this.client.uid);
-                user.videoTrack.play(`player2`);
-            }
-            if (mediaType === 'audio') {
-                user.audioTrack.play();
-            }
-        },
-        async join () {
-            [ this.options.uid, this.localTracks.audioTrack, this.localTracks.videoTrack ] = await Promise.all([
-                // join the channel
-                this.client.join(this.options.appid, this.options.channel, this.options.token || null),
-                // create local tracks, using microphone and camera
-                this.$V.createMicrophoneAudioTrack(),
-                this.$V.createCameraVideoTrack()
-            ]);
-            this.localTracks.videoTrack.play("player1");
-            await this.client.publish(Object.values(this.localTracks));
-            console.log("publish success");
-        },
-        async leave() {
-            for (var trackName in this.localTracks) {
-                var track = this.localTracks[trackName];
-                if(track) {
-                    track.stop();
-                    track.close();
-                    this.localTracks[trackName] = undefined;
-                }
-            }
-            // remove remote users and player views
-            this.remoteUsers = {};
-            // leave the channel
-            await this.client.leave();
-        },
+        
         addPetMedicalRecord () {
             this.disabled = false
             this.recordDate = this.years + '-' + this.month + '-' + this.day + ' ' + '12:00:36'
@@ -802,14 +750,6 @@ export default {
             console.log(record,localStorage.getItem('msgRecord'))
         },
         initRecord () {
-            // {
-            //     "123A2":{
-            //         messageList: []
-            //     },
-            //     "321A1": {
-            //         messageList: []
-            //     }
-            // }
             let msgRecord = localStorage.getItem('msgRecord')
             if (msgRecord) {
                 this.msgRecord = JSON.parse(msgRecord)
@@ -823,19 +763,21 @@ export default {
             this.drawer = !this.drawer
         },
         endCall () {
-            window.eMedia.mgr.exitConference()
-            let id = {
-                webId: this.mettingId
-            }
-            delMetting(id).then(res => {})
-            let data = {
-                userId: localStorage.getItem('userId'),
-                platform: localStorage.getItem('platform')
-            }
-            s_online(data).then(res => {
-                console.log(res,'在线')
-            })
-            this.$router.back()
+            this.removeStream()
+
+            // window.eMedia.mgr.exitConference()
+            // let id = {
+            //     webId: this.mettingId
+            // }
+            // delMetting(id).then(res => {})
+            // let data = {
+            //     userId: localStorage.getItem('userId'),
+            //     platform: localStorage.getItem('platform')
+            // }
+            // s_online(data).then(res => {
+            //     console.log(res,'在线')
+            // })
+            // this.$router.back()
         },
         getDay () {
             // let month = new Date().getMonth() + 1      //获取月份

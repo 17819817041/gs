@@ -100,7 +100,7 @@ conn.listen({
         if (data.type == 'confirmCall') {
             store.commit("setUser",{ key: 'callModal', value: false })
             store.commit("setUser",{ key: 'callLoading', value: false })
-            // router.push("/agora")
+            router.push("/agora")
         }
 
 

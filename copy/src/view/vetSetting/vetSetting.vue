@@ -16,12 +16,15 @@
                 </div>
                 <div class="profile flex">
                     <div class="profile_img">
-                        <label for="avaSet">
-                            <div style="width:50%;margin:auto">
-                                <img :class="['profileimg mg', {cursor: !edit}]" :src="userDetail.userImage" alt="" mode="widthFix">
-                            </div>
-                            <input type="file" id="avaSet" v-if="!edit" v-show="false">
-                        </label>
+                        <div class="profile_img_wrap mg">
+                            <label for="avaSet">
+                                <div style="width:50%;margin:auto;height:100%" class="ju al">
+                                    <img :class="['profileimg mg', {cursor: !edit}]" v-if="userDetail.userImage" :src="userDetail.userImage" alt="" mode="widthFix">
+                                    <i v-else class="el-icon-picture-outline" style="font-size:125px;color:gray"></i>
+                                </div>
+                                <input type="file" id="avaSet" v-if="!edit" v-show="false">
+                            </label>
+                        </div>
                     </div>
                     <div class="profile_message">
                         <div class="message_wrap flex">
@@ -453,8 +456,15 @@ export default {
     .profile_img {
         width: 25%;
     }
+    .profile_img_wrap {
+        width: 250px;
+        height: 250px;
+        border: solid 1px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
     .profileimg {
-        width: 100%;
+        height: 100%;
     }
     .vetReset {
         width: 600px;

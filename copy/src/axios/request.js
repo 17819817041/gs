@@ -330,7 +330,7 @@ export function pay (data) {                  //支付
     })
 }
 
-export function paypals (data) {                  //支付
+export function paypals (data) {                  //充值
     return request({
         url: "/order/genOrderByPaypal",
         method: "POST",
@@ -417,7 +417,7 @@ export function balance (data) {            //获取余额
     })
 }
 
-export function order (data) {            //生成订单?userId=313&remarks=CES&doctorId=314&doctorTypeId=2&goodsId=1
+export function order (data) {            //生成订单?userId=313&remarks=CES&doctorId=314&doctorTypeId=2&goodsId=1    第一次扣费 goodsmin
     return request({
         url: "/order/gen",
         method: 'POST',
@@ -425,7 +425,7 @@ export function order (data) {            //生成订单?userId=313&remarks=CES&
     })
 }
 
-export function orderDetail (data) {            //添加订单详情?goodsId=1&orderId=20210530109834 
+export function orderDetail (data) {            //添加订单详情?goodsId=1&orderId=20210530109834                       续费扣第二阶段   segmented_min
     return request({
         url: "/OrderDetails/addOrderDetails",
         method: 'POST',
@@ -470,5 +470,16 @@ export function getAgoraToken (data) {            //agora
         url: "/token/getAgoraToken",
         method: 'POST',
         params: data
+    })
+}
+
+export function fetch (data) {            //鉴权
+    return request({
+        url: "/fetch_rtc_token",
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8'
+        },
+        data: data
     })
 }

@@ -219,33 +219,33 @@ export default {
 			})
 		},
 		async sure () {
-			this.$router.push("/agora")
+			// this.$router.push("/agora")
 			this.callLoading = true
-			let params = {
-				roomName: this.$store.state.user.IMuser.username,
-				password: "123456",
-				role: 3,
-				config:{ 
-					rec: false, 
-					recMerge:false, //是否开启合并录制
-            		supportWechatMiniProgram: true //是否允许小程序加入会议
-				}
-			}
-			const user_room = await emedia.mgr.joinRoom(params);
-			this.addConfr(user_room.confrId)
-			let constraints = { audio: true, video: true };
-			const stream = await emedia.mgr.publish(constraints)
-			this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
-			this.sendMsg(params)
+			// let params = {
+			// 	roomName: this.$store.state.user.IMuser.username,
+			// 	password: "123456",
+			// 	role: 3,
+			// 	config:{ 
+			// 		rec: false, 
+			// 		recMerge:false, //是否开启合并录制
+            // 		supportWechatMiniProgram: true //是否允许小程序加入会议
+			// 	}
+			// }
+			// const user_room = await emedia.mgr.joinRoom(params);
+			// this.addConfr(user_room.confrId)
+			// let constraints = { audio: true, video: true };
+			// const stream = await emedia.mgr.publish(constraints)
+			// this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
+			this.sendMsg()
 		},
-		sendMsg (params) {
+		sendMsg () {
 			let data = {
                 type: "Call",
 				user: this.userDetail,
 				platform: localStorage.getItem('platform'),
 				petId: this.petId,
-				mettingId: this.mettingId,
-				params
+				mettingId: this.mettingId
+				// params
             }
             let id = this.$conn.getUniqueId();                 // 生成本地消息id
             let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
@@ -268,46 +268,46 @@ export default {
 			this.sureCall = true
 			this.callModal = false
 			this.callLoading = false
-			window.eMedia.mgr.exitConference()
-			let data = {
-                type: "HangUp1"
-            }
-            let id = this.$conn.getUniqueId();                 // 生成本地消息id
-            let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
-            msg.set({
-                msg: JSON.stringify(data),                  // 消息内容
-                to: JSON.stringify(this.callTo.doctorId) + 'A2',     
-                chatType: 'singleChat',                  // 设置为单聊   
-            });
-            this.$conn.send(msg.body);
-			this.$router.push('/myDoctor')
+			// window.eMedia.mgr.exitConference()
+			// let data = {
+            //     type: "HangUp1"
+            // }
+            // let id = this.$conn.getUniqueId();                 // 生成本地消息id
+            // let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+            // msg.set({
+            //     msg: JSON.stringify(data),                  // 消息内容
+            //     to: JSON.stringify(this.callTo.doctorId) + 'A2',     
+            //     chatType: 'singleChat',                  // 设置为单聊   
+            // });
+            // this.$conn.send(msg.body);
+			// this.$router.push('/myDoctor')
 
-			let data1 = {
-                webId: this.mettingId
-            }
-            delMetting(data1).then(res => {
-                console.log(res,'删除')
-            })
+			// let data1 = {
+            //     webId: this.mettingId
+            // }
+            // delMetting(data1).then(res => {
+            //     console.log(res,'删除')
+            // })
 		},
 		async sure2 () {
 			this.$router.push("/agora")
 			this.callModal2 = false
 			let that = this
 			setTimeout(async function ()  {
-				const user_room = await emedia.mgr.joinRoom(that.joinParams);
-				let constraints = { audio: true, video: true };
-				const stream = await emedia.mgr.publish(constraints)
-				// this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
-				let data6 = {
-					userId: that.caller.userId,
-					remarks: '666',
-					doctorId: that.callTo.doctorId,
-					doctorTypeId: 2,
-					goodsId: 1
-				}
-				order(data6).then(res => {
-					console.log(res,'order')
-				})
+				// const user_room = await emedia.mgr.joinRoom(that.joinParams);
+				// let constraints = { audio: true, video: true };
+				// const stream = await emedia.mgr.publish(constraints)
+
+				// let data6 = {
+				// 	userId: that.caller.userId,
+				// 	remarks: '666',
+				// 	doctorId: that.callTo.doctorId,
+				// 	doctorTypeId: 2,
+				// 	goodsId: 1
+				// }
+				// order(data6).then(res => {
+				// 	console.log(res,'order')
+				// })
 				let data = {
 					type: "confirmCall"
 				}

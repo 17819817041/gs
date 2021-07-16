@@ -366,8 +366,8 @@ export default {
             allBooking(data).then(res => {
                 console.log(res,'booking')
                 if (res.data.rtnCode == 200) {
-                    res.data.data.reverse()
-                    res.data.data.forEach(item => {
+                    // res.data.data.reverse()
+                    res.data.data.pageT.forEach(item => {
                         if (item.booking.bookingState == 1 || item.booking.bookingState == 2 ) {
                             let date = item.booking.bookingDate
                             let En = new Date(date).toDateString()
