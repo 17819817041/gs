@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { min, addMetting, order, orderDetail, delMetting } from "@/axios/request.js"
+import { min, addMetting, order, delMetting } from "@/axios/request.js"
 export default {
 	data () {
 		return {
@@ -375,6 +375,9 @@ export default {
 	#app {
 		height: 100%;
 		min-width: 830px;
+		@media screen and (max-width: 564px) {
+			min-width: 0;
+		}
 		.scrollTop {
 			position: fixed;
 			right: 25px;

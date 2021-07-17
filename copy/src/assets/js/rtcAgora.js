@@ -1,5 +1,6 @@
 import store from "@/vuex/store.js"
-import { fetch, getAgoraToken } from "@/axios/request.js"
+import { Confirm } from 'element-ui';
+import { fetch, getAgoraToken, orderDetail } from "@/axios/request.js"
 function initRtc (Agora) {
     var rtc = {
         client: null,
@@ -71,16 +72,24 @@ function initRtc (Agora) {
 
     rtc.client.on("onTokenPrivilegeWillExpire", function(){
         // After requesting a new token
-        var token = ''
-        let data = {
-            expirationTime: 1,
-            userId: localStorage.getItem('userId'),
-            roomNumber: '777'
-        }
-        getAgoraToken(data).then(res => {
-            console.log(res,'fetch')
-            rtc.client.renewToken(res.data.data);
+        Confirm('The call time is about to end. Do you want to renew?', 'Attention', {
+            confirmButtonText: 'Confirm',
+            cancelButtonText: 'Cancel',
+            type: 'warning'
+        }).then(() => {
+            let data = {
+                expirationTime: 1,
+                userId: localStorage.getItem('userId'),
+                roomNumber: 'petavi_' + localStorage.getItem('userId')
+            }
+            getAgoraToken(data).then(res => {
+                console.log(res,'fetch')
+                rtc.client.renewToken(res.data.data);
+            })
+        }).catch(() => {
+
         })
+        
 
         
         console.log("onTokenPrivilegeWillExpire")

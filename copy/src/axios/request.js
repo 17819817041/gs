@@ -483,3 +483,11 @@ export function fetch (data) {            //鉴权
         data: data
     })
 }
+
+export function docGoodsId (data) {            //获取医生goodsId
+    return request({
+        url: "/goods/getGoodsByUserId",
+        method: 'POST',
+        params: data
+    })
+}

@@ -43,7 +43,7 @@
             position: absolute;
             width: 123px;
             height: 150px;
-            // border: solid 1px;
+            // border: solid 1px green;
             bottom: 20px;
             right: 20px;
             z-index: 100;
@@ -63,6 +63,7 @@
             bottom: 0px;
             right: 0px;
             z-index: 100;
+            // border:solid red 1px;
             // background: black;
         }
         .answer {
@@ -440,8 +441,8 @@
                     <!-- <video :class="['video_parent']" autoplay width="400px" height="400px" id="video" ref="video"></video>
                     <video :class="['video_child']" autoplay id="localVideo"></video> -->
 
-                    <div :class="['video_parent']" autoplay width="400px" height="400px" id="player_a1" ref="video"></div>
-                    <div :class="['video_child']" autoplay id="player_a2"></div>
+                    <div :class="[{'video_parent': type, 'video_child': !type}]" autoplay id="player_a1" ref="video"></div>
+                    <div :class="[{'video_parent': !type, 'video_child': type}]" autoplay id="player_a2" @click="type = !type"></div>
                 </div>
             </div>
             <div :class="[ 'doctorMessage_wrap', { Drawer: drawer } ]">
@@ -579,7 +580,7 @@
 </template>
 
 <script>
-import { addMetting, delMetting, PetMedicalRecord, updatePetMedicalRecord, s_online, getAgoraToken } from "@/axios/request.js"
+import { addMetting, delMetting, PetMedicalRecord, updatePetMedicalRecord, s_online, getAgoraToken, docGoodsId } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -613,7 +614,7 @@ export default {
             recordDate: '',
             disabled: true,
 
-
+            type:true,      // 切换摄像头
             remoteUsers : {},
             options: {
                 appid: 'e65091c05b1b4403b3130bfce4f9e7a1',
@@ -624,7 +625,12 @@ export default {
         }
     },
     mounted () {
-        this.joinAgora()
+        // if (localStorage.getItem('platform') == 1) {
+            this.joinAgora()
+        // } else {
+        //     this.joinAgora2()
+        // }
+        
     },
     created () {
         this.callToDoctor = this.callTo
@@ -645,6 +651,7 @@ export default {
         caller () { return this.$store.state.user.caller },
         callerIM () { return this.$store.state.user.callerIM },
         mettingId () { return this.$store.state.user.mettingId },
+        rtc () { return this.$store.state.user.rtc },
         messageList: {
             get () { return this.$store.state.user.messageList },
             set (val) {
@@ -684,10 +691,37 @@ export default {
     },
     methods: {
         joinAgora () {
+            // let docId = {
+            //     userId: this.callTo.doctorId
+            // }
+            // docGoodsId(docId).then(res => {
+            //     console.log(res,'docGoodsId')
+            // })
             let data = {
-                expirationTime: 1,
+                expirationTime: 90,
                 userId: localStorage.getItem('userId'),
-                roomNumber: '777'
+                roomNumber: 'petavi_' + localStorage.getItem('userId')
+            }
+            getAgoraToken(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.options.token = res.data.data
+                    this.$store.dispatch('initRtc', {
+                        token: res.data.data,
+                        uid: localStorage.getItem('userId') * 1,
+                        channel: data.roomNumber,
+                        appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
+                        rtc: this.$V
+                    })
+                }
+            })
+        },
+        //医生加入视频
+        joinAgora2 () {
+            let data = {
+                expirationTime: 99999999,
+                userId: localStorage.getItem('userId'),
+                roomNumber: 'petavi_' + this.caller.userId
             }
             getAgoraToken(data).then(res => {
                 console.log(res)

@@ -1,6 +1,6 @@
 <template>
     <div class="myDoctor flex">
-        <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList[0]">
+        <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList">
             <div class="width102 clear" ref="doctorList_height">
                 <div class="doctor_item float" v-for="(item) in doctorList" :key="item.doctorId" @click="getDetail(item)">
                     <div class="image flex">
@@ -46,7 +46,7 @@
                 </div>
             </div>
         </div>
-        <div class="doctorList scrollUp" v-else>
+        <div class="doctorList scrollUp" v-else-if="doctorList[0]">
             <div style="padding:30px 0;font-size:20px;font-weight:bold;color:gray" class="tc" >No Doctor!</div>
         </div>
         <div class="doctorDetails noBar">
@@ -130,7 +130,7 @@
     </div>
 </template>
 <script>
-import { bookingId, doctorList } from "@/axios/request.js"
+import { bookingId, docGoodsId } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -218,7 +218,6 @@ export default {
             if (item.doctorName == null) {
                 item.doctorName = 'No name'
             }
-            console.log(item)
             this.$store.commit("setUser",{
                 key: "vDetail",
                 value: item
