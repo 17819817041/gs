@@ -22,6 +22,39 @@ export default {
         }
     },
     actions: {
+        initRtc (store,data) {
+            var rtc = (store.state.rtc)
+            var option = {
+                appID: data.appId,
+                channel: data.channel,
+                uid: data.uid,
+                token: data.token,
+                mode: "live",
+                codec: "h264"
+            }
+            rtc.client.init(option.appID, function () {
+                console.log("init success",option)
+                rtc.client.join(option.token ? option.token : null, option.channel, option.uid ? +option.uid : null, function (uid) {
+                })
+            }, (err) => {
+                console.error(err)
+            })
+        },
+        removeStream (store,data) {   //退出agora
+            var rtc = store.state.rtc
+            rtc.client.leave(function () {
+                if(rtc.localStream.isPlaying()) {
+                    rtc.localStream.stop()
+                }
+                rtc.localStream.close()
+                rtc.localStream = null
+                rtc.remoteStreams = []
+            }, function (err) {
+                console.log("channel leave failed")
+                console.error(err)
+            })
+            // router.back()
+        },
         getUser (store,vm) {
             var data = {
                 userId: localStorage.getItem("adminUserId")

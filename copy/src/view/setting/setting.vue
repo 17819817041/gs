@@ -144,6 +144,7 @@
         padding-right: 25px;
     }
     .name2 .name_item {
+        height:25px;
         margin-bottom: 20px;
     }
     .name2:nth-child(1) {
@@ -623,7 +624,8 @@
                                     <div class="name2 size16_s">
                                         <div class="name_item" v-if="editBtn">
                                             <span v-if="user.userGender == 1">Male</span>    
-                                            <span v-else-if="user.userGender == 2">Female</span>    
+                                            <span v-else-if="user.userGender == 2">Female</span>
+                                            <span v-else-if="user.userGender == 0">No data</span>    
                                         </div>  <!-- null -->
                                         <div v-else class="gender al name_item">
                                             <el-select class="option width100" @change="getGender" name="" id="" v-model="Gender">
@@ -631,12 +633,20 @@
                                                 <el-option value="2" label="Female"></el-option>
                                             </el-select>
                                         </div>  
-                                        <div class="name_item" v-if="editBtn">{{user.userChoiceDoctor}} <span style="color:white">-</span> </div> <!-- null -->
-                                        <div v-else class="inp al name_item"><input type="text" v-model="user.userChoiceDoctor"></div>
+                                        <div class="name_item" v-if="editBtn">
+                                            <span v-if="user.userChoiceDoctor">{{bestDocName}}</span>
+                                            <span v-else>No Preferred Vet</span>
+                                        </div>
+                                        <div v-else class="gender al name_item">
+                                            <el-select class="option width100" @change="userChoiceDoctor" name="" id="" v-model="bestDocName">
+                                                <el-option v-for="(doc) in myBestDoc" :key="doc.userId" :value="doc.userId" :label="doc.doctorName"></el-option>
+                                            </el-select>
+                                        </div>
 
                                         <div class="name_item" v-if="editBtn">
                                             <span v-if="user.extend">{{user.extend}}</span>
                                             <span v-else-if="user.extend === null">No remark</span>
+                                            <span v-else-if="user.extend == ''">No remark</span>
                                         </div>
                                         <div class="name_item" v-else style="color:white">-</div>
                                     </div>
@@ -778,7 +788,7 @@
 </template>
 
 <script>
-import { pay, updateUserDetails, file, allOrder, paypals, orderId, contentId, paymentRecord } from "@/axios/request.js"
+import { pay, updateUserDetails, file, allOrder, paypals, bestDoc, contentId, paymentRecord } from "@/axios/request.js"
 export default {
     name: 'iframe',
     data () {
@@ -801,13 +811,16 @@ export default {
             pay_loading: false,
             data: 0,
             payList: [],
-            Gender: ''
+            Gender: '',
+            myBestDoc: [],
+            bestDocName: ''
         }
     },
     watch: {
         AllDetail: {
             handler (val) {
                 this.user = JSON.parse(JSON.stringify(this.AllDetail))
+                this.getBest()
                 if (this.user.userGender == 1) {
                     this.Gender = 'Male'
                 } else if (this.user.userGender == 2) {
@@ -828,6 +841,7 @@ export default {
         this.getBalance()
         this.getAllOrder()
         this.paymentRecord()
+        this.changeDoc()
     },
     mounted () {
         // this.getStripe()
@@ -848,6 +862,28 @@ export default {
         my_Balance () { return this.$store.state.user.balance }
     },
     methods: {
+        userChoiceDoctor (val) {
+            this.user.userChoiceDoctor = val
+            this.myBestDoc.forEach(item => {
+                if (item.userId == val) {
+                    this.bestDocName = item.doctorName
+                }
+            })
+        },
+        getBest () {
+            this.myBestDoc.forEach(item => {
+                if (item.userId == this.user.userChoiceDoctor) {
+                    this.bestDocName = item.doctorName
+                }
+            })
+        },
+        changeDoc () {
+            bestDoc().then(res => {
+                console.log(res,'dasdasd')
+                this.myBestDoc = res.data.data
+                this.userChoiceDoctor(this.user.userChoiceDoctor)
+            })
+        },
         getAllOrder () {
             let data = {
                 userId: localStorage.getItem('userId'),
@@ -871,7 +907,6 @@ export default {
             })
         },
         top_up () {
-            console.log(123)
             this.$store.commit('setUser', { key: 'showback', value: true })
         },
         paymentRecord () {
@@ -883,15 +918,12 @@ export default {
             paymentRecord(data).then(res => {
                 if (res.data.rtnCode == 200) {
                     var D = new Date()
-                    console.log(res,666666)
                     let a = new Date().toLocaleDateString()
                     var k = new Date(a).getTime()
                     var b = new Date(res.data.data.pageT[11].paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime()
-                    console.log(k,b)
                     res.data.data.pageT.forEach(item => {
                         if (new Date( item.paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime() == k) {
                             item.paymentRecord.createAt = 'Today'
-                            //  + ' ' + item.paymentRecord.createAt.split(' ')[1]
                         } else {
                             var D = new Date(item.paymentRecord.createAt.split(' ')[0]).toDateString()
                             item.paymentRecord.createAt = D.split(' ')[0] + ',' + D.split(' ')[2] + ' ' + D.split(' ')[1] + ' ' + D.split(' ')[3]
@@ -1003,7 +1035,6 @@ export default {
                 paymentTypeId
             }
             paypals(data).then(res => {
-                console.log(res,'paypal')
                 this.data = res.data.data
             }).catch(e => {
                 console.log(e)
@@ -1014,7 +1045,6 @@ export default {
             this.user.userGender = val
         },
         updateDetails () {
-            console.log(this.user)
             updateUserDetails(this.user).then(res => {
                 if (res.data.rtnCode == 200) {
                     this.$store.dispatch("getUser")
@@ -1052,45 +1082,51 @@ export default {
         },
         getImage (e) {
             if (localStorage.getItem("platform") == 1) {
-                var formData = new FormData();
-                formData.append('file', e.target.files[0]);
-                file(formData).then(res => {
-                    if (res.data.rtnCode == 200) {
-                        this.user.userImage = res.data.data
-                        updateUserDetails(this.user).then(res => {
-                            if (res.data.rtnCode == 200) {
-                                this.$store.dispatch("getUser")
-                                
-                            } else {
-                                
-                            }
-                        }).catch(e => {
-                            console.log(e)
-                        })
-                    } else {
-                        this.user = {}
-                    }
+                this.dealImg(e.target.files[0],(img) => {
+                    var formData = new FormData();
+                    formData.append('file', img);
+                    file(formData).then(res => {
+                        if (res.data.rtnCode == 200) {
+                            this.user.userImage = res.data.data
+                            updateUserDetails(this.user).then(res => {
+                                if (res.data.rtnCode == 200) {
+                                    this.$store.dispatch("getUser")
+                                    
+                                } else {
+                                    
+                                }
+                            }).catch(e => {
+                                console.log(e)
+                            })
+                        } else {
+                            this.user = {}
+                        }
+                    })
                 })
+                
             } else if (localStorage.getItem("platform") == 2) {
-                var formData = new FormData();
-                formData.append('file', e.target.files[0]);
-                file(formData).then(res => {
-                    if (res.data.rtnCode == 200) {
-                        this.user.doctorImage = res.data.data
-                        this.user.doctorName = "Beck"
-                        this.getUser()
-                        updateVetDetails(this.user).then(res => {
-                            console.log(res,"更换医生头像",this.user)
-                            if (res.data.rtnCode == 200) {
-                                this.getUser()
-                            }
-                        }).catch(e => {
-                            console.log(e)
-                        })
-                    } else {
-                        this.user = {}
-                    }
+                this.dealImg(e.target.files[0],(img) => {
+                    var formData = new FormData();
+                    formData.append('file', img);
+                    file(formData).then(res => {
+                        if (res.data.rtnCode == 200) {
+                            this.user.doctorImage = res.data.data
+                            this.user.doctorName = "Beck"
+                            this.getUser()
+                            updateVetDetails(this.user).then(res => {
+                                console.log(res,"更换医生头像",this.user)
+                                if (res.data.rtnCode == 200) {
+                                    this.getUser()
+                                }
+                            }).catch(e => {
+                                console.log(e)
+                            })
+                        } else {
+                            this.user = {}
+                        }
+                    })
                 })
+                
             }
         },
 

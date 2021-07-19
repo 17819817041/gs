@@ -177,6 +177,9 @@ export default {
 <style lang="less" scoped>
 @import "@/less/css.less";
     .header {
+        @media screen and (max-width: 1300px) {
+            height: 80px;
+        }
         @media screen and (max-width:564px) {
             height: 70px;
         }

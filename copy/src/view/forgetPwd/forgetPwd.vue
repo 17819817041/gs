@@ -42,6 +42,12 @@ export default {
         send () {
             forget(this.data).then(res => {
                 console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: 'Please log in to your mailbox to change your password!'
+                    })
+                }
             })
         }
     }

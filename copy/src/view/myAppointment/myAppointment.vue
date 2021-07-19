@@ -231,16 +231,7 @@ export default {
                 })
             },
         },
-		callModal2: {
-            get () { return this.$store.state.user.callModal2 },
-            set (val) {
-                this.$store.commit("setUser", {
-                    key: "callModal2",
-                    value: val
-                })
-            },
-        },
-        callTo () { return this.$store.state.user.callTo },
+        bookingDoc () { return this.$store.state.user.bookingDoc },
 		caller () { return this.$store.state.user.caller },
 		joinParams () { return this.$store.state.user.joinParams },
 		userDetail () { return this.$store.state.user.userDetail },
@@ -267,27 +258,16 @@ export default {
                 this.$store.commit('setUser', { key: 'scrollTop', value: false } )
             }
         },
-        async starBook (item) {
+        starBook (item) {
+            console.log(item)
             var D = new Date(item.booking.bookingDate).getTime()
             var now = Date.now()
             if ( now >= D ) {
+            // if ( true ) {
+                this.callModal = true
                 this.callLoading = true
-                let params = {
-                    roomName: this.$store.state.user.IMuser.username,
-                    password: "123456",
-                    role: 3,
-                    config:{ 
-                        rec: false, 
-                        recMerge:false, //是否开启合并录制
-                        supportWechatMiniProgram: true //是否允许小程序加入会议
-                    }
-                }
-                const user_room = await emedia.mgr.joinRoom(params);
-                this.addConfr(user_room.confrId)
-                let constraints = { audio: true, video: true };
-                const stream = await emedia.mgr.publish(constraints)
-                this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
-                this.sendMsg(params)
+                localStorage.setItem('bookingDoc',JSON.stringify(item))
+                this.sendMsg(item)
             } else {
                 this.$message({
                     type: "info",
@@ -295,20 +275,23 @@ export default {
                 })
             }
         },
-        sendMsg (params) {
+        sendMsg (item) {
+            console.log(JSON.stringify(item.booking.bookingDoctorId) + 'A2', )
+			let D = new Date().getTime()
+            localStorage.setItem('sroom',D)
 			let data = {
                 type: "Call",
 				user: this.userDetail,
 				platform: localStorage.getItem('platform'),
 				petId: this.petId,
 				mettingId: this.mettingId,
-				params
+				sroom: D
             }
             let id = this.$conn.getUniqueId();                 // 生成本地消息id
             let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
             msg.set({
                 msg: JSON.stringify(data),                  // 消息内容
-                to: JSON.stringify(this.callTo.doctorId) + 'A2',      // 接收消息对象（用户id）
+                to: JSON.stringify(item.booking.bookingDoctorId) + 'A2',      // 接收消息对象（用户id）
                 chatType: 'singleChat',                  // 设置为单聊                       
                 success: function (id, serverMsgId) {
                     console.log('send private text Success');  
@@ -319,32 +302,6 @@ export default {
                 }
             });
             this.$conn.send(msg.body);
-            this.$store.commit("setUser",{ key: 'callerIM', value: this.userDetail.userId + 'A' + localStorage.getItem('platform') })
-		},
-        addConfr (val) {
-			let D = new Date
-			var date = D.toLocaleDateString()
-			let detail = {
-				petName: this.pet.name,
-				petId: this.petId,                 
-				caller: this.userDetail,
-				callTo: this.callTo,
-				createdTime: date,
-				password: '123456'
-			}
-			let data = {
-				'jo': [{
-					confrId: val,
-					userId: this.userDetail.userId + 'A' + localStorage.getItem('platform'),
-					doctorId: this.callTo.doctorId + 'A2',
-					password: JSON.stringify(detail),
-					// password: '123456',
-				}]
-			}
-			addMetting(data).then(res => {
-				console.log(res)
-				this.mettingId = res.data.data[0].id
-			})
 		},
         appointmentDetalis (id,url) {
             this.$router.push({

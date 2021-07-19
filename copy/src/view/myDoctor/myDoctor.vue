@@ -51,12 +51,14 @@
         </div>
         <div class="doctorDetails noBar">
             <div class="details_item mg">
-                <div class="head_image mg ju">
-                    <el-image style="height:80px" :src="detail.userHead" alt="" fit="cover">
+                <div class="head_image mg al ju">
+                    <img style="height:100%" :src="detail.userHead" v-if="detail.userHead" alt="">
+                    <i class="el-icon-picture-outline" style="font-size:40px;color:gray" v-else></i>
+                    <!-- <el-image style="height:80px" :src="detail.userHead" alt="" fit="cover">
                         <div slot="error" class="image-slot al" style="height: 100%;width:100%">
                             <i class="el-icon-picture-outline" style="font-size:40px;color:gray"></i>
                         </div>
-                    </el-image>
+                    </el-image> -->
                 </div>
                 <div class="doctor_name tc" v-if="detail.doctorName">{{detail.doctorName}}</div>
                 <div class="doctor_name tc" v-else>Name</div>
@@ -121,7 +123,7 @@
                         <div class="size16">Working Address</div>
                     </div>
                     <div class="child flex al">
-                        <img style="width:40px" src="@/assets/img/reviewer1.png" alt="" @click="chat_t">
+                        <img style="width:40px" src="@/assets/img/reviewer1.png" alt="">
                         <div class="size16">Reviewer (230)</div>
                     </div>
                 </div>
@@ -130,7 +132,7 @@
     </div>
 </template>
 <script>
-import { bookingId, docGoodsId } from "@/axios/request.js"
+import { bookingId } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -287,9 +289,6 @@ export default {
         booking () {
             this.$router.push("/booking")
         },
-        chat_t () {
-            this.$router.push('/chatRoom')
-        }
     }
 }
 </script>
@@ -536,6 +535,7 @@ video {
         transform: translate(0,1px);
     }
     .address_item {
+        margin-top: 10px;
         text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
         display: -webkit-box;
         -webkit-line-clamp: 2;/*规定超过两行的部分截断*/

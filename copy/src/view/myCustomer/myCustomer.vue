@@ -1,7 +1,7 @@
 <template>
     <div class="myCustomer flex" v-loading="loading">
         <div class="animal">
-            <div class="wrap noBar clear">
+            <div class="wrap noBar clear" v-if="getDoctorMedicalLimitList[0]">
                 <div class="wrap_item float" v-for="(item,i) in getDoctorMedicalLimitList" :key="i" @click="toPatients(item)">
                     <div class="flex al">
                         <div class="ju al Personal">
@@ -28,6 +28,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div v-else>
+                <div class="tc bold"  style="padding-top: 150px;color:gray;font-size:23px">No treatment record!</div>
             </div>
         </div>
         <div class="personWithAnimal noBar">

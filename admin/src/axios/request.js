@@ -113,3 +113,11 @@ export function file (data) {          //上传头像
         }
     )
 }
+
+export function getAgoraToken (data) {            //agora
+    return request({
+        url: "/token/getAgoraToken",
+        method: 'POST',
+        params: data
+    })
+}

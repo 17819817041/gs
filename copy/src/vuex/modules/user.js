@@ -139,10 +139,7 @@ export default {
                 rtc.localStream.close()
                 rtc.localStream = null
                 rtc.remoteStreams = []
-                rtc.client = null
                 console.log("client leaves channel success")
-                rtc.published = false
-                rtc.joined = false
             }, function (err) {
                 console.log("channel leave failed")
                 console.error(err)

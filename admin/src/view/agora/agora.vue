@@ -229,6 +229,9 @@
         height: 100%;
         overflow: auto;
     }
+    #player_a1 {
+        height: 400px;
+    }
 </style>
 <template>
     <div class="adminAgora flex">
@@ -242,12 +245,7 @@
             <Message></Message>
         </div>
         <div style="flex: 10" class="confr_video noBar">
-            <div class="mutual_video flex">
-                <!-- <video class="mutual_video_item" autoplay id="video"></video>
-                <video class="mutual_video_item" autoplay id="video"></video> -->
-                <div class="video"></div>
-                <div class="video"></div>
-            </div>
+            <div id="player_a1" class="flex"></div>
             <div class="caller_callTo flex">
                 <div class="d_user">
                     <div class="guardianDetails mg size19">Guardian Details</div>
@@ -316,7 +314,7 @@
                 <div class="star_e bold cursor tc mg white">
                     17:00 - 18:00
                 </div>
-                <div class="leave_r cursor bold tc white" @click="out">
+                <div class="leave_r cursor bold tc white" @click="outRoom">
                     Leave the Room
                 </div>
             </div>
@@ -340,7 +338,7 @@
 </template>
 
 <script>
-import { getUserByPetId } from "@/axios/request.js"
+import { getUserByPetId, getAgoraToken } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -353,7 +351,7 @@ export default {
         this.getToday()
     },
     mounted () {
-        this.join()
+        this.joinAgora()
     },
     computed: {
         userDetailMessage () { return this.$store.state.user.userDetail }
@@ -361,12 +359,11 @@ export default {
     methods: {
         getToday () {
             var d = new Date()
-            console.log(d.toLocaleDateString(),d.toDateString())
             this.date = d.toDateString().split(' ')[2] + ' ' + d.toDateString().split(' ')[1] + ' ' + d.toDateString().split(' ')[3]
         },
         getUser () {
             let user = JSON.parse(localStorage.getItem('confr'))
-            console.log(user)
+            console.log(user,user.password.petId)
             let data = {
                 petId: user.password.petId
             }
@@ -384,34 +381,29 @@ export default {
                 })
             })
         },
-        async join () {
-            var confr = localStorage.getItem('confr')
-            // console.log(confr)
-            if (confr) {
-                confr = JSON.parse(confr)
-                let params = {
-                    // roomName: confr.userid,
-                    roomName: '486A1',
-                    password: "123456",
-                    role: 3,
-                    config:{ 
-                        rec: false, 
-                        recMerge:false, //是否开启合并录制
-                        supportWechatMiniProgram: true //是否允许小程序加入会议
-                    }
-                }
-                console.log("room",params)
-
-                const user_room = await emedia.mgr.joinRoom(params);
-                console.log("room",user_room,params)
-                let constraints = { audio: false, video: false };
-                const stream = await emedia.mgr.publish(constraints)
+        joinAgora () {
+            let data = {
+                expirationTime: 99999999,
+                userId: localStorage.getItem('adminUserId'),
+                roomNumber: JSON.parse(localStorage.getItem('confr')).password.roomNumber
             }
-           
+            getAgoraToken(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$store.dispatch('initRtc', {
+                        token: res.data.data,
+                        uid: localStorage.getItem('adminUserId') * 1,
+                        channel: data.roomNumber,
+                        appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
+                        rtc: this.$V
+                    })
+                }
+            })
         },
-        out () {
-            window.eMedia.mgr.exitConference()
-        }
+        outRoom () {
+            this.$store.dispatch('removeStream', { rtc: this.$V })
+            this.$replace.back()
+        },
     }
 }
 </script>

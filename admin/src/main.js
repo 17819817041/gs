@@ -7,6 +7,11 @@ Vue.prototype.$WebIM = WebIM
 Vue.prototype.$conn = conn
 Vue.prototype.$rtcCall = rtcCall
 
+import Agora from "@/assets/js/Agora.js"
+Vue.prototype.$V = Agora
+
+import initRtc from './assets/js/rtcAgora'
+initRtc(Agora)
 
 import Header from "@/components/header/header.vue"
 import Message from "@/components/message/message.vue"

@@ -261,20 +261,23 @@ export default {
             })  
         },
         getImage (e) {
-            var formData = new FormData()
-            formData.append('file',e.target.files[0])
-            file(formData).then(res => {
-                console.log(res)
-                if (res.data.rtnCode == 200) {
-                    this.addPetMessage.image = res.data.data
-                }
-            }).catch(e => {
-                console.log(e)
-                this.$message({
-                    type: "error",
-                    message: "Picture is too large"
+            this.dealImg(e.target.files[0],(img) => {
+                var formData = new FormData()
+                formData.append('file',img)
+                file(formData).then(res => {
+                    console.log(res)
+                    if (res.data.rtnCode == 200) {
+                        this.addPetMessage.image = res.data.data
+                    }
+                }).catch(e => {
+                    console.log(e)
+                    this.$message({
+                        type: "error",
+                        message: "Picture is too large"
+                    })
                 })
             })
+            
         },
         getDay () {
             // let month = new Date().getMonth() + 1      //获取月份

@@ -30,6 +30,7 @@
         }
         .appointment_details {
             width: 40%;
+            min-width: 500px;
             height: 100%;
             // border: solid 1px;
             overflow: auto;

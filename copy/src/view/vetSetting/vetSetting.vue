@@ -18,11 +18,11 @@
                     <div class="profile_img">
                         <div class="profile_img_wrap mg">
                             <label for="avaSet">
-                                <div style="width:50%;margin:auto;height:100%" class="ju al">
+                                <div style="width:100%;margin:auto;height:100%" class="ju al">
                                     <img :class="['profileimg mg', {cursor: !edit}]" v-if="userDetail.userImage" :src="userDetail.userImage" alt="" mode="widthFix">
                                     <i v-else class="el-icon-picture-outline" style="font-size:125px;color:gray"></i>
                                 </div>
-                                <input type="file" id="avaSet" v-if="!edit" v-show="false">
+                                <input type="file" id="avaSet" v-if="!edit" v-show="false" @change="getImage">
                             </label>
                         </div>
                     </div>
@@ -65,9 +65,10 @@
                             <div class="mean al" v-if="edit">
                                 <span v-if="userDetail.genderId == 1">Male</span>
                                 <span v-else-if="userDetail.genderId == 2">Female</span>
+                                <span v-else-if="userDetail.genderId == 0">No data</span>
                             </div>
                             <div v-else class="inp mean al">
-                                <el-select v-model="sex" >
+                                <el-select v-model="sex" @change="cutSex">
                                     <el-option value="1" label="Male"></el-option>
                                     <el-option value="2" label="Female"></el-option>
                                 </el-select>
@@ -214,7 +215,7 @@
 </template>
 
 <script>
-import { updateVetDetails, HospitalList, address } from "@/axios/request.js"
+import { updateVetDetails, HospitalList, address, file } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -226,6 +227,7 @@ export default {
             wookingDay: '',
             s_week: 'Monday',
             e_week: 'Friday',
+            userDetails: {}
         }
     },
     watch: {
@@ -248,6 +250,23 @@ export default {
         this.getAddress()
     },
     methods: {
+        cutSex (val) {
+            this.userDetail.genderId = val
+            console.log(val)
+        },
+        getImage (e) {
+            this.dealImg(e.target.files[0], (res) => {
+                var formData = new FormData();
+                formData.append('file', res);
+                file(formData).then(msg => {
+                    if (msg.data.rtnCode == 200) {
+                        this.userDetail.headUr = msg.data.data
+                    } else {
+                        this.userDetails = {}
+                    }
+                })
+            })
+        },
         changeAddress (e) {
             console.log(e)
             this.userDetail.location = e

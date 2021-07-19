@@ -10,9 +10,6 @@
         @media screen and (max-width: 1300px) {
             height: 80px;
         }
-        @media screen and (max-width: 1300px) {
-            height: 70px;
-        }
         .logo {
             background: rgb(255, 255, 255);
             position: absolute;
@@ -339,45 +336,50 @@ export default {
             this.$store.dispatch("getUser",this)
         },
         getImage (e) {
-            // this.$router.push('/setting')
             if (localStorage.getItem("platform") == 1) {
-                var formData = new FormData();
-                formData.append('file', e.target.files[0]);
-                file(formData).then(res => {
-                    if (res.data.rtnCode == 200) {
-                        this.userDetails.userImage = res.data.data
-                        
-                        updateUserDetails(this.userDetails).then(res => {
-                            if (res.data.rtnCode == 200) {
-                                this.getUser()
-                            } else {
-                                
-                            }
-                        }).catch(e => {
-                            console.log(e)
-                        })
-                    } else {
-                        this.userDetails = {}
-                    }
+                this.dealImg(e.target.files[0],(img) => {
+                    var formData = new FormData();
+                    formData.append('file', img);
+                    file(formData).then(res => {
+                        if (res.data.rtnCode == 200) {
+                            this.userDetails.userImage = res.data.data
+                            
+                            updateUserDetails(this.userDetails).then(res => {
+                                if (res.data.rtnCode == 200) {
+                                    this.getUser()
+                                } else {
+                                    
+                                }
+                            }).catch(e => {
+                                console.log(e)
+                            })
+                        } else {
+                            this.userDetails = {}
+                        }
+                    })
                 })
+                
             } else if (localStorage.getItem("platform") == 2) {
-                var formData = new FormData();
-                formData.append('file', e.target.files[0]);
-                file(formData).then(res => {
-                    if (res.data.rtnCode == 200) {
-                        this.userDetails.headUr = res.data.data
-                        this.userDetails.doctorName = "Beck"
-                        updateVetDetails(this.userDetails).then(res => {
-                            if (res.data.rtnCode == 200) {
-                                this.getUser()
-                            }
-                        }).catch(e => {
-                            console.log(e)
-                        })
-                    } else {
-                        this.userDetails = {}
-                    }
+                this.dealImg(e.target.files[0],(img) => {
+                    var formData = new FormData();
+                    formData.append('file', img);
+                    file(formData).then(res => {
+                        if (res.data.rtnCode == 200) {
+                            this.userDetails.headUr = res.data.data
+                            this.userDetails.doctorName = "Beck"
+                            updateVetDetails(this.userDetails).then(res => {
+                                if (res.data.rtnCode == 200) {
+                                    this.getUser()
+                                }
+                            }).catch(e => {
+                                console.log(e)
+                            })
+                        } else {
+                            this.userDetails = {}
+                        }
+                    })
                 })
+                
             }
         },
         backHome () {

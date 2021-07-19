@@ -134,7 +134,7 @@ export default {
         
     },
     mounted () {
-      this.initRecord()  
+        this.initRecord()  
     },
     watch: {
         adminList: {
@@ -174,7 +174,12 @@ export default {
         },
         initRecord () {
             if (localStorage.getItem('adminList') || localStorage.getItem('newsList')) {
-                this.adminList = JSON.parse(localStorage.getItem('adminList'))
+                if (localStorage.getItem('adminList')) {
+                    this.adminList = JSON.parse(localStorage.getItem('adminList'))
+                } else {
+                    this.adminList = []
+                }
+                
                 this.list = JSON.parse(localStorage.getItem('newsList'))
                 this.$nextTick(() => {
                     this.$refs.Cus.scrollTop = 10000
@@ -209,14 +214,6 @@ export default {
                     }, 
                     fail: function(e){
                         console.log(e)
-                        // 失败原因:
-                        // e.type === '603' 被禁言
-                        // e.type === '605' 群组不存在
-                        // e.type === '602' 不在群组或聊天室中
-                        // e.type === '504' 撤回消息时超出撤回时间
-                        // e.type === '505' 未开通消息撤回
-                        // e.type === '506' 没有在群组或聊天室白名单
-                        // e.type === '503' 未知错误
                         console.log("Send private text error");  
                     }
                 });

@@ -65,8 +65,8 @@ export default {
             localStorage.setItem('confr',JSON.stringify(item))
         },
         dele (item) {
+            console.log(item)
             let data = {
-
                 webId: item.id
             }
             delMetting(data).then(res => {

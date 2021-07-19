@@ -287,9 +287,13 @@ export default {
             getPetMedicalRecord(data).then(res => {
                 if (res.data.rtnCode == 200) {
                     this.getDoctorMedicalLimitList = res.data.data.pageT
+                    this.loading = false
                     this.getPetType()
+                } else {
+                    this.loading = false
                 }
             }).catch(e => {
+                this.loading = false
                 console.log(e)
             })
         },
@@ -326,6 +330,7 @@ export default {
                                 item.breedList = obj.children
                             }
                         })
+                        this.getDoctorMedicalLimitList = [...this.getDoctorMedicalLimitList]
                         this.loading = false
                     } else {
                         this.loading = false

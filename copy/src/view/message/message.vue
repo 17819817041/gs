@@ -313,7 +313,11 @@ export default {
             this.$router.push("/paymentHistory")
         },
         firstDid () {
-            this.$router.push("/firstAid")
+            this.$message({
+                type: 'error',
+                message: 'The function is not yet perfect!'
+            })
+            // this.$router.push("/firstAid")
         }
     }
 }

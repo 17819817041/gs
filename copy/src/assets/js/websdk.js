@@ -74,14 +74,14 @@ conn.listen({
             store.commit("setUser",{ key: 'caller', value: data.user })
             store.commit("setUser",{ key: 'joinParams', value: data.params })
             store.commit("setUser",{ key: 'callerIM', value: data.user.userId + 'A' + data.platform })
+            localStorage.setItem('sroom', JSON.parse(e.data).sroom)
         }
         // 被呼叫者拒接
         if (data.type == 'HangUp') {
             store.commit("setUser",{ key: 'callModal', value: false })
             store.commit("setUser",{ key: 'callLoading', value: false })
-            router.back()
             Message({
-                type: 'info',
+                type: 'error',
                 message: 'The other party refused to answer the call!'
             })
             window.eMedia.mgr.exitConference()

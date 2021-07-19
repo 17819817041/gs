@@ -491,3 +491,10 @@ export function docGoodsId (data) {            //获取医生goodsId
         params: data
     })
 }
+   
+export function bestDoc (data) {            //首选医生列表
+    return request({
+        url: "/user/getUserChoiceDoctorList",
+        method: 'GET'
+    })
+}
