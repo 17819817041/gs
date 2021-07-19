@@ -819,7 +819,6 @@ export default {
             }
             delMetting(data).then(res => {
                 console.log(res,'删除')
-                this.getMetting()
             })
         },
         addConfr () {

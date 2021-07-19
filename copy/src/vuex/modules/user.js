@@ -137,8 +137,8 @@ export default {
                     rtc.localStream.stop()
                 }
                 rtc.localStream.close()
-                rtc.localStream = null
-                rtc.remoteStreams = []
+                // rtc.localStream = null
+                // rtc.remoteStreams = []
                 console.log("client leaves channel success")
             }, function (err) {
                 console.log("channel leave failed")
