@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import { getUserByPetId, delPetMedicalRecordById, getPetMedicalRecord } from "@/axios/request.js"
+import { getUserByPetId, delPetMedicalRecordById, getPetMedicalRecord, s_online } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -127,7 +127,13 @@ export default {
         }
     },
     mounted () {
-        
+        let data = {
+            userId: localStorage.getItem('userId'),
+            platform: localStorage.getItem('platform')
+        }
+        s_online(data).then(res => {
+            console.log(res,'在线')
+        })
     },
     created () {
         this.PetMedicalRecord()

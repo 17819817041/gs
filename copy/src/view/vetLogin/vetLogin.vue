@@ -164,9 +164,6 @@ export default {
                 ]
             },
             form: {
-                // platform:2,
-                // email:'1025548152@qq.com',
-                // password:'123'
                 platform:2,
                 email:'2@qq.com',
                 password:'123'
@@ -176,13 +173,7 @@ export default {
                 // email:'',
                 // password:''
 
-            } 
-            // 173156297@qq.com
-            // form: {
-            //     platform:localStorage.getItem("platform"),
-            //     email:'',
-            //     password:''
-            // }
+            }
         }
     },
     computed: {
@@ -219,9 +210,6 @@ export default {
                 }
             }
         },
-        // faceBook () {
-        //     this.$store.dispatch("login", {'vm': this} )
-        // },
         Login () {
             this.vetLogin()
         },

@@ -35,16 +35,33 @@ function initRtc (Agora) {
         if(peerStream && peerStream.isPlaying()) {
           peerStream.stop()
         }
+        rtc.client.leave(function () {
+            if(rtc.localStream.isPlaying()) {
+                rtc.localStream.stop()
+            }
+            rtc.localStream.close()
+            // rtc.localStream = null
+            // rtc.remoteStreams = []
+            console.log("client leaves channel success")
+            rtc.client.unpublish(rtc.localStream)
+        }, function (err) {
+            console.log("channel leave failed")
+            console.error(err)
+        })
+
+
         rtc.remoteStreams = streams
-        rtc.localStream.close()
-        rtc.localStream = null
-        rtc.remoteStreams = []
+        // rtc.localStream.close()
+        // rtc.localStream = null
+        // rtc.remoteStreams = []
         Message({
             type: 'info',
             message: 'Call ended!'
         })
+        // rtc.client.unpublish(rtc.localStream)
         router.back()
         console.log("peer-leave", id)
+        
     })
     rtc.client.on("stream-published", function (evt) {
         console.log("stream-published")

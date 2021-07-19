@@ -124,7 +124,7 @@ export default {
                 key: 'pet',
                 value: item
             })
-            this.starBook(item)
+            // this.starBook(item)
         },
         starBook (item) {
             this.doctorList.forEach(item => {
@@ -134,7 +134,7 @@ export default {
             })
             this.callModal = true
             this.callLoading = true
-            this.sendMsg()
+            // this.sendMsg()
         },
         sendMsg () {
 			let D = new Date().getTime()

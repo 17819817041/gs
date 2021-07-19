@@ -708,19 +708,20 @@ export default {
     },
     methods: {
         joinAgora () {
+            // if (localStorage.getItem('bookingDoc')) {
             if (localStorage.getItem('bookingDoc')) {
                 let bookingAgo = JSON.parse(localStorage.getItem('bookingDoc'))
                 let docId = {
                     userId: bookingAgo.booking.bookingDoctorId
                 }
-                docGoodsId(docId).then(res => {
+                docGoodsId(docId).then(msg => {
                     let data = {
-                        expirationTime: res.data.data.min,
-                        // expirationTime: 1,
+                        expirationTime: msg.data.data.min,
                         userId: localStorage.getItem('userId'),
                         roomNumber: 'petavi_' + localStorage.getItem('sroom')
                     }
                     getAgoraToken(data).then(res => {
+                        console.log(res,'token111')
                         if (res.data.rtnCode == 200) {
                             this.$store.dispatch('initRtc', {
                                 token: res.data.data,
@@ -745,18 +746,16 @@ export default {
                     userId: this.callTo.doctorId
                 }
                 docGoodsId(docId).then(res => {
-                    console.log(res,'docGoodsId')
                     let data = {
                         expirationTime: res.data.data.min,
-                        // expirationTime: 1,
                         userId: localStorage.getItem('userId'),
                         roomNumber: 'petavi_' + localStorage.getItem('sroom')
                     }
-                    getAgoraToken(data).then(res => {
-                        console.log(res)
+                    getAgoraToken(data).then(msg => {
+                        console.log(msg,'token666')
                         if (res.data.rtnCode == 200) {
                             this.$store.dispatch('initRtc', {
-                                token: res.data.data,
+                                token: msg.data.data,
                                 uid: localStorage.getItem('userId') * 1,
                                 channel: data.roomNumber,
                                 appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
@@ -785,7 +784,7 @@ export default {
                 roomNumber: 'petavi_' + localStorage.getItem('sroom')
             }
             getAgoraToken(data).then(res => {
-                console.log(res)
+                console.log(res,'医生加入')
                 if (res.data.rtnCode == 200) {
                     this.$store.dispatch('initRtc', {
                         token: res.data.data,
@@ -807,7 +806,7 @@ export default {
             s_online(data).then(res => {
                 console.log(res,'在线')
             })
-            this.$router.back()
+            // this.$router.back()
             if (this.content == '' && localStorage.getItem('platform') == 2) {    //医生挂断添加record
                 this.addPetMedicalRecord()
             }

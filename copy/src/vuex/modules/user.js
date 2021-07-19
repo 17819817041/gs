@@ -61,8 +61,6 @@ export default {
                 ]
             },
         },
-        
-
         message: {},
         chatList: []
     },
@@ -93,7 +91,6 @@ export default {
             rtc.client.init(option.appID, function () {
                 console.log("init success",option)
                 rtc.client.join(option.token ? option.token : null, option.channel, option.uid ? +option.uid : null, function (uid) {
-                //   Toast.notice("join channel: " + option.channel + " success, uid: " + uid)
                   console.log("join channel: " + option.channel + " success, uid: " + uid)
                   rtc.joined = true
                   rtc.params.uid = uid
@@ -110,26 +107,19 @@ export default {
                     console.log("init local stream success")
                     // play stream with html element id "local_stream"
                     rtc.localStream.play("player_a2")
-        
-                    // publish local stream
-                    // publish(rtc)
                     rtc.client.publish(rtc.localStream, function (err) {
                         console.log('publish success')
                     })
                   }, function (err)  {
-                    // Toast.error("stream init failed, please open console see more detail")
                     console.error("init local stream failed ", err)
                   })
                 }, function(err) {
-                //   Toast.error("client join failed, please open console see more detail")
                   console.error("client join failed", err)
                 })
               }, (err) => {
-                // Toast.error("client init failed, please open console see more detail")
                 console.error(err)
               })
         },
-
         removeStream (store,data) {   //退出agora
             var rtc = store.state.rtc
             rtc.client.leave(function () {
@@ -140,18 +130,12 @@ export default {
                 // rtc.localStream = null
                 // rtc.remoteStreams = []
                 console.log("client leaves channel success")
+                rtc.client.unpublish(rtc.localStream)
             }, function (err) {
                 console.log("channel leave failed")
                 console.error(err)
             })
-            // router.back()
-        },
-
-
-
-
-        login () {
-            console.log("login")
+            router.back()
         },
         getPetList (store,data) {
             petList(data).then(res => {
