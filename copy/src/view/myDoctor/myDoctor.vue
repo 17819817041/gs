@@ -132,7 +132,7 @@
     </div>
 </template>
 <script>
-import { bookingId } from "@/axios/request.js"
+// import {  } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -141,7 +141,8 @@ export default {
             // rate:0,
             // detail: {},
             pageNum: 1,
-            showMore: false
+            showMore: false,
+            timer: null
         }
     },
     created () {
@@ -172,7 +173,14 @@ export default {
                 })
             },
             deep: true
-        }
+        },
+        // doctorList: {
+        //     handler (val) {
+        //         if (val) {
+        //             this.doctorList = val
+        //         }
+        //     }
+        // }
     },
     computed: {
         callModal: {
@@ -333,6 +341,7 @@ video {
             background: rgb(216, 216, 216);
         }
         .doctorDetails {
+            min-width: 310px;
             width: 26%;
             height: 100%;
             overflow: auto;
@@ -405,7 +414,7 @@ video {
         //     width: 46%;
         //     margin: 0 3.5% 5px 0.5%;
         // }
-        @media screen and (max-width:1100px) {
+        @media screen and (max-width:1145px) {
             width: 45%;
             margin: 0 1.5% 5px 3.5%;
         }

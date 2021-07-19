@@ -150,8 +150,16 @@
         }
     }
     .div .search {
+        position: relative;
         @media screen and (max-width:1200px) {
             width: 40%;
+            .drawer_list {
+                position: absolute;
+                width: 22px;
+                height: 25px;
+                top: 6px;
+                left: -35px;
+            }
         }
     }
     .div .function {
@@ -183,6 +191,7 @@
         </div>
         <div class="div sb al">
             <div class="search al sa" v-if="login">
+                <div class="drawer_list"><img src="@/assets/img/list.png" alt=""></div>  <!-- //抽屉 -->
                 <div class="top cursor" v-if="identity" @click="doctor">All Doctors</div>
                 <div class="top cursor" v-else @click="patient">All Patients</div>
                 <div class="select top" >
@@ -237,7 +246,7 @@
 </template>
 
 <script>
-import { getUserDetails, updateUserDetails, file, vetDetails, updateVetDetails } from "@/axios/request.js"
+import { searchDoc, updateUserDetails, file, vetDetails, updateVetDetails } from "@/axios/request.js"
 import { google } from "@/assets/js/google.js"
 export default {
     data () {
@@ -323,8 +332,17 @@ export default {
         }
     },
     methods: {
-        search () {
-            this.$store.dispatch('search',this.inp)
+        search (val) {
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                console.log(val,666666)
+                let data = {
+                    name: val
+                }
+                searchDoc(data).then(res => {
+                    console.log(res)
+                })
+            },800)
         },
         // showDetails () {
         //     this.show = !this.show

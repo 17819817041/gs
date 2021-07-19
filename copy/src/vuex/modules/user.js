@@ -18,7 +18,6 @@ export default {
         pet: {},
         petId: null,
         doctorList: [],
-        searchList: [],
         loading: false,
         loading6: false,
         vloading: true,
@@ -195,10 +194,12 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
+
                         // if (vm.$route.name !== 'customerLogin' && vm.$route.name !== 'relevance') {
                         //     router.replace('/customerLogin')
-                            // vm.$message.error('Login expired, please log in again !');
+                        //     vm.$message.error('Login expired, please log in again !');
                         // }
+
                         store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }
@@ -232,10 +233,12 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
+
                         // if (vm.$route.name !== 'vetLogin' && vm.$route.name !== 'relevance') {
                         //     router.replace('/vetLogin')
-                            // vm.$message.error('Login expired, please log in again !');
+                        //     vm.$message.error('Login expired, please log in again !');
                         // }
+
                         store.commit("setUser",{ key: "login", value: false })
                         store.commit("setUser",{ key: "userDetail", value: {} }) 
                     }

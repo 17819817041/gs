@@ -2,7 +2,7 @@
     <div class="forgetPwd">
         <div><myHeaderL></myHeaderL></div>
         <div class="pwdContent mg">
-            <div class="size21 tc pwdTitle">Forget Password</div>
+            <div class="size21 tc pwdTitle" @click="asd">Forget Password</div>
             <div class="size12 tc pwdText">Please enter the email address associated</div>
             <div class="size12 tc pwdText">with your email. We will email you a </div>
             <div class="size12 tc pwdText">link to reset your password.</div>
@@ -49,6 +49,9 @@ export default {
                     })
                 }
             })
+        },
+        asd () {
+            this.$router.push('/changePwd')
         }
     }
 }

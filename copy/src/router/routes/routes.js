@@ -19,6 +19,11 @@ export default [
         component: () => import('@/view/relevance/relevance.vue')
     },
     {
+        path: '/changePwd',
+        name: 'changePwd',
+        component: () => import('@/view/forgetPwd/changePwd.vue')
+    },
+    {
         path:'/signUp',
         name:'signUp',
         component: () => import("@/view/signUp/signUp.vue")

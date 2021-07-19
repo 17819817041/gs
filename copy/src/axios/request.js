@@ -498,3 +498,19 @@ export function bestDoc (data) {            //首选医生列表
         method: 'GET'
     })
 }
+     
+export function URLToken (data) {            //链接是否失效 String email, String token
+    return request({
+        url: "/user/token",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function searchDoc (data) {         //搜索
+    return request({
+        url: '/user/homeSearch',
+        method: "POST",
+        params: data
+    })
+}

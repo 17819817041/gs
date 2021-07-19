@@ -27,6 +27,18 @@
     .present_message {
         background: white;
         z-index: 500;
+        height: 100%;
+        overflow: auto;
+        @media screen and (max-width:950px) {
+            background: white;
+            position: fixed;
+            top: 90px;
+            left: 0;
+            border-right: rgb(236, 236, 236) solid 1px;
+            width: 180px !important;
+            height: 100%;
+            // opacity: 0;
+        }
     }
     .customer_content {
         width: 100%;
@@ -70,11 +82,6 @@
     .pet_message {
         flex: 10;
         // padding-top: 10px;
-        // border: solid red 1px;
-        height: 100%;
-        overflow: auto;
-    }
-    .present_message {
         // border: solid red 1px;
         height: 100%;
         overflow: auto;

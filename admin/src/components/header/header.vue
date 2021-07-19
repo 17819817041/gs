@@ -135,40 +135,43 @@ export default {
             this.$router.push("/petPage")
         },
         getImage (e) {
-            var formData = new FormData();
-            formData.append('file', e.target.files[0]);
-            file(formData).then(res => {
-                console.log(res)
-                if (res.data.rtnCode == 200) {
-                    this.userDetail.image = res.data.data
-                    let data = {
-                        userId: localStorage.getItem('adminUserId'),
-                        image: this.userDetail.image
-                    }
-                    updateAdmin(data).then(res => {
-                        if (res.data.rtnCode == 200) {
-                            this.$store.dispatch('getUser',this)
-                            this.$message({
-                                type: 'success',
-                                message: 'Successfully modified!'
-                            })
-                            this.edit = 1
-                        } else {
+            this.dealImg(e.target.files[0],(img) => {
+                var formData = new FormData();
+                formData.append('file', img);
+                file(formData).then(res => {
+                    console.log(res)
+                    if (res.data.rtnCode == 200) {
+                        this.userDetail.image = res.data.data
+                        let data = {
+                            userId: localStorage.getItem('adminUserId'),
+                            image: this.userDetail.image
+                        }
+                        updateAdmin(data).then(res => {
+                            if (res.data.rtnCode == 200) {
+                                this.$store.dispatch('getUser',this)
+                                this.$message({
+                                    type: 'success',
+                                    message: 'Successfully modified!'
+                                })
+                                this.edit = 1
+                            } else {
+                                this.$message({
+                                    type: 'error',
+                                    message: 'Fail to edit!'
+                                })
+                            }
+                        }).catch(e => {
                             this.$message({
                                 type: 'error',
-                                message: 'Fail to edit!'
+                                message: 'Fail to edi!'
                             })
-                        }
-                    }).catch(e => {
-                        this.$message({
-                            type: 'error',
-                            message: 'Fail to edi!'
                         })
-                    })
-                } else {
-                    this.userDetail.image = ''
-                }
+                    } else {
+                        this.userDetail.image = ''
+                    }
+                })
             })
+            
         }
     }
 }

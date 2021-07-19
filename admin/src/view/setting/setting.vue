@@ -229,16 +229,19 @@ export default {
             }
         },
         getImage (e) {
-            var formData = new FormData();
-            formData.append('file', e.target.files[0]);
-            file(formData).then(res => {
-                console.log(res)
-                if (res.data.rtnCode == 200) {
-                    this.userDetail.image = res.data.data
-                } else {
-                    this.userDetail.image = ''
-                }
+            this.dealImg(e.target.filse[0],(img) => {
+                var formData = new FormData();
+                formData.append('file', img);
+                file(formData).then(res => {
+                    console.log(res)
+                    if (res.data.rtnCode == 200) {
+                        this.userDetail.image = res.data.data
+                    } else {
+                        this.userDetail.image = ''
+                    }
+                })
             })
+            
         }
     }
 }
