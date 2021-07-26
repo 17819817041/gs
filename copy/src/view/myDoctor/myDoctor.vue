@@ -6,7 +6,7 @@
                     <div class="image flex">
                         <div class="doctor_head">
                             <img class="onLine" v-if="item.doctorOnLineState == 1" src="@/assets/img/onLine.png" alt="">
-                            <img class="busy" v-else src="@/assets/img/busy.png" alt="">
+                            <img class="busy" v-else-if="item.doctorOnLineState == 2" src="@/assets/img/busy.png" alt="">
                             <div class="item_head ju al">
                                 <img style="height:60px;" :src="item.userHead" v-if="item.userHead" alt="">
                                 <img style="height:100%;" v-else :src="default_img" alt="">

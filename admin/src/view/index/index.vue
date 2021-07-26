@@ -54,6 +54,12 @@
         height: calc(100% - 109px);
         overflow: auto;
     }
+    .chick {
+        // text-decoration: underline;
+        padding-left: 5px;
+        color: rgb(58, 58, 219);
+        font-size: 14px;
+    }
 </style>
 
 <template>
@@ -88,6 +94,10 @@
 
                         <el-form-item>
                             <div class=" size12 cursor" @click="forget">Forgot your password?</div>
+                            <div>
+                                <span class="size12">Forgot your password?</span>
+                                <span class="chick cursor" @click="forget">Chick here</span>
+                            </div>
                         </el-form-item>
                     </el-form>
                 </div>

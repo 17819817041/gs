@@ -220,7 +220,7 @@ export default {
                 return false
             }
 
-            if (this.confirmPwd === this.data.password) {
+            if (this.data.confirmPwd === this.data.password) {
                 this.Vloading = true
                 let that = this
                 this.$refs.form.validate(flag => {

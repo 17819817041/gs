@@ -199,6 +199,8 @@ export default {
                     account(data).then(res => {
                         console.log(res)
                         if (res.data.rtnCode == 200) {
+                            localStorage.setItem('Token',res.data.data.token)
+                            localStorage.setItem('userId',res.data.data.userId)
                             that.loading = false
                             that.$message({
                                 type: 'success',

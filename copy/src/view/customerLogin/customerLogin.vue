@@ -213,6 +213,7 @@ export default {
         }
     },
     created () {
+        // this.loginFB()
         this.judge_login()
     },
     mounted () {
@@ -254,27 +255,46 @@ export default {
             var googleUser = {}
             auth2.attachClickHandler(element, {},
             function(googleUser) {
+                that.loading = true
                 localStorage.setItem('clientType',6)
                 that.goo = "Signed in: " + googleUser.getBasicProfile().getName();
                 var profile = auth2.currentUser.get().getBasicProfile();
-                localStorage.setItem("G_token", googleUser.getAuthResponse().id_token )
-                localStorage.setItem('G_ID', profile.getId() )
+                // localStorage.setItem("G_token", googleUser.getAuthResponse().id_token )
+                // localStorage.setItem('G_ID', profile.getId() )
                
                 var tokenData = {
-                    accessToken: localStorage.getItem('G_token'),
-                    platform: localStorage.getItem('platform'),
+                    // accessToken: localStorage.getItem('G_token'),
+                    accessToken: googleUser.getAuthResponse().id_token,
+                    // platform: localStorage.getItem('platform'),
+                    platform: that.form.platform,
                     clientType: 6
                 }
                 token(tokenData).then(res => {
-                    console.log(res)
+                    that.loading = false
                     if (res.data.rtnCode == 200 ) {
+                        localStorage.setItem('Token',res.data.data.token)
+                        localStorage.setItem('userId',res.data.data.userId)
                         that.$router.replace("/customerhomepage")
-                    }
-                    if (res.data.rtnCode == 205) {
+                    } else if (res.data.rtnCode == 205) {
                         that.$router.replace({
                             name: "relevance"
                         })
+                    } else {
+                        that.loading = false
+                        that.$message({
+                            type: 'error',
+                            message: 'Fail'
+                        })
+                        that.$router.replace({
+                            name: "login"
+                        })
                     }
+                }).catch(e => {
+                    console.log(e)
+                    that.$message({
+                        type: 'error',
+                        message: 'Fail'
+                    })
                 })
                 localStorage.setItem('typeMsg', JSON.stringify({
                     ID: profile.getId(),
@@ -284,14 +304,8 @@ export default {
                     ImageURL: profile.getImageUrl(),
                     Email: profile.getEmail()
                 }))
-                console.log('ID: ' + profile.getId());
-                console.log('Full Name: ' + profile.getName());
-                console.log('Given Name: ' + profile.getGivenName());
-                console.log('Family Name: ' + profile.getFamilyName());
-                console.log('Image URL: ' + profile.getImageUrl());
-                console.log('Email: ' + profile.getEmail());
-                console.log(googleUser.getAuthResponse().id_token)
             }, function(error) {
+                this.loading = false
                 console.log(JSON.stringify(error, undefined, 2));
             });
         },
