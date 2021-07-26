@@ -107,7 +107,7 @@ export function updatePet (data) {    //更新宠物信息
     })
 }
 
-export function doctorList (data) {      //医生列表
+export function doctorList (data) {      //医生列表          0 离线   1在线    2忙碌
     return request({ 
         url: "/doctor/getDoctorListByLimit",
         method: "POST",
@@ -330,7 +330,7 @@ export function pay (data) {                  //支付
     })
 }
 
-export function paypals (data) {                  //支付
+export function paypals (data) {                  //充值
     return request({
         url: "/order/genOrderByPaypal",
         method: "POST",
@@ -417,7 +417,7 @@ export function balance (data) {            //获取余额
     })
 }
 
-export function order (data) {            //生成订单?userId=313&remarks=CES&doctorId=314&doctorTypeId=2&goodsId=1
+export function order (data) {            //生成订单?userId=313&remarks=CES&doctorId=314&doctorTypeId=2&goodsId=1    第一次扣费 goodsmin
     return request({
         url: "/order/gen",
         method: 'POST',
@@ -425,7 +425,7 @@ export function order (data) {            //生成订单?userId=313&remarks=CES&
     })
 }
 
-export function orderDetail (data) {            //添加订单详情?goodsId=1&orderId=20210530109834 
+export function orderDetail (data) {            //添加订单详情?goodsId=1&orderId=20210530109834                       续费扣第二阶段   segmented_min
     return request({
         url: "/OrderDetails/addOrderDetails",
         method: 'POST',
@@ -461,6 +461,72 @@ export function getPetMedicalRecord (data) {            //医生治疗记录
     return request({
         url: "/PetMedicalRecord/getPetMedicalRecordPageByDocId",
         method: 'POST',
+        params: data
+    })
+}
+
+export function getAgoraToken (data) {            //agora
+    return request({
+        url: "/token/getAgoraToken",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function fetch (data) {            //鉴权
+    return request({
+        url: "/fetch_rtc_token",
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8'
+        },
+        data: data
+    })
+}
+
+export function docGoodsId (data) {            //获取医生goodsId
+    return request({
+        url: "/goods/getGoodsByUserId",
+        method: 'POST',
+        params: data
+    })
+}
+   
+export function bestDoc (data) {            //首选医生列表
+    return request({
+        url: "/user/getUserChoiceDoctorList",
+        method: 'GET'
+    })
+}
+     
+export function URLToken (data) {            //链接是否失效 String email, String token
+    return request({
+        url: "/user/token",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function searchDoc (data) {         //搜索  name=p&searchType=2&doctorId=574
+    return request({                                      // 1 医生， 2 宠物
+        url: '/user/homeSearch',
+        method: "POST",
+        params: data
+    })
+}
+      
+export function changeBatch (data) {         //紧急医生 int pageNum, int pageSize
+    return request({                                  
+        url: '/doctor/changeBatch',
+        method: "POST",
+        params: data
+    })
+}
+
+export function resetPasswordByForget (data) {         //忘记密码修改 String email, String newPassword
+    return request({                                  
+        url: '/user/resetPasswordByForget',
+        method: "POST",
         params: data
     })
 }

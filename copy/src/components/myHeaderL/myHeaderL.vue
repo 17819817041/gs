@@ -17,6 +17,10 @@
             top: 0;
             z-index: 600;
             padding: 15px 30px 0 62px;
+            transition: 0.2s;
+            @media screen and (max-width:950px) {
+                transform: translate(-180px,0);
+            }
             @media screen and (max-width: 564px) {
                 height: 70px;
                 padding: 10px 10px 0 10px;
@@ -25,7 +29,7 @@
         .logo .logo_IMG {
             width: 110px;
             height: 123px;
-            transition: 0.25s;
+            transition: 0.2s;
             z-index: 500;
             @media screen and (max-width: 1300px) {
                 width: 88px;
@@ -59,32 +63,34 @@
             height: 40px;
         }
     }
+    .logo_width {
+        transform: translate(0px,0) !important;
+    }
     .homeImg {
         padding-left: 17px;
     }
     .myMessage {
         flex: 10;
     }
-    // .list_img {
-    //     position: absolute;
-    //     width: 25px;
-    //     height: 25px;
-    //     bottom: 40px;
-    //     left: 180px;
-    //     transition: 0.3s;
-    //     opacity: 0;
-    //     @media screen and (max-width: 1300px) {
-    //         opacity: 1;
-    //     }
-    //     @media screen and (max-width: 664px) {
-    //         opacity: 0;
-    //     }
-    // }
     .input {
+        border: solid 1px white;
         background: white;
         border-radius: 30px;
         overflow: hidden;
-        width: 270px;
+        width: 307px;
+        position: relative;
+        .search_btn {
+            position: absolute;
+            right: 0px;
+            top: 0;
+            height: 100%;
+            color: white;
+            font-size: 13px;
+            padding: 0 5px;
+            border-radius: 0 30px 30px 0;
+            background: @hdColor;
+            z-index: 400;
+        }
     }
     .select {
         padding: 0 15px;
@@ -102,9 +108,6 @@
             height: 50px;
         }
     }
-    // .name {
-    //     transform: translate(-41%,15%);
-    // }
     .top {
         margin-top: 10px;
         white-space: nowrap;
@@ -119,7 +122,7 @@
             overflow: hidden;
             position: absolute;
             top: 0;
-            right: -4px;
+            right: -2px;
         }
     }
     .div {
@@ -150,16 +153,8 @@
         }
     }
     .div .search {
-        position: relative;
         @media screen and (max-width:1200px) {
             width: 40%;
-            .drawer_list {
-                position: absolute;
-                width: 22px;
-                height: 25px;
-                top: 6px;
-                left: -35px;
-            }
         }
     }
     .div .function {
@@ -182,16 +177,35 @@
     .rotate {
         transform: rotateZ(90deg);
     }
+    .drawer_list_wrap {
+        position: relative;
+        .drawer_list {
+            position: absolute;
+            width: 22.5px;
+            height: 22.5px;
+            top: 30px;
+            left: 125px;
+            visibility: hidden;
+            transition: 0.2s;
+            @media screen and (max-width:950px) {
+                visibility: initial !important;
+            }
+        }
+    }
 </style>
 
 <template>
     <div class="headerLogoPage">
-        <div class="logo">
-            <img class="logo_IMG" @click="backHome" src="@/assets/img/logo.png" alt=""> <!--  @click="test" -->
+        <div :class="['logo',{ logo_width: rotate }]">
+            <div class="drawer_list_wrap">
+                <img class="logo_IMG" @click="backHome" src="@/assets/img/logo.png" alt="">
+                <div :class="['drawer_list',{rotate: rotate}]">
+                    <img style="height:100%;transition:0.2s." src="@/assets/img/list.png" alt="" @click="showDetails">
+                </div>  <!-- //抽屉 -->
+            </div>
         </div>
         <div class="div sb al">
             <div class="search al sa" v-if="login">
-                <div class="drawer_list"><img src="@/assets/img/list.png" alt=""></div>  <!-- //抽屉 -->
                 <div class="top cursor" v-if="identity" @click="doctor">All Doctors</div>
                 <div class="top cursor" v-else @click="patient">All Patients</div>
                 <div class="select top" >
@@ -201,25 +215,28 @@
                     </div>
                 </div>
                 <div class="input" >
-                    <el-input style="transform:scale(1);border:none;" v-model="inp" @input="search" prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
+                    <div class="search_btn al ju cursor" @click="search">
+                        Search
+                    </div>
+                    <el-input style="transform:scale(1);border:none;" v-model="inp" @keyup.enter.native="search"
+                    prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
                 </div>
             </div>
             <div v-else></div>
             <div class="function al">
                 <div class="al sb function_item" v-if="login" >
                     <div class="userName al sb">
-                        
                         <div class="myMessage al">
                             <label for="ava" class="cursor label_img ju al">
                                 <input id="ava" v-show="false" type="file" @change="getImage" />   <!-- 头像路径-->
                                 <div class="ju al" style="height:55px;overflow:hidden;border-radius:50%;transform:scale(1)">
                                     <img style="height:100%;" v-if="userDetails.userImage" :src="userDetails.userImage" alt="">
-                                    <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i>
+                                    <img style="height:100%;" v-else :src="default_img" alt="">
+                                    <!-- <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i> -->
                                 </div>
                             </label>
                             <div class="name al">{{userDetails.userName}}</div>
                         </div>
-
                         <div class="sa" style="padding-left:20px;">
                             <div class="informationImg cursor top al" @click="notice">
                                 <img class="noticeDot" v-show="noticeState" src="@/assets/img/dot.png" alt="">
@@ -244,21 +261,26 @@
         </div>
     </div>
 </template>
-
 <script>
 import { searchDoc, updateUserDetails, file, vetDetails, updateVetDetails } from "@/axios/request.js"
-import { google } from "@/assets/js/google.js"
 export default {
     data () {
         return {
-            customerId:'Amily Watson',
             identity: true,
             userDetails: {},
-            rotate: false
+            rotate: false,
+            doctorID: 1,
+            petOrDoc: 2,
         }
     },
     created () {
         this.getUser()
+        if (localStorage.getItem('platform') == 2) {
+            if (this.$route.name == 'vetDoctor') {
+                this.identity = false
+                this.petOrDoc = 1
+            }
+        }
     },
     mounted () {
         gapi.load('auth2', function(){
@@ -274,7 +296,7 @@ export default {
         login: {
             handler (val) {
                 if (val) {
-                    this.getUser()
+                    this.login = val
                 }
             },
         },
@@ -283,14 +305,6 @@ export default {
                 this.userDetails = JSON.parse(JSON.stringify(this.AllDetail))
             },
             immediate: true
-        },
-        noticeState: {
-            handler (val) {
-                if (val) {
-                    this.$store.commit('getUser',val)
-                }
-            },
-            // immediate: true
         },
     },
     computed: {
@@ -329,27 +343,77 @@ export default {
                     value: val
                 })
             },
-        }
+        },
+        default_img () { return this.$store.state.user.default_img }
     },
     methods: {
-        search (val) {
-            clearTimeout(this.timer)
-            this.timer = setTimeout(() => {
-                console.log(val,666666)
+        search () {
+            if (!this.inp) {
+                return false
+            }
+            if (localStorage.getItem('platform') == 1) {
                 let data = {
-                    name: val
+                    name: this.inp,
+                    searchType: 1,
+                    doctorId: this.doctorID
                 }
                 searchDoc(data).then(res => {
-                    console.log(res)
+                    if (res.data.rtnCode == 200) {
+                        this.$store.commit("setUser", {
+                            key: "doctorList",
+                            value: res.data.data
+                        })
+                    } else {
+                        this.$store.commit("setUser", {
+                            key: "doctorList",
+                            value: []
+                        })
+                        this.$store.commit("setUser", {
+                            key: "loading6",
+                            value: false
+                        })
+                    }
                 })
-            },800)
+            } else if (localStorage.getItem('platform') == 2) {
+                let data = {
+                    name: this.inp,
+                    searchType: this.petOrDoc,
+                    doctorId: localStorage.getItem('userId')
+                }
+                searchDoc(data).then(res => {
+                    if (this.petOrDoc == 1) {
+                        if (res.data.rtnCode == 200) {
+                            this.$store.commit("setUser", {
+                                key: "doctorList",
+                                value: res.data.data
+                            })
+                        } else {
+                            this.$store.commit("setUser", {
+                                key: "doctorList",
+                                value: []
+                            })
+                            this.$store.commit("setUser", {
+                                key: "loading6",
+                                value: false
+                            })
+                        }
+                    } else if (this.petOrDoc == 2) {
+                        if (res.data.rtnCode == 200) {
+                            this.$store.commit("setUser", {
+                                key: "getDoctorMedicalLimitList",
+                                value: res.data.data
+                            })
+                        }
+                    }
+                })
+            }
         },
-        // showDetails () {
-        //     this.show = !this.show
-        //     this.rotate = !this.rotate
-        //     this.$store.commit("setUser", { key: "rotate", value: this.rotate } )
-        //     this.$store.commit("setUser", { key: "showList", value: !this.rotate } )
-        // },
+        showDetails () {
+            this.show = !this.show
+            this.rotate = !this.rotate
+            this.$store.commit("setUser", { key: "rotate", value: this.rotate } )
+            // this.$store.commit("setUser", { key: "showList", value: !this.rotate } )
+        },
         getUser () {
             this.$store.dispatch("getUser",this)
         },
@@ -431,6 +495,7 @@ export default {
         },
         doctor () {
             if (localStorage.getItem("platform") == 2) {
+                this.petOrDoc = 1
                 this.identity = false
                 this.$router.push("/vetDoctor")
             } else {
@@ -439,6 +504,8 @@ export default {
         },
         patient () {
             if (localStorage.getItem("platform") == 2) {
+                this.doctorID = localStorage.getItem('userId')
+                this.petOrDoc = 2
                 this.identity = true
                 this.$router.push("/myCustomer")
             }

@@ -105,7 +105,8 @@
                     
                     <div class="pet_img mg ju al">
                         <img :src="pet.image" alt="" v-if="pet.image">
-                        <i class="el-icon-picture-outline Icon" style="font-size: 40px;color:gray" v-else></i>
+                        <img style="height:100%;" v-else :src="default_img" alt="">
+                        <!-- <i class="el-icon-picture-outline Icon" style="font-size: 40px;color:gray" v-else></i> -->
                     </div>
                     <div class="pet_name size21 tc" v-if="pet.name">{{pet.name}}</div>
                     <div class="pet_name size21 tc" v-else>No Name</div>
@@ -222,6 +223,7 @@ export default {
             //     })
             // },
         },
+        default_img () { return this.$store.state.user.default_img },
         pet () { return this.$store.state.user.pet }
     },
     methods: {
@@ -313,6 +315,10 @@ export default {
             this.$router.push("/paymentHistory")
         },
         firstDid () {
+            // this.$message({
+            //     type: 'error',
+            //     message: 'The function is not yet perfect!'
+            // })
             this.$router.push("/firstAid")
         }
     }

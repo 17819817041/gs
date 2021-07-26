@@ -22,15 +22,15 @@
         height: 100%;
         // border: solid 1px;
         .calendar_item {
-            width: 65%;
+            width: 68%;
             height: 100%;
             overflow: auto;
             margin: 0px 10px;
             background: white;
         }
         .appointment_details {
-            width: 40%;
-            min-width: 500px;
+            width: 32%;
+            min-width: 429px;
             height: 100%;
             // border: solid 1px;
             overflow: auto;
@@ -46,6 +46,7 @@
         margin: 30px auto;
         border-radius: 10px;
         overflow: hidden;
+        padding: 5px 0;
     }
     .appointment_details_img_wrap {
         border: solid 1px rgb(223, 223, 223);
@@ -64,7 +65,7 @@
         background: @logout;
         font-size: 12px;
         color: white;
-        padding: 5px 2px;
+        padding: 3px 0px;
         margin: 3px;
     }
     .Cancel {
@@ -74,7 +75,7 @@
         background: @cancel;
         font-size: 12px;
         color: white;
-        padding: 5px 2px;
+        padding: 3px 0px;
         margin: 3px;
     }
     .DateTime, .pet_name,.appointment_details_name {
@@ -111,8 +112,11 @@
         content: '当月';
     }
     .size14_a {
-        font-size: 14px;
+        font-size: 12px;
         color: #767676;
+    }
+    .size13_a {
+        font-size: 12px;
     }
 </style>
 
@@ -134,9 +138,6 @@
                                 <div class="size21 bold al">Calendar</div>
                             </div>
                             <div class="flex">
-                                <!-- <div class="calendarMini">
-                                    <el-calendar v-model="value"></el-calendar>
-                                </div> -->
                                 <div class="calendarX">
 
                                     <el-calendar v-model="value">
@@ -144,11 +145,14 @@
                                             slot="dateCell"
                                             slot-scope="{date, data}">
                                             <div >
-                                                <div>{{data.day.slice(5)}}</div>
+                                                <!-- //'Have an appointment with' + ' ' +
+                                                    //booking.find(b => b.booking.calanderDate==data.day).booking.bookingDoctor  -->
+                                                <div>{{data.day.slice(8)}}</div>
                                                 <div class="size12">{{
                                                     booking.find(b => b.booking.calanderDate==data.day) ? 
-                                                    'Have an appointment with' + ' ' +
-                                                    booking.find(b => b.booking.calanderDate==data.day).booking.bookingDoctor : 
+                                                    
+                                                    'video call'
+                                                    : 
                                                     ''
                                                 }}</div>
                                             </div>
@@ -158,36 +162,36 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="appointment_details noBar" v-loading="loading" v-if="booking">
+                        <div class="appointment_details noBar" v-loading="loading" v-if="booking[0]">
                             <div class="appointment_details_item sa" v-for="(item) in booking" :key="item.booking.bookingId">
                                 <div class="appointment_details_img_wrap ju al">
                                     <img class="appointment_details_img" v-if="item.userImage" :src="item.userImage" alt="">
-                                    <i class="el-icon-picture-outline" v-else style="font-size:27px;color:gray"></i>
+                                    <img style="height:100%;" v-else :src="default_img" alt="">
+                                    <!-- <i class="el-icon-picture-outline" v-else style="font-size:27px;color:gray"></i> -->
                                 </div>
                                 <div class="appointment_details_name">
-                                    <div class="size13">{{item.booking.userName}}</div>
+                                    <div style="padding-bottom:7px;" class="size13">{{item.booking.userName}}</div>
                                     <div class="size12 al">
-                                        <img src="@/assets/img/callimg.png" alt="">
+                                        <img style="width:15px;height:14px;" src="@/assets/img/callimg.png" alt="">
                                         Phone Counsultation
                                     </div>
                                 </div>
                                 <div class="DateTime">
-                                    <div class="size14_a">Date and Time</div>
-                                    <div class="size13">{{item.booking.bookingDate}} - {{item.booking.bookingStartTime}} {{item.booking.APM}}</div>
+                                    <div style="padding-bottom:7px;" class="size14_a">Date and Time</div>
+                                    <div class="size13_a">{{item.booking.bookingDate}} - {{item.booking.bookingStartTime}} {{item.booking.APM}}</div>
                                 </div>
                                 <div class="pet_name">
-                                    <div class="size12">Pet Name</div>
-                                    <div class="size13">Daisy</div>
+                                    <div style="padding-bottom:7px;" class="size12">Pet Name</div>
+                                    <div class="size13_a">Daisy</div>
                                 </div>
-                                <div>
-                                    <div class="Reschedule size13 cursor tc" @click="reschedule(item.booking.bookingId)">Reschedule</div>
-                                    <div class="Cancel size13 cursor tc" @click="cancelBook(item)">Cancel</div>
-                                </div>
+                                <!-- <div>
+                                    <div class="Reschedule cursor tc" @click="reschedule(item.booking.bookingId)">Reschedule</div>
+                                    <div class="Cancel cursor tc" @click="cancelBook(item)">Cancel</div>
+                                </div> -->
                             </div>
                         </div>
-                        <div class="appointment_details" v-else-if="booking === null">
-                            <div class="ju"><img style="width:100px; margin: 15px" src="@/assets/img/info.png" alt=""></div>
-                            <div class="tc " style="font-size: 20px;color:gray;">No reservation</div>
+                        <div class="appointment_details" v-else>
+                            <div class="tc " style="font-size: 20px;color:gray;padding-top:30px">No reservation</div>
                         </div>
                     </div>
                 </div>
@@ -213,6 +217,9 @@ export default {
         this.getDAY()
         this.getBooking()
     },
+    computed: {
+        default_img () { return this.$store.state.user.default_img }
+    },
     methods: {
         reschedule (key) {
             console.log(key)
@@ -224,7 +231,7 @@ export default {
             })
         },
         cancelBook (item) {
-            this.$confirm('Are you sure to log out?', 'Attention', {
+            this.$confirm('Are you sure to Cancel?', 'Attention', {
                 confirmButtonText: 'Confirm',
                 cancelButtonText: 'Cancel',
                 type: 'warning'
@@ -273,7 +280,7 @@ export default {
                     this.booking = res.data.data
                     this.loading = false
                 } else if (res.data.rtnCode == 201) {
-                    this.booking = null
+                    this.booking = []
                     this.loading = false
                 }
             }).catch(e => {

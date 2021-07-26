@@ -24,8 +24,6 @@ Vue.component("message",message)
 import store from "@/vuex/store.js"
 
 
-
-
 import {conn, WebIM} from "@/assets/js/websdk.js"
 Vue.prototype.$WebIM = WebIM
 Vue.prototype.$conn = conn

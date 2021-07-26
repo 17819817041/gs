@@ -4,7 +4,6 @@
         height: 100%;
         .list_wrap {
             position: absolute;
-            // background: rgb(117, 117, 117);
             opacity: 0.5;
             left: 0;
             top: 0;
@@ -27,7 +26,25 @@
     .present_message {
         background: white;
         z-index: 500;
+        height: 100%;
+        overflow: auto;
+        transition: 0.2s;
+        @media screen and (max-width:950px) {
+            background: white;
+            position: fixed;
+            top: 90px;
+            left: 0;
+            border-right: rgb(236, 236, 236) solid 1px;
+            width: 180px;
+            transform: translate(-180px,0);
+            height: 100%;
+            // opacity: 0;
+        }
     }
+    .drawer_width {
+        transform: translate(0px,0) !important;
+    }
+
     .customer_content {
         width: 100%;
         box-sizing: border-box;
@@ -42,13 +59,22 @@
         }
     }
     .list {
+        transition: 0.2s;
         @media screen and (max-width:1300px) {
             left: 141px !important;
-            top: 65px !important;
+            top: 65px;
+        }
+        @media screen and (max-width:950px) {
+            left: -30px !important;
+            top: 65px;
         }
     }
+    .po_lisy {
+        left: 141px !important;
+        top: 65px !important;
+    }
     .list .img1 {
-        transition: 0.3s;
+        transition: 0.2s;
     }
     .img2 {
         transition: 0.3S;
@@ -70,11 +96,6 @@
     .pet_message {
         flex: 10;
         // padding-top: 10px;
-        // border: solid red 1px;
-        height: 100%;
-        overflow: auto;
-    }
-    .present_message {
         // border: solid red 1px;
         height: 100%;
         overflow: auto;
@@ -110,14 +131,14 @@
         <div class="customer_content flex">
             <div v-show="showback" class="background" @click="closeback"></div>
             <div class="list_wrap" v-if="show" @click="showPetList"></div>
-            <div class="list" v-show="nameList">
+            <div :class="['list', { po_lisy: drawer }]" v-show="nameList">
                 <img class="img1" @click="showPetList" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
                 <!-- <img class="img2" @click="showPetList" v-show="showList" :class="[ 'cursor', {rotate1: rotate} ]" src="@/assets/img/arrow.png" alt=""> -->
                 <div :class="['pet_list noBar', {height:show}]">
                     <div class="list_item mg cursor"  @click="cutPet(item,i)" v-for="(item,i) in petList" :key="i">{{item.name}}</div>
                 </div>
             </div>
-            <div class="present_message noBar" @scroll="scroll">
+            <div :class="['present_message noBar',{ drawer_width: drawer }]" @scroll="scroll">
                 <message></message>
             </div>
             <div class="pet_message noBar">
@@ -175,7 +196,7 @@ export default {
             },
         },
         active () { return this.$store.state.user.rotate },
-        showList () { return this.$store.state.user.showList },
+        drawer () { return this.$store.state.user.rotate },
         nameList () { return this.$store.state.user.nameList },
         showback () { return this.$store.state.user.showback },
     },

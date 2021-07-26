@@ -88,6 +88,14 @@ export function petType (data) {                           //宠物类型列表
     })
 }
 
+export function bookingUserId (data) {                 //userId获取当前预约信息  大于等于今天的记录
+    return request({
+        url: "/booking/getBookingList",
+        method: "POST",
+        params: data
+    })
+}
+
 export function allPet (data) {            //所有宠物?pageSize=20&pageNum=0
     return request({
         url: "/pet/getPetAll",
@@ -118,6 +126,14 @@ export function getAgoraToken (data) {            //agora
     return request({
         url: "/token/getAgoraToken",
         method: 'POST',
+        params: data
+    })
+}
+
+export function searchDoc (data) {         //搜索  name=p&searchType=2&doctorId=574
+    return request({                                      // 1 医生， 2 宠物
+        url: '/user/homeSearch',
+        method: "POST",
         params: data
     })
 }

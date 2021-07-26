@@ -16,7 +16,8 @@
                     <div class="flex al">
                         <div class="ju al Personal">
                             <img class="personal_img" style="height:100%;" v-if="item.petHeadUrl" :src="item.petHeadUrl" alt="">
-                            <i class="el-icon-picture-outline Icon" v-else></i>
+                            <img style="height:100%;" v-else :src="default_img" alt="">
+                            <!-- <i class="el-icon-picture-outline Icon" v-else></i> -->
                         </div>
                         <div class="name">
                             <div class="size18 petName flex" v-if="item.petName">
@@ -50,7 +51,8 @@
                         </div>
                         <div class="ju mg al PET_IMG">
                             <img class="Img" :src="changePage.petHeadUrl" alt="" v-if="changePage.petHeadUrl">
-                            <i class=" el-icon-picture-outline Icon" style="font-size:60px;color:gray;" v-else></i>
+                            <img style="height:100%;" v-else :src="default_img" alt="">
+                            <!-- <i class=" el-icon-picture-outline Icon" style="font-size:60px;color:gray;" v-else></i> -->
                         </div>
                         <div class="pet_information">
                             <div class="pet_name size19" v-if="changePage.petName">{{changePage.petName}}</div>
@@ -72,7 +74,8 @@
                     <div class="guardianDetails mg size19">Guardian Details</div>
                     <div class="mg ju al patients_img_wrap">
                         <img class="patients_img" v-if="changePage.userHead" :src="changePage.userHead" alt="">
-                        <i class=" el-icon-picture-outline Icon" style="font-size:40px;color:gray;" v-else></i>
+                        <img style="height:100%;" v-else :src="default_img" alt="">
+                        <!-- <i class=" el-icon-picture-outline Icon" style="font-size:40px;color:gray;" v-else></i> -->
                     </div>
                     <div class="size19 tc personal_name">{{changePage.userName}}</div>
                     <div class="address ju">
@@ -82,7 +85,7 @@
                     </div>
                     <div class="ju">
                         <div><img class="relationWay cursor" src="@/assets/img/chat.png" alt=""></div>
-                        <div><img class="relationWay cursor" src="@/assets/img/phone.png" alt=""></div>
+                        <div><img class="relationWay cursor" src="@/assets/img/videoWay.png" alt=""></div>
                     </div>
                     <div class="message_list size15bl">
                         <div style="width:100%" class="flex al ts">
@@ -161,6 +164,7 @@ export default {
             //     })
             // },
         },
+        default_img () { return this.$store.state.user.default_img },
         loading () { return this.$store.state.user.loading }
     },
     methods: {
@@ -449,6 +453,8 @@ export default {
         }
     }
     .relationWay {
+        width: 45px;
+        height: 45px;
         padding: 0 15px;
     }
     .Icon {

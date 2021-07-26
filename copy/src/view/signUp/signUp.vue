@@ -97,7 +97,7 @@
                 <el-form-item prop="email">
                     <el-input placeholder="Email" v-model="data.email"></el-input>
                 </el-form-item>
-                <el-form-item prop="mobile">
+                <el-form-item prop="phone">
                     <el-input placeholder="Moible" v-model="data.phone"></el-input>
                 </el-form-item>
                 <el-form-item prop="address">
@@ -106,8 +106,8 @@
                 <el-form-item prop="password">
                     <el-input placeholder="Password" show-password v-model="data.password"></el-input>
                 </el-form-item>
-                <el-form-item prop="confirm">
-                    <el-input placeholder="Confirm Password" show-password v-model="confirmPwd"></el-input>
+                <el-form-item prop="confirmPwd">
+                    <el-input placeholder="Confirm Password" show-password v-model="data.confirmPwd"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <div class="vet_sign cursor">
@@ -130,22 +130,14 @@ export default {
             loading: false,
             Vloading:false,
             data: {
-                // platform: null,
-                // email: 'xhajsjxbdj@163.com',
-                // password: "123456l",
-                // address: "123",
-                // phone: "12345678989",
-                // name: "lwz"
-
                 platform: null,
                 email: '',
                 password: "",
                 address: "",
                 phone: "",
+                confirmPwd: '',
                 name: ""
             },
-            // confirmPwd: '123456l',
-            confirmPwd: '',
             rules: {
                 platform: [
                     { required: true, message: "Please select your identity", trigger: 'blur' }
@@ -181,7 +173,6 @@ export default {
             console.log('vet')
         },
         petIdentity () {
-            console.log(1)
             this.data.platform =1
             localStorage.setItem("platform",1)
             console.log('customerLogin')
@@ -198,6 +189,37 @@ export default {
             }
         },
         finishSignUp () {
+            var reg = /^[\d\D]{1,20}$/
+            if (reg.test(this.data.name)) {
+
+            } else {
+                this.$message({
+                    type: 'error',
+                    message: 'The name cannot be less than one or greater than twenty digits!'
+                })
+                return false
+            }
+            var e_reg = /^[\w-]+@([\w-]+\.)+(com|org|cc|cn|net)$/i;
+            if (e_reg.test(this.data.email)) {
+
+            } else {
+                this.$message({
+                    type: 'error',
+                    message: 'Incorrect email address format!'
+                })
+                return false
+            }
+            var p_reg = /^1[0-9]{10}$/;
+            if (p_reg.test(this.data.phone)) {
+                
+            } else {
+                this.$message({
+                    type: 'error',
+                    message: 'Phone number format is incorrect!'
+                })
+                return false
+            }
+
             if (this.confirmPwd === this.data.password) {
                 this.Vloading = true
                 let that = this
@@ -216,6 +238,10 @@ export default {
                                 },1000)
                             } else {
                                 that.Vloading = false
+                                this.$message({
+                                    type: "warning",
+                                    message: res.data.msg
+                                })
                             }
                         }).catch(e => {
                             console.log(e)

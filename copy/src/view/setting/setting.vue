@@ -64,7 +64,7 @@
         transition: 0.1s;
         @media screen and (max-width: 1000px){
             font-size: 16px;
-            font-weight: bold;
+            // font-weight: bold;
         }
     }
     .personal_message_title {
@@ -109,6 +109,7 @@
         padding: 50px 0;
     }
     .btnColor {
+        width: 70%;
         background: @logout !important;
         border: none !important;
         border-radius: 17px;
@@ -132,20 +133,36 @@
             }
         }
     } 
-    .message1, .message2 {
-        min-width: 220px;
-        width: 30%;
+    .message1 {
+        min-width: 270px;
         white-space: nowrap;
+    }
+    .message1  {
+        // min-width: 220px;
+        width: 30%;
+    }
+    .message2 {
+        width: 40%;
     }
     .name1 div{
         margin-bottom: 10px;
     }
+    .name1 .inp input {
+        color:gray;
+    }
     .name1:nth-child(1) {
         padding-right: 25px;
+    }
+    .name2_t {
+        white-space: nowrap;
     }
     .name2 .name_item {
         height:25px;
         margin-bottom: 20px;
+    }
+    .name_item_1 {
+        width: 100%;
+        min-width: 140px;
     }
     .name2:nth-child(1) {
         padding-right: 25px;
@@ -291,14 +308,9 @@
         border: solid 1px;
         border-radius: 20px;
         overflow: hidden;
-        textarea {
+        .textarea_el {
             width: 100%;
-            border: none;
-            outline: none;
-            height: 80px;
-            font-size: 19px;
-            resize: none;
-            padding: 6px;
+            font-size: 15px;
         }
     }
     .select_way {
@@ -502,6 +514,31 @@
     // .message1_item {
         
     // }
+    .user_remark {
+        color: #656565;
+        max-height: 63px;
+        text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+        display: -webkit-box;
+        -webkit-line-clamp: 2;/*规定超过两行的部分截断*/
+        -webkit-box-orient: vertical;
+        overflow : hidden; 
+        word-break: break-all;/*在任何地方换行*/
+    }
+    .height50 {
+        height: 50px !important;
+    }
+    .img_wrap_p {
+        position: relative;
+        .update_img {
+            position: absolute;
+            height: 100%;
+            left: 50%;
+            top: 0;
+            transform: translate(-50%,0);
+            z-index: 10;
+            cursor: pointer;
+        }
+    }
 </style>
 
 <template>
@@ -584,9 +621,14 @@
                             <div class="felame">
                                 <label for="ava3" :class="['label_i']">
                                     <input type="file" id="ava3" v-if="!editBtn" v-show="false" @change="getImage">
-                                    <div :class="['ju al circle', { cursor: !editBtn } ]">
+                                    <div :class="['ju al circle  img_wrap_p', { cursor: !editBtn } ]" v-loading="img_loading"
+                                    element-loading-text="Loading..."
+                                    element-loading-spinner="el-icon-loading"
+                                    element-loading-background="rgba(0, 0, 0, 0.8)">
+                                        <img class="update_img" :src="showimg" v-if="showimg" alt="">
                                         <img style="height:100%;" v-if="user.userImage" :src="user.userImage" alt="" mode="widthFix">
-                                        <i class="el-icon-picture-outline Icon" v-else></i>
+                                        <img style="height:100%;" v-else :src="default_img" alt="">
+                                        <!-- <i class="el-icon-picture-outline Icon" v-else></i> -->
                                     </div>
                                 </label>
                             </div>
@@ -616,34 +658,34 @@
                             </div>
                             <div class="message2">
                                 <div class="message2_item flex ts al">
-                                    <div class="name2 size19">
+                                    <div class="name2 name2_t size19">
                                         <div class="name_item">Gender</div>
                                         <div class="name_item">Preferred Vet</div>
-                                        <div class="name_item">Remarks</div>
+                                        <div class="name_item height50">Remarks</div>
                                     </div>
                                     <div class="name2 size16_s">
-                                        <div class="name_item" v-if="editBtn">
+                                        <div class="name_item name_item_1" v-if="editBtn">
                                             <span v-if="user.userGender == 1">Male</span>    
                                             <span v-else-if="user.userGender == 2">Female</span>
                                             <span v-else-if="user.userGender == 0">No data</span>    
                                         </div>  <!-- null -->
-                                        <div v-else class="gender al name_item">
+                                        <div v-else class="gender al name_item name_item_1">
                                             <el-select class="option width100" @change="getGender" name="" id="" v-model="Gender">
                                                 <el-option value="1" label="Male"></el-option>
                                                 <el-option value="2" label="Female"></el-option>
                                             </el-select>
                                         </div>  
-                                        <div class="name_item" v-if="editBtn">
+                                        <div class="name_item name_item_1" v-if="editBtn">
                                             <span v-if="user.userChoiceDoctor">{{bestDocName}}</span>
                                             <span v-else>No Preferred Vet</span>
                                         </div>
-                                        <div v-else class="gender al name_item">
+                                        <div v-else class="gender al name_item ">
                                             <el-select class="option width100" @change="userChoiceDoctor" name="" id="" v-model="bestDocName">
                                                 <el-option v-for="(doc) in myBestDoc" :key="doc.userId" :value="doc.userId" :label="doc.doctorName"></el-option>
                                             </el-select>
                                         </div>
 
-                                        <div class="name_item" v-if="editBtn">
+                                        <div class="name_item user_remark height50" style="word-wrap:wrap;min-width: 155px;" v-if="editBtn">
                                             <span v-if="user.extend">{{user.extend}}</span>
                                             <span v-else-if="user.extend === null">No remark</span>
                                             <span v-else-if="user.extend == ''">No remark</span>
@@ -655,7 +697,14 @@
                                     <el-button class="width100 cursor btnColor" type="primary" :loading="loading">Reset Password</el-button>
                                 </div>
                                 <div v-else class="Remark">
-                                    <textarea name="" id="" cols="30" rows="10" v-model="user.extend"></textarea>
+                                    <el-input
+                                        class="textarea_el"
+                                        type="textarea"
+                                        placeholder="Please enter content"
+                                        v-model="user.extend"
+                                        maxlength="500"
+                                        show-word-limit
+                                    ></el-input>
                                 </div>
                             </div>
                         </div>
@@ -671,7 +720,6 @@
                             <div class="sa">
                                 <div class="balance">
                                     <div class="tc p_title">
-                                        <!-- <div class="ju"><img style="height: 95px;margin-right: 20px" src="@/assets/img/logo.png" alt=""></div> -->
                                         <div> My Balance</div>
                                     </div>
                                     <div class="HK mg ju">
@@ -686,56 +734,6 @@
                                     </div>
                                 </div>
                                 <div class="card">
-                                    <!-- <div class="switch flexEnd">
-                                        <div class="flex">
-                                            <div :class="['paypal_img', { bottom_c: type_pay == 5 }]"><img class="cursor" @click="type_pay = 5" src="@/assets/img/Paypal.png" alt=""></div>
-                                            <div :class="['paypal_img', { bottom_c: type_pay == 1 }]"><img class="cursor" @click="type_pay = 1" src="@/assets/img/stripe.png" alt=""></div>
-                                            <div :class="['paypal_img', { bottom_c: type_pay == 3 }]">
-                                                <div class="cursor" @click="type_pay = 3">
-                                                    <img src="@/assets/img/chatpay.png" alt=""> 
-                                                    <img style="margin-left:5px" src="@/assets/img/alipay.png" alt=""> 
-                                                </div>
-                                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex paypal_wrap">
-                                        <div class="balance_title w_way" v-show="type_pay == 1">
-                                            <div class="way_item">
-                                                <div class="p_title">Credit cars details</div>
-                                                <div class="clear card_inp">
-                                                    <div class="float" id="cardNumber"></div>
-                                                    <div class="float" style="margin-left:4%" id="cardExpiry"></div>
-                                                    <div class="float" id="cardCvc"></div>
-                                                </div>
-                                            </div>
-                                            <div class="pay_btn white tc mg cursor" @click="submit">
-                                                Pay
-                                            </div>
-                                            <div class=" tc bold ju al" style="margin-top: 12px;font-size:12px;color:black">
-                                                <img style="width:20px;" src="@/assets/img/lock.png" alt="">
-                                                Card details will be saved securely,based of the industry standard
-                                            </div>
-                                        </div>  
-                                        <div style="width:100%" v-show="type_pay == 5">
-                                            <div class="p_title" style="padding: 25px 0;">Paypal details</div>
-                                            <div id="paypal-button-container"></div>123
-                                        </div>
-                                        <div v-show="type_pay == 3" class="sa way_item">
-                                            <div>
-                                                <div class="p_title ali_title">Alipay or WeChat Pay details</div>
-                                                <div class="Alipay">
-
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div class=" weChat_title white">-</div>
-                                                <div class="WeChatPay">
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> -->
                                     <div class="p_title tc">Support Payment</div>
                                     <div class="way_select">
                                         <div class="ju al">
@@ -790,7 +788,6 @@
 <script>
 import { pay, updateUserDetails, file, allOrder, paypals, bestDoc, contentId, paymentRecord } from "@/axios/request.js"
 export default {
-    name: 'iframe',
     data () {
         return {
             value: 'Bank card',
@@ -813,7 +810,9 @@ export default {
             payList: [],
             Gender: '',
             myBestDoc: [],
-            bestDocName: ''
+            bestDocName: '',
+            showimg: '',
+            img_loading: false
         }
     },
     watch: {
@@ -844,7 +843,6 @@ export default {
         this.changeDoc()
     },
     mounted () {
-        // this.getStripe()
         this.getGoodsId()
         this.getPaypal()
     },
@@ -859,7 +857,8 @@ export default {
             },
         },
         top_up_mask () { return this.$store.state.user.showback },
-        my_Balance () { return this.$store.state.user.balance }
+        my_Balance () { return this.$store.state.user.balance },
+        default_img () { return this.$store.state.user.default_img },
     },
     methods: {
         userChoiceDoctor (val) {
@@ -1046,6 +1045,9 @@ export default {
         },
         updateDetails () {
             updateUserDetails(this.user).then(res => {
+                setTimeout(() => {
+                    this.showimg = ''
+                },700)
                 if (res.data.rtnCode == 200) {
                     this.$store.dispatch("getUser")
                     this.$message({
@@ -1074,122 +1076,51 @@ export default {
         },
         cancel () {
             this.editBtn = true
+            this.showimg = ''
+            this.user.userImage = this.AllDetail.headUr
         },
         save () {
-            this.load = true
-            this.updateDetails()
-            this.editBtn = true
-        },
-        getImage (e) {
-            if (localStorage.getItem("platform") == 1) {
-                this.dealImg(e.target.files[0],(img) => {
-                    var formData = new FormData();
-                    formData.append('file', img);
-                    file(formData).then(res => {
-                        if (res.data.rtnCode == 200) {
-                            this.user.userImage = res.data.data
-                            updateUserDetails(this.user).then(res => {
-                                if (res.data.rtnCode == 200) {
-                                    this.$store.dispatch("getUser")
-                                    
-                                } else {
-                                    
-                                }
-                            }).catch(e => {
-                                console.log(e)
-                            })
-                        } else {
-                            this.user = {}
-                        }
-                    })
+            var reg = /^1[0-9]{10}$/;
+            if (reg.test(this.user.userPhone)) {
+                this.load = true
+                this.updateDetails()
+                this.editBtn = true
+            } else {
+                this.$message({
+                    type: 'error',
+                    message: 'Phone number format is incorrect!'
                 })
-                
-            } else if (localStorage.getItem("platform") == 2) {
-                this.dealImg(e.target.files[0],(img) => {
-                    var formData = new FormData();
-                    formData.append('file', img);
-                    file(formData).then(res => {
-                        if (res.data.rtnCode == 200) {
-                            this.user.doctorImage = res.data.data
-                            this.user.doctorName = "Beck"
-                            this.getUser()
-                            updateVetDetails(this.user).then(res => {
-                                console.log(res,"更换医生头像",this.user)
-                                if (res.data.rtnCode == 200) {
-                                    this.getUser()
-                                }
-                            }).catch(e => {
-                                console.log(e)
-                            })
-                        } else {
-                            this.user = {}
-                        }
-                    })
-                })
-                
             }
         },
-
-
-
-
-
+        getImage (e) {
+            this.dealImg(e.target.files[0],(img) => {
+                var formData = new FormData();
+                formData.append('file', img);
+                this.img_loading = true
+                file(formData).then(res => {
+                    this.img_loading = false
+                    if (res.data.rtnCode == 200) {
+                        this.user.userImage = res.data.data
+                        this.showimg = res.data.data
+                    } else {
+                        this.user = {}
+                        this.showimg = ''
+                    }
+                }).catch(e => {
+                    this.img_loading = false
+                    this.$message({
+                        type: 'error',
+                        message: 'Picture is too large or formatted incorrectly!'
+                    })
+                })
+            })
+        },
         reset () {
             this.$router.push("/reset")
         },
         edit () {
             this.editBtn = false
         },
-
-
-
-
-
-
-
-
-
-        
-        
-        submit () {
-            this.stripe.createToken(this.cardNumber,{}).then(res => {
-                console.log(res)
-            })
-        },
-        getStripe () {
-            this.stripe = Stripe("pk_test_51IjH7YCnXywSfyXcBzfaGhIxZURYgDKaCCMu9gJlNctN2R1Li9YOWoK5VUGsaK3CBD2bTbVsRagiCPYKu9ScTcIQ00ZqdIqvDG",{
-                locale: 'en'    //修改语言
-            })
-            var element = this.stripe.elements()
-            var elementStyle = {
-                base:{
-                    lineHeight:'50px'
-                }
-            }
-            this.cardNumber = element.create('cardNumber',{
-                style:elementStyle,
-                showIcon: true
-            })
-            this.cardNumber.mount("#cardNumber")
-            var elementStyle = {
-                base:{
-                    lineHeight:'50px'
-                }
-            }
-            this.cardExpiry = element.create('cardExpiry',{
-                style:elementStyle,
-            })
-            this.cardExpiry.mount("#cardExpiry")
-            var elementStyle = {
-                base:{
-                    lineHeight:'50px'
-                }
-            }
-            this.cardCvc = element.create('cardCvc',{
-                style:elementStyle
-            })
-            this.cardCvc.mount("#cardCvc")
-        }
     }
 }
 </script>

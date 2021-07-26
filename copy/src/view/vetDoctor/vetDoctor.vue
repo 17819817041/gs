@@ -1,26 +1,24 @@
 <template>
-    <div class="myvetDoctor flex">
-        <div class="vetDoctorList noBar">
-            <div class="width102 clear" v-if="!loading">
-
-                <div class="doctor_item float" v-for="(item) in doctorList" :key="item.doctorId" @click="getDetail(item)">
+    <div class="myDoctor flex">
+        <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList">
+            <div class="width102 clear" ref="doctorList_height">
+                <div class="doctor_item float" v-for="(item,i) in doctorList" :key="i" @click="getDetail(item)">
                     <div class="image flex">
                         <div class="doctor_head">
+                            <img class="onLine" v-if="item.doctorOnLineState == 1" src="@/assets/img/onLine.png" alt="">
                             <div class="item_head ju al">
-                                <el-image style="height:60px;width:60px" :src="item.userHead" alt="" fit="cover">
-                                    <div slot="error" class="image-slot ju al" style="height: 100%;width:100%">
-                                        <i class="el-icon-picture-outline" style="font-size:35px;color:gray"></i>
-                                    </div>
-                                </el-image>
+                                <img style="height:60px;" :src="item.userHead" v-if="item.userHead" alt="">
+                                <img style="height:100%;" v-else :src="default_img" alt="">
+                                <!-- <i v-else class="el-icon-picture-outline" style="font-size:35px;color:gray"></i> -->
                             </div>
                             <div class="grade white al size12b">
                                 <img src="@/assets/img/rate.png" alt="">{{item.baseScore}}
                             </div>
                         </div>
                         <div class="about">
-                            <div class="size16" v-if="item.doctorName">{{item.doctorName}}</div>
+                            <div class="size16 itemDoc_name" v-if="item.doctorName">{{item.doctorName}}</div>
                             <div class="size16" v-else>No Name</div>
-                            <div class="size_12 al">
+                            <div class="size_12 al address_item">
                                 <img class="location_img" style="padding-right:5px" src="@/assets/img/location.png" alt="">
                                 {{item.addressName}}
                             </div>
@@ -29,41 +27,44 @@
                     <div class="workTime al sb">
                         <div>
                             <div class="size14">Experience</div>
-                            <div><span class="size16">{{item.experience}}</span> <span class="size14"> Years</span></div>
+                            <div>
+                                <span class="size16" v-if="item.experience">{{item.experience}}</span> 
+                                <span v-else>0</span>
+                                <span class="size14"> Years</span>
+                            </div>
                         </div>
                         <div>
                             <div class="size14">Likes</div>
                             <div><span class="size16">{{item.totalLike}}</span><span class="size14"> ({{item.likingRate}}) </span></div>
                         </div>
                         <div class="call">
-                            <el-button class="callBtn width100" type="primary">Call</el-button>
+                            <el-button class="callBtn cursor width100" type="primary">Call</el-button>
                         </div>
                     </div>
                 </div>
-                
-            </div>
-            <div v-else class="loading" v-loading="loading"></div>
-        </div>
-        <div class="vetDoctorDetails noBar">
-            <div class="details_item mg">
-                <div class="head_image mg ju">
-                    <el-image style="height:80px" :src="detail.userHead" alt="" fit="cover">
-                        <div slot="error" class="image-slot al" style="height: 100%;width:100%">
-                            <i class="el-icon-picture-outline" style="font-size:40px;color:gray"></i>
-                        </div>
-                    </el-image>
+                <div class="acting float ju al" v-if="loading">
+                    <div class="loading" v-loading="true"></div>
                 </div>
-
-                <div class="vetDoctor_name tc" v-if="detail.doctorName">{{detail.doctorName}}</div>
-                <div class="vetDoctor_name tc" v-else>Name</div>
-
+            </div>
+        </div>
+        <div class="doctorList scrollUp" v-else>
+            <div style="padding:30px 0;font-size:20px;font-weight:bold;color:gray" class="tc" >No Doctor!</div>
+        </div>
+        <div class="doctorDetails noBar">
+            <div class="details_item mg">
+                <div class="head_image mg al ju">
+                    <img style="height:100%" :src="detail.userHead" v-if="detail.userHead" alt="">
+                    <img style="height:100%;" v-else :src="default_img" alt="">
+                    <!-- <i class="el-icon-picture-outline" style="font-size:40px;color:gray" v-else></i> -->
+                </div>
+                <div class="doctor_name tc" v-if="detail.doctorName">{{detail.doctorName}}</div>
+                <div class="doctor_name tc" v-else>Name</div>
                 <div class="size15 tc">General Obstetrics </div>
                 <div class="star ju">
                     <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
                 </div>
                 <div class="relation ju">
-                    <div class="cursor"><img src="@/assets/img/chat.png" alt=""></div>
-                    <div class="cursor" @click="vetBooking"><img src="@/assets/img/calendar.png" alt=""></div>
+                    <div class="cursor" @click="booking"><img src="@/assets/img/calendar.png" alt=""></div>
                 </div>
                 <div class="toVideo cursor" @click="toVideo">
                     <el-button class="width100 videoBtn" type="primary">
@@ -72,18 +73,22 @@
                 </div>
                 <div class="reviews sb">
                     <div>
-                        <div class="size15">Experience</div>
-                        <div class="size16">{{detail.experience}}+ years</div>
+                        <div class="size12">{Experience}</div>
+                        <div class="size13">
+                            <span v-if="detail.experience">{{detail.experience}}</span>
+                            <span v-else>0</span>
+                            + years
+                        </div>
                     </div>
                     <div class="xian"></div>
                     <div class="tc likes">
-                        <div class="size15">Likes</div>
+                        <div class="size12 al">Likes</div>
                         <div><span class="size13">{{detail.totalLike}}</span><span class="size12"> ({{detail.likingRate}})</span></div>
                     </div>
                     <div class="xian"></div>
                     <div style="text-align:end">
-                        <div class="size15">Reviews</div>
-                        <div class="size16">230</div>
+                        <div class="size12">Reviews</div>
+                        <div class="size13">230</div>
                     </div>
                 </div>
                 <div class="working al">
@@ -96,12 +101,14 @@
                         <div class="time blue">10:30 Am -07:30Pm</div>
                     </div>
                 </div>
-                <div class="introduce">
-                    <span>Dr. Vinay Misra is a General Obstetrics & Gynecology in new delhi and
-                        has an experience of 8+ years in this field. We provide services in hospitalsonline 
-                        consultation as video and audio...
+                <div class="introduce text-overflow">
+                    <span class="text-overflows" v-if="detail.doctorContent">
+                        {{detail.doctorContent}}
                     </span>
-                    <span class="blue cursor">more</span>
+                    <span v-else>No introduction!</span>
+                </div>
+                <div class="blue flexEnd" v-show="showMore">
+                    <span  class="cursor">more</span>
                 </div>
                 <div class="aboutUs">
                     <div class="child al flex">
@@ -121,71 +128,151 @@
         </div>
     </div>
 </template>
-
 <script>
-import { doctorList } from "@/axios/request.js"
 export default {
     data () {
         return {
             active:true,
-            petId:'0000001',
-            age:"2 yrs S mo",
-            breed:'Husky',
-            sex:"M",
-            neuteredStatus:'None',
-            weight: "33.5kg",
-            grade:4.5,
             change:true,
-            rate:null,
-            doctorList: [],
-            detail: {},
-            rate: 0,
-            loading: true
+            // rate:0,
+            // detail: {},
+            pageNum: 1,
+            showMore: false,
+            timer: null,
         }
     },
     created () {
+        this.doctorList = []
+        // if (!this.doctorList.length ) {
         this.getDoctorList()
+        // }
     },
-    conputed: {
+    mounted () {
         
     },
-    methods: {
-        getDoctorList () {
-            const doctor = {
-                platform: localStorage.getItem("platform"),
-                userId: localStorage.getItem("userId"),
-                pageNum:1,
-                pageSize: 10
-            }
-            doctorList(doctor).then(res => {
-                if (res.data.rtnCode == 200) {
-                    console.log(res,"医生列表")
-                    this.doctorList = res.data.data.pageT
-                    this.loading = false
-                } else {
-                    this.doctorList = []
-                    this.loading = false
-                    this.$message.error('Fail to load !');
-                }
-            }).catch(e => {
-                console.log(e)
-                this.doctorList = []
-                this.loading = false
-                this.$message.error('Fail to load !');
-            })
+    watch: {
+        detail: {
+            handler (val) {
+                this.$nextTick(() => {
+                    var sHeight = document.getElementsByClassName('text-overflow')[0].scrollHeight;
+                    if (sHeight > 63) {
+                        this.showMore = true
+                    } else {
+                        this.showMore = false
+                    }  
+                })
+            },
+            deep: true
         },
+        inp: {
+            handler (val) {
+                this.pageNum = 1
+                if (!val) {
+                    this.doctorList = []
+                    this.getDoctorList()
+                }
+            }
+        },
+        // doctorList: {
+        //     handler (val) {
+        //         if (val) {
+                  
+        //         }
+        //     }
+        // }
+    },
+    computed: {
+        callModal: {
+            get () { return this.$store.state.user.callModal },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "callModal",
+                    value: val
+                })
+            },
+        },
+        doctorList: { 
+            get () { return this.$store.state.user.doctorList },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "doctorList",
+                    value: val
+                })
+            }
+        },
+        detail () { return this.$store.state.user.vDetail },
+        rate () { return this.$store.state.user.rate },
+        rate: { 
+            get () { return this.$store.state.user.rate },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "rate",
+                    value: val
+                })
+            }
+        },
+        loading: {
+            get () { return this.$store.state.user.loading6 },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "loading6",
+                    value: val
+                })
+            }
+        },
+        totalRecordsCount () { return this.$store.state.user.totalRecordsCount },
+        inp: {
+            get () {return this.$store.state.user.inp},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "inp",
+                    value: val
+                })
+            },
+        },
+        default_img () { return this.$store.state.user.default_img }
+    },
+    methods: {
         getDetail (item) {
-            console.log(item)
             if (item.doctorName == null) {
                 item.doctorName = 'No name'
             }
-            console.log(item)
-            this.detail = item
-            this.rate = this.detail.baseScore
-            this.$store.commit("setUser",{    //医生首拨电话
+            this.$store.commit("setUser",{
+                key: "vDetail",
+                value: item
+            })
+            this.$store.commit("setUser",{
+                key: "rate",
+                value: item.baseScore
+            })
+            this.$store.commit("setUser",{
                 key: "mask",
                 value: item
             })
+        },
+        docScroll () {
+            if (this.inp) {
+                return false
+            }
+            this.$store.commit('setUser',{ key: 'dom', value: 'scrollUp' })
+            if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
+                if (this.doctorList.length >= this.totalRecordsCount) {
+                    
+                } else {
+                    if (!this.loading) {
+                        this.pageNum += 1
+                        this.getDoctorList()
+                    }
+                }
+            }
+            if ( this.$refs.doctorList.scrollTop > 300 ) {
+                this.$store.commit('setUser', { key: 'scrollTop', value: true } )
+            } else {
+                this.$store.commit('setUser', { key: 'scrollTop', value: false } )
+            }
+        },
+        getDoctorList () {
+            this.$store.dispatch('getDoctorList',this.pageNum)
         },
         edit () {
             this.change = !this.change
@@ -196,112 +283,94 @@ export default {
             })
         },
         toVideo () {
-            this.$router.push('/agora')
+            this.$message({
+                type: 'warning',
+                message: 'Function not open!'
+            })
+            return false
+            if (this.detail.doctorOnLineState == 0 || this.detail.doctorOnLineState == 2) {
+                this.$message({
+                    type: 'info',
+                    message: "The doctor is temporarily offline!"
+                })
+            } else {
+                if (this.detail.doctorOnLineState == 1) {
+                    if (this.detail.doctorId) {
+                        this.$store.commit("setUser", {
+                            key: "callTo",
+                            value: this.detail
+                        })
+                        this.callModal = true
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: "Please choose a doctor"
+                        })
+                    }
+                }
+            }
         },
-        vetBooking () {
-            this.$router.push("/vetBooking")
-        }
+        booking () {
+            this.$router.push("/booking")
+        },
     }
 }
 </script>
-
 <style lang="less" scoped>
 @import "@/less/css.less";
-.myvetDoctor {
-    height: 100%;
-    width: 100%;
+.clearfix:after{content:'';display:block;clear:both;}
+video {
+    width: 300px;
+    height: 200px;
+    border: solid 1px;
 }
-    .vetDoctorList {
-        width: 74%;      //医生列表
-        height: 100%;
-        overflow: auto;
-        // padding: 30px;
-        border: #F3F3F3 solid 1px;
-        border-radius: 4px;
-        @media screen and (max-width:1000px) {
-            width: 60%;
+.size_12 {
+    font-size: 12px;
+    color: #767676;
+}
+.size_13 {
+    font-size: 13px;
+}
+    .pet_message {
+        flex: 10;
+        margin-top: 10px;
+        .myDoctor {
+            height: 100%;
         }
-    }
-    .vetDoctorDetails {
-        width: 26%;
-        height: 100%;
-        overflow: auto;
-        // border: solid 1px;
-        @media screen and (max-width:1000px) {
-            width: 40%;
+        .doctorList {
+            width: 74%;      //医生列表
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            // padding: 30px;
+            border: #F3F3F3 solid 1px;
+            border-radius: 4px;
+            @media screen and (max-width:1050px) {
+                width: 100%;
+            }
         }
-    }
-    .head_image {
-        width: 80px;
-        height: 80px;
-        border: solid gray 1px;
-        border-radius: 50%;
-        overflow: hidden;
-    }
-    .size_12 {
-        font-size: 12px;
-        color: #767676;
+        .doctorList::-webkit-scrollbar {
+            width: 8px;
+        }
+        .doctorList::-webkit-scrollbar-thumb {
+            border-radius: 15px;
+            background: rgb(216, 216, 216);
+        }
+        .doctorDetails {
+            min-width: 310px;
+            width: 26%;
+            height: 100%;
+            overflow: auto;
+            // border: solid 1px;
+            // @media screen and (max-width:1050px) {
+            //     display: none;
+            // }
+        }
     }
     .width102 {
         width: 102.5%;
         // border: solid red 1px;
         padding: 1.8%;
-    }
-    .vetDoctor_head {
-        position: relative;
-        .grade {
-            position: absolute;
-            left: 50%;
-            top: 111%;
-            transform: translate(-50%,0);
-            background: @helpBtn;
-            padding: 3px 6px;
-            border-radius: 3px;
-        }
-        img {
-            width: 60px;
-            height: 60px;
-        }
-    }
-    .about {
-        margin-left: 10px;
-    }
-    .grade {
-        img {
-            width: 12px;
-            height: 12px;
-            padding-right: 2px;
-        }
-    }
-    .vetDoctor_item {
-        width: 30.33%;
-        box-shadow: 0 2px 1px 1px #D5D5D5;
-        margin: 0 3% 5px 0;
-        padding: 15px 14px;
-        transition: 0.25s;
-        // @media screen and (max-width:1620px) {
-        //     width: 46%;
-        //     margin: 0 3.5% 5px 0.5%;
-        // }
-        // @media screen and (max-width:1000px) {
-        //     width: 80%;
-        //     margin: 0 3.5% 5px 8.5%;
-        // }
-    }
-    .doctor_item {
-        width: 30.33%;
-        box-shadow: 0 2px 1px 1px #D5D5D5;
-        margin: 0 3% 5px 0;
-        padding: 15px 14px;
-        transition: 0.25s;
-        // @media screen and (max-width:1620px) {
-        //     width: 46%;
-        //     margin: 0 3.5% 5px 0.5%;
-        // }
-        @media screen and (max-width:1000px) {
-            width: 37%;
-            margin: 0 3.5% 5px 6.5%;
-        }
     }
     .doctor_head {
         position: relative;
@@ -321,11 +390,57 @@ export default {
             padding: 3px 6px;
             border-radius: 3px;
         }
+        .onLine {
+            position: absolute;
+            right: -2px;
+            bottom: -2px;
+        }
+    }
+    .head_image {
+        width: 80px;
+        height: 80px;
+        border: solid gray 1px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+    .about {
+        margin-left: 10px;
+        overflow: hidden;
+    }
+    .itemDoc_name {
+        flex: 10;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .grade {
+        img {
+            width: 12px;
+            height: 12px;
+            padding-right: 2px;
+        }
+    }
+    .doctor_item {
+        width: 30.33%;
+        box-shadow: 0 2px 1px 1px #D5D5D5;
+        margin: 0 3% 5px 0;
+        padding: 15px 14px;
+        transition: 0.25s;
+        // @media screen and (max-width:1620px) {
+        //     width: 46%;
+        //     margin: 0 3.5% 5px 0.5%;
+        // }
+        @media screen and (max-width:1145px) {
+            width: 45%;
+            margin: 0 1.5% 5px 3.5%;
+        }
     }
     .workTime {
         margin-top: 45px;
-        @media screen and (max-width:1350px) {
-            transform: scale(0.9);
+        div {
+            @media screen and (max-width:1350px) {
+                transform: scale(0.9);
+            }
         }
     }
     .physical {
@@ -367,15 +482,10 @@ export default {
         // border: solid rgb(100, 95, 95) 1px;
     }
     .call {
-        width: 70px;
+        max-width: 80px;
+        width: 30%;
     }
-    .callBtn:hover {
-        opacity: 0.8;
-    }
-    .callBtn:active {
-        opacity: 0.6;
-    }
-    .vetDoctor_name {
+    .doctor_name {
         font-size: 19px;
         color: #212121;
         padding: 5px 0;
@@ -395,9 +505,12 @@ export default {
         margin: auto;
     }
     .reviews {
-        width: 80%;
+        width: 94%;
         margin: auto;
         margin-top: 27px;
+        @media screen and (max-width:1250px) {
+            transform: scale(0.9);
+        }
     }
     .xian {
         border-left: 1px #DCDDE0 solid;
@@ -415,9 +528,16 @@ export default {
     .introduce {
         width: 80%;
         margin: auto;
+        border-bottom: solid 2px gray;
         font-size: 14;
         color: #656565;
-        margin-bottom: 35px;
+        max-height: 63px;
+        text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+        display: -webkit-box;
+        -webkit-line-clamp: 3;/*规定超过两行的部分截断*/
+        -webkit-box-orient: vertical;
+        overflow : hidden; 
+        word-break: break-all;/*在任何地方换行*/
     }
     .aboutUs {
         width: 80%;
@@ -430,11 +550,28 @@ export default {
             padding-right: 7px;
         }
     }
+    .Rate {
+        transform: scale(1.3);
+    }
     .loading {
         width: 100%;
         height: 45%;
     }
-    .Rate {
-        transform: scale(1.3);
+    .location_img {
+        transform: translate(0,1px);
+    }
+    .address_item {
+        margin-top: 10px;
+        text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+        display: -webkit-box;
+        -webkit-line-clamp: 2;/*规定超过两行的部分截断*/
+        -webkit-box-orient: vertical;
+        overflow : hidden; 
+        word-break: break-all;/*在任何地方换行*/
+    }
+    .acting {
+        width: 100%;
+        padding: 50px 0;
+        // border: solid 1px;
     }
 </style>

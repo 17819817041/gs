@@ -24,6 +24,11 @@ export default [
         component: () => import('@/view/forgetPwd/changePwd.vue')
     },
     {
+        path: '/success',
+        name: 'success',
+        component: () => import('@/view/forgetPwd/success.vue')
+    },
+    {
         path:'/signUp',
         name:'signUp',
         component: () => import("@/view/signUp/signUp.vue")
@@ -111,6 +116,11 @@ export default [
                 path: "/firstAid",
                 name: "firstAid",
                 component: () => import("@/view/firstAid/firstAid.vue")
+            },
+            {
+                path: "/changeBatch",
+                name: "changeBatch",
+                component: () => import("@/view/firstAid/changeBatch.vue")
             },
             {
                 path:"/notice",
@@ -221,16 +231,6 @@ export default [
         path:"/forgetPwd",
         name:'forgetPwd',
         component: () => import("@/view/forgetPwd/forgetPwd.vue")
-    },
-    {
-        path: "/vetAgora",
-        name: "vetAgora",
-        component: () => import("@/view/vetAgora/vetAgora.vue")
-    },
-    {
-        path: "/test",
-        name: "test",
-        component: () => import("@/test/test.vue")
     }
     
 ]

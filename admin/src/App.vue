@@ -5,9 +5,12 @@
 </template>
 
 <script>
-
+import d_img from "@/assets/img/defaultimg.jpg"
 export default {
 	name: 'App',
+	created () {
+		this.$store.dispatch("default", d_img)
+	},
 	watch: {
         message: {
             handler (val) {

@@ -26,7 +26,7 @@
             </div>
             <div class="sb first_pet" v-else>
                 <div class="first_pet_item"> 
-                    <el-carousel indicator-position="outside" :autoplay='false' class="sb">
+                    <el-carousel indicator-position="false" :autoplay='false' class="sb">
                         <el-carousel-item v-for="(item,i) in length1" :key="i" style="height: 100%">
                             <div class="ju al img_i float" v-for="(item,i) in petList.slice((i+1)*3-3,(i+1)*3)" :key="i">
                                 <img class="cursor" :src="item.image" v-if="item.image" alt="" @click="first_pet(item)">
@@ -46,7 +46,7 @@ export default {
         return {
             more: true,
             length1: 0,
-            a: {}
+            a: {},
         }
     },
     created () {
@@ -70,49 +70,7 @@ export default {
                 })
             },
         },
-        callModal: {
-            get () { return this.$store.state.user.callModal },
-            set (val) {
-                this.$store.commit("setUser", {
-                    key: "callModal",
-                    value: val
-                })
-            },
-        },
-        callLoading: {
-            get () { return this.$store.state.user.callLoading },
-            set (val) {
-                this.$store.commit("setUser", {
-                    key: "callLoading",
-                    value: val
-                })
-            },
-        },
-        doctorList: { 
-            get () { return this.$store.state.user.doctorList },
-            set (val) {
-                this.$store.commit("setUser", {
-                    key: "doctorList",
-                    value: val
-                })
-            }
-        },
-		caller () { return this.$store.state.user.caller },
-		joinParams () { return this.$store.state.user.joinParams },
 		userDetail () { return this.$store.state.user.userDetail },
-		IMuser () { return this.$store.state.user.IMuser },
-		mask () {return this.$store.state.user.mask},
-		cut_metting () { return this.$store.state.user.mettingId },
-		petId: {
-			get () { return this.$store.state.user.petId },
-			set (val) {
-				this.$store.commit("setUser", {
-                    key: "petId",
-                    value: val
-                })
-			}
-		},
-		pet () {return this.$store.state.user.pet},
     },
     methods: {
         other () {
@@ -124,44 +82,12 @@ export default {
                 key: 'pet',
                 value: item
             })
-            // this.starBook(item)
-        },
-        starBook (item) {
-            this.doctorList.forEach(item => {
-                if (item.doctorOnLineState == 1) {
-                    this.a = item
-                }
+            this.$router.push({
+                name: 'changeBatch',
+                query: item
             })
-            this.callModal = true
-            this.callLoading = true
-            // this.sendMsg()
-        },
-        sendMsg () {
-			let D = new Date().getTime()
-            localStorage.setItem('sroom',D)
-			let data = {
-                type: "Call",
-				user: this.userDetail,
-				platform: localStorage.getItem('platform'),
-				petId: this.petId,
-				sroom: D
-            }
-            let id = this.$conn.getUniqueId();                 // 生成本地消息id
-            let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
-            msg.set({
-                msg: JSON.stringify(data),                  // 消息内容
-                to: JSON.stringify(this.a.doctorId) + 'A2',      // 接收消息对象（用户id）
-                chatType: 'singleChat',                  // 设置为单聊                       
-                success: function (id, serverMsgId) {
-                    console.log('send private text Success');  
-                }, 
-                fail: function(e){
-                    console.log(e)
-                    console.log("Send private text error");  
-                }
-            });
-            this.$conn.send(msg.body);
-		},
+            // this.starBook(item)
+        }
     }
 }
 </script>

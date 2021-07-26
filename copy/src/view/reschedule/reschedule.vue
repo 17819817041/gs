@@ -3,54 +3,55 @@
         <div class="reschedule flex">
             <div class="reschedule_content">
                 <div class="appointment_content_item_wrap mg">
-                    <div class="explan al">
+                    <div class="explan bold al">
                         <img src="@/assets/img/appointment.png" alt="">
                         Appointment
                     </div>
-                    <div class="calendar mg flex">
-                        <div><img class="Appointment_img" src="@/assets/img/dog.png" alt=""></div>
-                        <div class="calendar_wrap">
-                            <div class="calendar_item">
-                                <div class="size23">
-                                    <span v-if="t_booking.booking.userName">{{t_booking.booking.userName}}</span>
-                                    <span v-else>No Name</span>
-                                </div>
-                                <div class="size17" style="color:#9F9F9F">Video Consultation</div>
-                            </div>
-                            <div class="calendar_item sb">
-                                <div>
-                                    <div class="size16">Date and Time</div>
-                                    <div class="size17">{{t_booking.booking.bookingDate}} - {{t_booking.booking.bookingStratTime}}</div>
-                                </div>
-                                <div>
-                                    <div class="size16">Pet Name</div>
-                                    <div class="size17">
-                                        <span v-if="t_booking.booking.petName">{{t_booking.booking.petName}}</span>
+                    <div class="calendar_p noBar">
+                        <div class="calendar mg flex">
+                            <div><img class="Appointment_img" src="@/assets/img/dog.png" alt=""></div>
+                            <div class="calendar_wrap">
+                                <div class="calendar_item">
+                                    <div class="size23">
+                                        <span v-if="t_booking.booking.userName">{{t_booking.booking.userName}}</span>
                                         <span v-else>No Name</span>
                                     </div>
+                                    <div class="size17" style="color:#9F9F9F">Video Consultation</div>
+                                </div>
+                                <div class="calendar_item sb">
+                                    <div>
+                                        <div class="size16">Date and Time</div>
+                                        <div class="size17">{{t_booking.booking.bookingDate}} - {{t_booking.booking.bookingStartTime}} {{t_booking.APM}}</div>
+                                    </div>
+                                    <div>
+                                        <div class="size16">Pet Name</div>
+                                        <div class="size17">
+                                            <span v-if="t_booking.booking.petName">{{t_booking.booking.petName}}</span>
+                                            <span v-else>No Name</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="calendar_item">
+                                    <div class="size16">Practice Detail</div>
+                                    <div class="size17">{{t_booking.veterinaryHospitalName}} </div>
+                                    <div class="size16">{{t_booking.veterinaryHospitalAddress}} </div>
+                                </div>
+                                <div class="calendar_item">
+                                    <div class="size16">Booked for</div>
+                                    <div class="size17">{{t_booking.booking.bookingDoctor}} </div>
+                                </div>
+                                <div class="calendar_item">
+                                    <div class="size16">Appointment ID</div>
+                                    <div class="size17">{{t_booking.booking.bookingId}} </div>
+                                </div>
+                                <div class="flex calendar_item">
+                                    <div class="Reschedule size13 cursor tc">Reschedule</div>
+                                    <div class="cancel size13 cursor tc" @click="deleteBook(t_booking.booking.bookingId)">Cancel</div>
                                 </div>
                             </div>
-                            <div class="calendar_item">
-                                <div class="size16">Practice Detail</div>
-                                <div class="size17">{{t_booking.veterinaryHospitalName}} </div>
-                                <div class="size16">{{t_booking.veterinaryHospitalAddress}} </div>
+                            <div class="telephone_or_video">
+                                <div class="videoConsultation ju al"><img src="@/assets/img/video1.png" alt="">Video Consultation</div>
                             </div>
-                            <div class="calendar_item">
-                                <div class="size16">Booked for</div>
-                                <div class="size17">{{t_booking.booking.bookingDoctor}} </div>
-                            </div>
-                            <div class="calendar_item">
-                                <div class="size16">Appointment ID</div>
-                                <div class="size17">{{t_booking.booking.bookingId}} </div>
-                            </div>
-                            <div class="flex calendar_item">
-                                <div class="Reschedule size13 cursor tc">Reschedule</div>
-                                <div class="cancel size13 cursor tc" @click="deleteBook(t_booking.booking.bookingId)">Cancel</div>
-                            </div>
-                        </div>
-                        <div class="telephone_or_video">
-                            <div class="videoConsultation ju al"><img src="@/assets/img/video1.png" alt="">Video Consultation</div>
-                            <div class="chat ju al"><img src="@/assets/img/chat1.png" alt="">Chat</div>
                         </div>
                     </div>
                 </div>
@@ -83,7 +84,6 @@ export default {
                     bookingId: id
                 }
                 deleteBooking(data).then(res => {
-                    console.log(res)
                     if (res.data.rtnCode == 200 ) {
                         this.$message({
                             type: "success",
@@ -99,10 +99,6 @@ export default {
                 })
             }).catch (e => {
                 console.log(e)
-                this.$message({
-                    type: "error",
-                    message: "Fail cancelled!"
-                })
             })
         },
         getBookingDetail () {
@@ -119,10 +115,10 @@ export default {
                     } else {
                         res.data.data.APM = 'AM'
                     }
-                    let date = res.data.data.bookingDate
-                    let En = new Date(date).toDateString()
-                    let arr = En.split(' ')
-                    res.data.data.bookingDate = arr[0] + ',' + arr[2] + ' ' + arr[1] + ','+ arr[3]
+                    // let date = res.data.data.bookingDate
+                    // let En = new Date(date).toDateString()
+                    // let arr = En.split(' ')
+                    // res.data.data.bookingDate = arr[0] + ',' + arr[2] + ' ' + arr[1] + ','+ arr[3]
                     this.t_booking = res.data.data
                 }
             })
@@ -135,13 +131,21 @@ export default {
 @import "@/less/css.less";
 .reschedule {
     width: 100%;
+    height: 100%;
+    background: @content;
 }
     .reschedule_content {
         flex: 10;
+        height: 100%;
     }
     .appointment_content_item_wrap {
+        height: 100%;
         background: @content;
         padding-bottom: 40px;
+    }
+    .calendar_p {
+        height: calc(100% - 60px);
+        overflow: auto;
     }
     .calendar {
         width: 97%;

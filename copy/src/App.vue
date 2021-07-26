@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import d_img from "@/assets/img/defaultimg.jpg"
 import { min } from "@/axios/request.js"
 export default {
 	data () {
@@ -76,13 +77,11 @@ export default {
 		}
 	},
 	created () {
+		this.$store.dispatch("default", d_img)
 		let userId = localStorage.getItem("userId")
 		if (userId) {
-			this.$store.dispatch("IMLogin")
+			this.start()
 		}
-		this.start()
-		this.getNotice()
-		this.getBalance()
 	},
 	watch: {
 		callModal: {
@@ -107,6 +106,14 @@ export default {
                     this.petId = val
                 }
             }
+        },
+		my_Balance: {
+            handler (val) {
+                if (val) {
+                    this.my_Balance = val
+                }
+            },
+			deep:true
         },
 	},
 	computed: {
@@ -153,7 +160,15 @@ export default {
 		IMuser () { return this.$store.state.user.IMuser },
 		mask () {return this.$store.state.user.mask},
 		cut_metting () { return this.$store.state.user.mettingId },
-		my_Balance () { return this.$store.state.user.balance },
+		my_Balance: {
+			get () { return this.$store.state.user.balance },
+			set (val) {
+                this.$store.commit("setUser", {
+                    key: "balance",
+                    value: val
+                })
+            },
+		},
 		petId: {
 			get () { return this.$store.state.user.petId },
 			set (val) {
@@ -186,12 +201,6 @@ export default {
 		}
     },
 	methods: {
-		getBalance () {
-            let data = {
-                userId: localStorage.getItem('userId')
-            }
-            this.$store.dispatch('getBalance',data)
-        },
 		up_top () {
 			// 每0.01秒向上移动100像素，直到小于或等于0结束
 			let timer = setInterval(() => {
@@ -205,15 +214,6 @@ export default {
 		saveRecord (val) {
             localStorage.setItem('adminList',JSON.stringify(this.adminList))
         },
-		getNotice () {
-			let that = this
-			let page = {
-				vm: that,
-				pageNum: 1,
-				pageSize: 100
-			}
-			this.$store.dispatch('getNoticeList', page)
-		},
 		start(){
 			this.timer = setInterval(this.valChange, 60000); // 注意: 第一个参数为方法名的时候不要加括号;
 		},
@@ -224,17 +224,9 @@ export default {
 				platform: localStorage.getItem('platform')
 			}
 			min(data).then(res => {
-				console.log(res)
 			})
 		},
 		sure () {
-			// let bookingAgo = JSON.parse(localStorage.getItem('bookingDoc'))
-            //     let docId = {
-            //         userId: bookingAgo.booking.bookingDoctorId
-            //     }
-            //     docGoodsId(docId).then(res => {
-            //         console.log(res,'docGoodsId')
-            //     })
 			if (this.my_Balance.balance >= 50) {
 				this.callLoading = true
 				this.sendMsg()
@@ -277,7 +269,6 @@ export default {
 			this.sureCall = true
 			this.callModal = false
 			this.callLoading = false
-			window.eMedia.mgr.exitConference()
 			let data = {
                 type: "HangUp1"
             }
@@ -290,11 +281,11 @@ export default {
             });
             this.$conn.send(msg.body);
 		},
-		async sure2 () {
+		sure2 () {
 			this.$router.push("/agora")
 			this.callModal2 = false
 			let that = this
-			setTimeout(async function ()  {
+			setTimeout(function ()  {
 				let data = {
 					type: "confirmCall"
 				}
@@ -384,6 +375,14 @@ export default {
 		overflow: hidden !important;
 	}
 
+	.vetSetting .profile .el-select .el-input, 
+	.vetSetting .profile .el-select .el-input .el-input__inner, 
+	.vetSetting .profile .timeInp_wrap .el-input__inner {
+		background: white !important;
+		color: rgb(199, 199, 199) !important;
+		height: 100% !important;
+	}
+
 	.form_select .el-select .el-input__inner {
 		// border: solid #787878 1px !important;
 		border-radius: 4px !important;
@@ -433,12 +432,21 @@ export default {
 	.vetSetting .el-icon-time, .vetSetting .el-input__suffix {
 		display: none !important;
 	}
+
+
 	.setting .gender .el-input {
 		height: 100% !important;
 	}
 	.setting .gender .el-input .el-input__inner {
 		height: 100% !important;
 		background: white !important;
+	}
+	.setting .Remark .el-textarea .el-textarea__inner {
+		height: 70px !important;
+		background: white !important;
+		border: none !important;
+		outline: none !important;
+		resize: none !important;
 	}
 
 
@@ -712,9 +720,15 @@ export default {
 	}
 	.first_item .first_pet .is-active {
 		display: flex;
+		padding: 0 75px;
 		justify-content: space-between !important;
 	}
 	.first_item .first_pet .el-carousel__container {
 		width: 100% !important;
+	}
+	.first_item .first_pet .el-carousel__indicators--horizontal {
+		// transform: translate(-50%) !important;
+		// position: absolute !important;
+		display: none !important;
 	}
 </style>

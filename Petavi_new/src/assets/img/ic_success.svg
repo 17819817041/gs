@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 70 70">
+  <g id="ic_success" transform="translate(-153 -27)">
+    <g id="椭圆_81" data-name="椭圆 81" transform="translate(153 27)" fill="#33d27b" stroke="#fff" stroke-width="4">
+      <circle cx="35" cy="35" r="35" stroke="none"/>
+      <circle cx="35" cy="35" r="33" fill="none"/>
+    </g>
+    <g id="check-symbol" transform="translate(172 -3.55)">
+      <g id="check" transform="translate(0 53.55)">
+        <path id="路径_795" data-name="路径 795" d="M10.182,72.535,2.545,65.013,0,67.52,10.182,77.55,32,56.057,29.455,53.55Z" transform="translate(0 -53.55)" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>

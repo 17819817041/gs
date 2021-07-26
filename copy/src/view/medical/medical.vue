@@ -12,9 +12,9 @@
         background: @content;
         flex: 10;
         height: 100%;
-        overflow: auto;
         .itemChild {
             width: 98%;
+            height: 100%;
         }
     }
     .record_message {
@@ -128,132 +128,147 @@
         width: 80%;
         word-wrap: break-word;
     }
+    .record_message_wrap {
+        height: calc(100% - 61px);
+        overflow: auto;
+    }
+    .record_message_wrap::-webkit-scrollbar {
+            width: 8px;
+        }
+    .record_message_wrap::-webkit-scrollbar-thumb {
+        border-radius: 15px;
+        background: rgb(180, 180, 180);
+    }
 </style>
 
 <template>
     <div class="record" v-loading="loading">
         <div class="recordContent">
-            <div class="recordContent_item noBar">
+            <div class="recordContent_item">
                 <div class="itemChild mg">
                     <div class="explan bold al">
                         <img src="@/assets/img/recordImg.png" alt="">
                         Medical Record History
                     </div>
-                    <div class="record_message" v-for="(item,i) in getDoctorMedicalLimitList" :key="i">
-                        <div class="record_item flex mg">
-                            <div class="record_image ju">
-                                <div class="ju al">
-                                    <img class="dog_img" :src="item.image" v-if="item.image" alt="">
-                                    <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
-                                </div>
-                            </div>
-                            <div style="flex:10">
-                                <div class="record_wrap flex">
-                                    <div class="record_message flex">
-                                        <div class="size17">
-                                            <div class="flex about">
-                                                <div>Pet ID</div>
-                                            </div>
-                                            <div class="about">
-                                                <div>Name</div>
-                                            </div>
-                                            <div class="about">
-                                                <div>Age</div>
-                                            </div>
-                                            <div class="about">
-                                                <div>Pet Type</div>
-                                            </div>
-                                            <div class="about">
-                                                <div>Breed</div>
-                                            </div>
-                                        </div>
-                                        <div class="size16">
-                                            <div class="flex about">
-                                                <div v-if="item.petId">{{item.petId}}</div>
-                                                <div v-else>No data</div>
-                                            </div>
-                                            <div class="flex about">
-                                                <div v-if="item.name">{{item.name}}</div>
-                                                <div v-else>No data</div>
-                                            </div>
-                                            <div class="flex about">
-                                                <div v-if="item.age">{{item.age}}</div>
-                                                <div v-else>No data</div>
-                                            </div>
-                                            <div class="flex about">
-                                                <div >{{item.pet_name}}</div>
-                                            </div>
-                                            <div class="flex about">
-                                                <div>{{item.breed_name}}</div>
-                                            </div>
-                                        </div>
+                    <div class="record_message_wrap" v-if="getDoctorMedicalLimitList[0]">
+                        <div class="record_message" v-for="(item,i) in getDoctorMedicalLimitList" :key="i">
+                            <div class="record_item flex mg">
+                                <div class="record_image ju">
+                                    <div class="ju al">
+                                        <img class="dog_img" :src="item.image" v-if="item.image" alt="">
+                                        <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
                                     </div>
-                                    <div class="record_message1 flex">
-                                        <div class="children size17">
-                                            <div class="about">
-                                                <div>Gender</div>
-                                            </div>
-                                            <div class="about">
-                                                <div>Neutered status</div>
-                                            </div>
-                                            <div class="about">
-                                                <div>Weight</div>
-                                            </div>
-                                            <div class="about">
-                                                <div>Remarks</div>
-                                            </div>
-                                        </div>
-                                        <div class="children size16">
-                                            <div class="flex about">
-                                                <div >
-                                                    <span v-if="item.gender == 1">Male</span>
-                                                    <span v-else-if="item.gender == 2">Female</span>
+                                </div>
+                                <div style="flex:10">
+                                    <div class="record_wrap flex">
+                                        <div class="record_message flex">
+                                            <div class="size17">
+                                                <div class="flex about">
+                                                    <div>Pet ID</div>
+                                                </div>
+                                                <div class="about">
+                                                    <div>Name</div>
+                                                </div>
+                                                <div class="about">
+                                                    <div>Age</div>
+                                                </div>
+                                                <div class="about">
+                                                    <div>Pet Type</div>
+                                                </div>
+                                                <div class="about">
+                                                    <div>Breed</div>
                                                 </div>
                                             </div>
-                                            <div class="flex about">
-                                                <div>
-                                                    <span v-if="item.petJueYu == 1">Sterilization</span>
-                                                    <span v-else-if="item.petJueYu == 2">Unneutered</span>
-                                                    <span v-else-if="item.petJueYu === null">No data</span>
+                                            <div class="size16">
+                                                <div class="flex about">
+                                                    <div v-if="item.petId">{{item.petId}}</div>
+                                                    <div v-else>No data</div>
+                                                </div>
+                                                <div class="flex about">
+                                                    <div v-if="item.name">{{item.name}}</div>
+                                                    <div v-else>No data</div>
+                                                </div>
+                                                <div class="flex about">
+                                                    <div v-if="item.age">{{item.age}}</div>
+                                                    <div v-else>No data</div>
+                                                </div>
+                                                <div class="flex about">
+                                                    <div >{{item.pet_name}}</div>
+                                                </div>
+                                                <div class="flex about">
+                                                    <div>{{item.breed_name}}</div>
                                                 </div>
                                             </div>
-                                            <div class="flex about">
-                                                <div v-if="item.weight">{{item.weight}}kg</div>
-                                                <div v-else>0</div>
+                                        </div>
+                                        <div class="record_message1 flex">
+                                            <div class="children size17">
+                                                <div class="about">
+                                                    <div>Gender</div>
+                                                </div>
+                                                <div class="about">
+                                                    <div>Neutered status</div>
+                                                </div>
+                                                <div class="about">
+                                                    <div>Weight</div>
+                                                </div>
+                                                <div class="about">
+                                                    <div>Remarks</div>
+                                                </div>
                                             </div>
-                                            <div class="flex about">
-                                                <div v-if="item.remark">{{item.remark}}</div>
-                                                <div v-else>No data</div>
+                                            <div class="children size16">
+                                                <div class="flex about">
+                                                    <div >
+                                                        <span v-if="item.gender == 1">Male</span>
+                                                        <span v-else-if="item.gender == 2">Female</span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex about">
+                                                    <div>
+                                                        <span v-if="item.petJueYu == 1">Sterilization</span>
+                                                        <span v-else-if="item.petJueYu == 2">Unneutered</span>
+                                                        <span v-else-if="item.petJueYu === null">No data</span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex about">
+                                                    <div v-if="item.weight">{{item.weight}}kg</div>
+                                                    <div v-else>0</div>
+                                                </div>
+                                                <div class="flex about">
+                                                    <div v-if="item.remark">{{item.remark}}</div>
+                                                    <div v-else>No data</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="medialRecord" v-if="item.petMedicalRecordDtos">
-                                    <div class="medialRecord_item" v-for="(child,i) in item.petMedicalRecordDtos" :key="i">
-                                        <div class=" size17">Medical Record</div>
-                                        <div style="padding: 5px 0 5px 15px"> 
-                                            <span class=" size17">Date: </span>
-                                            <span class="size15">{{child.createdAt}}</span>
-                                        </div>
-                                        <div style="padding-top: 10px">
-                                            <span class=" size17">Vet: </span>
-                                            <span class="size15">Dr Beck</span>
-                                        </div>
-                                        <div class="vetRecord size15" style="padding: 10px 15px">
-                                            <span v-if="child.content">{{child.content}}</span>     
-                                            <span v-else>No Data</span>     
+                                    <div class="medialRecord" v-if="item.petMedicalRecordDtos">
+                                        <div class="medialRecord_item" v-for="(child,i) in item.petMedicalRecordDtos" :key="i">
+                                            <div class=" size17">Medical Record</div>
+                                            <div style="padding: 5px 0 5px 15px"> 
+                                                <span class=" size17">Date: </span>
+                                                <span class="size15">{{child.createdAt}}</span>
+                                            </div>
+                                            <div style="padding-top: 10px">
+                                                <span class=" size17">Vet: </span>
+                                                <span class="size15">Dr Beck</span>
+                                            </div>
+                                            <div class="vetRecord size15" style="padding: 10px 15px">
+                                                <span v-if="child.content">{{child.content}}</span>     
+                                                <span v-else>No Data</span>     
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="medialRecord" v-else>
-                                    <div class="medialRecord_item size17">
-                                        No medical records
+                                    <div class="medialRecord" v-else>
+                                        <div class="medialRecord_item size17">
+                                            No medical records
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+                    <div class="record_message_wrap bold tc" v-else style="font-size:23px;color:gray;margin-top:30px">
+                        No Message
+                    </div>
                 </div>
             </div>
         </div>
@@ -262,7 +277,7 @@
 
 <script>
 import { petDetails, PetMedicalRecor, petType } from "@/axios/request.js"
-import { getUserByPetId, delPetMedicalRecordById, getPetMedicalRecord } from "@/axios/request.js"
+import { getUserByPetId, getPetMedicalRecord } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -285,6 +300,7 @@ export default {
                 pageSize: this.pageSize_m
             }
             getPetMedicalRecord(data).then(res => {
+                console.log(res,'medical')
                 if (res.data.rtnCode == 200) {
                     this.getDoctorMedicalLimitList = res.data.data.pageT
                     this.loading = false

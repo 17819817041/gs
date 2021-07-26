@@ -42,7 +42,8 @@
                         </div>
                         <div class="ju mg al PET_IMG">
                             <img class="Img" :src="petAndUser.petHeadUrl" alt="" v-if="petAndUser.petHeadUrl">
-                            <i class=" el-icon-picture-outline Icon" style="font-size:60px;color:gray;" v-else></i>
+                            <img style="height:100%;" v-else :src="default_img" alt="">
+                            <!-- <i class=" el-icon-picture-outline Icon" style="font-size:60px;color:gray;" v-else></i> -->
                         </div>
                         <div class="pet_information">
                             <div class="pet_name size19" v-if="petAndUser.petName">{{petAndUser.petName}}</div>
@@ -63,7 +64,8 @@
                     <div class="guardianDetails mg size19">Guardian Details</div>
                     <div class="ju al patients_img_wrap mg">
                         <img class="patients_img" v-if="petAndUser.userHead" :src="petAndUser.userHead" alt="">
-                        <i class=" el-icon-picture-outline Icon" style="font-size:40px;color:gray;" v-else></i>
+                        <img style="height:100%;" v-else :src="default_img" alt="">
+                        <!-- <i class=" el-icon-picture-outline Icon" style="font-size:40px;color:gray;" v-else></i> -->
                     </div>
                     <div class="size19 tc personal_name">{{petAndUser.userName}}</div>
                     <div class="address ju">
@@ -111,7 +113,7 @@
 </template>
 
 <script>
-import { getUserByPetId, delPetMedicalRecordById, getPetMedicalRecord, s_online } from "@/axios/request.js"
+import { getUserByPetId, PetMedicalRecord, getPetMedicalRecord, s_online } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -120,7 +122,7 @@ export default {
             petAndUser: {},
             changePage: {},
             getDoctorMedicalLimitListStatus: true,
-            getDoctorMedicalLimitList: [],
+            // getDoctorMedicalLimitList: [],
             pageNum_m: 1,
             pageSize_m: 100,
             loading: true
@@ -134,15 +136,53 @@ export default {
         s_online(data).then(res => {
             console.log(res,'在线')
         })
+
+        // let D = new Date()
+        // let time = D.toTimeString().split(' ')[0]
+        // this.disabled = false
+        // this.recordDate = '2021-06-07' + ' ' + time.split(':')[0] + ':' + time.split(':')[1]
+        // let data1 = {
+        //     userId: 572,
+        //     doctorId: localStorage.getItem('userId'),
+        //     petId: 69,
+        //     content: 'nothing',
+        //     createdAt: this.recordDate,
+        //     medicineIds: 2
+        // }
+        // PetMedicalRecord(data1).then(res => {
+        //     console.log(res,'tianjiarecord')
+        //     if (res.data.rtnCode == 200) {
+        //         this.disabled = false
+        //     } else {
+
+        //     }
+        // }).catch(e =>{
+        //     console.log(e)
+        // })
     },
     created () {
         this.PetMedicalRecord()
     },
     watch: {
-        
+        getDoctorMedicalLimitList: {
+            handler (val) {
+                if (val) {
+                    this.getDoctorMedicalLimitList = val
+                }
+            },
+        },
     },
     computed: {
-        
+        getDoctorMedicalLimitList: {
+            get () { return this.$store.state.user.getDoctorMedicalLimitList },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "getDoctorMedicalLimitList",
+                    value: val
+                })
+            },
+        },
+        default_img () { return this.$store.state.user.default_img },
     },
     methods: {
         PetMedicalRecord () {
@@ -154,7 +194,11 @@ export default {
             getPetMedicalRecord(data).then(res => {
                 console.log(res,'PetMedicalRecord')
                 if (res.data.rtnCode == 200) {
-                    this.getDoctorMedicalLimitList = res.data.data.pageT
+                    // this.getDoctorMedicalLimitList = res.data.data.pageT
+                    this.$store.commit("setUser", {
+                        key: "getDoctorMedicalLimitList",
+                        value: res.data.data.pageT
+                    })
                     let id = res.data.data.pageT[0].petId
                     this.getUserByPetId(id)
                     this.loading = false
@@ -165,19 +209,6 @@ export default {
             }).catch(e => {
                 console.log(e)
                 this.loading = false
-            })
-        },
-        first (val) {
-            let data = {
-                petId: this.petList[0].id
-            }
-            getUserByPetId(data).then(res => {
-                console.log(res,'petAndUser')
-                if (res.data.rtnCode == 200) {
-                    this.petAndUser = res.data.data
-                }
-            }).catch(e => {
-                console.log(e)
             })
         },
         getUserByPetId (id) {
@@ -287,6 +318,8 @@ export default {
         height: 70px;
     }
     .personWithAnimal {
+        white-space: nowrap !important;
+        min-width: 330px;
         height: 100%;
         overflow: auto;
         width: 26%;

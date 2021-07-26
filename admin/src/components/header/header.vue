@@ -1,7 +1,7 @@
 <template>
     <div class="header">
-        <div class="logo" v-if="active">
-            <img class="logo_IMG" src="@/assets/img/logo.png" alt="">
+        <div class="logo" v-if="login">
+            <img class="logo_IMG" @click="backhome" src="@/assets/img/logo.png" alt="">
         </div>
         <div class="div sb al">
             <div class="search al sa" v-if="login">
@@ -14,7 +14,11 @@
                     </div>
                 </div>
                 <div class="input" >
-                    <el-input style="transform:scale(1);border:none;" prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
+                    <div class="search_btn al ju cursor" @click="search">
+                        Search
+                    </div>
+                    <el-input style="transform:scale(1);border:none;" v-model="inp" prefix-icon="el-icon-search" size="small" 
+                    @keyup.enter.native="search" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
                 </div>
             </div>
             <div v-else></div>
@@ -30,11 +34,9 @@
                                 <input id="ava" v-show="false" type="file" @change="getImage"/>   <!-- 头像路径-->
                                 <div class="ju al headimg_wrap">
                                     <img style="height:100%;" v-if="userDetail.image" :src="userDetail.image" alt="">
-                                    <!-- <img src="@/assets/img/settings.png" alt=""> -->
                                     <i class="el-icon-picture-outline" style="font-size:30px;color:gray" v-else></i>
                                 </div>
                             </label>
-                            <!-- <div class="name al">{{userDetails.userName}}</div> -->
                             <div class="name white al">{{userDetail.name}}</div>
                             <div class="al">
                                 <img class="online_img cursor"  @click="Conference" src="@/assets/img/online.png" alt="">
@@ -46,7 +48,7 @@
                                 <img src="@/assets/img/information1.png" alt="">
                             </div>
                             <div class="homeImg al cursor">
-                                <img src="@/assets/img/home.png" alt="">
+                                <img src="@/assets/img/home.png"  @click="backhome" alt="">
                             </div>
                         </div>
                     </div>
@@ -66,17 +68,11 @@
 </template>
 
 <script>
-import { getUserDetails, file, updateAdmin } from "@/axios/request.js"
+import { searchDoc, file, updateAdmin } from "@/axios/request.js"
 export default {
     data () {
         return {
-            
-        }
-    },
-    props: {
-        active: {
-            type: Boolean,
-            default: true
+            petOrDoc: 1,
         }
     },
     watch: {
@@ -106,10 +102,23 @@ export default {
                     value: val
                 })
             },
-        }
+        },
+        inp: {
+            get () {return this.$store.state.user.inp},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "inp",
+                    value: val
+                })
+            },
+        },
     },
     created () {
         this.getUser()
+        if (this.$route.name == 'petPage') {
+            this.identity = false
+            this.petOrDoc = 2
+        }
     },
     methods: {
         Conference () {
@@ -125,13 +134,15 @@ export default {
             //     console.log(res)
             // });
         },
-        support () {
-            this.$router.push('/support')
+        backhome () {
+            this.$router.push('/home')
         },
         doctor () {
+            this.petOrDoc = 1
             this.$router.push("/doctor")
         },
         patient () {
+            this.petOrDoc = 2
             this.$router.push("/petPage")
         },
         getImage (e) {
@@ -172,7 +183,43 @@ export default {
                 })
             })
             
-        }
+        },
+        search () {
+            if (!this.inp) {
+                return false
+            }
+            let data = {
+                name: this.inp,
+                searchType: this.petOrDoc,
+                doctorId: 1
+            }
+            searchDoc(data).then(res => {
+                if (this.petOrDoc == 1) {
+                    if (res.data.rtnCode == 200) {
+                        this.$store.commit("setUser", {
+                            key: "doctorList",
+                            value: res.data.data
+                        })
+                    } else {
+                        this.$store.commit("setUser", {
+                            key: "doctorList",
+                            value: []
+                        })
+                        this.$store.commit("setUser", {
+                            key: "loading6",
+                            value: false
+                        })
+                    }
+                } else if (this.petOrDoc == 2) {
+                    if (res.data.rtnCode == 200) {
+                        this.$store.commit("setUser", {
+                            key: "getDoctorMedicalLimitList",
+                            value: res.data.data
+                        })
+                    }
+                }
+            })
+        },
     }
 }
 </script>
@@ -281,11 +328,24 @@ export default {
     }
 
     .input {
-        margin-left: 35px;
+        border: solid 1px white;
         background: white;
         border-radius: 30px;
         overflow: hidden;
-        width: 270px;
+        width: 307px;
+        position: relative;
+        .search_btn {
+            position: absolute;
+            right: 0px;
+            top: 0;
+            height: 100%;
+            color: white;
+            font-size: 13px;
+            padding: 0 5px;
+            border-radius: 0 30px 30px 0;
+            background: @ThemeColor;
+            z-index: 400;
+        }
     }
     .top {
         color: white;
@@ -317,6 +377,7 @@ export default {
         border-radius: 30px;
         margin: 0 10px;
         background: @logoutBtn;
+        // color: white;
     }
     .suppot {
         font-size: 12px;

@@ -65,7 +65,8 @@
 </template>
 
 <script>
-import { min, addMetting, order, orderDetail, delMetting } from "@/axios/request.js"
+import d_img from "@/assets/img/defaultimg.jpg"
+import { min } from "@/axios/request.js"
 export default {
 	data () {
 		return {
@@ -76,12 +77,11 @@ export default {
 		}
 	},
 	created () {
+		this.$store.dispatch("default", d_img)
 		let userId = localStorage.getItem("userId")
 		if (userId) {
-			this.$store.dispatch("IMLogin")
+			this.start()
 		}
-		this.start()
-		this.getNotice()
 	},
 	watch: {
 		callModal: {
@@ -106,6 +106,14 @@ export default {
                     this.petId = val
                 }
             }
+        },
+		my_Balance: {
+            handler (val) {
+                if (val) {
+                    this.my_Balance = val
+                }
+            },
+			deep:true
         },
 	},
 	computed: {
@@ -152,6 +160,15 @@ export default {
 		IMuser () { return this.$store.state.user.IMuser },
 		mask () {return this.$store.state.user.mask},
 		cut_metting () { return this.$store.state.user.mettingId },
+		my_Balance: {
+			get () { return this.$store.state.user.balance },
+			set (val) {
+                this.$store.commit("setUser", {
+                    key: "balance",
+                    value: val
+                })
+            },
+		},
 		petId: {
 			get () { return this.$store.state.user.petId },
 			set (val) {
@@ -163,6 +180,7 @@ export default {
 		},
 		pet () {return this.$store.state.user.pet},
 		dom () {return this.$store.state.user.dom},
+		rtc () {return this.$store.state.user.rtc},
 		sureCall: {
 			get () { return this.$store.state.user.sureCall },
             set (val) {
@@ -196,15 +214,6 @@ export default {
 		saveRecord (val) {
             localStorage.setItem('adminList',JSON.stringify(this.adminList))
         },
-		getNotice () {
-			let that = this
-			let page = {
-				vm: that,
-				pageNum: 1,
-				pageSize: 100
-			}
-			this.$store.dispatch('getNoticeList', page)
-		},
 		start(){
 			this.timer = setInterval(this.valChange, 60000); // 注意: 第一个参数为方法名的时候不要加括号;
 		},
@@ -215,37 +224,29 @@ export default {
 				platform: localStorage.getItem('platform')
 			}
 			min(data).then(res => {
-				console.log(res)
 			})
 		},
-		async sure () {
-			this.$router.push("/agora")
-			this.callLoading = true
-			let params = {
-				roomName: this.$store.state.user.IMuser.username,
-				password: "123456",
-				role: 3,
-				config:{ 
-					rec: false, 
-					recMerge:false, //是否开启合并录制
-            		supportWechatMiniProgram: true //是否允许小程序加入会议
-				}
+		sure () {
+			if (this.my_Balance.balance >= 50) {
+				this.callLoading = true
+				this.sendMsg()
+			} else {
+				this.$message({
+					type:'error',
+					message: 'Your balance is insufficient!'
+				})
 			}
-			const user_room = await emedia.mgr.joinRoom(params);
-			this.addConfr(user_room.confrId)
-			let constraints = { audio: true, video: true };
-			const stream = await emedia.mgr.publish(constraints)
-			this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
-			this.sendMsg(params)
 		},
-		sendMsg (params) {
+		sendMsg () {
+			let D = new Date().getTime()
+            localStorage.setItem('sroom',D)
 			let data = {
                 type: "Call",
 				user: this.userDetail,
 				platform: localStorage.getItem('platform'),
 				petId: this.petId,
 				mettingId: this.mettingId,
-				params
+				sroom: D
             }
             let id = this.$conn.getUniqueId();                 // 生成本地消息id
             let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
@@ -268,7 +269,6 @@ export default {
 			this.sureCall = true
 			this.callModal = false
 			this.callLoading = false
-			window.eMedia.mgr.exitConference()
 			let data = {
                 type: "HangUp1"
             }
@@ -280,34 +280,12 @@ export default {
                 chatType: 'singleChat',                  // 设置为单聊   
             });
             this.$conn.send(msg.body);
-			this.$router.push('/myDoctor')
-
-			let data1 = {
-                webId: this.mettingId
-            }
-            delMetting(data1).then(res => {
-                console.log(res,'删除')
-            })
 		},
-		async sure2 () {
+		sure2 () {
 			this.$router.push("/agora")
 			this.callModal2 = false
 			let that = this
-			setTimeout(async function ()  {
-				const user_room = await emedia.mgr.joinRoom(that.joinParams);
-				let constraints = { audio: true, video: true };
-				const stream = await emedia.mgr.publish(constraints)
-				// this.$store.commit('setApp',{ key: 'localStream', value: stream.localStream })
-				let data6 = {
-					userId: that.caller.userId,
-					remarks: '666',
-					doctorId: that.callTo.doctorId,
-					doctorTypeId: 2,
-					goodsId: 1
-				}
-				order(data6).then(res => {
-					console.log(res,'order')
-				})
+			setTimeout(function ()  {
 				let data = {
 					type: "confirmCall"
 				}
@@ -320,31 +298,6 @@ export default {
 				});
 				that.$conn.send(msg.body);
 			},500)
-		},
-		addConfr (val) {
-			let D = new Date
-			var date = D.toLocaleDateString()
-			let detail = {
-				petName: this.pet.name,
-				petId: this.petId,                 
-				caller: this.userDetail,
-				callTo: this.callTo,
-				createdTime: date,
-				password: '123456'
-			}
-			let data = {
-				'jo': [{
-					confrId: val,
-					userId: this.userDetail.userId + 'A' + localStorage.getItem('platform'),
-					doctorId: this.callTo.doctorId + 'A2',
-					password: JSON.stringify(detail),
-					// password: '123456',
-				}]
-			}
-			addMetting(data).then(res => {
-				console.log(res)
-				this.mettingId = res.data.data[0].id
-			})
 		},
 		cancel2 () {
 			this.callModal2 = false
@@ -375,6 +328,9 @@ export default {
 	#app {
 		height: 100%;
 		min-width: 830px;
+		@media screen and (max-width: 564px) {
+			min-width: 0;
+		}
 		.scrollTop {
 			position: fixed;
 			right: 25px;
@@ -417,6 +373,14 @@ export default {
 		left: 50%;
 		transform: translate(-50%, -50%);
 		overflow: hidden !important;
+	}
+
+	.vetSetting .profile .el-select .el-input, 
+	.vetSetting .profile .el-select .el-input .el-input__inner, 
+	.vetSetting .profile .timeInp_wrap .el-input__inner {
+		background: white !important;
+		color: rgb(199, 199, 199) !important;
+		height: 100% !important;
 	}
 
 	.form_select .el-select .el-input__inner {
@@ -468,12 +432,21 @@ export default {
 	.vetSetting .el-icon-time, .vetSetting .el-input__suffix {
 		display: none !important;
 	}
+
+
 	.setting .gender .el-input {
 		height: 100% !important;
 	}
 	.setting .gender .el-input .el-input__inner {
 		height: 100% !important;
 		background: white !important;
+	}
+	.setting .Remark .el-textarea .el-textarea__inner {
+		height: 70px !important;
+		background: white !important;
+		border: none !important;
+		outline: none !important;
+		resize: none !important;
 	}
 
 
@@ -744,5 +717,18 @@ export default {
 	}
 	.agora .el-button--submit {
 		background: @hdColor !important;
+	}
+	.first_item .first_pet .is-active {
+		display: flex;
+		padding: 0 75px;
+		justify-content: space-between !important;
+	}
+	.first_item .first_pet .el-carousel__container {
+		width: 100% !important;
+	}
+	.first_item .first_pet .el-carousel__indicators--horizontal {
+		// transform: translate(-50%) !important;
+		// position: absolute !important;
+		display: none !important;
 	}
 </style>

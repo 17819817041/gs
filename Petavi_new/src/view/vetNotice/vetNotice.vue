@@ -79,8 +79,8 @@
             <div class="vetNotice_content_wrap">
                 <div class="explan al"><img src="@/assets/img/information.png" alt="">Notice</div>
                 <div class="vetNotice_content_item flex" @scroll="docScroll" ref="doctorList">
-                    <div v-if="vetNoticeList" style="width:100%" ref="doctorList_height">
-                        <div class="vetNotice_item flex al cursor" v-for="(item,i) in vetNoticeList" :key="i" @click="checkNotice(item)">
+                    <div v-if="vetNoticeList[0]" style="width:100%" ref="doctorList_height">
+                        <div class="vetNotice_item flex al cursor" v-for="(item,i) in vetNoticeList" :key="i" @click="checkNotice(item,i)">
                             <div class="state"> 
                                 <div class="read tc" v-if="item.noticeState == 1">Have read</div>
                                 <div class="unRead tc" v-else-if="item.noticeState == 2">Unread</div>
@@ -95,7 +95,7 @@
                             </div>
                         </div>
                     </div>
-                    <div v-else class="mg size21">No New Message</div>
+                    <div v-else class="tc size21 bold" style="width:100%;color:gray;margin-top:30px;">No New Message</div>
                 </div>
                 <div class="acting float ju al" v-if="l_loading">
                     <div class="loading" v-loading="true"></div>
@@ -122,7 +122,7 @@ export default {
         vetNoticeList: {
             get () { return this.$store.state.user.noticeList },
             set (val) {
-                this.vetNoticeList = val
+                this.$store.commit('setUser', { key: 'vetNoticeList', value: val })
             }
         },
         totalRecordsCount () { return this.$store.state.user.totalRecordsCount1 },
@@ -149,7 +149,7 @@ export default {
                 this.$store.commit('setUser', { key: 'scrollTop', value: false } )
             }
         },
-        checkNotice (item) {
+        checkNotice (item,i) {
             if (item.noticeState == 1) {
                 // this.$router.push('/appointment')
             } else if (item.noticeState == 2) {
@@ -158,13 +158,9 @@ export default {
                 }
                 updateNoticeState(data).then(res => {
                     console.log(res)
-                    let that = this
-                    let page = {
-                        vm: that,
-                        pageNum: this.pageNum,
-                        pageSize: this.pageSize
+                    if (res.data.rtnCode == 200) {
+                        this.vetNoticeList[i].noticeState = 1
                     }
-                    this.$store.dispatch('getNoticeList', page)
                 })
                 // this.$router.push('/appointment')
             }

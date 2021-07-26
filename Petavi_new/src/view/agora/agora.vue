@@ -43,7 +43,7 @@
             position: absolute;
             width: 123px;
             height: 150px;
-            // border: solid 1px;
+            // border: solid 1px green;
             bottom: 20px;
             right: 20px;
             z-index: 100;
@@ -63,6 +63,7 @@
             bottom: 0px;
             right: 0px;
             z-index: 100;
+            // border:solid red 1px;
             // background: black;
         }
         .answer {
@@ -411,6 +412,9 @@
             height: 62px;
         }
     }
+    .z_index {
+        z-index: 101 !important;
+    }
 </style>
 
 <template>
@@ -435,10 +439,13 @@
                     <div class="answer flex">
                         <div class="cursor video_fun"><img src="@/assets/img/answer_audeo.png" alt=""></div>
                         <div class="cursor video_fun"><img src="@/assets/img/answer_video.png" alt=""></div>
-                        <div class="cursor video_fun" @click="endCall"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
+                        <div class="cursor video_fun" @click="removeStream"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
                     </div>
-                    <video :class="['video_parent']" autoplay width="400px" height="400px" id="video" ref="video"></video>
-                    <video :class="['video_child']" autoplay id="localVideo"></video>
+                    <!-- <video :class="['video_parent']" autoplay width="400px" height="400px" id="video" ref="video"></video>
+                    <video :class="['video_child']" autoplay id="localVideo"></video> -->
+
+                    <div :class="[{'video_parent': type, 'video_child': !type, 'z_index': !type}]" autoplay id="player_a1" ref="video"></div>
+                    <div :class="[{'video_parent': !type, 'video_child': type, 'z_index': type}]" autoplay id="player_a2" @click="type = !type"></div>
                 </div>
             </div>
             <div :class="[ 'doctorMessage_wrap', { Drawer: drawer } ]">
@@ -576,7 +583,7 @@
 </template>
 
 <script>
-import { addMetting, delMetting, PetMedicalRecord, updatePetMedicalRecord, s_online } from "@/axios/request.js"
+import { addMetting, delMetting, PetMedicalRecord, updatePetMedicalRecord, s_online, getAgoraToken, docGoodsId, order, orderDetail } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -608,11 +615,22 @@ export default {
             msgRecord: {},
             content: '',
             recordDate: '',
-            disabled: true
+            disabled: true,
+
+            type:true,      // 切换摄像头
+            remoteUsers : {},
         }
     },
     mounted () {
-
+        // if (!this.rtc.client) {
+        //     this.rtc.client = this.$V.createClient({mode: "live", codec: "h264"})
+        // }
+        if (localStorage.getItem('platform') == 1) {
+            this.joinAgora()
+        } else {
+            this.joinAgora2()
+        }
+        
     },
     created () {
         this.callToDoctor = this.callTo
@@ -632,7 +650,15 @@ export default {
         userDetail () {return this.$store.state.user.userDetail},
         caller () { return this.$store.state.user.caller },
         callerIM () { return this.$store.state.user.callerIM },
-        mettingId () { return this.$store.state.user.mettingId },
+        mettingId: {
+            get () { return this.$store.state.user.mettingId },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "mettingId",
+                    value: val
+                })
+            },
+        },
         messageList: {
             get () { return this.$store.state.user.messageList },
             set (val) {
@@ -647,6 +673,16 @@ export default {
 			set (val) {
 				this.$store.commit("setUser", {
                     key: "petId",
+                    value: val
+                })
+			}
+		},
+        pet () {return this.$store.state.user.pet},
+        rtc: {
+			get () { return this.$store.state.user.rtc },
+			set (val) {
+				this.$store.commit("setUser", {
+                    key: "rtc",
                     value: val
                 })
 			}
@@ -671,27 +707,160 @@ export default {
         }
     },
     methods: {
-        addPetMedicalRecord () {
-            this.disabled = false
-            this.recordDate = this.years + '-' + this.month + '-' + this.day + ' ' + '12:00:36'
+        joinAgora () {
+            // if (localStorage.getItem('bookingDoc')) {
+            if (localStorage.getItem('bookingDoc')) {
+                let bookingAgo = JSON.parse(localStorage.getItem('bookingDoc'))
+                let docId = {
+                    userId: bookingAgo.booking.bookingDoctorId
+                }
+                docGoodsId(docId).then(msg => {
+                    let data = {
+                        expirationTime: msg.data.data.min,
+                        userId: localStorage.getItem('userId'),
+                        roomNumber: 'petavi_' + localStorage.getItem('sroom')
+                    }
+                    getAgoraToken(data).then(res => {
+                        console.log(res,'token111')
+                        if (res.data.rtnCode == 200) {
+                            this.$store.dispatch('initRtc', {
+                                token: res.data.data,
+                                uid: localStorage.getItem('userId') * 1,
+                                channel: data.roomNumber,
+                                appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
+                                rtc: this.$V
+                            })
+                        }
+                    })
+                })
+                let segmented = {
+                    orderId: bookingAgo.booking.orderId,
+                    goodsId: bookingAgo.booking.goodsId
+                }
+                orderDetail(segmented).then(res => {
+                    console.log(res,'第二次扣费')
+                    localStorage.removeItem('bookingDoc')
+                })
+            } else {
+                let docId = {
+                    userId: this.callTo.doctorId
+                }
+                docGoodsId(docId).then(res => {
+                    let data = {
+                        expirationTime: res.data.data.min,
+                        userId: localStorage.getItem('userId'),
+                        roomNumber: 'petavi_' + localStorage.getItem('sroom')
+                    }
+                    getAgoraToken(data).then(msg => {
+                        console.log(msg,'token666')
+                        if (res.data.rtnCode == 200) {
+                            this.$store.dispatch('initRtc', {
+                                token: msg.data.data,
+                                uid: localStorage.getItem('userId') * 1,
+                                channel: data.roomNumber,
+                                appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
+                                rtc: this.$V
+                            })
+                        }
+                    })
+                    let addorder = {
+                        userId: localStorage.getItem('userId'),
+                        doctorId: this.callTo.doctorId,
+                        doctorType: 2,
+                        goodsId: res.data.data.id
+                    }
+                    order(addorder).then(msg => {
+                        console.log(msg,'生成订单')
+                        localStorage.setItem('order_1',JSON.stringify({orderId: msg.data.data.id, goodsId: res.data.data.id}))
+                    })
+                })
+            }
+        },
+        //医生加入视频
+        joinAgora2 () {
             let data = {
-                // userId: this.caller.userId,
-                userId: 486,
+                expirationTime: 99999999,
+                userId: localStorage.getItem('userId'),
+                roomNumber: 'petavi_' + localStorage.getItem('sroom')
+            }
+            getAgoraToken(data).then(res => {
+                console.log(res,'医生加入')
+                if (res.data.rtnCode == 200) {
+                    this.$store.dispatch('initRtc', {
+                        token: res.data.data,
+                        uid: localStorage.getItem('userId') * 1,
+                        channel: data.roomNumber,
+                        appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
+                        rtc: this.$V
+                    })
+                }
+            })
+            this.addConfr()
+        },
+        removeStream () {
+            this.$store.dispatch('removeStream', { rtc: this.$V })
+            if (localStorage.getItem('platform') == 2) {
+                let data = {
+                    userId: localStorage.getItem('userId'),
+                    platform: localStorage.getItem('platform')
+                }
+                s_online(data).then(res => {
+                    // console.log(res,'在线')
+                })
+            }
+            // this.$router.back()
+            if (this.content == '' && localStorage.getItem('platform') == 2) {    //医生挂断添加record
+                this.addPetMedicalRecord()
+            }
+            this.dele()
+        },
+        dele () {
+            let data = {
+                webId: this.mettingId
+            }
+            delMetting(data).then(res => {
+                console.log(res,'删除')
+            })
+        },
+        addConfr () {
+			let D = new Date
+			var date = D.toLocaleDateString()
+			let detail = {
+				petName: this.pet.name,
+				petId: this.petId,                 
+				caller: this.caller,
+				callTo: this.userDetail,
+				createdTime: date,
+                roomNumber: 'petavi_' + localStorage.getItem('sroom')
+			}
+			let data = {
+				'jo': [{
+					userId: this.caller.userId + 'A1',
+					doctorId: this.userDetail.userId + 'A2',
+					password: JSON.stringify(detail),
+				}]
+			}
+			addMetting(data).then(res => {
+				this.mettingId = res.data.data[0].id
+			})
+		},
+        addPetMedicalRecord () {
+            let D = new Date()
+            let time = D.toTimeString().split(' ')[0]
+            this.disabled = false
+            this.recordDate = this.years + '-' + this.month + '-' + this.day + ' ' + time.split(':')[0] + ':' + time.split(':')[1]
+            let data = {
+                userId: this.caller.userId,
                 doctorId: localStorage.getItem('userId'),
-                // petId: this.petId,
-                petId: 40,
+                petId: this.petId,
                 content: this.content,
                 createdAt: this.recordDate,
                 medicineIds: 2
             }
             PetMedicalRecord(data).then(res => {
-                console.log(res)
+                console.log(res,'tianjiarecord')
                 if (res.data.rtnCode == 200) {
                     this.disabled = false
-                    this.$message({
-                        type:'success',
-                        message: 'Added successfully!'
-                    })
                 } else {
 
                 }
@@ -714,14 +883,6 @@ export default {
             console.log(record,localStorage.getItem('msgRecord'))
         },
         initRecord () {
-            // {
-            //     "123A2":{
-            //         messageList: []
-            //     },
-            //     "321A1": {
-            //         messageList: []
-            //     }
-            // }
             let msgRecord = localStorage.getItem('msgRecord')
             if (msgRecord) {
                 this.msgRecord = JSON.parse(msgRecord)
@@ -729,26 +890,27 @@ export default {
                 if (this.msgRecord[this.callerIM]) {
                     this.messageList = this.msgRecord[this.callerIM].messageList
                 }
-                
             }
         },
         DRAWER () {
             this.drawer = !this.drawer
         },
         endCall () {
-            window.eMedia.mgr.exitConference()
-            let id = {
-                webId: this.mettingId
-            }
-            delMetting(id).then(res => {})
-            let data = {
-                userId: localStorage.getItem('userId'),
-                platform: localStorage.getItem('platform')
-            }
-            s_online(data).then(res => {
-                console.log(res,'在线')
-            })
-            this.$router.back()
+            this.removeStream()
+
+            // window.eMedia.mgr.exitConference()
+            // let id = {
+            //     webId: this.mettingId
+            // }
+            // delMetting(id).then(res => {})
+            // let data = {
+            //     userId: localStorage.getItem('userId'),
+            //     platform: localStorage.getItem('platform')
+            // }
+            // s_online(data).then(res => {
+            //     console.log(res,'在线')
+            // })
+            // this.$router.back()
         },
         getDay () {
             // let month = new Date().getMonth() + 1      //获取月份

@@ -3,7 +3,7 @@ import config from "./config.js"
 import store from "@/vuex/store.js"
 import router from "@/router/router/router.js"
 import { Message } from 'element-ui';
-import { addMetting, delMetting } from "@/axios/request.js"
+import { delMetting } from "@/axios/request.js"
 
 let conn = {};
 WebIM.config = config;
@@ -64,27 +64,26 @@ conn.listen({
             }
             store.commit("setUser",{ key: 'adminList', value: adminList })
         }
-        let m_id = ''
+        // let m_id = ''
         // 收到来电
         if (data.type == 'Call') {
             store.commit("setUser",{ key: 'mettingId', value: JSON.parse(e.data).mettingId })
-            m_id = JSON.parse(e.data).mettingId
+            // m_id = JSON.parse(e.data).mettingId
             store.commit("setUser",{ key: 'callModal2', value: true })
             store.commit("setUser",{ key: 'petId', value: data.petId })
             store.commit("setUser",{ key: 'caller', value: data.user })
-            store.commit("setUser",{ key: 'joinParams', value: data.params })
+            // store.commit("setUser",{ key: 'joinParams', value: data.params })
             store.commit("setUser",{ key: 'callerIM', value: data.user.userId + 'A' + data.platform })
+            localStorage.setItem('sroom', JSON.parse(e.data).sroom)
         }
         // 被呼叫者拒接
         if (data.type == 'HangUp') {
             store.commit("setUser",{ key: 'callModal', value: false })
             store.commit("setUser",{ key: 'callLoading', value: false })
-            router.back()
             Message({
-                type: 'info',
+                type: 'error',
                 message: 'The other party refused to answer the call!'
             })
-            window.eMedia.mgr.exitConference()
             let id = {
                 webId: JSON.parse(e.data).mettingId
             }
@@ -100,7 +99,7 @@ conn.listen({
         if (data.type == 'confirmCall') {
             store.commit("setUser",{ key: 'callModal', value: false })
             store.commit("setUser",{ key: 'callLoading', value: false })
-            // router.push("/agora")
+            router.push("/agora")
         }
 
 

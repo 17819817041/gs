@@ -11,17 +11,30 @@ export default {
         agoraPet: {},
         message: {},
         petList: [],
-        loading: true
+        doctorList: [],
+        loading: false,
+        loading6: false,
+        vDetail: {},
+        rate: 0,
+        inp: '',
+        totalRecordsCount: 0,
+        default_img:'',
     },
     mutations: {
         setUser (state,data) {
             state[data.key] = data.value
+        },
+        pageAdd (state,data) {
+            state.doctorList = state.doctorList.concat(data)
         },
         addFriend (state,data) {
             state[data.key].push(data.value)
         }
     },
     actions: {
+        default (store,data) {
+            store.commit("setUser",{ key: "default_img", value: data}) 
+        },
         initRtc (store,data) {
             var rtc = (store.state.rtc)
             var option = {
@@ -124,32 +137,43 @@ export default {
                 })
             })
         },
-        getDoctorList (store,vm) {
+        getDoctorList (store,num) {
             const doctor = {
                 platform: localStorage.getItem("adminPlatform"),
                 userId: localStorage.getItem("adminUserId"),
-                pageNum:1,
-                pageSize: 30
+                pageNum: num,
+                pageSize:18
             }
-            doctorList(doctor).then(res => {
-                if (res.data.rtnCode == 200) {
-                    console.log(res,"医生列表")
-                    store.commit("setUser",{ key: "doctorList", value: res.data.data.pageT })
-                    store.commit("setUser",{ key: "searchList", value: store.state.doctorList })
-                    store.commit("setUser",{ key: "loading", value: false })
-                } else if (res.data.rtnCode == 500) {
-                    // localStorage.removeItem("Token")
-                    // localStorage.removeItem("userId")
-                    // localStorage.removeItem("paltform")
-                    // localStorage.removeItem("IMtoken")
-                    // localStorage.removeItem('IM')
-                }
-            }).catch(e => {
-                console.log(e)
-                store.commit("setUser",{ key: "loading", value: false })
-                store.commit("setUser",{ key: "doctorList", value: [] })
-                vm.$message.error('Fail to load !');
-            })
+            store.commit("setUser",{ key: "loading6", value: true })
+            if ((store.state.totalRecordsCount == store.state.doctorList.length) &&store.state.totalRecordsCount !=0 ) {
+                store.commit("setUser",{ key: "loading6", value: false })
+            } else {
+                doctorList(doctor).then(res => {
+                    store.commit("setUser",{ key: "loading6", value: false })
+                    if (res.data.rtnCode == 200) {
+                        store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
+                        store.commit("pageAdd", res.data.data.pageT )
+                        if (doctor.pageNum <= 1) {
+                            store.commit("setUser",{
+                                key: "mask",
+                                value: res.data.data.pageT[0]
+                            })
+                            store.commit("setUser", { key: 'vDetail', value: res.data.data.pageT[0] } )
+                            store.commit("setUser", { key: 'rate', value: res.data.data.pageT[0].baseScore } )
+                        }
+                        // if ((store.state.totalRecordsCount == store.state.doctorList.length) &&store.state.totalRecordsCount !=0 ) {
+                        //     store.commit("setUser",{ key: "loading6", value: false })
+                        // }
+                    } else {
+                        store.commit("setUser",{ key: "loading6", value: false })
+                    }
+                }).catch(e => {
+                    console.log(e)
+                    store.commit("setUser",{ key: "loading6", value: false })
+                    store.commit("setUser",{ key: "doctorList", value: [] })
+                    
+                })
+            }
         },
         logout (store,vm) {
             vm.$confirm('Are you sure to log out?', 'Attention', {

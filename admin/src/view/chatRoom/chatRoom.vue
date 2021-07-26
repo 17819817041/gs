@@ -31,7 +31,8 @@
                     </div>
                     <div class="inpMessage al">
                         <div class="Input al">
-                            <input type="text" class="width100" v-model="adminInp" placeholder="Type a message" @keydown.enter="send">
+                            <el-input type="text" class="width100" v-model="adminInp" :disabled="disabled"
+                            placeholder="Type a message" @keyup.enter.native="send"></el-input>
                         </div>
                         <div class="add al">
                             <img class="cursor" src="@/assets/img/clip.png" alt="">
@@ -53,14 +54,19 @@ export default {
     data () {
         return {
             message_record:[],
-            // messageList: [],
+            disabled: true,
             sendFromIM: "",
             adminInp: '',
             headImage: ''
         }
     },
     created () {
-       
+       let message = {}
+       if (localStorage.getItem('message')) {
+
+       } else {
+           localStorage.setItem('message',JSON.stringify(message))
+       }
     },
     mounted () {
         this.initRecord()
@@ -108,6 +114,7 @@ export default {
     methods: {
         changeWindow (key) {
             this.sendFromIM = key
+            this.disabled = false
             this.$store.commit("setUser", {
                     key: "fromIM",
                     value: key

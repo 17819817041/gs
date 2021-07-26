@@ -7,13 +7,13 @@
                 <div class="first_pet_item sb">
                     <div class="ju al first_pet_item_i">
                         <div class="ju al img_ia">
-                            <img class="cursor" :src="petList[0]? petList[0].image:''" v-if="petList[0]" alt="">
+                            <img class="cursor" :src="petList[0]? petList[0].image:''" v-if="petList[0]" alt="" @click="first_pet(petList[0])">
                             <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
                         </div>
                     </div>
                     <div class="ju al first_pet_item_i">
                         <div class="ju al img_ia">
-                            <img class="cursor" :src="petList[1]? petList[1].image:''" v-if="petList[1]" alt="">
+                            <img class="cursor" :src="petList[1]? petList[1].image:''" v-if="petList[1]" alt="" @click="first_pet(petList[1])">
                             <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
                         </div>
                     </div>
@@ -25,11 +25,11 @@
                 </div>
             </div>
             <div class="sb first_pet" v-else>
-                <div class="first_pet_item" style="border: red"> 
-                    <el-carousel indicator-position="outside" :autoplay='false'>
-                        <el-carousel-item v-for="(item,i) in length1" :key="i">
+                <div class="first_pet_item"> 
+                    <el-carousel indicator-position="false" :autoplay='false' class="sb">
+                        <el-carousel-item v-for="(item,i) in length1" :key="i" style="height: 100%">
                             <div class="ju al img_i float" v-for="(item,i) in petList.slice((i+1)*3-3,(i+1)*3)" :key="i">
-                                <img class="cursor" :src="item.image" v-if="item.image" alt="">
+                                <img class="cursor" :src="item.image" v-if="item.image" alt="" @click="first_pet(item)">
                                 <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
                             </div>
                         </el-carousel-item>
@@ -45,11 +45,12 @@ export default {
     data () {
         return {
             more: true,
-            length1: 0
+            length1: 0,
+            a: {},
         }
     },
     created () {
-        
+        this.$store.dispatch('getDoctorList', 1)
     },
     watch: {
         petList: {
@@ -69,23 +70,23 @@ export default {
                 })
             },
         },
+		userDetail () { return this.$store.state.user.userDetail },
     },
-    // directives:{
-    //     drag(el,bindings){
-    //         el.onmousedown = function(e){
-    //             var disx = e.pageX - el.offsetLeft;
-    //             document.onmousemove = function (e){
-    //                 el.style.left = e.pageX - disx+'px';
-    //             }
-    //             document.onmouseup = function(){
-    //                 document.onmousemove = document.onmouseup = null;
-    //             }
-    //         }
-    //     }
-    // },
     methods: {
         other () {
             this.more = false
+        },
+        first_pet (item) {
+            console.log(item)
+            this.$store.commit('setUser', {
+                key: 'pet',
+                value: item
+            })
+            this.$router.push({
+                name: 'changeBatch',
+                query: item
+            })
+            // this.starBook(item)
         }
     }
 }
@@ -132,8 +133,8 @@ export default {
         background: rgb(216, 216, 216);
     }
     .img_i {
-        width: 33.3%;
-        height: 100%;
+        width: 243px;
+        height: 243px;
         border-radius: 50%;
         overflow: hidden;
         img {
@@ -141,8 +142,8 @@ export default {
         }
     }
     .img_ia {
-        width: 100%;
-        height: 100%;
+        width: 243px;
+        height: 243px;
         border-radius: 50%;
         overflow: hidden;
         img {

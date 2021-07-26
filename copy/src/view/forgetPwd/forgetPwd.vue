@@ -1,5 +1,5 @@
 <template>
-    <div class="forgetPwd">
+    <div class="forgetPwd" v-loading="loading">
         <div><myHeaderL></myHeaderL></div>
         <div class="pwdContent mg">
             <div class="size21 tc pwdTitle" @click="asd">Forget Password</div>
@@ -11,7 +11,7 @@
                 <el-form :model="data">
                     <el-form-item>
                         <div>
-                            <el-input placeholder="Email Address" v-model="data.email"></el-input>
+                            <el-input placeholder="Email Address" @keyup.enter.native="send" v-model="data.email"></el-input>
                         </div>  
                     </el-form-item>
                     <el-form-item>
@@ -35,19 +35,33 @@ export default {
             data: {
                 platform: localStorage.getItem("platform"),
                 email: ""
-            }
+            },
+            loading: false
         }
     },
     methods: {
         send () {
+            this.loading = true
             forget(this.data).then(res => {
-                console.log(res)
+                this.loading = false
                 if (res.data.rtnCode == 200) {
                     this.$message({
                         type: 'success',
                         message: 'Please log in to your mailbox to change your password!'
                     })
+                } else {    
+                    this.$message({
+                        type: 'error',
+                        message: 'Send faild!'
+                    })
                 }
+            }).catch(e => {
+                console.log(e)
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: 'Send faild!'
+                })
             })
         },
         asd () {

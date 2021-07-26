@@ -92,8 +92,8 @@
             <div class="notice_content_wrap">
                 <div class="explan al"><img src="@/assets/img/information.png" alt=""> Notice</div>
                 <div class="notice_content_item" @scroll="docScroll" ref="doctorList">
-                    <div v-if="noticeList" class="notice_list" ref="doctorList_height">
-                        <div class="notice_item flex al" @click="checkNotice(item)" v-for="(item,i) in noticeList" :key="i">
+                    <div v-if="noticeList[0]" class="notice_list" ref="doctorList_height">
+                        <div class="notice_item flex al" @click="checkNotice(item,i)" v-for="(item,i) in noticeList" :key="i">
                             <div class="state"> 
                                 <div class="read tc" v-if="item.noticeState == 1">Have read</div>
                                 <div class="unRead tc" v-else-if="item.noticeState == 2">Unread</div>
@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import { notice, updateNoticeState } from "@/axios/request.js"
+import { updateNoticeState } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -135,11 +135,25 @@ export default {
     created () {
         // this.message()
     },
+    watch: {
+        // noticeList: {
+        //     handler (val) {
+        //         if (val) {
+        //             console.log(val)
+        //             this.noticeList = val
+        //         }
+        //     },
+        //     deep: true
+        // }
+    },
     computed: {
         noticeList: {
             get () { return this.$store.state.user.noticeList },
             set (val) {
-                this.noticeList = val
+                this.$store.commit('setUser',{ 
+                    key: 'noticeList', 
+                    value: val 
+                })
             }
         },
         l_loading () { return this.$store.state.user.n_loading },
@@ -170,7 +184,7 @@ export default {
                 this.$store.commit('setUser', { key: 'scrollTop', value: false } )
             }
         },
-        checkNotice (item) {
+        checkNotice (item,i) {
             if (item.noticeState == 1) {
                 // this.$router.push('/appointment')
             } else if (item.noticeState == 2) {
@@ -178,14 +192,9 @@ export default {
                     noticeId: item.id
                 }
                 updateNoticeState(data).then(res => {
-                    console.log(res)
-                    let that = this
-                    let page = {
-                        vm: that,
-                        pageNum: this.pageNum,
-                        pageSize: this.pageSize
+                    if (res.data.rtnCode == 200) {
+                        this.noticeList[i].noticeState = 1
                     }
-                    this.$store.dispatch('getNoticeList', page)
                 })
                 // this.$router.push('/appointment')
             }

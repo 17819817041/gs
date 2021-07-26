@@ -2,13 +2,15 @@
     <div class="myDoctor flex">
         <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList">
             <div class="width102 clear" ref="doctorList_height">
-                <div class="doctor_item float" v-for="(item) in doctorList" :key="item.doctorId" @click="getDetail(item)">
+                <div class="doctor_item float" v-for="(item,i) in doctorList" :key="i" @click="getDetail(item)">
                     <div class="image flex">
                         <div class="doctor_head">
                             <img class="onLine" v-if="item.doctorOnLineState == 1" src="@/assets/img/onLine.png" alt="">
+                            <img class="busy" v-else src="@/assets/img/busy.png" alt="">
                             <div class="item_head ju al">
                                 <img style="height:60px;" :src="item.userHead" v-if="item.userHead" alt="">
-                                <i v-else class="el-icon-picture-outline" style="font-size:35px;color:gray"></i>
+                                <img style="height:100%;" v-else :src="default_img" alt="">
+                                <!-- <i v-else class="el-icon-picture-outline" style="font-size:35px;color:gray"></i> -->
                             </div>
                             <div class="grade white al size12b">
                                 <img src="@/assets/img/rate.png" alt="">{{item.baseScore}}
@@ -46,19 +48,15 @@
                 </div>
             </div>
         </div>
-        <div class="doctorList scrollUp" v-else-if="doctorList[0]">
+        <div class="doctorList scrollUp" v-else>
             <div style="padding:30px 0;font-size:20px;font-weight:bold;color:gray" class="tc" >No Doctor!</div>
         </div>
         <div class="doctorDetails noBar">
             <div class="details_item mg">
                 <div class="head_image mg al ju">
                     <img style="height:100%" :src="detail.userHead" v-if="detail.userHead" alt="">
-                    <i class="el-icon-picture-outline" style="font-size:40px;color:gray" v-else></i>
-                    <!-- <el-image style="height:80px" :src="detail.userHead" alt="" fit="cover">
-                        <div slot="error" class="image-slot al" style="height: 100%;width:100%">
-                            <i class="el-icon-picture-outline" style="font-size:40px;color:gray"></i>
-                        </div>
-                    </el-image> -->
+                    <img style="height:100%;" v-else :src="default_img" alt="">
+                    <!-- <i class="el-icon-picture-outline" style="font-size:40px;color:gray" v-else></i> -->
                 </div>
                 <div class="doctor_name tc" v-if="detail.doctorName">{{detail.doctorName}}</div>
                 <div class="doctor_name tc" v-else>Name</div>
@@ -132,7 +130,6 @@
     </div>
 </template>
 <script>
-// import {  } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -142,7 +139,7 @@ export default {
             // detail: {},
             pageNum: 1,
             showMore: false,
-            timer: null
+            timer: null,
         }
     },
     created () {
@@ -155,12 +152,6 @@ export default {
         
     },
     watch: {
-        loading: {
-            handler (val) {
-                this.loading = val
-            },
-            // deep: true
-        },
         detail: {
             handler (val) {
                 this.$nextTick(() => {
@@ -174,10 +165,19 @@ export default {
             },
             deep: true
         },
+        inp: {
+            handler (val) {
+                this.pageNum = 1
+                if (!val) {
+                    this.doctorList = []
+                    this.getDoctorList()
+                }
+            }
+        },
         // doctorList: {
         //     handler (val) {
         //         if (val) {
-        //             this.doctorList = val
+                  
         //         }
         //     }
         // }
@@ -216,12 +216,22 @@ export default {
             get () { return this.$store.state.user.loading6 },
             set (val) {
                 this.$store.commit("setUser", {
-                    key: "loading",
+                    key: "loading6",
                     value: val
                 })
             }
         },
-        totalRecordsCount () { return this.$store.state.user.totalRecordsCount }
+        totalRecordsCount () { return this.$store.state.user.totalRecordsCount },
+        inp: {
+            get () {return this.$store.state.user.inp},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "inp",
+                    value: val
+                })
+            },
+        },
+        default_img () { return this.$store.state.user.default_img }
     },
     methods: {
         getDetail (item) {
@@ -242,6 +252,9 @@ export default {
             })
         },
         docScroll () {
+            if (this.inp) {
+                return false
+            }
             this.$store.commit('setUser',{ key: 'dom', value: 'scrollUp' })
             if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
                 if (this.doctorList.length >= this.totalRecordsCount) {
@@ -379,6 +392,15 @@ video {
             right: -2px;
             bottom: -2px;
         }
+        .busy {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -2px;
+            bottom: -2px;
+            background: white;
+            border-radius: 50%;
+        }
     }
     .head_image {
         width: 80px;
@@ -513,6 +535,7 @@ video {
         width: 80%;
         margin: auto;
         font-size: 14;
+        border-bottom: solid 2px gray;
         color: #656565;
         max-height: 63px;
         text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/

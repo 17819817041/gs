@@ -2,10 +2,8 @@ export default {
     socketServer: '//im-api-v2-31.easemob.com',    // socket Server地址
 
     restServer: '//a31.easemob.com',               // rest Server地址
-
-    // appkey: '1115210517085955#972307875',        // App key
-    appkey: '1130201110157617#petavi',
-    // appKey: window.IMkey,
+        
+    appkey: '1130201110157617#petavi',// App key
 
     https : true,                            // 是否使用https
 

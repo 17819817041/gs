@@ -131,6 +131,19 @@ export default {
         }
     },
     created () {
+        var adminList = {
+            'admin': {
+                messageList: [
+                    // { type: 1, value: "star",userId: '486' },
+                    // { type: 2, value: "12123" },
+                ]
+            },
+        }
+        if (localStorage.getItem('adminList')) {
+
+        } else {
+            localStorage.setItem('adminList',JSON.stringify(adminList))
+        }
         
     },
     mounted () {

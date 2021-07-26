@@ -8,11 +8,14 @@ const service = axios.create({
     baseURL: window.baseURL
 })
 service.interceptors.request.use(config => {
-    if (!config.url.includes('register') && !config.url.includes('googleLogin')) { 
+    if (!config.url.includes('register') && !config.url.includes('googleLogin') && !config.url.includes('fetch_rtc_token')) { 
         config.headers.token = localStorage.getItem("Token")
         config.headers.userId = localStorage.getItem("userId")
     }
-    config.headers.platform = localStorage.getItem("platform")
+    if (!config.url.includes('fetch_rtc_token')) {
+        config.headers.platform = localStorage.getItem("platform")
+    }
+    
     return config
 })
 

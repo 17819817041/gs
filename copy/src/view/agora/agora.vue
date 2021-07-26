@@ -799,13 +799,15 @@ export default {
         },
         removeStream () {
             this.$store.dispatch('removeStream', { rtc: this.$V })
-            let data = {
-                userId: localStorage.getItem('userId'),
-                platform: localStorage.getItem('platform')
+            if (localStorage.getItem('platform') == 2) {
+                let data = {
+                    userId: localStorage.getItem('userId'),
+                    platform: localStorage.getItem('platform')
+                }
+                s_online(data).then(res => {
+                    // console.log(res,'在线')
+                })
             }
-            s_online(data).then(res => {
-                console.log(res,'在线')
-            })
             // this.$router.back()
             if (this.content == '' && localStorage.getItem('platform') == 2) {    //医生挂断添加record
                 this.addPetMedicalRecord()

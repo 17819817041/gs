@@ -39,6 +39,7 @@
 
 
     .userDetails_wrap {
+        min-width: 230px;
         width: 50%;
     }
     .patients_img_wrap {
@@ -60,8 +61,8 @@
         height: 19px;
         margin-right: 8px;
     }
-    .relationWay {
-        padding: 5px 0px;
+    .relationWay, .relation {
+        padding: 10px 0px;
     }
     .message_list {
         width: 65%;
@@ -80,6 +81,7 @@
         padding-bottom: 11px;
     }
     .personMore {
+        width: 74%;
         span{
             color: #1976D2;
             font-size: 16px;
@@ -232,6 +234,43 @@
     #player_a1 {
         height: 400px;
     }
+    .head_image {
+        width: 100px;
+        height: 100px;
+        border: solid gray 1px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+    .doctor_name {
+        font-size: 19px;
+        color: #212121;
+        padding: 5px 0;
+    }
+    .xian {
+        border-left: 1px #DCDDE0 solid;
+        border-right: 1px #DCDDE0 solid;
+    }
+    .reviews {
+        width: 74%;
+        margin: auto;
+        margin-top: 27px;
+        @media screen and (max-width:1250px) {
+            transform: scale(0.9);
+        }
+    }
+    .introduce {
+        width: 74%;
+        margin: 25px auto;
+        font-size: 14;
+        color: #656565;
+        max-height: 63px;
+        text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+        display: -webkit-box;
+        -webkit-line-clamp: 3;/*规定超过两行的部分截断*/
+        -webkit-box-orient: vertical;
+        overflow : hidden; 
+        word-break: break-all;/*在任何地方换行*/
+    }
 </style>
 <template>
     <div class="adminAgora flex">
@@ -256,7 +295,7 @@
                         </div>
                         <div class="size19 tc personal_name">{{petAndUser.userName}}</div>
                         <div class="address ju">
-                            <div>
+                            <div class="al">
                                 <img class="address_img" src="@/assets/img/location.png" alt="">
                             </div>
                             <div class="size13">{{petAndUser.address}}</div>
@@ -289,7 +328,46 @@
                     </div>
                     <div class="personMore mg te flexEnd cursor"><span>More...</span></div>
                 </div>
-                <div class="d_user"></div>
+                <div class="d_user">
+                    <div class="guardianDetails mg size19">Vet Details</div>
+                    <div class="head_image mg al ju">
+                        <img style="height:100%" :src="doctor.userImage" v-if="doctor.userImage" alt="">
+                        <i class="el-icon-picture-outline" style="font-size:40px;color:gray" v-else></i>
+                    </div>
+                    <div class="doctor_name tc" v-if="doctor.doctorName">{{doctor.doctorName}}</div>
+                    <div class="doctor_name tc" v-else>Name</div>
+                    <div class="size15 tc">General Obstetrics </div>
+                    <div class="relation ju">
+                        <div class="cursor"><img src="@/assets/img/chat.png" alt=""></div>
+                    </div>
+                    <div class="reviews sb">
+                        <div>
+                            <div class="size12">{Experience}</div>
+                            <div class="size13">
+                                <span v-if="doctor.experience">{{doctor.experience}}</span>
+                                <span v-else>0</span>
+                                + years
+                            </div>
+                        </div>
+                        <div class="xian"></div>
+                        <div class="tc likes">
+                            <div class="size12 al">Likes</div>
+                            <div><span class="size13">{{doctor.totalLike}}</span><span class="size12"> ({{doctor.likingRate}})</span></div>
+                        </div>
+                        <div class="xian"></div>
+                        <div style="text-align:end;width:70px">
+                            <div class="size12">Reviews</div>
+                            <div class="size13">230</div>
+                        </div>
+                    </div>
+                    <div class="introduce text-overflow">
+                        <span class="text-overflows" v-if="doctor.extend">
+                            {{doctor.extend}}
+                        </span>
+                        <span v-else>No introduction!</span>
+                    </div>
+                    <div class="personMore mg te flexEnd cursor"><span>More...</span></div>
+                </div>
             </div>
         </div>
         <div class="my_account noBar">
@@ -311,7 +389,7 @@
                         <div class="outLogo size12 bold cursor al ju">Logout</div>
                     </div>
                 </div>
-                <div class="star_e bold cursor tc mg white">
+                <div class="star_e bold tc mg white">
                     17:00 - 18:00
                 </div>
                 <div class="leave_r cursor bold tc white" @click="outRoom">
@@ -343,7 +421,8 @@ export default {
     data () {
         return {
             petAndUser: {},
-            date: ''
+            date: '',
+            doctor: {}
         }   
     },
     created () {
@@ -363,6 +442,7 @@ export default {
         },
         getUser () {
             let user = JSON.parse(localStorage.getItem('confr'))
+            this.doctor = user.password.callTo
             console.log(user,user.password.petId)
             let data = {
                 petId: user.password.petId

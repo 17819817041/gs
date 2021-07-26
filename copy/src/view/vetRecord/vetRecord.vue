@@ -114,7 +114,16 @@
             margin-top: 30px;
             padding: 5px 0 10px 0;
             border-bottom: solid 1px rgb(224, 224, 224);
+            position: relative;
         }
+    }
+    .cancel {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .cancel_item {
+        background: @denger;
     }
     .medialRecord::-webkit-scrollbar {
             width: 8px;
@@ -141,7 +150,9 @@
                     <div class="record_message">
                         <div class="record_item flex mg">
                             <div class="record_image ju">
-                                <img class="dog_img" src="@/assets/img/dog.png" alt="">
+                                <div>
+                                    <img class="dog_img" src="@/assets/img/dog.png" alt="">
+                                </div>
                             </div>
                             <div style="flex:10">
                                 <div class="record_wrap flex">
@@ -224,8 +235,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="medialRecord" v-if="userAndPet.petMedicalRecords">
-                                    <div class="medialRecord_item" v-for="(item,i) in userAndPet.petMedicalRecords" :key="i">
+                                <div class="medialRecord" v-if="userAndPet.petMedicalRecordDtos">
+                                    <div class="medialRecord_item" v-for="(item,i) in userAndPet.petMedicalRecordDtos" :key="i">
+                                        <div class="cancel cursor">
+                                            <el-button class="cancel_item width100" type="primary" @click="deleMedical(item)" round>Cancel Record</el-button>
+                                        </div>
                                         <div class=" size17">Medical Record</div>
                                         <div style="padding: 5px 0 5px 15px"> 
                                             <span class=" size17">Date: </span>
@@ -257,7 +271,7 @@
 </template>
 
 <script>
-import { petDetails, PetMedicalRecor, petType } from "@/axios/request.js"
+import { petDetails, petType, delPetMedicalRecordById } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -269,27 +283,14 @@ export default {
         }
     },
     created () {
-        // let data = {
-        //     petId: this.$route.query.pet,
-        //     doctorId: 322,
-        //     userId: localStorage.getItem('userId'),
-        //     content: "Form doctor s remark!",
-        //     medicineIds: 1
-        // }
-        // PetMedicalRecord(data).then(res => {
-        //     console.log(res,66666666)
-        // })
         this.getPetDetails()
     },
     methods: {
         getPetDetails () {
-            // this.userAndPet = this.$route.params.pet
-            console.log(this.$route.query)
             let data = {
-                petId: this.$route.query.petId
+                petId: this.$route.query.id
             }
             petDetails(data).then(res => {
-                console.log(res)
                 this.loading = false
                 this.userAndPet = res.data.data
                 this.getPetType()
@@ -331,6 +332,21 @@ export default {
                 }
             })
         },
+        deleMedical (item) {
+            let data = {
+                petMedicalRecordId: item.petMedicalRecordId
+            }
+            delPetMedicalRecordById (data).then(res => {
+                this.loading = true
+                if (res.data.rtnCode == 200) {
+                    this.getPetDetails()
+                    this.$message({
+                        type: 'success',
+                        message: 'Cancel Successfully'
+                    })
+                }
+            })
+        }
     }
 }
 </script>

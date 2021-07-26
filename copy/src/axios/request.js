@@ -107,7 +107,7 @@ export function updatePet (data) {    //更新宠物信息
     })
 }
 
-export function doctorList (data) {      //医生列表
+export function doctorList (data) {      //医生列表          0 离线   1在线    2忙碌
     return request({ 
         url: "/doctor/getDoctorListByLimit",
         method: "POST",
@@ -507,9 +507,25 @@ export function URLToken (data) {            //链接是否失效 String email, 
     })
 }
 
-export function searchDoc (data) {         //搜索
-    return request({
+export function searchDoc (data) {         //搜索  name=p&searchType=2&doctorId=574
+    return request({                                      // 1 医生， 2 宠物
         url: '/user/homeSearch',
+        method: "POST",
+        params: data
+    })
+}
+      
+export function changeBatch (data) {         //紧急医生 int pageNum, int pageSize
+    return request({                                  
+        url: '/doctor/changeBatch',
+        method: "POST",
+        params: data
+    })
+}
+
+export function resetPasswordByForget (data) {         //忘记密码修改 String email, String newPassword
+    return request({                                  
+        url: '/user/resetPasswordByForget',
         method: "POST",
         params: data
     })

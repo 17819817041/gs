@@ -10,7 +10,7 @@
             width: 30%;
             left: 50%;
             top: 50%;
-            transform: translate(-72%,-50%);
+            transform: translate(-72%,-60%);
             border: solid 1px rgb(212, 212, 212);
             border-radius: 10px;
             background: rgb(255, 255, 255);
@@ -201,7 +201,6 @@
         resize: none;
     }
     .dateInp, .nameInp {
-        width: 35%;
         display: inline-block;
         
         padding: 1px 2px;
@@ -233,15 +232,18 @@
         <div class="addRecord" v-show="top_up_mask">
             <div class="medialRecord">
                 <div class="medialRecord_item">
-                    <div class=" size19">Medical Record</div>
+                    <div class="sb size19">
+                        <span>Medical Record</span>
+                        <span><img class="cursor" @click="add_back" style="width:24px;height:24px;" src="@/assets/img/back.png" alt=""></span>
+                    </div>
                     <div class="al" style="padding: 5px 0 5px 15px"> 
                         <span class=" size19">Date: </span>
                         <span class="size15 dateInp">{{today}}</span>
                     </div>
-                    <div class="al" style="padding-top: 10px">
+                    <!-- <div class="al" style="padding-top: 10px">
                         <span class=" size19">Vet: </span>
                         <span class="size15 nameInp"><input type="text" placeholder="Enter your Name"></span>
-                    </div>
+                    </div> -->
                     <div class="textarea_wrap size15" style="padding: 10px 15px">
                         <textarea name="" id="" cols="30" rows="10" v-model="content" placeholder="Enter your suggestion"></textarea>
                     </div>
@@ -262,7 +264,7 @@
                         <div class="size25 bold tc item_title">Guadian Details</div>
                         <div class="detail flex width100 al">
                             <div class="person_image">
-                                <div class=" al ju">
+                                <div class="mg al ju">
                                     <img class="felame" v-if="userAndPet.userHead" :src="userAndPet.userHead" alt="" mode="widthFix">
                                     <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
                                 </div>
@@ -312,7 +314,7 @@
                         <div class="details_item flex">
                             <div class="size25 bold tc item_title2">Pet Details</div>
                             <div class="details_image ">
-                                <div class="ju al">
+                                <div class="mg ju al">
                                     <img class="dog_img" v-if="userAndPet.petHeadUrl" :src="userAndPet.petHeadUrl" alt="" mode="widthFix">
                                     <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
                                 </div>
@@ -398,9 +400,6 @@
                                     <div class="add cursor">
                                         <el-button class="add_item width100" type="warning" @click="addRecord" round>Add Record</el-button>
                                     </div>
-                                    <div class="cancel cursor">
-                                        <el-button class="cancel_item width100" type="primary" round>Cancel Record</el-button>
-                                    </div>
                                 </div>
                                 <div class="record1">
                                     <div class="medial cursor">
@@ -408,9 +407,6 @@
                                     </div>
                                     <div class="add cursor">
                                         <el-button class="add_item width100" type="warning" @click="addRecord" round>Add Record</el-button>
-                                    </div>
-                                    <div class="cancel cursor">
-                                        <el-button class="cancel_item width100" type="primary" round>Cancel Record</el-button>
                                     </div>
                                 </div>
                             </div>
@@ -443,6 +439,13 @@ export default {
     },
     methods: {
         sureRecord () {
+            if (this.content == '') {
+                this.$message({
+                    type: 'warning',
+                    message: 'Medical records cannot be empty!'
+                })
+                return false
+            }
             let data = {
                 petId: this.$route.query.id,
                 doctorId: localStorage.getItem('platform'),
@@ -454,7 +457,9 @@ export default {
                 if (res.data.rtnCode == 200) {
                     this.$router.push({
                         name: 'vetRecord',
-                        query: this.userAndPet
+                        query: {
+                            id: this.userAndPet.petId
+                        }
                     })
                     this.$store.commit("setUser", {
                         key: "showback",
@@ -540,12 +545,18 @@ export default {
                 }
             })
         },
-
-
         toRecord () {
             this.$router.push({
                 name: 'vetRecord',
-                query: this.userAndPet
+                query: {
+                    id: this.userAndPet.petId
+                }
+            })
+        },
+        add_back () {
+            this.$store.commit("setUser", {
+                key: "showback",
+                value: false
             })
         }
     }

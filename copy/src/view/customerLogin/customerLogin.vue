@@ -317,6 +317,7 @@ export default {
                     that.loading = true
                     login(that.form).then(res => {
                         console.log(res,666)
+                        that.loading = false
                         if (res.data.rtnCode == 200) {
                             localStorage.setItem("Token",res.data.data.token)
                             localStorage.setItem("userId",res.data.data.userId)
@@ -332,13 +333,18 @@ export default {
                             this.$store.dispatch("getUser")
                             that.login = true
                             that.$router.replace('/customerhomepage')
-                            that.loading = false
                         } else if (res.data.rtnCode == 202) {
                             this.$message({
                                 type: 'warning',
                                 message: 'Username or password wrong!'
                             });
-                            that.loading = false
+                            
+                        }
+                        else {
+                            this.$message({
+                                type: 'error',
+                                message: res.data.msg
+                            })
                         }
                     }).catch(e => {
                         console.log(e)
