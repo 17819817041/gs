@@ -10,6 +10,9 @@
         @media screen and (max-width: 1300px) {
             height: 80px;
         }
+        @media screen and (max-width: 564px) {
+            height: 55px;
+        }
         .logo {
             background: rgb(255, 255, 255);
             position: absolute;
@@ -125,6 +128,13 @@
             right: -2px;
         }
     }
+    .mobile_s {
+        position: absolute;
+        width: 100%;
+        bottom: 5px;
+        left: 0;
+        padding: 0 15px;
+    }
     .div {
         position: absolute;
         width: calc(100% - 240px);
@@ -195,69 +205,87 @@
 </style>
 
 <template>
-    <div class="headerLogoPage">
-        <div :class="['logo',{ logo_width: rotate }]">
-            <div class="drawer_list_wrap">
-                <img class="logo_IMG" @click="backHome" src="@/assets/img/logo.png" alt="">
-                <div :class="['drawer_list',{rotate: rotate}]">
-                    <img style="height:100%;transition:0.2s." src="@/assets/img/list.png" alt="" @click="showDetails">
-                </div>  <!-- //抽屉 -->
+    <div>
+        <div class="headerLogoPage">
+            <div :class="['logo',{ logo_width: rotate }]">
+                <div class="drawer_list_wrap">
+                    <img class="logo_IMG" @click="backHome" src="@/assets/img/logo.png" alt="">
+                    <div :class="['drawer_list',{rotate: rotate}]">
+                        <img style="height:100%;transition:0.2s." src="@/assets/img/list.png" alt="" @click="showDetails">
+                    </div>  <!-- //抽屉 -->
+                </div>
             </div>
-        </div>
-        <div class="div sb al">
-            <div class="search al sa" v-if="login">
-                <div class="top cursor" v-if="identity" @click="doctor">All Doctors</div>
-                <div class="top cursor" v-else @click="patient">All Patients</div>
-                <div class="select top" >
-                    <div class="category">
-                        Category
-                        <img class="dropimg" src="@/assets/img/drop.png" alt="">
+            <div class="div sb al" v-show="true">
+                <div class="search al sa" v-if="login">
+                    <div class="top cursor" v-if="identity" @click="doctor">All Doctors</div>
+                    <div class="top cursor" v-else @click="patient">All Patients</div>
+                    <div class="select top" >
+                        <div class="category">
+                            Category
+                            <img class="dropimg" src="@/assets/img/drop.png" alt="">
+                        </div>
+                    </div>
+                    <div class="input" >
+                        <div class="search_btn al ju cursor" @click="search">
+                            Search
+                        </div>
+                        <el-input style="transform:scale(1);border:none;" v-model="inp" @keyup.enter.native="search"
+                        prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
                     </div>
                 </div>
-                <div class="input" >
+                <div v-else></div>
+                <div class="function al">
+                    <div class="al sb function_item" v-if="login" >
+                        <div class="userName al sb">
+                            <div class="myMessage al">
+                                <label for="ava" class="cursor label_img ju al">
+                                    <input id="ava" v-show="false" type="file" @change="getImage" />   <!-- 头像路径-->
+                                    <div class="ju al" style="height:55px;overflow:hidden;border-radius:50%;transform:scale(1)">
+                                        <img style="height:100%;" v-if="userDetails.userImage" :src="userDetails.userImage" alt="">
+                                        <img style="height:100%;" v-else :src="default_img" alt="">
+                                        <!-- <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i> -->
+                                    </div>
+                                </label>
+                                <div class="name al">{{userDetails.userName}}</div>
+                            </div>
+                            <div class="sa" style="padding-left:20px;">
+                                <div class="informationImg cursor top al" @click="notice">
+                                    <img class="noticeDot" v-show="noticeState" src="@/assets/img/dot.png" alt="">
+                                    <img src="@/assets/img/information.png" alt="">
+                                </div>
+                                <div class="homeImg al cursor" @click="home">
+                                    <img src="@/assets/img/home.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="logout cursor bold tc white al ju" @click="logout">
+                            <div >Logout</div>     
+                        </div>
+                    </div>
+                    <div class="helpBtn cursor al ju" @click="support">
+                        <div class="al">
+                            <img src="@/assets/img/what.png" alt="">
+                        </div>
+                        <div class="suppot size12"> Help & Support </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="mobile_s sa">
+                <div style="width:20px;"></div>
+                <div class="input mg" style="max-width: 307px;width: 73%;">
                     <div class="search_btn al ju cursor" @click="search">
                         Search
                     </div>
                     <el-input style="transform:scale(1);border:none;" v-model="inp" @keyup.enter.native="search"
                     prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
                 </div>
-            </div>
-            <div v-else></div>
-            <div class="function al">
-                <div class="al sb function_item" v-if="login" >
-                    <div class="userName al sb">
-                        <div class="myMessage al">
-                            <label for="ava" class="cursor label_img ju al">
-                                <input id="ava" v-show="false" type="file" @change="getImage" />   <!-- 头像路径-->
-                                <div class="ju al" style="height:55px;overflow:hidden;border-radius:50%;transform:scale(1)">
-                                    <img style="height:100%;" v-if="userDetails.userImage" :src="userDetails.userImage" alt="">
-                                    <img style="height:100%;" v-else :src="default_img" alt="">
-                                    <!-- <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i> -->
-                                </div>
-                            </label>
-                            <div class="name al">{{userDetails.userName}}</div>
-                        </div>
-                        <div class="sa" style="padding-left:20px;">
-                            <div class="informationImg cursor top al" @click="notice">
-                                <img class="noticeDot" v-show="noticeState" src="@/assets/img/dot.png" alt="">
-                                <img src="@/assets/img/information.png" alt="">
-                            </div>
-                            <div class="homeImg al cursor" @click="home">
-                                <img src="@/assets/img/home.png" alt="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="logout cursor bold tc white al ju" @click="logout">
-                        <div >Logout</div>     
+                <div>
+                    <div class="informationImg cursor top al" @click="notice">
+                        <img class="noticeDot" v-show="noticeState" src="@/assets/img/dot.png" alt="">
+                        <img src="@/assets/img/information.png" alt="">
                     </div>
                 </div>
-                <div class="helpBtn cursor al ju" @click="support">
-                    <div class="al">
-                        <img src="@/assets/img/what.png" alt="">
-                    </div>
-                    <div class="suppot size12"> Help & Support </div>
-                </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

@@ -241,11 +241,44 @@ export default {
     },
     methods: {
         onSignInSuccess (response) {       //Facebook登录
+        let that = this
             FB.api('/me', dude => {
-                localStorage.setItem('clientType',4)
                 console.log(`Good to see you, ${dude.name}.`)
             })
-            console.log(response) //返回第三方的登录信息 tolen等
+            console.log(response) //返回第三方的登录信息 token等
+            var tokenData = {
+                // accessToken: localStorage.getItem('G_token'),
+                accessToken: response.authResponse.accessToken,
+                platform: that.form.platform,
+                clientType: 4
+            }
+            token(tokenData).then(res => {
+                that.loading = false
+                if (res.data.rtnCode == 200 ) {
+                    localStorage.setItem('Token',res.data.data.token)
+                    localStorage.setItem('userId',res.data.data.userId)
+                    that.$router.replace("/customerhomepage")
+                } else if (res.data.rtnCode == 205) {
+                    that.$router.replace({
+                        name: "relevance"
+                    })
+                } else {
+                    that.loading = false
+                    that.$message({
+                        type: 'error',
+                        message: 'Fail'
+                    })
+                    that.$router.replace({
+                        name: "login"
+                    })
+                }
+            }).catch(e => {
+                console.log(e)
+                that.$message({
+                    type: 'error',
+                    message: 'Fail'
+                })
+            })
         },
         onSignInError (error) {
             console.log(error)

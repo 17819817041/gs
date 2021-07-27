@@ -316,11 +316,6 @@ export default {
 <style lang="less" scoped>
 @import "@/less/css.less";
 .clearfix:after{content:'';display:block;clear:both;}
-video {
-    width: 300px;
-    height: 200px;
-    border: solid 1px;
-}
 .size_12 {
     font-size: 12px;
     color: #767676;
@@ -359,9 +354,9 @@ video {
             height: 100%;
             overflow: auto;
             // border: solid 1px;
-            // @media screen and (max-width:1050px) {
-            //     display: none;
-            // }
+            @media screen and (max-width:564px) {
+                display: none;
+            }
         }
     }
     .width102 {
@@ -432,13 +427,13 @@ video {
         margin: 0 3% 5px 0;
         padding: 15px 14px;
         transition: 0.25s;
-        // @media screen and (max-width:1620px) {
-        //     width: 46%;
-        //     margin: 0 3.5% 5px 0.5%;
-        // }
         @media screen and (max-width:1145px) {
             width: 45%;
             margin: 0 1.5% 5px 3.5%;
+        }
+        @media screen and (max-width:564px) {
+            width: 97%;
+            margin: 0 3.5% 5px 0.5%;
         }
     }
     .workTime {

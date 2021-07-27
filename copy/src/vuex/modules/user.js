@@ -91,14 +91,6 @@ export default {
             }
             // rtc.client = data.rtc.createClient({mode: option.mode, codec: option.codec})
             // store.commit('setUser', { key: 'rtc', value: rtc })
-
-            // data.rtc.getDevices(function (items) {
-            //     var devCount = items.length
-            //     var id = items[0].deviceId
-            //     console.log(items,devCount,id,666666666)
-            // },function (err) {
-            //     console.log(err,'err')
-            // })
             rtc.client.init(option.appID, function () {
                 console.log("init success",option)
                 
@@ -122,7 +114,6 @@ export default {
                     microphoneId: 'default',
                     // cameraId: option.cameraId
                   })
-                  console.log(rtc.localStream,666)
                   rtc.localStream.init(function () {
                     console.log("init local stream success")
                     // play stream with html element id "local_stream"
@@ -136,9 +127,9 @@ export default {
                 }, function(err) {
                   console.error("client join failed", err)
                 })
-              }, (err) => {
+            }, (err) => {
                 console.error(err)
-              })
+            })
         },
         removeStream (store,data) {   //退出agora
             var rtc = store.state.rtc

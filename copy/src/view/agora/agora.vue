@@ -636,8 +636,6 @@ export default {
         this.callToDoctor = this.callTo
         this.userDetailMessage = this.userDetail
         this.getDay()
-        console.log(this.callTo,this.userDetail)
-        console.log(new Date().toLocaleDateString())
         let D = new Date().toLocaleDateString().split('/')
         this.years = D[0]
         this.month = D[1]
@@ -708,7 +706,6 @@ export default {
     },
     methods: {
         joinAgora () {
-            // if (localStorage.getItem('bookingDoc')) {
             if (localStorage.getItem('bookingDoc')) {
                 let bookingAgo = JSON.parse(localStorage.getItem('bookingDoc'))
                 let docId = {
@@ -752,7 +749,6 @@ export default {
                         roomNumber: 'petavi_' + localStorage.getItem('sroom')
                     }
                     getAgoraToken(data).then(msg => {
-                        console.log(msg,'token666')
                         if (res.data.rtnCode == 200) {
                             this.$store.dispatch('initRtc', {
                                 token: msg.data.data,

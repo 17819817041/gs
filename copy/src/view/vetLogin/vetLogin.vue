@@ -37,7 +37,7 @@
     label {
         height: 50px;
     }
-    #facebook {
+    #vetFacebook {
         width: 50px;
         height: 50px;
         border-radius: 50%;
@@ -123,9 +123,9 @@
                             <span class=" size12 cursor" @click="forget">Forgot your password?</span>
                             <span class="size12">or Login With</span>
                             <div class="al label cursor">
-                                <label for="vetFacebook al">
+                                <label for="vetFacebook al_v">
                                     <img class="cursor facebookLogo" src="@/assets/img/facebook.png" alt="">
-                                    <div id="vetFacebook" class="al cursor" style="opacity:0;border:solid 1px">
+                                    <div id="vetFacebook" class="al_v cursor" style="opacity:0;border:solid 1px">
                                         <fb-signin-button
                                             :params="fbSignInParams"
                                             @success="onSignInSuccess"
@@ -255,6 +255,7 @@ export default {
             })
         },
         onSignInSuccess (response) {       //Facebook登录
+            alert(6666)
             FB.api('/me', dude => {
                 localStorage.setItem('clientType',4)
                 console.log(`Good to see you, ${dude.name}.`)

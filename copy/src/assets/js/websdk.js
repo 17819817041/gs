@@ -134,6 +134,16 @@ conn.listen({
         //     store.commit("setUser",{ key: 'message', value: message })
         // }
     },    
+    // onPresence: function(msg){
+    //     switch(msg.type){
+    //     case 'leaveChatRoom':
+    //       // 退出聊天室
+    //       alert(123123)
+    //       console.log(msg.type,666666)
+    //       break;
+    //       default:
+    //       break;
+    //   }}
 });
 
 
