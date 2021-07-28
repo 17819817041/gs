@@ -47,6 +47,9 @@
         height: calc(100% - 119px);
         // border:  solid green;
         position: relative;
+        @media screen and (max-width:564px) {
+            height: calc(100% - 90px);
+        }
     }
     .pet_message {
         flex: 10;

@@ -1,7 +1,7 @@
 <template>
     <div class="myCustomer flex" v-loading="loading">
         <div class="animal">
-            <div class="wrap noBar clear" v-if="getDoctorMedicalLimitList[0]">
+            <div class="wrap clear" v-if="getDoctorMedicalLimitList[0]">
                 <div class="wrap_item float" v-for="(item,i) in getDoctorMedicalLimitList" :key="i" @click="toPatients(item)">
                     <div class="flex al">
                         <div class="ju al Personal">
@@ -265,8 +265,8 @@ export default {
         border: #F3F3F3 solid 1px;
         border-radius: 4px;
         // margin-top: 10px;
-        @media screen and (max-width:1000px) {
-            width: 60%;
+        @media screen and (max-width:1050px) {
+            width: 100%;
         }
         .wrap {
             width: 102.5%;
@@ -274,6 +274,13 @@ export default {
             height: 100%;
             overflow: auto;
         }
+    }
+    .wrap::-webkit-scrollbar {
+        width: 8px;
+    }
+    .wrap::-webkit-scrollbar-thumb {
+        border-radius: 15px;
+        background: rgb(216, 216, 216);
     }
     .personal_name {
         padding: 10px 0;
@@ -287,12 +294,12 @@ export default {
         padding: 25px 20px;
         @media screen and (max-width:1100px) {
             width: 45%;
-            margin: 0 1.5% 5px 3.5%;
+            margin: 0 1.5% 5px 2.5%;
         }
-        // @media screen and (max-width:1620px) {
-        //     width: 46%;
-        //     margin: 0 3.5% 5px 0.5%;
-        // }
+        @media screen and (max-width:564px) {
+            width: 45%;
+            margin: 0 1.5% 5px 2%;
+        }
         // @media screen and (max-width:1000px) {
         //     width: 80%;
         //     margin: 0 3.5% 5px 8.5%;
@@ -319,10 +326,14 @@ export default {
     }
     .personWithAnimal {
         white-space: nowrap !important;
-        min-width: 330px;
+        min-width: 310px;
         height: 100%;
         overflow: auto;
         width: 26%;
+        @media screen and (max-width:564px) {
+            min-width: 0;
+            display: none;
+        }
         .information_wrap {
             width: 90%;
             margin: auto;

@@ -137,15 +137,14 @@ export default {
         // this.message()
     },
     watch: {
-        // noticeList: {
-        //     handler (val) {
-        //         if (val) {
-        //             console.log(val)
-        //             this.noticeList = val
-        //         }
-        //     },
-        //     deep: true
-        // }
+        noticeList: {
+            handler (val) {
+                if (val) {
+                    this.noticeList = val
+                }
+            },
+            deep: true
+        }
     },
     computed: {
         noticeList: {

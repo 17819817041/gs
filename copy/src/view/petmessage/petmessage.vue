@@ -234,13 +234,16 @@ export default {
             }
             petType(data).then(res => {
                 console.log(res)
-                res.data.forEach(item => {
-                    item.children.forEach(child => {
-                        child.children = []
+                if (res.data.rtnCode == 200) {
+                    res.data.forEach(item => {
+                        item.children.forEach(child => {
+                            child.children = []
+                        })
                     })
-                })
-                this.recursion(res.data)
-                this.options = res.data
+                    this.recursion(res.data)
+                    this.options = res.data
+                }
+                
             })
         },
         recursion (key) {

@@ -746,4 +746,13 @@ export default {
 		// position: absolute !important;
 		display: none !important;
 	}
+
+	.headerLogoPage .mobile_s .oicq_inp .el-input__inner, 
+	.headerLogoPage .mobile_s .oicq_inp .el-input__inner .el-input--small{
+		height: 100% !important;
+		background: white !important;
+	}
+	.headerLogoPage .mobile_s .oicq_inp .el-input--small .el-input__icon {
+		line-height: 0 !important;
+	}
 </style>

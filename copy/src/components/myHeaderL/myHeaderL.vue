@@ -10,9 +10,9 @@
         @media screen and (max-width: 1300px) {
             height: 80px;
         }
-        @media screen and (max-width: 564px) {
-            height: 55px;
-        }
+        // @media screen and (max-width: 564px) {
+        //     height: 75px;
+        // }
         .logo {
             background: rgb(255, 255, 255);
             position: absolute;
@@ -95,8 +95,31 @@
             z-index: 400;
         }
     }
+    .oicq_inp {
+        border: solid 1px white;
+        background: white;
+        border-radius: 30px;
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+        .search_btn {
+            position: absolute;
+            right: 0px;
+            top: 0;
+            height: 100%;
+            color: white;
+            font-size: 13px;
+            padding: 0 5px;
+            border-radius: 0 30px 30px 0;
+            background: @hdColor;
+            z-index: 400;
+        }
+    }
     .select {
         padding: 0 15px;
+    }
+    .oicq_select {
+        padding: 0 5px;
     }
     .label_img {
         width: 55px;
@@ -131,9 +154,14 @@
     .mobile_s {
         position: absolute;
         width: 100%;
-        bottom: 5px;
+        height: 77px;
+        bottom: 3px;
         left: 0;
         padding: 0 15px;
+        display: none;
+        @media screen and (max-width: 564px) {
+            display: block;
+        }
     }
     .div {
         position: absolute;
@@ -158,8 +186,7 @@
             right: -125px;
         }
         @media screen and (max-width:564px) {
-            height: 30px;
-            bottom: 5px;
+            display: none;
         }
     }
     .div .search {
@@ -202,6 +229,63 @@
             }
         }
     }
+    .oicq {
+        padding: 5px 0;
+    }
+    .oicq_img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+    .oicq_name {
+        font-size: 14px;
+        padding: 0 5px;
+    }
+    .more_fun {
+        width: 30px;
+        height: 30px;
+        position: relative;
+        z-index: 1000;
+        img {
+            transition: 0.2s;
+            height: 100%;
+        }
+        .mobile_expand {
+            position: absolute;
+            left: -85px;
+            top: 30px;
+            width: 135px;
+            transition: 0.2s;
+            opacity: 0;
+            // border: solid 1px;
+        }
+    }
+    .mobile_opacity{
+        opacity: 1 !important;
+    }
+    .m_arrow {
+        width: 0;
+        height: 0;
+        border: 10px solid;
+        border-color: transparent transparent rgb(255, 255, 255) transparent;
+        margin: 0 25px;
+    }
+    .expand_content{
+        width: 100%;
+        height: 100%;
+        padding: 15px 5px;
+        background: rgb(255, 255, 255);
+        border-radius: 10px;
+        .expand_content_item {
+            padding: 4px;
+            font-size: 13px;
+            border-bottom: solid gray 1px;
+        }
+    }
+    .more_fun_rotate {
+        transform: rotateZ(90deg);
+    }
 </style>
 
 <template>
@@ -209,13 +293,13 @@
         <div class="headerLogoPage">
             <div :class="['logo',{ logo_width: rotate }]">
                 <div class="drawer_list_wrap">
-                    <img class="logo_IMG" @click="backHome" src="@/assets/img/logo.png" alt="">
+                    <img class="logo_IMG" @click="home" src="@/assets/img/logo.png" alt="">
                     <div :class="['drawer_list',{rotate: rotate}]">
                         <img style="height:100%;transition:0.2s." src="@/assets/img/list.png" alt="" @click="showDetails">
                     </div>  <!-- //抽屉 -->
                 </div>
             </div>
-            <div class="div sb al" v-show="true">
+            <div class="div sb al">
                 <div class="search al sa" v-if="login">
                     <div class="top cursor" v-if="identity" @click="doctor">All Doctors</div>
                     <div class="top cursor" v-else @click="patient">All Patients</div>
@@ -270,22 +354,53 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="mobile_s sa">
-                <div style="width:20px;"></div>
-                <div class="input mg" style="max-width: 307px;width: 73%;">
+            <div class="mobile_s">
+                <div class="sb al">
+                    <div class="oicq flex">
+                        <div class="oicq_img">
+                            <img style="height:100%;" v-if="userDetails.userImage" :src="userDetails.userImage" alt="">
+                            <img style="height:100%;" v-else :src="default_img" alt="">
+                        </div>
+                        <div>
+                            <div class="oicq_name" >{{userDetails.userName}}</div>
+                            <div class="oicq_select" >
+                                <div class="category">
+                                    Category
+                                    <img class="dropimg" src="@/assets/img/drop.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div class="more_fun">
+                            <img :class="[{ 'more_fun_rotate': top_up_mask }]" @click="top_up" src="@/assets/img/more_fun.png" alt="">
+                            <div :class="['mobile_expand',{ 'mobile_opacity': top_up_mask }]">
+                                <div class="flexEnd"><div class="m_arrow"></div></div>
+                                <div class="expand_content">
+                                    <div class="expand_content_item">Appointments</div>
+                                    <div class="expand_content_item">Medical Record</div>
+                                    <div class="expand_content_item">Payments History</div>
+                                    <div class="expand_content_item">Setting</div>
+                                    <div  class="expand_content_item">Logout</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="informationImg cursor top al" @click="notice">
+                                <img class="noticeDot" v-show="noticeState" src="@/assets/img/dot.png" alt="">
+                                <img style="width: 22px;height:22px" src="@/assets/img/notice.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="oicq_inp mg" style="height: 25px;">
                     <div class="search_btn al ju cursor" @click="search">
                         Search
                     </div>
                     <el-input style="transform:scale(1);border:none;" v-model="inp" @keyup.enter.native="search"
                     prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
                 </div>
-                <div>
-                    <div class="informationImg cursor top al" @click="notice">
-                        <img class="noticeDot" v-show="noticeState" src="@/assets/img/dot.png" alt="">
-                        <img src="@/assets/img/information.png" alt="">
-                    </div>
-                </div>
-            </div> -->
+            </div>
         </div>
     </div>
 </template>
@@ -372,9 +487,18 @@ export default {
                 })
             },
         },
-        default_img () { return this.$store.state.user.default_img }
+        default_img () { return this.$store.state.user.default_img },
+        top_up_mask: {
+            get () { return this.$store.state.user.mobile_b },
+            set (val) {
+                this.$store.commit('setUser', { key: 'mobile_b', value: val })
+            }
+        },
     },
     methods: {
+        top_up () {
+            this.$store.commit('setUser', { key: 'mobile_b', value: !this.top_up_mask })
+        },
         search () {
             if (!this.inp) {
                 return false
@@ -491,9 +615,6 @@ export default {
                 })
                 
             }
-        },
-        backHome () {
-            this.$router.push("/myDoctor")
         },
         support () {
             this.$router.push({

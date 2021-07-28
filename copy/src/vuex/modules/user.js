@@ -42,7 +42,6 @@ export default {
         scrollTop: false,
         userBooking: [],
         callLoading: false,    //等待接听
-        // joinParams: {},
         callerIM: '',
         mettingId: 0,
         messageList: [],
@@ -50,6 +49,7 @@ export default {
         totalRecordsCount1: 0,
         noticeState: false,
         showback: false,
+        mobile_b: false,
         noticeList: [],
         balance: {},
         default_img:'',
@@ -309,6 +309,7 @@ export default {
                         && vm.$route.name !== 'relevance' 
                         && vm.$route.name !== 'forgetPwd' 
                         && vm.$route.name !== 'changePwd'
+                        && vm.$route.name !== 'petmessage'
                         && vm.$route.name !== 'signUp') {
                             router.replace('/customerLogin')
                             vm.$message.error('Login expired, please log in again !');
@@ -329,6 +330,7 @@ export default {
                     if (vm.$route.name !== 'customerLogin' 
                     && vm.$route.name !== 'relevance' 
                     && vm.$route.name !== 'forgetPwd' 
+                    && vm.$route.name !== 'petmessage'
                     && vm.$route.name !== 'changePwd'
                     && vm.$route.name !== 'signUp') {
                         router.replace('/customerLogin')
@@ -525,45 +527,47 @@ export default {
                 pageSize: 15
             }
             store.commit("setUser",{ key: "n_loading", value: true })
-            if ((store.state.totalRecordsCount1 == store.state.noticeList.length) &&store.state.totalRecordsCount1 !=0 ) {
-                store.commit("setUser",{ key: "n_loading", value: false })
-            } else {
-                notice(data).then(res => {
-                    if (res.data.rtnCode == 200) {
-                        res.data.data.pageT.forEach(item => {
-                            var time = item.createdAt
-                            let a = time.split(' ')[0]
-                            let b = time.split(' ')[1]
-                            // let En = new Date(a).toDateString()
-                            // let arr = En.split(' ')
-                            // let bb = b.split(':')
-                            // item.createdAt = arr[2] + ' ' + arr[1] + ','+ arr[3] + ' ' + bb[0] + ':' + bb[1]
-                            let arr = a.split('-').join('/')
-                            let bb = b.split(':')
-                            item.createdAt = arr + ' ' + bb[0] + ':' + bb[1]
-                        })
-                        store.commit("pageAdd_n", res.data.data.pageT )
-                        if (localStorage.getItem('platform') == 2) {
-                            store.commit('setUser',{
-                                key: "noticeState",
-                                value: store.state.noticeList.find(item => item.noticeState==2)
-                            })
-                        } else if (localStorage.getItem('platform') == 1) {
-                            store.commit('setUser',{
-                                key: "noticeState",
-                                value: store.state.noticeList.find(item => item.noticeState==2)
-                            })
-                        }
-                        store.commit("setUser",{ key: "totalRecordsCount1", value: res.data.data.totalRecordsCount })
-                        store.commit("setUser",{ key: "n_loading", value: false })
-                    } else if (res.data.rtnCode == 201) {
-                        store.commit("setUser",{ key: "noticeList", value: null })
-                        store.commit("setUser",{ key: "n_loading", value: false })
-                    }
-                }).catch(e => {
-                    console.log(e)
+            if (store.state.noticeList) {
+                if ((store.state.totalRecordsCount1 == store.state.noticeList.length) &&store.state.totalRecordsCount1 !=0 ) {
                     store.commit("setUser",{ key: "n_loading", value: false })
-                })
+                } else {
+                    notice(data).then(res => {
+                        if (res.data.rtnCode == 200) {
+                            res.data.data.pageT.forEach(item => {
+                                var time = item.createdAt
+                                let a = time.split(' ')[0]
+                                let b = time.split(' ')[1]
+                                // let En = new Date(a).toDateString()
+                                // let arr = En.split(' ')
+                                // let bb = b.split(':')
+                                // item.createdAt = arr[2] + ' ' + arr[1] + ','+ arr[3] + ' ' + bb[0] + ':' + bb[1]
+                                let arr = a.split('-').join('/')
+                                let bb = b.split(':')
+                                item.createdAt = arr + ' ' + bb[0] + ':' + bb[1]
+                            })
+                            store.commit("pageAdd_n", res.data.data.pageT )
+                            if (localStorage.getItem('platform') == 2) {
+                                store.commit('setUser',{
+                                    key: "noticeState",
+                                    value: store.state.noticeList.find(item => item.noticeState==2)
+                                })
+                            } else if (localStorage.getItem('platform') == 1) {
+                                store.commit('setUser',{
+                                    key: "noticeState",
+                                    value: store.state.noticeList.find(item => item.noticeState==2)
+                                })
+                            }
+                            store.commit("setUser",{ key: "totalRecordsCount1", value: res.data.data.totalRecordsCount })
+                            store.commit("setUser",{ key: "n_loading", value: false })
+                        } else if (res.data.rtnCode == 201) {
+                            store.commit("setUser",{ key: "noticeList", value: null })
+                            store.commit("setUser",{ key: "n_loading", value: false })
+                        }
+                    }).catch(e => {
+                        console.log(e)
+                        store.commit("setUser",{ key: "n_loading", value: false })
+                    })
+                }
             }
         },
     }

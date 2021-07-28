@@ -22,6 +22,16 @@
             background: gray;
             opacity: 0.5;
         }
+        .background_mobile {
+            position: absolute;
+            top: -119px;
+            left: 0;
+            width: calc(100%);
+            height: calc(100% + 119px);
+            z-index: 900;
+            background: rgb(0, 0, 0);
+            opacity: 0.1;
+        }
     }
     .present_message {
         background: white;
@@ -51,6 +61,9 @@
         height: calc(100% - 119px);
         // border:  solid green;
         position: relative;
+        @media screen and (max-width:564px) {
+            height: calc(100% - 90px);
+        }
         .list {
             position: absolute;
             top: 65px;
@@ -130,6 +143,7 @@
         <div><myHeaderL></myHeaderL></div>
         <div class="customer_content flex">
             <div v-show="showback" class="background" @click="closeback"></div>
+            <div v-show="mobile_b" class="background_mobile" @click="mobile_background"></div>
             <div class="list_wrap" v-if="show" @click="showPetList"></div>
             <div :class="['list', { po_lisy: drawer }]" v-show="nameList">
                 <img class="img1" @click="showPetList" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
@@ -199,8 +213,12 @@ export default {
         drawer () { return this.$store.state.user.rotate },
         nameList () { return this.$store.state.user.nameList },
         showback () { return this.$store.state.user.showback },
+        mobile_b () { return this.$store.state.user.mobile_b },
     },
     methods: {
+        mobile_background () {
+            this.$store.commit('setUser', { key: 'mobile_b', value: false })
+        },
         closeback () {
             this.$store.commit("setUser", {
                 key: "showback",
