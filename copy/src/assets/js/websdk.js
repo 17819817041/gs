@@ -2,7 +2,7 @@ import WebIM from "easemob-websdk"
 import config from "./config.js"
 import store from "@/vuex/store.js"
 import router from "@/router/router/router.js"
-import { Message } from 'element-ui';
+import { Message, MessageBox } from 'element-ui';
 import { delMetting } from "@/axios/request.js"
 
 let conn = {};
@@ -34,6 +34,7 @@ conn.listen({
         if (e.sourceMsg == 'PetaviNotice') {
             store.commit("setUser",{ key: 'noticeState', value: true })
         }
+        
         let data = JSON.parse(e.data)    
         let from = e.from
         if (data.type == 'danmu') {
@@ -64,17 +65,18 @@ conn.listen({
             }
             store.commit("setUser",{ key: 'adminList', value: adminList })
         }
-        // let m_id = ''
         // 收到来电
         if (data.type == 'Call') {
-            store.commit("setUser",{ key: 'mettingId', value: JSON.parse(e.data).mettingId })
-            // m_id = JSON.parse(e.data).mettingId
             store.commit("setUser",{ key: 'callModal2', value: true })
             store.commit("setUser",{ key: 'petId', value: data.petId })
             store.commit("setUser",{ key: 'caller', value: data.user })
             // store.commit("setUser",{ key: 'joinParams', value: data.params })
             store.commit("setUser",{ key: 'callerIM', value: data.user.userId + 'A' + data.platform })
             localStorage.setItem('sroom', JSON.parse(e.data).sroom)
+        }
+        //同步会议ID
+        if (data.type == 'mettingId') {
+            store.commit("setUser",{ key: 'mettingId', value: JSON.parse(e.data).mettingId })
         }
         // 被呼叫者拒接
         if (data.type == 'HangUp') {
@@ -84,13 +86,21 @@ conn.listen({
                 type: 'error',
                 message: 'The other party refused to answer the call!'
             })
-            let id = {
-                webId: JSON.parse(e.data).mettingId
-            }
-            delMetting(id).then(res => {
-                console.log(res,'挂断删除')
+        }
+        if (data.type == 'callToJoinFail') {
+            store.commit("setUser",{ key: 'callModal', value: false })
+            store.commit("setUser",{ key: 'callLoading', value: false })
+            // Message({
+            //     type: 'error',
+            //     message: 'The other party failed to join the meeting!'
+            // })
+            MessageBox.confirm('The other party failed to join the meeting!', 'Attention', {
+                MessageBoxButtonText: 'MessageBox',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
             })
         }
+
         // 呼叫着主动挂断
         if (data.type == 'HangUp1') {
             store.commit("setUser",{ key: 'callModal2', value: false })

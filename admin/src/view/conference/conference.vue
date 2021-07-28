@@ -12,7 +12,8 @@
                         <div class="sb">
                             <div class="appointment_details_img_wrap ju al">
                                 <img class="appointment_details_img" v-if="item.password.callTo.userHead" :src="item.password.callTo.userHead" alt="">
-                                <i class="el-icon-picture-outline" v-else style="font-size:27px;color:gray"></i>
+                                <img style="height:100%;" v-else :src="default_img" alt="">
+                                <!-- <i class="el-icon-picture-outline" v-else style="font-size:27px;color:gray"></i> -->
                             </div>
                             <div class="appointment_details_name">
                                 <div style="font-size:20px;">{{item.password.callTo.doctorName}}</div>
@@ -57,6 +58,9 @@ export default {
         // this.dele()
         this.getMetting()
     },
+    computed: {
+        default_img () { return this.$store.state.user.default_img }
+    },
     methods: {
         agora (item) {
             this.$router.push({
@@ -66,13 +70,13 @@ export default {
         },
         dele (item) {
             console.log(item)
-            // let data = {
-            //     webId: item.id
-            // }
-            // delMetting(data).then(res => {
-            //     console.log(res,'删除')
-            //     this.getMetting()
-            // })
+            let data = {
+                webId: item.id
+            }
+            delMetting(data).then(res => {
+                console.log(res,'删除')
+                this.getMetting()
+            })
         },
         getMetting () {
             getMetting().then(res => {

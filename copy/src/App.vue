@@ -107,6 +107,13 @@ export default {
                 }
             }
         },
+		pet: {
+            handler (val) {
+                if (val) {
+                    this.pet = val
+                }
+            }
+        },
 		my_Balance: {
             handler (val) {
                 if (val) {
@@ -178,7 +185,15 @@ export default {
                 })
 			}
 		},
-		pet () {return this.$store.state.user.pet},
+		pet: {
+			get () { return this.$store.state.user.pet },
+			set (val) {
+				this.$store.commit("setUser", {
+                    key: "pet",
+                    value: val
+                })
+			}
+		},
 		dom () {return this.$store.state.user.dom},
 		rtc () {return this.$store.state.user.rtc},
 		sureCall: {
@@ -284,20 +299,20 @@ export default {
 		sure2 () {
 			this.$router.push("/agora")
 			this.callModal2 = false
-			let that = this
-			setTimeout(function ()  {
-				let data = {
-					type: "confirmCall"
-				}
-				let id = that.$conn.getUniqueId();                 // 生成本地消息id
-				let msg = new that.$WebIM.message('txt', id);      // 创建文本消息
-				msg.set({
-					msg: JSON.stringify(data),                  // 消息内容
-					to: JSON.stringify(that.caller.userId) + 'A1',     
-					chatType: 'singleChat',                  // 设置为单聊   
-				});
-				that.$conn.send(msg.body);
-			},500)
+			// let that = this
+			// setTimeout(function ()  {
+			// 	let data = {
+			// 		type: "confirmCall"
+			// 	}
+			// 	let id = that.$conn.getUniqueId();                 // 生成本地消息id
+			// 	let msg = new that.$WebIM.message('txt', id);      // 创建文本消息
+			// 	msg.set({
+			// 		msg: JSON.stringify(data),                  // 消息内容
+			// 		to: JSON.stringify(that.caller.userId) + 'A1',     
+			// 		chatType: 'singleChat',                  // 设置为单聊   
+			// 	});
+			// 	that.$conn.send(msg.body);
+			// },500)
 		},
 		cancel2 () {
 			this.callModal2 = false

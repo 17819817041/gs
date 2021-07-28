@@ -100,7 +100,8 @@
                             </div>
                             <div class="header_i ju al">
                                 <img class="john" v-if="item.fromImage" :src="item.fromImage" alt="">
-                                <i class="el-icon-picture-outline Icon" style="font-size: 30px;color:gray" v-else></i>
+                                <img style="height:100%;" v-else :src="default_img" alt="">
+                                <!-- <i class="el-icon-picture-outline Icon" style="font-size: 30px;color:gray" v-else></i> -->
                             </div> 
                             <div class="notice_information">
                                 <div>{{item.sketch}}</div>
@@ -157,6 +158,7 @@ export default {
             }
         },
         l_loading () { return this.$store.state.user.n_loading },
+        default_img () { return this.$store.state.user.default_img },
         totalRecordsCount () { return this.$store.state.user.totalRecordsCount1 }
     },
     methods: {

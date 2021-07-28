@@ -297,7 +297,7 @@ export default {
             identity: true,
             userDetails: {},
             rotate: false,
-            doctorID: 1,
+            doctorID: -1,
             petOrDoc: 2,
         }
     },

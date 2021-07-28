@@ -10,7 +10,10 @@
             <div class="chat_item flex">
                 <div class="friendsList">
                     <div :class="['friend_item al bold', { 'f-act':i == sendFromIM }]" v-for="(item,i) in message" :key="i" @click="changeWindow(i)">
-                        <div class="adverse_img ju"><img :src="item.userDetail.userImage" alt=""></div>
+                        <div class="adverse_img ju">
+                            <img v-if="item.userDetail.userImage" :src="item.userDetail.userImage" alt="">
+                            <img style="height:100%;" v-else :src="default_img" alt="">
+                        </div>
                         <div>{{item.userDetail.userName}}</div>
                         <!-- <div class="newMsg tc" v-show="newData">1</div> -->
                     </div>
@@ -21,7 +24,10 @@
                             <div>
                                 <div :class="['msg_item flex', { flexEnd: item.type == 1 }]" 
                                     v-for="(item,i) in messageList" :key="i">
-                                    <div class="fromImg ju"><img v-show="item.type == 2" :src="headImage" alt=""></div>
+                                    <div class="fromImg ju">
+                                        <img v-show="item.type == 2" :src="headImage" v-if="headImage" alt="">
+                                        <img style="height:100%;" v-else :src="default_img" alt="">
+                                    </div>
                                     <div :class="['msg_child', { mySend: item.type == 1 }, 
                                         { theySend: item.type == 2 }]"
                                     >{{item.value}}</div>
@@ -110,6 +116,7 @@ export default {
             },
         },
         userDetail () { return this.$store.state.user.userDetail },
+        default_img () { return this.$store.state.user.default_img }
     },
     methods: {
         changeWindow (key) {

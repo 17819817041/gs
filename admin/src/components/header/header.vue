@@ -191,7 +191,7 @@ export default {
             let data = {
                 name: this.inp,
                 searchType: this.petOrDoc,
-                doctorId: 1
+                doctorId: -1
             }
             searchDoc(data).then(res => {
                 if (this.petOrDoc == 1) {

@@ -55,6 +55,10 @@
             @media screen and (max-width: 1200px) {
                 bottom: 65px;
             }
+            @media screen and (max-width: 564px) {
+                right: 15px;
+                top: 10px;
+            }
         }
         .video_parent {
             position: absolute;
@@ -108,13 +112,6 @@
             transition: 0.1s;
         }
     }
-    // .drawer {
-    //     @media screen and (max-width: 1500px) {
-    //         width: 15px !important;
-    //         left: -30px !important;
-    //         transform: translate(100%,0) !important;
-    //     }
-    // }
     .box1 {
         width: 0;
         height: 0;
@@ -415,6 +412,12 @@
     .z_index {
         z-index: 101 !important;
     }
+    .z_index_t {
+        z-index: 102 !important;
+    }
+    .none_s {
+        display: none !important;
+    }
 </style>
 
 <template>
@@ -438,14 +441,13 @@
                 <div class="video_wrap">
                     <div class="answer flex">
                         <div class="cursor video_fun"><img src="@/assets/img/answer_audeo.png" alt=""></div>
-                        <div class="cursor video_fun"><img src="@/assets/img/answer_video.png" alt=""></div>
+                        <div class="cursor video_fun"><img class="cursor" @click="videoShow = !videoShow" src="@/assets/img/answer_video.png" alt=""></div>
                         <div class="cursor video_fun" @click="removeStream"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
                     </div>
-                    <!-- <video :class="['video_parent']" autoplay width="400px" height="400px" id="video" ref="video"></video>
-                    <video :class="['video_child']" autoplay id="localVideo"></video> -->
 
                     <div :class="[{'video_parent': type, 'video_child': !type, 'z_index': !type}]" autoplay id="player_a1" ref="video"></div>
-                    <div :class="[{'video_parent': !type, 'video_child': type, 'z_index': type}]" autoplay id="player_a2" @click="type = !type"></div>
+                    <div :class="[{'video_parent': !type, 'video_child': type, 'z_index': type, 'none_s': videoShow}]" autoplay id="player_a2"></div>
+                    <div :class="[{ 'video_child': true, 'z_index_t': true, 'none_s': videoShow}]" autoplay id="player_a2" @click="type = !type"></div>
                 </div>
             </div>
             <div :class="[ 'doctorMessage_wrap', { Drawer: drawer } ]">
@@ -616,7 +618,7 @@ export default {
             content: '',
             recordDate: '',
             disabled: true,
-
+            videoShow: false,
             type:true,      // 切换摄像头
             remoteUsers : {},
         }
@@ -640,6 +642,15 @@ export default {
         this.years = D[0]
         this.month = D[1]
         this.day = D[2]
+    },
+    watch: {
+        mettingId: {
+            handler (val) {
+                if (val) {
+                    this.mettingId = val
+                }
+            }
+        }
     },
     computed: {
         remoteStream () { return this.$store.state.app.remoteStream },
@@ -675,7 +686,15 @@ export default {
                 })
 			}
 		},
-        pet () {return this.$store.state.user.pet},
+        pet: {
+			get () { return this.$store.state.user.pet },
+			set (val) {
+				this.$store.commit("setUser", {
+                    key: "pet",
+                    value: val
+                })
+			}
+		},
         rtc: {
 			get () { return this.$store.state.user.rtc },
 			set (val) {
@@ -687,6 +706,20 @@ export default {
 		},
     },
     watch: {
+        petId: {
+            handler (val) {
+                if (val) {
+                    this.petId = val
+                }
+            }
+        },
+        pet: {
+            handler (val) {
+                if (val) {
+                    this.pet = val
+                }
+            }
+        },
         messageList: {
             handler (val) {
                 if (val) {
@@ -725,7 +758,8 @@ export default {
                                 uid: localStorage.getItem('userId') * 1,
                                 channel: data.roomNumber,
                                 appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
-                                rtc: this.$V
+                                rtc: this.$V,
+                                vm: this
                             })
                         }
                     })
@@ -745,6 +779,7 @@ export default {
                 docGoodsId(docId).then(res => {
                     let data = {
                         expirationTime: res.data.data.min,
+                        // expirationTime: 1,
                         userId: localStorage.getItem('userId'),
                         roomNumber: 'petavi_' + localStorage.getItem('sroom')
                     }
@@ -755,7 +790,8 @@ export default {
                                 uid: localStorage.getItem('userId') * 1,
                                 channel: data.roomNumber,
                                 appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
-                                rtc: this.$V
+                                rtc: this.$V,
+                                vm: this
                             })
                         }
                     })
@@ -772,7 +808,7 @@ export default {
                 })
             }
         },
-        //医生加入视频
+        //医生加入视频1
         joinAgora2 () {
             let data = {
                 expirationTime: 99999999,
@@ -787,59 +823,35 @@ export default {
                         uid: localStorage.getItem('userId') * 1,
                         channel: data.roomNumber,
                         appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
-                        rtc: this.$V
+                        rtc: this.$V,
+                        vm:this
                     })
                 }
             })
-            this.addConfr()
         },
         removeStream () {
             this.$store.dispatch('removeStream', { rtc: this.$V })
-            if (localStorage.getItem('platform') == 2) {
-                let data = {
-                    userId: localStorage.getItem('userId'),
-                    platform: localStorage.getItem('platform')
-                }
-                s_online(data).then(res => {
-                    // console.log(res,'在线')
-                })
+            // if (localStorage.getItem('platform') == 2) {
+            //     let data = {
+            //         userId: localStorage.getItem('userId'),
+            //         platform: localStorage.getItem('platform')
+            //     }
+            //     s_online(data).then(res => {
+            //         // console.log(res,'在线')
+            //     })
+            // }
+            let data_dele = {
+                webId: this.mettingId
             }
+            delMetting(data_dele).then(res => {
+                // console.log(res,'删除')
+            })
             // this.$router.back()
             if (this.content == '' && localStorage.getItem('platform') == 2) {    //医生挂断添加record
                 this.addPetMedicalRecord()
             }
-            this.dele()
         },
-        dele () {
-            let data = {
-                webId: this.mettingId
-            }
-            delMetting(data).then(res => {
-                console.log(res,'删除')
-            })
-        },
-        addConfr () {
-			let D = new Date
-			var date = D.toLocaleDateString()
-			let detail = {
-				petName: this.pet.name,
-				petId: this.petId,                 
-				caller: this.caller,
-				callTo: this.userDetail,
-				createdTime: date,
-                roomNumber: 'petavi_' + localStorage.getItem('sroom')
-			}
-			let data = {
-				'jo': [{
-					userId: this.caller.userId + 'A1',
-					doctorId: this.userDetail.userId + 'A2',
-					password: JSON.stringify(detail),
-				}]
-			}
-			addMetting(data).then(res => {
-				this.mettingId = res.data.data[0].id
-			})
-		},
+
         addPetMedicalRecord () {
             let D = new Date()
             let time = D.toTimeString().split(' ')[0]
@@ -854,7 +866,6 @@ export default {
                 medicineIds: 2
             }
             PetMedicalRecord(data).then(res => {
-                console.log(res,'tianjiarecord')
                 if (res.data.rtnCode == 200) {
                     this.disabled = false
                 } else {

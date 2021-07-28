@@ -184,6 +184,10 @@ export default {
     created () {
         this.getPetList()
         this.getPetType()
+        if (this.pet) {
+            this.$store.commit("setUser",{ key: "petId", value: this.pet.id })
+            this.$store.commit("setUser",{ key: "pet", value: this.pet })
+        }
     },
     watch: {
         petList: {
@@ -203,6 +207,13 @@ export default {
                 }
             }
         },
+        pet: {
+            handler (val) {
+                if (val) {
+                    this.pet = val
+                }
+            }
+        },
     },
     computed: {
         petList: {
@@ -216,15 +227,23 @@ export default {
         },
         petId1: {
             get () {return this.$store.state.user.petId},
-            // set (val) {
-            //     this.$store.commit("setUser", {
-            //         key: "petId",
-            //         value: val
-            //     })
-            // },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "petId",
+                    value: val
+                })
+            },
+        },
+        pet: {
+            get () {return this.$store.state.user.pet},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "pet",
+                    value: val
+                })
+            },
         },
         default_img () { return this.$store.state.user.default_img },
-        pet () { return this.$store.state.user.pet }
     },
     methods: {
         scroll (val) {

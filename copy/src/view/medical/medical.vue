@@ -52,9 +52,11 @@
         width: 21%;
     }
     .record_image div {
-        padding: 25px 0;
-        width: 230px;
-        height: 230px;
+        margin: 25px 0;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        overflow: hidden;
         transition: 0.25s;
         @media screen and (max-width:1300px) {
             width: 190px;
@@ -253,7 +255,7 @@
                                             </div>
                                             <div class="vetRecord size15" style="padding: 10px 15px">
                                                 <span v-if="child.content">{{child.content}}</span>     
-                                                <span v-else>No Data</span>     
+                                                <span v-else>The doctor did not add content!</span>     
                                             </div>
                                         </div>
                                     </div>

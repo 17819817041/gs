@@ -1,7 +1,7 @@
 import store from "@/vuex/store.js"
 import { MessageBox, Message } from 'element-ui';
 import router from "@/router/router/router.js"
-import { PetMedicalRecord, getAgoraToken, orderDetail } from "@/axios/request.js"
+import { PetMedicalRecord, getAgoraToken, orderDetail, delMetting, s_online } from "@/axios/request.js"
 function initRtc (Agora) {
     var rtc = {
         client: null,
@@ -51,14 +51,10 @@ function initRtc (Agora) {
 
 
         rtc.remoteStreams = streams
-        // rtc.localStream.close()
-        // rtc.localStream = null
-        // rtc.remoteStreams = []
         Message({
             type: 'info',
             message: 'Call ended!'
         })
-        // rtc.client.unpublish(rtc.localStream)
         router.back()
         console.log("peer-leave", id)
         
@@ -104,7 +100,7 @@ function initRtc (Agora) {
                 goodsId: order_1.goodsId
             }
             orderDetail(segmented).then(res => {
-                console.log(res,'第二次扣费')
+                // console.log(res,'第二次扣费')
             })
         }).catch(() => {
 
@@ -119,6 +115,20 @@ function initRtc (Agora) {
             }
             rtc.localStream.close()
             rtc.localStream = null
+            let data = {
+                userId: store.state.user.callTo.doctorId,
+                platform: 2
+            }
+            s_online(data).then(res => {
+                // console.log(res,'在线')
+            })
+            let data_dele = {
+                webId: store.state.user.mettingId
+            }
+            delMetting(data_dele).then(res => {
+                console.log(res,'删除')
+            })
+            router.back()
             console.log("client leaves channel success")
             console.log("onTokenPrivilegeDidExpire")
         })

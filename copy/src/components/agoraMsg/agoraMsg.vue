@@ -136,7 +136,15 @@ export default {
     },
     computed: {
         // pet () { return this.$store.state.user.pet },
-        petId () { return this.$store.state.user.petId },
+        petId: {
+			get () { return this.$store.state.user.petId },
+			set (val) {
+				this.$store.commit("setUser", {
+                    key: "petId",
+                    value: val
+                })
+			}
+		},
     },
     methods: {
         getUserByPetId1 () {
@@ -145,9 +153,12 @@ export default {
                 // petId: 48
             }
             getUserByPetId(data).then(res => {
-                console.log(res,'petAndUser')
                 if (res.data.rtnCode == 200) {
                     this.pet = res.data.data
+                    this.$store.commit("setUser", {
+                        key: "pet",
+                        value: res.data.data
+                    })
                 }
             }).catch(e => {
                 console.log(e)

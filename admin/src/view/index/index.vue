@@ -137,7 +137,7 @@ export default {
         }
     },
     created () {
-        
+        this.judge_login()
     },
     computed: {
         login: {
@@ -151,6 +151,13 @@ export default {
         }
     },
     methods: {
+        judge_login () {
+            if (localStorage.getItem("Token") ) {
+                if (this.$route.name == 'index') {
+                    this.$router.replace("/home")
+                }
+            }
+        },
         toLogin () {
             this.loading = true
             login(this.form).then(res => {

@@ -57,7 +57,12 @@
     .john {
         width: 50px;
         height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
         padding: 0 15px;
+        img {
+            height: 100%;
+        }
     }
     .vetNotice_information {
         padding-left: 20px;
@@ -85,9 +90,10 @@
                                 <div class="read tc" v-if="item.noticeState == 1">Have read</div>
                                 <div class="unRead tc" v-else-if="item.noticeState == 2">Unread</div>
                             </div>
-                            <div>
-                                <img class="john" v-if="item.fromImage" :src="item.fromImage" alt="">
-                                <i class="el-icon-picture-outline Icon" style="font-size: 30px;color:gray" v-else></i>
+                            <div class="john ju al">
+                                <img v-if="item.fromImage" :src="item.fromImage" alt="">
+                                <img style="height:100%;" v-else :src="default_img" alt="">
+                                <!-- <i class="el-icon-picture-outline Icon" style="font-size: 30px;color:gray" v-else></i> -->
                             </div> 
                             <div class="vetNotice_information">
                                 <div>{{item.fromName}} initiated an appointment with you</div>
@@ -127,6 +133,7 @@ export default {
         },
         totalRecordsCount () { return this.$store.state.user.totalRecordsCount1 },
         l_loading () { return this.$store.state.user.loading },
+        default_img () { return this.$store.state.user.default_img }
     },
     methods: {
         docScroll (e) {

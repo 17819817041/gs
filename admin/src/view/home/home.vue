@@ -57,9 +57,7 @@ export default {
     },
     created () {
         let D = new Date()
-        console.log(D.toTimeString().split(' ')[0])
         let time = D.toTimeString().split(' ')[0]
-        console.log(time.split(':')[0] + ':' + time.split(':')[1])
     },
     watch: {
        

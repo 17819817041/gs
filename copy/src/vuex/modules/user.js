@@ -1,4 +1,4 @@
-import { petList, getUserDetails, vetDetails, doctorList, bookingUserId, notice, onlineState, balance } from "@/axios/request.js"
+import { petList, getUserDetails, vetDetails, doctorList, bookingUserId, notice, onlineState, balance, addMetting, s_online } from "@/axios/request.js"
 import router from "@/router/router/router.js"
 import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 import Vue from "vue"
@@ -87,23 +87,15 @@ export default {
                 uid: data.uid,
                 token: data.token,
                 mode: "live",
-                codec: "h264"
+                codec: "h264",
+                vm:data.vm
             }
             // rtc.client = data.rtc.createClient({mode: option.mode, codec: option.codec})
             // store.commit('setUser', { key: 'rtc', value: rtc })
             rtc.client.init(option.appID, function () {
-                console.log("init success",option)
-                
-                // data.rtc.getDevices(function (items) {
-                //     var devCount = items.length
-                //     var id = items[0].deviceId
-                //     console.log(items,devCount,id,666666666)
-                // },function (err) {
-                //     console.log(err,'err')
-                // })
-
+                console.log("init success",option,rtc.client)
                 rtc.client.join(option.token ? option.token : null, option.channel, option.uid ? +option.uid : null, function (uid) {
-                  console.log("join channel: " + option.channel + " success, uid: " + uid)
+                //   console.log("join channel: " + option.channel + " success, uid: " + uid)
                   rtc.joined = true
                   rtc.params.uid = uid
                   rtc.localStream = data.rtc.createStream({
@@ -117,18 +109,103 @@ export default {
                   rtc.localStream.init(function () {
                     console.log("init local stream success")
                     // play stream with html element id "local_stream"
+
+                    if (localStorage.getItem('platform') == 2) {                    //医生成功加入频道         !!!!!!!!!!!!
+                        const caller = option.vm.$store.state.user.caller
+                        let data0 = {
+                            type: "confirmCall"
+                        }
+                        let id = conn.getUniqueId();                 // 生成本地消息id
+                        let msg = new WebIM.message('txt', id);      // 创建文本消息
+                        msg.set({
+                            msg: JSON.stringify(data0),                  // 消息内容
+                            to: JSON.stringify(caller.userId) + 'A1',     
+                            chatType: 'singleChat',                  // 设置为单聊   
+                        });
+                        conn.send(msg.body);
+
+                        let D = new Date
+                        var date = D.toLocaleDateString()
+                        let detail = {
+                            petName: option.vm.$store.state.user.pet.petName,
+                            petId: option.vm.$store.state.user.petId,                 
+                            caller: option.vm.$store.state.user.caller,
+                            callTo: option.vm.$store.state.user.userDetail,
+                            createdTime: date,
+                            roomNumber: 'petavi_' + localStorage.getItem('sroom')
+                        }
+                        let metting = {
+                            'jo': [{
+                                userId: store.state.caller.userId + 'A1',
+                                doctorId: store.state.userDetail.userId + 'A2',
+                                password: JSON.stringify(detail),
+                            }]
+                        }
+                        addMetting(metting).then(res => {
+                            store.commit('setUser', { key: 'mettingId', value: res.data.data[0].id })
+                            let data0 = {
+                                type: "mettingId",
+                                mettingId: res.data.data[0].id
+                            }
+                            let id = conn.getUniqueId();                 // 生成本地消息id
+                            let msg = new WebIM.message('txt', id);      // 创建文本消息
+                            msg.set({
+                                msg: JSON.stringify(data0),                  // 消息内容
+                                to: JSON.stringify(caller.userId) + 'A1',     
+                                chatType: 'singleChat',                  // 设置为单聊   
+                            });
+                            conn.send(msg.body);
+                        })
+                    }
+
                     rtc.localStream.play("player_a2")
                     rtc.client.publish(rtc.localStream, function (err) {
                         console.log('publish success')
                     })
                   }, function (err)  {
                     console.error("init local stream failed ", err)
+
+                    if (localStorage.getItem('platform') == 2) {                       //医生加入频道失败并发送通知至拨号者
+                        const caller = option.vm.$store.state.user.caller
+                        let fail = {
+                            type: "callToJoinFail"
+                        }
+                        let id = conn.getUniqueId();                 // 生成本地消息id
+                        let msg = new WebIM.message('txt', id);      // 创建文本消息
+                        msg.set({
+                            msg: JSON.stringify(fail),                  // 消息内容
+                            to: JSON.stringify(caller.userId) + 'A1',     
+                            chatType: 'singleChat',                  // 设置为单聊   
+                        });
+                        conn.send(msg.body);
+                    }
+
+                    option.vm.$message.error('The browser cannot get the camera or the device does not support!')
+                    router.back()
                   })
                 }, function(err) {
-                  console.error("client join failed", err)
+                    console.error("Client join failed", err)
+                    if (localStorage.getItem('platform') == 2) {                       //医生加入频道失败并发送通知至拨号者
+                        const caller = option.vm.$store.state.user.caller
+                        let fail = {
+                            type: "callToJoinFail"
+                        }
+                        let id = conn.getUniqueId();                 // 生成本地消息id
+                        let msg = new WebIM.message('txt', id);      // 创建文本消息
+                        msg.set({
+                            msg: JSON.stringify(fail),                  // 消息内容
+                            to: JSON.stringify(caller.userId) + 'A1',     
+                            chatType: 'singleChat',                  // 设置为单聊   
+                        });
+                        conn.send(msg.body);
+                    }
+                    option.vm.$message.error('Client join failed')
+                    router.back()
                 })
             }, (err) => {
-                console.error(err)
+                option.vm.$message.error('Client join failed')
+                router.back()
+                console.error(err,'catchCamera')
             })
         },
         removeStream (store,data) {   //退出agora
@@ -142,6 +219,23 @@ export default {
                 // rtc.remoteStreams = []
                 console.log("client leaves channel success")
                 rtc.client.unpublish(rtc.localStream)
+                if (localStorage.getItem('platform') == 2) {
+                    let data = {
+                        userId: localStorage.getItem('userId'),
+                        platform: localStorage.getItem('platform')
+                    }
+                    s_online(data).then(res => {
+                        // console.log(res,'在线')
+                    })
+                } else if (localStorage.getItem('platform') == 1) {
+                    let data = {
+                        userId: store.state.callTo.doctorId,
+                        platform: 2
+                    }
+                    s_online(data).then(res => {
+                        // console.log(res,'在线')
+                    })
+                }
             }, function (err) {
                 console.log("channel leave failed")
                 console.error(err)
@@ -259,6 +353,10 @@ export default {
                         store.commit("setUser",{ key: "userDetail", value: res.data.data }) 
                         store.commit("setUser",{ key: "login", value: true }) 
                         store.dispatch("IMLogin")
+                        let page = {
+                            pageNum: 1
+                        }
+                        store.dispatch('getNoticeList', page)
                     } else if (res.data.rtnCode == 500) {
                         localStorage.removeItem("Token")
                         localStorage.removeItem("userId")

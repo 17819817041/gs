@@ -155,7 +155,10 @@ export default {
                 if (val) {
                     val.admin.messageList.forEach(item => {
                         if ((item.userId == localStorage.getItem('userId'))) {
-                            this.list.push(item)
+                            let arr  = []
+                            arr.push(item)
+                            let arr1 = arr.reverse()
+                            this.list.push(arr1[0])
                         }
                     })
                     // this.adminList = val
