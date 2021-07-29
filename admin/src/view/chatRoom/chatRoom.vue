@@ -56,7 +56,6 @@
 </template>
 
 <script>
-import {asd} from '@/axios/request.js'
 export default {
     data () {
         return {
@@ -74,15 +73,6 @@ export default {
        } else {
            localStorage.setItem('message',JSON.stringify(message))
        }
-
-        let data = {
-            roomId:"580", 
-            'StartRecordJson': {"clientRequest":{"recordingConfig":{"audioProfile":2,"channelType":0,"decryptionMode":0,"maxIdleTime":6,"streamTypes":2,"videoStreamType":0,"subscribeAudioUids":"[580]","subscribeVideoUids":"[580]"}}}
-        }
-        asd (data).then(res => {
-            console.log(res,66666)
-        })
-
     },
     mounted () {
         this.initRecord()

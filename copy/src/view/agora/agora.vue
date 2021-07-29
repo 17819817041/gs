@@ -585,7 +585,7 @@
 </template>
 
 <script>
-import { addMetting, delMetting, PetMedicalRecord, updatePetMedicalRecord, s_online, getAgoraToken, docGoodsId, order, orderDetail, asd } from "@/axios/request.js"
+import { addMetting, delMetting, PetMedicalRecord, updatePetMedicalRecord, s_online, getAgoraToken, docGoodsId, order, orderDetail } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -642,19 +642,6 @@ export default {
         this.years = D[0]
         this.month = D[1]
         this.day = D[2]
-
-
-
-
-
-        let data = {
-            'roomId':"580", 
-            'StartRecordJson': {"clientRequest":{"recordingConfig":{"audioProfile":2,"channelType":0,"decryptionMode":0,"maxIdleTime":6,"streamTypes":2,
-            "videoStreamType":0,"subscribeAudioUids":"[580]","subscribeVideoUids":"[580]"}}}
-        }
-        asd (data).then(res => {
-            console.log(res,66666)
-        })
     },
     watch: {
         mettingId: {
@@ -767,12 +754,9 @@ export default {
                         console.log(res,'token111')
                         if (res.data.rtnCode == 200) {
                             this.$store.dispatch('initRtc', {
-                                // token: res.data.data,
-                                token: '006e65091c05b1b4403b3130bfce4f9e7a1IAAI+vB/6g33OVWGgpt+sGy+naT2RyaSP/UkvxhZWVS3Nj5yp+w+cqfsIgBoHS659K4DYQQAAQCEawJhAgCEawJhAwCEawJhBACEawJh',
-                                // uid: localStorage.getItem('userId') * 1,
-                                uid: 580,
-                                // channel: data.roomNumber,
-                                channel: '580',
+                                token: res.data.data,
+                                uid: localStorage.getItem('userId') * 1,
+                                channel: data.roomNumber,
                                 appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
                                 rtc: this.$V,
                                 vm: this

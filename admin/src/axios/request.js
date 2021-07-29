@@ -137,11 +137,3 @@ export function searchDoc (data) {         //搜索  name=p&searchType=2&doctorI
         params: data
     })
 }
-
-export function asd (data) {       
-    return request({                                  
-        url: '/agora/recoding',
-        method: "POST",
-        params: data
-    })
-}
