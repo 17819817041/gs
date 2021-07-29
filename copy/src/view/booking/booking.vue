@@ -249,9 +249,9 @@ export default {
                         // bookingState: 1
                     }
                     booking(data).then(res => {
+                        that.loading = false
                         if (res.data.rtnCode == 200) {
                             that.bookingMsg = res.data.data
-                            that.loading = false
                             that.$message({
                                 type: 'success',
                                 message: 'Book successfully!'
@@ -260,22 +260,21 @@ export default {
                                 name: 'confirm',
                                 query: res.data.data
                             })
-                            that.$store.commit('setUser', { key: 'noticeList', value: [] })
-                            let notice_d = {
-                                userId: localStorage.getItem('userId'),
-                                pageNum: 1,
-                                pageSize: 15
-                            }
-                            that.$store.dispatch('getNoticeList',notice_d)
+                            // that.$store.commit('setUser', { key: 'noticeList', value: [] })
+                            // let notice_d = {
+                            //     userId: localStorage.getItem('userId'),
+                            //     pageNum: 1,
+                            //     pageSize: 15
+                            // }
+                            // that.$store.dispatch('getNoticeList',notice_d)
                         } else if (res.data.rtnCode == 201 && res.data.msg !== 'The appointment time you choose needs to be confirmed by your doctor') {
-                            that.loading = false
+                            
                             that.$message({
                                 type: 'error',
                                 duration: 4000,
                                 message: res.data.msg
                             })
                         } else if (res.data.msg == 'The appointment time you choose needs to be confirmed by your doctor') {
-                            that.loading = false
                             that.$message({
                                 type: 'error',
                                 duration: 4000,

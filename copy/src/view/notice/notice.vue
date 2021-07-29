@@ -90,7 +90,7 @@
     <div class="notice">
         <div class="notice_content">
             <div class="notice_content_wrap">
-                <div class="explan al"><img src="@/assets/img/information.png" alt=""> Notice</div>
+                <div class="explan bold al"><img src="@/assets/img/information.png" alt=""> Notice</div>
                 <div class="notice_content_item" @scroll="docScroll" ref="doctorList">
                     <div v-if="noticeList[0]" class="notice_list" ref="doctorList_height">
                         <div class="notice_item flex al" @click="checkNotice(item,i)" v-for="(item,i) in noticeList" :key="i">
@@ -135,16 +135,25 @@ export default {
     },
     created () {
         // this.message()
+        this.$store.commit('setUser',{ 
+            key: 'noticeList', 
+            value: [] 
+        })
+        let page = {
+            pageNum: 1
+        }
+        this.$store.dispatch('getNoticeList', page)
     },
     watch: {
-        noticeList: {
-            handler (val) {
-                if (val) {
-                    this.noticeList = val
-                }
-            },
-            deep: true
-        }
+        // noticeList: {
+        //     handler (val) {
+        //         if (val) {
+        //             console.log(val)
+        //             this.noticeList = val
+        //         }
+        //     },
+        //     deep: true
+        // }
     },
     computed: {
         noticeList: {

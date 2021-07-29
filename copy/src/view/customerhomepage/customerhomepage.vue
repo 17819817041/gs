@@ -31,6 +31,10 @@
             z-index: 900;
             background: rgb(0, 0, 0);
             opacity: 0.1;
+            display: none;
+            @media screen and (max-width:564px) {
+                display: block;
+            }
         }
     }
     .present_message {
@@ -61,6 +65,9 @@
         height: calc(100% - 119px);
         // border:  solid green;
         position: relative;
+        @media screen and (max-width:1300px) {
+            height: calc(100% - 90px);
+        }
         @media screen and (max-width:564px) {
             height: calc(100% - 90px);
         }
@@ -136,6 +143,12 @@
     // .rotate1 {
     //     transform: rotateZ(-180deg);
     // }
+    .fade-enter-active, .fade-leave-active {
+		transition: opacity 0.1s;
+	}
+	.fade-enter, .leave-active {
+		opacity: 0;
+	}
 </style>
 
 <template>
@@ -143,7 +156,7 @@
         <div><myHeaderL></myHeaderL></div>
         <div class="customer_content flex">
             <div v-show="showback" class="background" @click="closeback"></div>
-            <div v-show="mobile_b" class="background_mobile" @click="mobile_background"></div>
+            <transition name="fade"><div v-show="mobile_b" class="background_mobile" @click="mobile_background"></div></transition>
             <div class="list_wrap" v-if="show" @click="showPetList"></div>
             <div :class="['list', { po_lisy: drawer }]" v-show="nameList">
                 <img class="img1" @click="showPetList" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
@@ -188,7 +201,7 @@ export default {
                 }
             },
             immediate: true
-        }
+        },
     },
     computed: {
         petList: {
@@ -213,11 +226,19 @@ export default {
         drawer () { return this.$store.state.user.rotate },
         nameList () { return this.$store.state.user.nameList },
         showback () { return this.$store.state.user.showback },
-        mobile_b () { return this.$store.state.user.mobile_b },
+        mobile_b: {
+            get () { return this.$store.state.user.mobile_b },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "mobile_b",
+                    value: val
+                })
+            }
+        },
     },
     methods: {
         mobile_background () {
-            this.$store.commit('setUser', { key: 'mobile_b', value: false })
+            this.$store.commit('setUser', { key: 'mobile_b', value: !this.mobile_b })
         },
         closeback () {
             this.$store.commit("setUser", {

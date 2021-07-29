@@ -159,7 +159,7 @@
         left: 0;
         padding: 0 15px;
         display: none;
-        @media screen and (max-width: 564px) {
+        @media screen and (max-width: 800px) {
             display: block;
         }
     }
@@ -185,7 +185,7 @@
             width: 106%;
             right: -125px;
         }
-        @media screen and (max-width:564px) {
+        @media screen and (max-width:800px) {
             display: none;
         }
     }
@@ -224,7 +224,7 @@
             left: 125px;
             visibility: hidden;
             transition: 0.2s;
-            @media screen and (max-width:950px) {
+            @media screen and (min-width:800px) and (max-width:950px) {
                 visibility: initial !important;
             }
         }
@@ -270,6 +270,7 @@
         border: 10px solid;
         border-color: transparent transparent rgb(255, 255, 255) transparent;
         margin: 0 25px;
+        transform: translate(0,-10px);
     }
     .expand_content{
         width: 100%;
@@ -277,15 +278,23 @@
         padding: 15px 5px;
         background: rgb(255, 255, 255);
         border-radius: 10px;
+        transform: translate(0,-10px);
         .expand_content_item {
-            padding: 4px;
+            padding: 8px;
             font-size: 13px;
-            border-bottom: solid gray 1px;
+            // border-bottom: solid gray 1px;
+            
         }
     }
     .more_fun_rotate {
         transform: rotateZ(90deg);
     }
+    .fade-enter-active, .fade-leave-active {
+		transition: opacity 0.1s;
+	}
+	.fade-enter, .leave-active {
+		opacity: 0;
+	}
 </style>
 
 <template>
@@ -364,26 +373,36 @@
                         <div>
                             <div class="oicq_name" >{{userDetails.userName}}</div>
                             <div class="oicq_select" >
-                                <div class="category">
-                                    Category
-                                    <img class="dropimg" src="@/assets/img/drop.png" alt="">
+                                <div class="search al sa" v-if="login">
+                                    <div style="font-size:13px;" v-if="identity" @click="doctor">All Doctors</div>
+                                    <div style="font-size:13px;" v-else @click="patient">All Patients</div>
+                                    <div class="select" >
+                                        <div class="category">
+                                            Category
+                                            <!-- <img class="dropimg" src="@/assets/img/arrow_white.png" alt=""> -->
+                                            <img class="dropimg" src="@/assets/img/drop.png" alt="">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="flex">
                         <div class="more_fun">
-                            <img :class="[{ 'more_fun_rotate': top_up_mask }]" @click="top_up" src="@/assets/img/more_fun.png" alt="">
-                            <div :class="['mobile_expand',{ 'mobile_opacity': top_up_mask }]">
-                                <div class="flexEnd"><div class="m_arrow"></div></div>
-                                <div class="expand_content">
-                                    <div class="expand_content_item">Appointments</div>
-                                    <div class="expand_content_item">Medical Record</div>
-                                    <div class="expand_content_item">Payments History</div>
-                                    <div class="expand_content_item">Setting</div>
-                                    <div  class="expand_content_item">Logout</div>
+                            <img :class="[{ 'more_fun_rotate': head_mobile_extand }]" @click="top_up" src="@/assets/img/more_fun.png" alt="">
+                            <transition name="fade">
+                                <div :class="['mobile_expand',{ 'mobile_opacity': head_mobile_extand }]" v-show="head_mobile_extand">
+                                    <div class="flexEnd" style="overflow:hidden;"><div class="m_arrow"></div></div>
+                                    <div class="expand_content">
+                                        <div  class="expand_content_item">Home</div>
+                                        <div class="expand_content_item">Appointments</div>
+                                        <div class="expand_content_item">Medical Record</div>
+                                        <div class="expand_content_item">Payments History</div>
+                                        <div class="expand_content_item">Setting</div>
+                                        <div  class="expand_content_item">Logout</div>
+                                    </div>
                                 </div>
-                            </div>
+                            </transition>
                         </div>
                         <div>
                             <div class="informationImg cursor top al" @click="notice">
@@ -414,6 +433,7 @@ export default {
             rotate: false,
             doctorID: -1,
             petOrDoc: 2,
+            head_mobile_extand: false
         }
     },
     created () {
@@ -449,6 +469,16 @@ export default {
             },
             immediate: true
         },
+        top_up_mask: {
+            handler (val) {
+                if (val) {
+                    this.top_up_mask = val
+                } else {
+                    this.head_mobile_extand = false
+                }
+            },
+            deep:true
+        }
     },
     computed: {
         noticeState: {
@@ -497,6 +527,7 @@ export default {
     },
     methods: {
         top_up () {
+            this.head_mobile_extand = true
             this.$store.commit('setUser', { key: 'mobile_b', value: !this.top_up_mask })
         },
         search () {

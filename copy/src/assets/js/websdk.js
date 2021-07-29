@@ -53,6 +53,9 @@ conn.listen({
                 userId: data.userId
             }
             var adminList = JSON.parse(JSON.stringify(store.state.user.adminList))
+            var msg_admin = JSON.parse(localStorage.getItem('newsList'))
+            msg_admin.push(obj)
+            localStorage.setItem('newsList',JSON.stringify(msg_admin))
             // console.log(adminList[from],obj)
             if (adminList[from]) {
                 adminList[from].messageList.push(obj)

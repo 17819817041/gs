@@ -139,10 +139,16 @@ export default {
                 ]
             },
         }
+        var newsList = []
         if (localStorage.getItem('adminList')) {
 
         } else {
             localStorage.setItem('adminList',JSON.stringify(adminList))
+        }
+        if (localStorage.getItem('newsList')) {
+            
+        } else {
+            localStorage.setItem('newsList',JSON.stringify(newsList))
         }
         
     },
@@ -153,20 +159,19 @@ export default {
         adminList: {
             handler (val) {
                 if (val) {
-                    val.admin.messageList.forEach(item => {
-                        if ((item.userId == localStorage.getItem('userId'))) {
-                            let arr  = []
-                            arr.push(item)
-                            let arr1 = arr.reverse()
-                            this.list.push(arr1[0])
-                        }
-                    })
-                    // this.adminList = val
+                    console.log(val)
+                    console.log(val['admin'].messageList.reverse()[0], val['admin'].messageList.reverse()[0].type, val['admin'].messageList.reverse()[0].type == 2)
+                    console.log(val['admin'].messageList.reverse()[0].type == 2)
+                    if (val['admin'].messageList.reverse()[0].type == 2) {
+                        var msg_admin = JSON.parse(localStorage.getItem('newsList'))
+                        console.log(msg_admin)
+                        msg_admin.push(val['admin'].messageList.reverse()[0])
+                        console.log(msg_admin)
+                        localStorage.setItem('newsList',JSON.stringify(msg_admin))
+                    }
                     this.saveRecord()
                 }
-            },
-            deep: true,
-            immediate: true
+            }
         }
     },
     computed: {
@@ -209,6 +214,12 @@ export default {
                     value: this.customerInp,
                     userId: localStorage.getItem('userId')
                 })
+                this.list.push({
+                    type: 1,
+                    value: this.customerInp,
+                    userId: localStorage.getItem('userId')
+                })
+                localStorage.setItem('newsList',JSON.stringify(this.list))
                 let data = {
                     type: "needHelp",
                     value: this.customerInp,

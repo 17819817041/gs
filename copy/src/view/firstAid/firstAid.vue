@@ -51,6 +51,7 @@ export default {
     },
     created () {
         this.$store.dispatch('getDoctorList', 1)
+        this.petList = [...this.petList]
     },
     watch: {
         petList: {

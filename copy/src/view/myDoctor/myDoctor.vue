@@ -1,5 +1,89 @@
 <template>
     <div class="myDoctor flex">
+        <transition name="fade">
+            <div class="phone_doc_detail noBar" v-show="mobile_doc_detail">
+                <div class="details_item mg">
+                    <div class="ju" style="padding:15px 0">
+                        <div class="head_image al ju">
+                            <img style="height:100%" :src="detail.userHead" v-if="detail.userHead" alt="">
+                            <img style="height:100%;" v-else :src="default_img" alt="">
+                            <!-- <i class="el-icon-picture-outline" style="font-size:40px;color:gray" v-else></i> -->
+                        </div>
+                        <div style="padding-left: 15px;">
+                            <div class="doctor_name tc" v-if="detail.doctorName">{{detail.doctorName}}</div>
+                            <div class="doctor_name tc" v-else>Name</div>
+                            <div class="size15 tc">General Obstetrics </div>
+                            <div class="star_mobile ju">
+                                <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ju mg" style="width:70%">
+                        <div class="relation_mobile ju">
+                            <div @click="booking"><img src="@/assets/img/calendar.png" alt=""></div>
+                        </div>
+                        <div class="toVideo" @click="toVideo">
+                            <el-button class="width100 videoBtn" type="primary">
+                                <img src="@/assets/img/video.png" alt="">
+                            </el-button>
+                        </div>
+                    </div>
+                    <div class="reviews_mobile sb">
+                        <div>
+                            <div class="size12">{Experience}</div>
+                            <div class="size13">
+                                <span v-if="detail.experience">{{detail.experience}}</span>
+                                <span v-else>0</span>
+                                + years
+                            </div>
+                        </div>
+                        <div class="xian"></div>
+                        <div class="tc likes">
+                            <div class="size12 al">Likes</div>
+                            <div><span class="size13">{{detail.totalLike}}</span><span class="size12"> ({{detail.likingRate}})</span></div>
+                        </div>
+                        <div class="xian"></div>
+                        <div style="text-align:end">
+                            <div class="size12">Reviews</div>
+                            <div class="size13">230</div>
+                        </div>
+                    </div>
+                    <div class="working_mobile al">
+                        <div class="al" style="padding-right:10px"><img src="@/assets/img/time.png" alt=""></div>
+                        <div style="width:92%">
+                            <div class="sb">
+                                <div class="size16" style="margin-bottom:4px;">Open Today</div>
+                                <div class="blue">ALL TIMING</div>
+                            </div>
+                            <div class="time blue">10:30 Am -07:30Pm</div>
+                        </div>
+                    </div>
+                    <div class="introduce text-overflow">
+                        <span class="text-overflows" v-if="detail.doctorContent">
+                            {{detail.doctorContent}}
+                        </span>
+                        <span v-else>No introduction!</span>
+                    </div>
+                    <div class="blue flexEnd" v-show="showMore">
+                        <span  class="cursor">more</span>
+                    </div>
+                    <div class="aboutUs_mobile">
+                        <div class="child al flex">
+                            <img style="width:40px" src="@/assets/img/personal1.png" alt="">
+                            <div class="size16">Personal Information</div>
+                        </div>
+                        <div class="child flex al">
+                            <img style="width:40px" src="@/assets/img/addressimg1.png" alt="">
+                            <div class="size16">Working Address</div>
+                        </div>
+                        <div class="child flex al">
+                            <img style="width:40px" src="@/assets/img/reviewer1.png" alt="">
+                            <div class="size16">Reviewer (230)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
         <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList">
             <div class="width102 clear" ref="doctorList_height">
                 <div class="doctor_item float" v-for="(item,i) in doctorList" :key="i" @click="getDetail(item)">
@@ -140,6 +224,7 @@ export default {
             pageNum: 1,
             showMore: false,
             timer: null,
+            mobile_doc_detail: false
         }
     },
     created () {
@@ -174,13 +259,16 @@ export default {
                 }
             }
         },
-        // doctorList: {
-        //     handler (val) {
-        //         if (val) {
-                  
-        //         }
-        //     }
-        // }
+        top_up_mask: {
+            handler (val) {
+                if (val) {
+                    this.top_up_mask = val
+                } else {
+                    this.mobile_doc_detail = false
+                }
+            },
+            deep:true
+        }
     },
     computed: {
         callModal: {
@@ -231,10 +319,18 @@ export default {
                 })
             },
         },
-        default_img () { return this.$store.state.user.default_img }
+        default_img () { return this.$store.state.user.default_img },
+        top_up_mask: {
+            get () { return this.$store.state.user.mobile_b },
+            set (val) {
+                this.$store.commit('setUser', { key: 'mobile_b', value: val })
+            }
+        },
     },
     methods: {
         getDetail (item) {
+            this.$store.commit('setUser', { key: 'mobile_b', value: !this.top_up_mask })
+            this.mobile_doc_detail = true
             if (item.doctorName == null) {
                 item.doctorName = 'No name'
             }
@@ -315,6 +411,12 @@ export default {
 </script>
 <style lang="less" scoped>
 @import "@/less/css.less";
+.fade-enter-active, .fade-leave-active {
+		transition: opacity 0.1s;
+	}
+	.fade-enter, .leave-active {
+		opacity: 0;
+	}
 .clearfix:after{content:'';display:block;clear:both;}
 .size_12 {
     font-size: 12px;
@@ -328,6 +430,7 @@ export default {
         margin-top: 10px;
         .myDoctor {
             height: 100%;
+            position: relative;
         }
         .doctorList {
             width: 74%;      //医生列表
@@ -357,6 +460,23 @@ export default {
             @media screen and (max-width:564px) {
                 display: none;
             }
+        }
+    }
+    .phone_doc_detail {
+        position: absolute;
+        padding: 7px 0;
+        width: 90%;
+        height: 90%;
+        background: white;
+        top: 50%;
+        left: 50%;
+        border-radius: 12px;
+        z-index: 901;
+        overflow: auto;
+        transform: translate(-50%,-50%);
+        display: none;
+        @media screen and (max-width:564px) {
+            display: block;
         }
     }
     .width102 {
@@ -431,6 +551,10 @@ export default {
             width: 45%;
             margin: 0 1.5% 5px 3.5%;
         }
+        @media screen and (max-width:759px) {
+            width: 95%;
+            margin: 0 1.5% 5px 2.5%;
+        }
         @media screen and (max-width:564px) {
             width: 97%;
             margin: 0 3.5% 5px 0.5%;
@@ -501,6 +625,12 @@ export default {
             padding: 0 15px;
         }
     }
+    .relation_mobile {
+        margin: 18px auto;
+        div {
+            padding: 0 15px;
+        }
+    }
     .toVideo {
         width: 60%;
         margin: auto;
@@ -509,6 +639,14 @@ export default {
         width: 94%;
         margin: auto;
         margin-top: 27px;
+        @media screen and (max-width:1250px) {
+            transform: scale(0.9);
+        }
+    }
+    .reviews_mobile {
+        width: 94%;
+        margin: auto;
+        margin-top: 15px;
         @media screen and (max-width:1250px) {
             transform: scale(0.9);
         }
@@ -525,6 +663,11 @@ export default {
         width: 80%;
         margin: auto;
         padding: 35px 0;
+    }
+    .working_mobile {
+        width: 80%;
+        margin: auto;
+        padding: 15px 0;
     }
     .introduce {
         width: 80%;
@@ -544,6 +687,17 @@ export default {
         width: 80%;
         margin: auto;
         padding-top: 40px;
+        .child {
+            padding: 10px 0;
+        }
+        .child img {
+            padding-right: 7px;
+        }
+    }
+    .aboutUs_mobile {
+        width: 94%;
+        margin: auto;
+        padding-top: 30px;
         .child {
             padding: 10px 0;
         }

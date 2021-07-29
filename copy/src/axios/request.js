@@ -530,3 +530,11 @@ export function resetPasswordByForget (data) {         //忘记密码修改 Stri
         params: data
     })
 }
+
+export function asd (data) {       
+    return request({                                  
+        url: '/agora/recoding',
+        method: "POST",
+        params: data
+    })
+}

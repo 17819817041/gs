@@ -342,7 +342,7 @@ export default {
 	}
 	#app {
 		height: 100%;
-		min-width: 830px;
+		// min-width: 830px;
 		@media screen and (max-width: 564px) {
 			min-width: 0;
 		}
@@ -686,7 +686,7 @@ export default {
 		color: white !important;
 	}
 	.fade-enter-active, .fade-leave-active {
-		transition: opacity 0.3s;
+		transition: opacity 0.1s;
 	}
 	.fade-enter, .leave-active {
 		opacity: 0;
