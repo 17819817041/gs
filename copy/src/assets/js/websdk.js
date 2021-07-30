@@ -46,16 +46,17 @@ conn.listen({
             messageList.push(obj)
             store.commit("setUser",{ key: 'messageList', value: messageList })
         }
-        if (data.type == 'fromAdmin') {
+
+
+        if (data.type == 'admin_T') {
             var obj = {
-                type: 2,
-                value: data.value,
-                userId: data.userId
+                type: 3,
+                value: '',
+                userId: data.userId,
+                time: data.time,
+                APM: ''
             }
             var adminList = JSON.parse(JSON.stringify(store.state.user.adminList))
-            var msg_admin = JSON.parse(localStorage.getItem('newsList'))
-            msg_admin.push(obj)
-            localStorage.setItem('newsList',JSON.stringify(msg_admin))
             // console.log(adminList[from],obj)
             if (adminList[from]) {
                 adminList[from].messageList.push(obj)
@@ -67,6 +68,29 @@ conn.listen({
                 }
             }
             store.commit("setUser",{ key: 'adminList', value: adminList })
+            store.commit('setUser', { key: 'newMsg_dot', value: true })
+        }
+        if (data.type == 'fromAdmin') {
+            var obj = {
+                type: 2,
+                value: data.value,
+                userId: data.userId,
+                time: data.time,
+                APM: data.APM
+            }
+            var adminList = JSON.parse(JSON.stringify(store.state.user.adminList))
+            // console.log(adminList[from],obj)
+            if (adminList[from]) {
+                adminList[from].messageList.push(obj)
+            } else {
+                adminList[from] = {
+                    user: e.from,
+                    userDetail: data.key,
+                    messageList: [ obj ]
+                }
+            }
+            store.commit("setUser",{ key: 'adminList', value: adminList })
+            store.commit('setUser', { key: 'newMsg_dot', value: true })
         }
         // 收到来电
         if (data.type == 'Call') {

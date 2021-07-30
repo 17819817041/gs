@@ -64,8 +64,19 @@
     }
     .msg_child {
         max-width: 80%;
+        min-width: 75px;
         display: inline-block;
         margin-bottom: 20px;
+        position: relative;
+        .msg_time {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 12px;
+        }
+    }
+    .gray {
+        color: gray !important;
     }
     .mySend {
         background: #1976D2;
@@ -100,10 +111,16 @@
         </div>
         <div class="chat_content noBar" ref="Cus">
             <div class="msg_item_wrap">
-                <div v-for="(item,i) in list" :key="i" :class="[{ 'flexEnd':item.type == 1 }]">
+                <div v-for="(item,i) in adminList['admin'].messageList" :key="i" :class="[{ 'flexEnd':item.type == 1 }]">
+
+                    <div class="msg_T width100 tc" v-if="item.type == 3">{{item.time.split(' ')[0] == Today? 
+                    'Today': item.time.split(' ')[0]}} {{item.time.split(' ')[1]}}</div>
+                    
                     <div :class="['msg_child', { mySend: item.type == 1 }, 
-                        { theySend: item.type == 2 },]"
-                    >{{item.value}}</div>
+                        { theySend: item.type == 2 },]" v-if="item.userId == userId"
+                        >{{item.value}}
+                        <div :class="['msg_time', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>   
+                    </div>
                 </div>
             </div>
         </div>
@@ -127,7 +144,9 @@ export default {
     data () {
         return {
             customerInp: '',
-            list: []
+            list: [],
+            userId: localStorage.getItem('userId'),
+            Today: ''
         }
     },
     created () {
@@ -150,7 +169,8 @@ export default {
         } else {
             localStorage.setItem('newsList',JSON.stringify(newsList))
         }
-        
+        var D = new Date()
+        this.Today = D.toLocaleDateString()
     },
     mounted () {
         this.initRecord()  
@@ -158,21 +178,19 @@ export default {
     watch: {
         adminList: {
             handler (val) {
-                if (val) {
-                    console.log(val)
-                    console.log(val['admin'].messageList.reverse()[0], val['admin'].messageList.reverse()[0].type, val['admin'].messageList.reverse()[0].type == 2)
-                    console.log(val['admin'].messageList.reverse()[0].type == 2)
-                    if (val['admin'].messageList.reverse()[0].type == 2) {
-                        var msg_admin = JSON.parse(localStorage.getItem('newsList'))
-                        console.log(msg_admin)
-                        msg_admin.push(val['admin'].messageList.reverse()[0])
-                        console.log(msg_admin)
-                        localStorage.setItem('newsList',JSON.stringify(msg_admin))
-                    }
+                if (val) {  
                     this.saveRecord()
                 }
             }
-        }
+        },
+        newMsg_dot: {
+            handler (val) {
+                if (val) {
+                    this.newMsg_dot = false
+                }
+            }
+        },
+        Immediate: true
     },
     computed: {
         adminList: {
@@ -184,11 +202,16 @@ export default {
                 })
             },
         },
-        userDetail () {return this.$store.state.user.userDetail}
+        userDetail () {return this.$store.state.user.userDetail},
+        newMsg_dot: {
+            get () { return this.$store.state.user.newMsg_dot },
+            set (val) {
+                this.$store.commit('setUser', { key: 'newMsg_dot', value: val })
+            }
+        }
     },
     methods: {
         saveRecord (val) {
-            localStorage.setItem('newsList',JSON.stringify(this.list))
             this.$nextTick(() => {
                 this.$refs.Cus.scrollTop = 10000
             })
@@ -209,22 +232,48 @@ export default {
         },
         send () {
             if (this.customerInp) {
+                let D = new Date()
+                let T = D.getTime()
+                if (T - localStorage.getItem('msgTime') >= 180000 && localStorage.getItem('msgTime') !== null) {
+                    this.timeSend()
+                    this.adminList['admin'].messageList.push({
+                        type: 3,
+                        value: '',
+                        userId: localStorage.getItem('userId'),
+                        time:this.Today + ' ' + D.getHours() + ':' + D.getMinutes(),
+                        APM: ''
+                    })
+                    localStorage.setItem('msgTime', T )
+                } else {
+                    if (localStorage.getItem('msgTime') === null) {
+                        this.adminList['admin'].messageList.push({
+                            type: 3,
+                            value: '',
+                            userId: localStorage.getItem('userId'),
+                            time:this.Today + ' ' + D.getHours() + ':' + D.getMinutes(),
+                            APM: ''
+                        })
+                    }
+                    localStorage.setItem('msgTime', T)
+                }
+                let hour = D.getHours()
+                let minute = D.getMinutes()
                 this.adminList['admin'].messageList.push({
                     type: 1,
                     value: this.customerInp,
-                    userId: localStorage.getItem('userId')
-                })
-                this.list.push({
-                    type: 1,
-                    value: this.customerInp,
-                    userId: localStorage.getItem('userId')
+                    userId: localStorage.getItem('userId'),
+                    time: D.getHours() + ':' + D.getMinutes(),
+                    APM: hour >= 12 && minute >= 0? 'PM':'AM'
                 })
                 localStorage.setItem('newsList',JSON.stringify(this.list))
                 let data = {
                     type: "needHelp",
                     value: this.customerInp,
                     key: this.userDetail,
-                    platform: localStorage.getItem('platform')
+                    platform: localStorage.getItem('platform'),
+                    time: D.getHours() + ':' + D.getMinutes(),
+                    APM: hour >= 12 && minute >= 0? 'PM':'AM',
+                    localTime: T
                 }
                 let id = this.$conn.getUniqueId();                 // 生成本地消息id
                 let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
@@ -252,6 +301,34 @@ export default {
             } else {
 
             }
+        },
+        timeSend () {
+            var D = new Date()
+            var date = D.toLocaleDateString() + ' ' + D.getHours() + ':' + D.getMinutes()
+            let data = {
+                type: "needHelp_T",
+                platform: localStorage.getItem('platform'),
+                time: date,
+                localTime: D.getTime()
+            }
+            let id = this.$conn.getUniqueId();                 // 生成本地消息id
+            let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+            msg.set({
+                msg: JSON.stringify(data),                // 消息内容
+                to: 'admin',                     // 接收消息对象（用户id）
+                chatType: 'singleChat',                  // 设置为单聊    
+                ext: {
+                    
+                },                    
+                success: function (id, serverMsgId) {
+                    console.log('send private text Success',id,serverMsgId);  
+                }, 
+                fail: function(e){
+                    console.log(e)
+                    console.log("Send private text error");  
+                }
+            });
+            this.$conn.send(msg.body);
         }
     }
 }

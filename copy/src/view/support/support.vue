@@ -53,6 +53,14 @@
         overflow: hidden;
         margin: 15px 0;
     }
+    .dot {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+    }
 </style>
 
 <template>
@@ -83,7 +91,10 @@
                     
                         <router-link class="cursor bold link white center" to="" style="color: white;width: 100%;text-decoration: none">Other</router-link>
                 
-                        <router-link class="cursor bold second last" to="/chat" style="color:#686760;text-decoration: none">Chat with Admin</router-link>
+                        <router-link class="cursor bold second last" to="/chat" style="color:#686760;text-decoration: none;position:relative">
+                            Chat with Admin
+                            <img class="dot" v-show="false" src="@/assets/img/dot.png" alt="">    
+                        </router-link>
                     </div>
                     <div class="support_introduce">
                         <router-view></router-view>
@@ -100,6 +111,12 @@ export default {
         return {
             
         }
+    },
+    watch: {
+       
+    },
+    computed: {
+        
     },
     methods: {
         

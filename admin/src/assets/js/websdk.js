@@ -43,50 +43,51 @@ conn.listen({
             messageList.push(obj)
             store.commit("setUser",{ key: 'messageList', value: messageList })
         }
-        if (data.type == 'needHelp') {
+        if (data.type == 'needHelp_T') {
             var obj = {
-                type: 2,
-                value: data.value
+                type: 3,
+                value: '',
+                time: data.time,
+                APM: ''
             }
             var message = JSON.parse(JSON.stringify(store.state.user.message))
             if (message[from]) {
                 message[from].messageList.push(obj)
+                // message[from].msg = 0
             } else {
                 message[from] = {
                     user: e.from,
                     userDetail: data.key,
                     messageList: [ obj ],
+                    msg: -1
                 }
             }
-            store.commit("setUser",{ key: 'message', value: message })
+            localStorage.setItem('msgTime', data.localTime)
+            store.commit("addMsg",{ key: 'message', value: { content: message, user: e.from } })
         }
-        if (data.type == 'Call') {
-            store.commit("setUser",{ key: 'callModal2', value: true })
-            store.commit("setUser",{ key: 'caller', value: data.user })
-            store.commit("setUser",{ key: 'joinParams', value: data.params })
-            store.commit("setUser",{ key: 'callerIM', value: data.user.userId + 'A' + data.platform })
+        if (data.type == 'needHelp') {
+            var obj = {
+                type: 2,
+                value: data.value,
+                time: data.time,
+                APM: data.APM
+            }
+            var message = JSON.parse(JSON.stringify(store.state.user.message))
+            if (message[from]) {
+                message[from].messageList.push(obj)
+                // message[from].msg = 0
+            } else {
+                message[from] = {
+                    user: e.from,
+                    userDetail: data.key,
+                    messageList: [ obj ],
+                    msg: 0
+                }
+            }
+            localStorage.setItem('msgTime', data.localTime)
+            store.commit("addMsg",{ key: 'message', value: { content: message, user: e.from } })
         }
-        // 被呼叫者拒接
-        if (data.type == 'HangUp') {
-            store.commit("setUser",{ key: 'callModal', value: false })
-            store.commit("setUser",{ key: 'callLoading', value: false })
-            router.back()
-            Message({
-                type: 'info',
-                message: 'The other party refused to answer the call!'
-            })
-            window.eMedia.mgr.exitConference()
-        }
-        // 呼叫着主动挂断
-        if (data.type == 'HangUp1') {
-            store.commit("setUser",{ key: 'callModal2', value: false })
-        }
-        // 被呼叫者接通
-        if (data.type == 'confirmCall') {
-            store.commit("setUser",{ key: 'callModal', value: false })
-            store.commit("setUser",{ key: 'callLoading', value: false })
-            // router.push("/agora")
-        }
+        
     },    //收到文本消息
 });
 

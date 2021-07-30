@@ -9,13 +9,13 @@
             </div>
             <div class="chat_item flex">
                 <div class="friendsList">
-                    <div :class="['friend_item al bold', { 'f-act':i == sendFromIM }]" v-for="(item,i) in message" :key="i" @click="changeWindow(i)">
+                    <div :class="['friend_item al bold', { 'f-act':i == sendFromIM }]" v-for="(item,i) in message" :key="i" @click="changeWindow(i,item.userDetail.userId,item.user)">
                         <div class="adverse_img ju">
                             <img v-if="item.userDetail.userImage" :src="item.userDetail.userImage" alt="">
                             <img style="height:100%;" v-else :src="default_img" alt="">
                         </div>
                         <div>{{item.userDetail.userName}}</div>
-                        <div class="newMsg tc">10</div>
+                        <div class="newMsg tc" v-show="now_player != item.userDetail.userId && item.msg != 0">{{item.msg}}</div>
                     </div>
                 </div>
                 <div class="chat_ui">
@@ -24,13 +24,19 @@
                             <div>
                                 <div :class="['msg_item flex', { flexEnd: item.type == 1 }]" 
                                     v-for="(item,i) in messageList" :key="i">
-                                    <div class="fromImg ju">
-                                        <img v-show="item.type == 2" :src="headImage" v-if="headImage" alt="">
-                                        <img style="height:100%;" v-else :src="default_img" alt="">
+                                        
+                                        <div class="msg_T width100 tc" v-if="item.type == 3">{{item.time.split(' ')[0] == Today? 
+                                        'Today': item.time.split(' ')[0]}} {{item.time.split(' ')[1]}}</div>
+
+                                        <div class="fromImg ju" v-show="item.type != 3">
+                                            <img v-show="item.type == 2" :src="headImage" v-if="headImage" alt="">
+                                            <img style="height:100%;" v-else :src="default_img" alt="">
+                                        </div>
+                                        <div :class="['msg_child', { mySend: item.type == 1 }, 
+                                            { theySend: item.type == 2 }]"
+                                        >{{item.value}}
+                                        <div :class="['msg_time', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>
                                     </div>
-                                    <div :class="['msg_child', { mySend: item.type == 1 }, 
-                                        { theySend: item.type == 2 }]"
-                                    >{{item.value}}</div>
                                 </div>
                             </div>
                         </div>
@@ -63,16 +69,21 @@ export default {
             disabled: true,
             sendFromIM: "",
             adminInp: '',
-            headImage: ''
+            headImage: '',
+            now_player: 0,
+            im_player: '',
+            Today: ''
         }
     },
     created () {
-       let message = {}
-       if (localStorage.getItem('message')) {
+        let message = {}
+        if (localStorage.getItem('message')) {
 
-       } else {
-           localStorage.setItem('message',JSON.stringify(message))
-       }
+        } else {
+            localStorage.setItem('message',JSON.stringify(message))
+        }
+        var D = new Date()
+        this.Today = D.toLocaleDateString()
     },
     mounted () {
         this.initRecord()
@@ -81,6 +92,16 @@ export default {
         message: {
             handler (val) {
                 if (val) {
+                    if (this.im_player) {
+                        if (val[this.im_player].userDetail.userId == this.now_player) {
+                            this.$store.commit("deMsg", {
+                                key: "message",
+                                value: this.im_player
+                            })
+                        } else {
+
+                        }
+                    }
                     this.message = val
                     this.saveRecord(val)
                 }
@@ -94,7 +115,7 @@ export default {
                 }
             },
             deep: true
-        }
+        },
     },
     computed: {
         message: {
@@ -119,22 +140,28 @@ export default {
         default_img () { return this.$store.state.user.default_img }
     },
     methods: {
-        changeWindow (key) {
+        changeWindow (key,userId,imUser) {
+            this.now_player = userId
+            this.im_player = imUser
+            this.$store.commit("deMsg", {
+                key: "message",
+                value: imUser
+            })
             this.sendFromIM = key
             this.disabled = false
             this.$store.commit("setUser", {
-                    key: "fromIM",
-                    value: key
-                })
+                key: "fromIM",
+                value: key
+            })
             this.messageList = this.message[key].messageList
             this.headImage = this.message[key].userDetail.userImage
             this.$nextTick(() => {
-                this.$refs.showMsgTop.scrollTop = 10000
+                this.$refs.showMsgTop.scrollTop = 90000
             })
         },
         saveRecord (val) {
             this.$nextTick(() => {
-                this.$refs.showMsgTop.scrollTop = 10000
+                this.$refs.showMsgTop.scrollTop = 90000
             })
         },
         initRecord () {
@@ -144,16 +171,37 @@ export default {
         },
         send () {
             if (this.adminInp) {
+                let D = new Date()
+                let T = D.getTime()
+                if (T - localStorage.getItem('msgTime') >= 180000 && localStorage.getItem('msgTime') !== null) {
+                    this.timeSend()
+                    this.message[this.sendFromIM].messageList.push({
+                        type: 3,
+                        value: '',
+                        userId: localStorage.getItem('userId'),
+                        time:this.Today + ' ' + D.getHours() + ':' + D.getMinutes(),
+                        APM: ''
+                    })
+                    localStorage.setItem('msgTime', T )
+                } else {
+                    localStorage.setItem('msgTime', T)
+                }
+                let hour = D.getHours()
+                let minute = D.getMinutes()
                 this.message[this.sendFromIM].messageList.push({
                     type: 1,
-                    value: this.adminInp
+                    value: this.adminInp,
+                    time: D.getHours() + ':' + D.getMinutes(),
+                    APM: hour >= 12 && minute >= 0? 'PM':'AM'
                 })
                 let data = {
                     type: "fromAdmin",
                     value: this.adminInp,
                     key: this.userDetail,
                     userId: this.sendFromIM.split('a')[0],
-                    platform: localStorage.getItem('platform')
+                    platform: localStorage.getItem('platform'),
+                    time: D.getHours() + ':' + D.getMinutes(),
+                    APM: hour >= 12 && minute >= 0? 'PM':'AM'
                 }
                 let id = this.$conn.getUniqueId();                 // 生成本地消息id
                 let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
@@ -161,9 +209,7 @@ export default {
                     msg: JSON.stringify(data),                // 消息内容
                     to: this.sendFromIM,                // 接收消息对象（用户id）
                     chatType: 'singleChat',                  // 设置为单聊    
-                    ext: {
-                        
-                    },                    
+                    ext: {},                    
                     success: function (id, serverMsgId) {
                         console.log('send private text Success');  
                     }, 
@@ -178,8 +224,36 @@ export default {
                 })
                 this.adminInp = ''
             }
-            
         },
+        timeSend () {
+            var D = new Date()
+            var date = D.toLocaleDateString() + ' ' + D.getHours() + ':' + D.getMinutes()
+            let data = {
+                type: "admin_T",
+                value: '',
+                key: '',
+                userId: this.sendFromIM.split('a')[0],
+                platform: localStorage.getItem('platform'),
+                time: date,
+                APM: ''
+            }
+            let id = this.$conn.getUniqueId();                 // 生成本地消息id
+            let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+            msg.set({
+                msg: JSON.stringify(data),                // 消息内容
+                to: this.sendFromIM,                     // 接收消息对象（用户id）
+                chatType: 'singleChat',                  // 设置为单聊    
+                ext: {},                    
+                success: function (id, serverMsgId) {
+                    console.log('send private text Success',id,serverMsgId);  
+                }, 
+                fail: function(e){
+                    console.log(e)
+                    console.log("Send private text error");  
+                }
+            });
+            this.$conn.send(msg.body);
+        }
     }
 }
 </script>
@@ -222,11 +296,10 @@ export default {
             right: 15px;
             top: 50%;
             transform: translate(0,-50%);
-            border-radius: 50%;
+            border-radius: 15px;
             background: red;
             color: white;
-            width: 15px;
-            height: 15px;
+            padding: 1px 10px;
             font-size: 12px;
         }
     }
@@ -291,8 +364,19 @@ export default {
     }
     .msg_child {
         max-width: 80%;
+        min-width: 75px;
         margin-top: 12px;
         display: inline-block;
+        position: relative;
+        .msg_time {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 12px;
+        }
+    }
+    .gray {
+        color: gray !important;
     }
     .mySend {
         background: #1976D2;
@@ -326,5 +410,9 @@ export default {
         img {
             height: 100%;
         }
+    }
+    .msg_T {
+        font-size: 12px;
+        color: gray;
     }
 </style>

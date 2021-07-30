@@ -207,6 +207,9 @@
     }
     .dropimg {
         padding-left: 5px;
+        width: 11px;
+        height: 12px;
+        margin-top: 2px;
     }
     .category {
         font-size: 12px;
@@ -365,7 +368,7 @@
             </div>
             <div class="mobile_s">
                 <div class="sb al">
-                    <div class="oicq flex">
+                    <div class="oicq flex white">
                         <div class="oicq_img">
                             <img style="height:100%;" v-if="userDetails.userImage" :src="userDetails.userImage" alt="">
                             <img style="height:100%;" v-else :src="default_img" alt="">
@@ -377,10 +380,10 @@
                                     <div style="font-size:13px;" v-if="identity" @click="doctor">All Doctors</div>
                                     <div style="font-size:13px;" v-else @click="patient">All Patients</div>
                                     <div class="select" >
-                                        <div class="category">
+                                        <div class="category al">
                                             Category
-                                            <!-- <img class="dropimg" src="@/assets/img/arrow_white.png" alt=""> -->
-                                            <img class="dropimg" src="@/assets/img/drop.png" alt="">
+                                            <img class="dropimg" src="@/assets/img/arrow_white.png" alt="">
+                                            <!-- <img class="dropimg" src="@/assets/img/drop.png" alt=""> -->
                                         </div>
                                     </div>
                                 </div>

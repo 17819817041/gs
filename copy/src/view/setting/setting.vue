@@ -117,6 +117,9 @@
     }
     .person_image{
         width: 27%;
+        @media screen and (max-width: 600px) {
+            display: none;
+        }
         .felame {
             width: 200px;
             height: 200px;
@@ -526,6 +529,9 @@
     }
     .height50 {
         height: 50px !important;
+        @media screen and (max-width: 1000px) {
+            height: 41px !important;
+        }
     }
     .img_wrap_p {
         position: relative;
@@ -537,6 +543,19 @@
             transform: translate(-50%,0);
             z-index: 10;
             cursor: pointer;
+        }
+    }
+    .my_msg_detail {
+        @media screen and (max-width: 810px) {
+            flex-direction: column;
+        }
+        @media screen and (max-width: 600px) {
+            margin: auto;;
+        }
+    }
+    .mobile_t {
+        @media screen and (max-width: 810px) {
+            width: 133px;
         }
     }
 </style>
@@ -633,10 +652,10 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="flex" style="width:73%">
+                        <div class="flex my_msg_detail" style="width:73%">
                             <div class="message1">   
                                 <div class="message1_item ts flex size22 al">
-                                    <div class="name1 size19">
+                                    <div class="name1 size19 mobile_t">
                                         <div>User ID</div>
                                         <div>Name</div>
                                         <div>Age</div>
@@ -694,7 +713,7 @@
                                     </div>
                                 </div>
                                 <div @click="reset" v-if="editBtn">
-                                    <el-button class="width100 cursor btnColor" type="primary" :loading="loading">Reset Password</el-button>
+                                    <el-button class="width100 cursor btnColor" style="min-width:155px" type="primary" :loading="loading">Reset Password</el-button>
                                 </div>
                                 <div v-else class="Remark">
                                     <el-input

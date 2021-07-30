@@ -63,6 +63,7 @@ export default {
         },
         message: {},
         chatList: [],
+        newMsg_dot: false
     },
     mutations: {
         setUser (state,data) {

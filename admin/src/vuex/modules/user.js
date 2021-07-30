@@ -18,7 +18,7 @@ export default {
         rate: 0,
         inp: '',
         totalRecordsCount: 0,
-        default_img:'',
+        default_img:''
     },
     mutations: {
         setUser (state,data) {
@@ -29,7 +29,14 @@ export default {
         },
         addFriend (state,data) {
             state[data.key].push(data.value)
-        }
+        },
+        addMsg (state,data) {
+            state[data.key] = data.value.content
+            state[data.key][data.value.user].msg++
+        },
+        deMsg (state,data) {
+            state[data.key][data.value].msg = 0
+        },
     },
     actions: {
         default (store,data) {
@@ -47,7 +54,7 @@ export default {
             }
             rtc.client.init(option.appID, function () {
                 console.log("init success",option)
-                rtc.client.join(option.token ? option.token : null, option.channel, option.uid ? +option.uid : null, function (uid) {
+                    rtc.client.join(option.token ? option.token : null, option.channel, option.uid ? +option.uid : null, function (uid) {
                 })
             }, (err) => {
                 console.error(err)
