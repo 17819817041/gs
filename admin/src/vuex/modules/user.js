@@ -18,7 +18,8 @@ export default {
         rate: 0,
         inp: '',
         totalRecordsCount: 0,
-        default_img:''
+        default_img:'',
+        newMsg_dot: JSON.parse(localStorage.getItem('new_msg'))
     },
     mutations: {
         setUser (state,data) {
@@ -33,6 +34,9 @@ export default {
         addMsg (state,data) {
             state[data.key] = data.value.content
             state[data.key][data.value.user].msg++
+        },
+        addTime (state,data) {
+            state[data.key] = data.value.content
         },
         deMsg (state,data) {
             state[data.key][data.value].msg = 0
@@ -86,7 +90,18 @@ export default {
                     store.dispatch("IMLogin")
                     store.commit("setUser",{ key: "login", value: true })
                 } else if (res.data.rtnCode == 500) {
-                    store.commit("setUser",{ key: "login", value: true })
+                    localStorage.removeItem("adminToken")
+                    localStorage.removeItem("adminUserId")
+                    localStorage.removeItem("adminPaltform")
+                    localStorage.removeItem("IMtoken")
+                    localStorage.removeItem('IM')
+                    if (vm.$route.name !== 'index') {
+                        router.replace('/index')
+                        vm.$message.error('Login expired, please log in again !');
+                    }
+                    store.commit("setUser",{ key: "login", value: false })
+                    store.commit("setUser",{ key: "userDetail", value: {} }) 
+                } else {
                     localStorage.removeItem("adminToken")
                     localStorage.removeItem("adminUserId")
                     localStorage.removeItem("adminPaltform")
@@ -101,7 +116,17 @@ export default {
                 }
             }).catch(e => {
                 console.log(e)
-                // store.commit("setUser",{ key: "login", value: false }) 
+                // store.commit("setUser",{ key: "login", value: false }) localStorage.removeItem("adminToken")
+                localStorage.removeItem("adminUserId")
+                localStorage.removeItem("adminPaltform")
+                localStorage.removeItem("IMtoken")
+                localStorage.removeItem('IM')
+                if (vm.$route.name !== 'index') {
+                    router.replace('/index')
+                    vm.$message.error('Login expired, please log in again !');
+                }
+                store.commit("setUser",{ key: "login", value: false })
+                store.commit("setUser",{ key: "userDetail", value: {} }) 
             })
         },
         IMLogin (store) {

@@ -1,5 +1,5 @@
 <template>
-    <div class="firstAid al ju">
+    <div class="firstAid ju">
         <div class=" first_item">
             <div class="firstAid_title tc">EMERGENCY FIRST AID CALL</div>
             <div class="choose tc">Choose the Pet</div>
@@ -26,7 +26,7 @@
             </div>
             <div class="sb first_pet" v-else>
                 <div class="first_pet_item"> 
-                    <el-carousel indicator-position="false" :autoplay='false' class="sb">
+                    <el-carousel indicator-position="false" :autoplay='false' class="sb" arrow='always'>
                         <el-carousel-item v-for="(item,i) in length1" :key="i" style="height: 100%">
                             <div class="ju al img_i float" v-for="(item,i) in petList.slice((i+1)*3-3,(i+1)*3)" :key="i">
                                 <img class="cursor" :src="item.image" v-if="item.image" alt="" @click="first_pet(item)">
@@ -103,15 +103,32 @@ export default {
             font-size: 45px;
             font-weight:bold;
             color: #707070;
+            @media screen and (max-width: 1500px) {
+                font-size: 30px;
+            }
+            @media screen and (max-width: 1100px) {
+                font-size: 20px;
+            }
         }
         .choose {
             font-size: 25px;
             color: #4A4B4D;
             padding: 50px 0;
+            @media screen and (max-width: 1100px) {
+                padding: 30px 0;
+                font-size: 15px;
+            }
         }
     }
     .first_item {
         width: 70%;
+        margin-top: 150px;
+        @media screen and (max-width: 1100px) {
+            margin-top: 100px;
+        }
+        @media screen and (max-width: 800px) {
+            margin-top: 50px;
+        }
     }
     .first_pet {
         width: 100%;
@@ -138,6 +155,30 @@ export default {
         height: 243px;
         border-radius: 50%;
         overflow: hidden;
+        @media screen and (max-width: 1500px) {
+            width: 203px;
+            height: 203px;
+        }
+        @media screen and (max-width: 1200px) {
+            width: 180px;
+            height: 180px;
+        }
+        @media screen and (max-width: 1100px) {
+            width: 150px;
+            height: 150px;
+        }
+        @media screen and (max-width: 800px) {
+            width: 125px;
+            height: 125px;
+        }
+        @media screen and (max-width: 600px) {
+            width: 85px;
+            height: 85px;
+        }
+        @media screen and (max-width: 440px) {
+            width: 65px;
+            height: 65px;
+        }
         img {
             height: 100%;
         }
@@ -147,6 +188,30 @@ export default {
         height: 243px;
         border-radius: 50%;
         overflow: hidden;
+        @media screen and (max-width: 1500px) {
+            width: 203px;
+            height: 203px;
+        }
+        @media screen and (max-width: 1200px) {
+            width: 180px;
+            height: 180px;
+        }
+        @media screen and (max-width: 1100px) {
+            width: 150px;
+            height: 150px;
+        }
+        @media screen and (max-width: 800px) {
+            width: 125px;
+            height: 125px;
+        }
+        @media screen and (max-width: 600px) {
+            width: 85px;
+            height: 85px;
+        }
+        @media screen and (max-width: 440px) {
+            width: 65px;
+            height: 65px;
+        }
         img {
             height: 100%;
         }

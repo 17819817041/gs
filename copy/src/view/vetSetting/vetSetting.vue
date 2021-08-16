@@ -1,6 +1,6 @@
 <template>
     <div class="vetSetting noBar">
-        <div class="explan al Explan_title mg">
+        <div class="explan bold al Explan_title mg">
             <img class="setting_img" src="@/assets/img/setting.png" alt="">
             Setting
         </div>
@@ -31,214 +31,225 @@
                             </label>
                         </div>
                     </div>
-                    <div class="profile_message">
-                        <div class="message_wrap flex">
-                            <div class="title al size19">User ID</div>
-                            <div class="mean al size16_s">{{userDetail.userId}}</div>
-                        </div>
-                        <div class="message_wrap flex">
-                            <div class="title al size19">Name</div>
-                            <div v-if="edit" class="mean al size16_s">{{userDetail.doctorName}}</div>
-                            <div v-else class="inp mean al"><input type="text" v-model="userDetail.doctorName"></div>
-                        </div>
-                        <div class="message_wrap flex">
-                            <div class="title al size19">Age</div>
-                            <div v-if="edit" class="mean size16_s al">{{userDetail.age? userDetail.age:'None'}}</div>
-                            <div v-else class="inp mean al"><input type="text" v-model="userDetail.age"></div>
-                        </div>
-
-                        <div class="message_wrap flex">
-                            <div  class="title al size19">Location</div>
-                            <div v-if="edit" class="mean al s_location size16_s">{{
-                                address.find(ad => ad.areaId == userDetail.addressId) ? 
-                                address.find(ad => ad.areaId == userDetail.addressId).addressName : "No Address"
-                            }}</div>
-                            <div v-else class="inp mean al">
-                                <el-select v-model="default_address" @change="selectLocation">
-                                    <el-option v-for="(add) in address" :key="add.id" :value="add.areaId" :label="add.addressName"></el-option>
-                                </el-select>
-                            </div>
-                        </div>
-
-                        <div class="message_wrap flex">
-                            <div class="title al size19">Mobile</div>
-                            <div v-if="edit" class="mean al size16_s">{{userDetail.mobile? userDetail.mobile: "None"}}</div>
-                            <div v-else class="inp mean al"><input type="text" v-model="userDetail.mobile"></div>
-                        </div>
-                        <div class="message_wrap flex">
-                            <div class="title al size19">Gender</div>
-                            <div class="mean al size16_s" v-if="edit">
-                                <span v-if="userDetail.genderId == 1">Male</span>
-                                <span v-else-if="userDetail.genderId == 2">Female</span>
-                                <span v-else-if="userDetail.genderId == 0">No data</span>
-                            </div>
-                            <div v-else class="inp mean al">
-                                <el-select v-model="sex" @change="cutSex">
-                                    <el-option value="1" label="Male"></el-option>
-                                    <el-option value="2" label="Female"></el-option>
-                                </el-select>
-                            </div>
-                        </div>
-                        <div class="message_wrap flex">
-                            <div class="title al size19">Education</div>
-                            <div class="mean al size16_s" v-if="edit">
-                                <span v-if="userDetail.education">{{userDetail.education}}</span>
-                                <span v-else>No data</span>
-                            </div>                                              <!--   //学历   -->
-                            <div v-else class="inp mean al">
-                                <el-select v-model="userDetail.education" >
-                                    <el-option value="Doctor´s Degree" label="Doctor´s Degree"></el-option>
-                                    <el-option value="Master´s Degree" label="Master´s Degree"></el-option>
-                                    <el-option value="Normal Courses" label="Normal Courses"></el-option>
-                                    <el-option value="Short-cycle Courses" label="Short-cycle Courses"></el-option>
-                                    <el-option value="Regular Senior Secondary Schools" label="Regular Senior Secondary Schools"></el-option>
-                                    <el-option value="Regular Specialized Secondary Schools" label="Regular Specialized Secondary Schools"></el-option>
-                                    <el-option value="Regular Junior Secondary Schools" label="Regular Junior Secondary Schools"></el-option>
-                                </el-select>
-                            </div>
-                        </div>
-                        <div class="message_wrap flex">
-                            <div class="title al size19">Gertification</div>
-                            <div class="mean al">-</div>
-                        </div>
-
-                        <div class="aboutMe">
-                            <div class="size19">More about you</div>
-                            <div v-if="edit" class="size16_s">
-                                <span v-if="userDetail.extend">{{userDetail.extend}}</span>
-                                <span v-else>No data</span>
-                            </div>
-                            <div v-else class="aboutMe_text">
-                                <textarea name="" id="" cols="30" v-model="userDetail.extend" rows="10"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="profile_message1">
-                        <div>
+                    <div class="flex direction">
+                        <div class="profile_message">
                             <div class="message_wrap flex">
-                                <div class="title al size19">Veterinary Hospital</div>
-                                <div v-if="edit" class="mean al size16_s">
-                                    {{ hospitalList.find(hos => hos.veterinaryHospitalId == userDetail.vetrtinaryHospitalId)?
-                                    hospitalList.find(hos => hos.veterinaryHospitalId == userDetail.vetrtinaryHospitalId).veterinaryHospitalName:'No Name' }}
+                                <div class="title size19">User ID</div>
+                                <div class="mean size16_s">{{userDetail.userId}}</div>
+                            </div>
+                            <div class="message_wrap flex">
+                                <div class="title size19">Name</div>
+                                <div v-if="edit" class="mean size16_s">{{userDetail.doctorName}}</div>
+                                <div v-else class="inp mean"><input type="text" v-model="userDetail.doctorName"></div>
+                            </div>
+                            <div class="message_wrap flex">
+                                <div class="title size19">Age</div>
+                                <div v-if="edit" class="mean size16_s">{{userDetail.age? userDetail.age:'None'}}</div>
+                                <div v-else class="inp mean"><input type="text" v-model="userDetail.age"></div>
+                            </div>
+
+                            <div class="message_wrap flex">
+                                <div  class="title size19">Location</div>
+                                <div v-if="edit" class="mean s_location size16_s">{{
+                                    address.find(ad => ad.areaId == userDetail.addressId) ? 
+                                    address.find(ad => ad.areaId == userDetail.addressId).addressName : "No Address"
+                                }}</div>
+                                <div v-else class="inp mean">
+                                    <el-select v-model="default_address" @change="selectLocation">
+                                        <el-option v-for="(add) in address" :key="add.id" :value="add.areaId" :label="add.addressName"></el-option>
+                                    </el-select>
                                 </div>
-                                <!-- <div v-else class="inp mean al"><input type="text" v-model="userDetail.vetrtinaryHospitalId"></div> -->
-                                <div v-else class="inp mean al">
-                                    <el-select class="option width100 al" @change="getHospital" v-model="userDetail.vetrtinaryHospitalName" 
-                                    placeholder="Hospital" name="" id="">
-                                        <el-option v-for="(item) in hospitalList" 
-                                        :key="item.veterinaryHospitalId" 
-                                        :value="item.veterinaryHospitalId" 
-                                        :label="item.veterinaryHospitalName">
-                                        </el-option>
+                            </div>
+
+                            <div class="message_wrap flex">
+                                <div class="title size19">Mobile</div>
+                                <div v-if="edit" class="mean size16_s">{{userDetail.mobile? userDetail.mobile: "None"}}</div>
+                                <div v-else class="inp mean"><input type="text" v-model="userDetail.mobile"></div>
+                            </div>
+                            <div class="message_wrap flex">
+                                <div class="title size19">Gender</div>
+                                <div class="mean size16_s" v-if="edit">
+                                    <span v-if="userDetail.genderId == 1">Male</span>
+                                    <span v-else-if="userDetail.genderId == 2">Female</span>
+                                    <span v-else-if="userDetail.genderId == 0">No data</span>
+                                </div>
+                                <div v-else class="inp mean">
+                                    <el-select v-model="sex" @change="cutSex">
+                                        <el-option value="1" label="Male"></el-option>
+                                        <el-option value="2" label="Female"></el-option>
                                     </el-select>
                                 </div>
                             </div>
                             <div class="message_wrap flex">
-                                <div class="title al size19">Work experience</div>
-                                <div class="mean al size16_s" v-if="edit">{{userDetail.workExperience? userDetail.workExperience: "0"}}+ years</div>
-                                <div v-else class="inp mean al"><input type="text" 
-                                @input="userDetail.workExperience=userDetail.workExperience.replace(/[^\d]/g,'')" v-model="userDetail.workExperience"></div>
+                                <div class="title size19">Education</div>
+                                <div class="mean size16_s" v-if="edit">
+                                    <span v-if="userDetail.education">{{userDetail.education}}</span>
+                                    <span v-else>No data</span>
+                                </div>                                              <!--   //学历   -->
+                                <div v-else class="inp mean al">
+                                    <el-select v-model="userDetail.education" >
+                                        <el-option value="Doctor´s Degree" label="Doctor´s Degree"></el-option>
+                                        <el-option value="Master´s Degree" label="Master´s Degree"></el-option>
+                                        <el-option value="Normal Courses" label="Normal Courses"></el-option>
+                                        <el-option value="Short-cycle Courses" label="Short-cycle Courses"></el-option>
+                                        <el-option value="Regular Senior Secondary Schools" label="Regular Senior Secondary Schools"></el-option>
+                                        <el-option value="Regular Specialized Secondary Schools" label="Regular Specialized Secondary Schools"></el-option>
+                                        <el-option value="Regular Junior Secondary Schools" label="Regular Junior Secondary Schools"></el-option>
+                                    </el-select>
+                                </div>
                             </div>
                             <div class="message_wrap flex">
-                                <div class="al size19">Working address and Timing</div>
+                                <div class="title size19">Gertification</div>
+                                <div class="mean">-</div>
                             </div>
-                            <div class="message_wrap address_child al size16_s">
-                                <div v-if="edit">{{userDetail.workingAddress}}</div>
-                                <div v-else class="address_inp al"><input type="text" v-model="userDetail.workingAddress"></div>
-                            </div>
-                            <div class="message_wrap_work">
-                                <div v-if="edit" style="margin-top:10px;color: #7c7878;">
-                                    <span>
-                                        <span v-if="userDetail.startTime">{{userDetail.startTime}}</span>
-                                        <span v-else>00:00</span>
-                                    </span>
-                                     - 
-                                    <span>
-                                        <span v-if="userDetail.endTime">{{userDetail.endTime}}</span>
-                                        <span v-else>00:00</span>
-                                    </span>
-                                    <span style="padding: 0 5px;"></span>
-                                    <span>
-                                        <span v-if="userDetail.starWeek">{{userDetail.starWeek}}</span>
-                                        <span v-else>Monday</span>
-                                    </span>
-                                     to
-                                    <span>
-                                        <span v-if="userDetail.endWeek">{{userDetail.endWeek}}</span>
-                                        <span v-else>Friday</span>
-                                    </span>
-                                </div>   <!--{{userDetail.remake}}-->
-                                <div v-else class="timeInp_wrap sb al">
-                                    <div class="al" style="margin-bottom:10px">
-                                        <div class="timeInp al">
-                                            <!-- <input type="text" v-model="userDetail.startTime"> -->
-                                            <el-time-select 
-                                                class="width100"
-                                                v-model="userDetail.startTime"
-                                                :picker-options="{
-                                                    start: '08:30',
-                                                    step: '00:15',
-                                                    end: '18:30'
-                                                }"
-                                                placeholder="Star">
-                                            </el-time-select>
-                                        </div> <span style="padding:0 5px">--</span>
-                                        <div class="timeInp al">
-                                            <!-- <input type="text" v-model="userDetail.endTime"> -->
-                                            <el-time-select 
-                                                class="width100"
-                                                v-model="userDetail.endTime"
-                                                :picker-options="{
-                                                    start: '08:30',
-                                                    step: '00:15',
-                                                    end: '18:30'
-                                                }"
-                                                placeholder="End">
-                                            </el-time-select>
-                                        </div>
-                                    </div>
 
-                                    <div class="al" style="margin-bottom:10px">
-                                        <div class="timeInp al">
-                                            <!-- userDetail.remake -->
-                                            <el-select v-model="s_week">    
-                                                <el-option label="Monday" value="Monday" ></el-option>
-                                                <el-option label="Tuesday" value="Tuesday" ></el-option>
-                                                <el-option label="Wednesday" value="Wednesday" ></el-option>
-                                                <el-option label="Thursday " value="Thursday " ></el-option>
-                                                <el-option label="Friday" value="Friday" ></el-option>
-                                                <el-option label="Saturday" value="Saturday" ></el-option>
-                                                <el-option label="Sunday" value="Sunday" ></el-option>
-                                            </el-select>
-                                        </div> <span style="padding:0 5px">--</span>
-                                        <div class="timeInp al">
-                                            <!-- userDetail.remake -->
-                                            <el-select v-model="e_week">    
-                                                <el-option label="Monday" value="Monday" ></el-option>
-                                                <el-option label="Tuesday" value="Tuesday" ></el-option>
-                                                <el-option label="Wednesday" value="Wednesday" ></el-option>
-                                                <el-option label="Thursday " value="Thursday " ></el-option>
-                                                <el-option label="Friday" value="Friday" ></el-option>
-                                                <el-option label="Saturday" value="Saturday" ></el-option>
-                                                <el-option label="Sunday" value="Sunday" ></el-option>
-                                            </el-select>
-                                        </div>
-                                    </div>
+                            <div class="aboutMe">
+                                <div class="size19">More about you</div>
+                                <div v-if="edit" class="size16_s">
+                                    <span v-if="userDetail.extend">{{userDetail.extend}}</span>
+                                    <span v-else>No data</span>
                                 </div>
-                            </div>
-                            <div class="message_wrap flex">
-                                <div class="title al size19">Professional field</div>
-                                <div class="mean al size16_s" v-if="edit">
-                                    <span v-if="userDetail.prdfessionalField">{{userDetail.prdfessionalField}}</span>
-                                    <span v-else>-</span>
+                                <div v-else class="aboutMe_text">
+                                    <textarea name="" id="" cols="30" v-model="userDetail.extend" rows="10"></textarea>
                                 </div>
-                                <div v-else class="prdfessionalField al"><input type="text" v-model="userDetail.prdfessionalField"></div>
                             </div>
                         </div>
+                        <div class="profile_message1">
+                            <div>
+                                <div class="message_wrap flex">
+                                    <div class="title size19">Veterinary Hospital</div>
+                                    <div v-if="edit" class="mean size16_s">
+                                        {{ hospitalList.find(hos => hos.veterinaryHospitalId == userDetail.vetrtinaryHospitalId)?
+                                        hospitalList.find(hos => hos.veterinaryHospitalId == userDetail.vetrtinaryHospitalId).veterinaryHospitalName:'No Name' }}
+                                    </div>
+                                    <!-- <div v-else class="inp mean al"><input type="text" v-model="userDetail.vetrtinaryHospitalId"></div> -->
+                                    <div v-else class="inp mean al">
+                                        <el-select class="option width100 al" @change="getHospital" v-model="userDetail.vetrtinaryHospitalName" 
+                                        placeholder="Hospital" name="" id="">
+                                            <el-option v-for="(item) in hospitalList" 
+                                            :key="item.veterinaryHospitalId" 
+                                            :value="item.veterinaryHospitalId" 
+                                            :label="item.veterinaryHospitalName">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                </div>
+                                <div class="message_wrap flex">
+                                    <div class="title size19">Work experience</div>
+                                    <div class="mean size16_s" v-if="edit">{{userDetail.workExperience? userDetail.workExperience: "0"}}+ years</div>
+                                    <div v-else class="inp mean al"><input type="text" 
+                                    @input="userDetail.workExperience=userDetail.workExperience.replace(/[^\d]/g,'')" v-model="userDetail.workExperience"></div>
+                                </div>
+                                <div class="message_wrap flex">
+                                    <div class="al size19">Working address and Timing</div>
+                                </div>
+                                <div class="message_wrap address_child al size16_s">
+                                    <div v-if="edit">{{userDetail.workingAddress}}</div>
+                                    <div v-else class="address_inp al"><input type="text" v-model="userDetail.workingAddress"></div>
+                                </div>
+                                <div class="message_wrap_work">
+                                    <div v-if="edit" style="margin-top:10px;color: #7c7878;">
+                                        <span>
+                                            <span v-if="userDetail.startTime">{{userDetail.startTime}}</span>
+                                            <span v-else>09:00</span>
+                                        </span>
+                                        - 
+                                        <span>
+                                            <span v-if="userDetail.endTime">{{userDetail.endTime}}</span>
+                                            <span v-else>18:00</span>
+                                        </span>
+                                        <span style="padding: 0 5px;"></span>
+                                        <span>
+                                            <span v-if="userDetail.starWeek">{{userDetail.starWeek}}</span>
+                                            <span v-else>Monday</span>
+                                        </span>
+                                        to
+                                        <span>
+                                            <span v-if="userDetail.endWeek">{{userDetail.endWeek}}</span>
+                                            <span v-else>Friday</span>
+                                        </span>
+                                    </div>   <!--{{userDetail.remake}}-->
+                                    <div v-else class="timeInp_wrap sb al">
+                                        <div class="al" style="margin-bottom:10px">
+                                            <div class="timeInp al">
+                                                <!-- <input type="text" v-model="userDetail.startTime"> -->
+                                                <el-time-select 
+                                                    class="width100"
+                                                    v-model="userDetail.startTime"
+                                                    :picker-options="{
+                                                        start: '09:00',
+                                                        step: '00:15',
+                                                        end: '12:00'
+                                                    }"
+                                                    placeholder="Star">
+                                                </el-time-select>
+                                            </div> <span style="padding:0 5px">--</span>
+                                            <div class="timeInp al">
+                                                <!-- <input type="text" v-model="userDetail.endTime"> -->
+                                                <el-time-select 
+                                                    class="width100"
+                                                    v-model="userDetail.endTime"
+                                                    :picker-options="{
+                                                        start: '12:30',
+                                                        step: '00:15',
+                                                        end: '18:30'
+                                                    }"
+                                                    placeholder="End">
+                                                </el-time-select>
+                                            </div>
+                                        </div>
 
-                        <div class="vetReset sa">
-                            <div></div>
-                            <div class="resetBtn al ju cursor" @click="reset">Reset Password</div>
+                                        <div class="al" style="margin-bottom:10px">
+                                            <div class="timeInp al">
+                                                <!-- userDetail.remake -->
+                                                <el-select v-model="s_week">    
+                                                    <el-option label="Monday" value="Monday" ></el-option>
+                                                    <el-option label="Tuesday" value="Tuesday" ></el-option>
+                                                    <el-option label="Wednesday" value="Wednesday" ></el-option>
+                                                    <el-option label="Thursday " value="Thursday " ></el-option>
+                                                    <el-option label="Friday" value="Friday" ></el-option>
+                                                    <el-option label="Saturday" value="Saturday" ></el-option>
+                                                    <el-option label="Sunday" value="Sunday" ></el-option>
+                                                </el-select>
+                                            </div> <span style="padding:0 5px">--</span>
+                                            <div class="timeInp al">
+                                                <!-- userDetail.remake -->
+                                                <el-select v-model="e_week">    
+                                                    <el-option label="Monday" value="Monday" ></el-option>
+                                                    <el-option label="Tuesday" value="Tuesday" ></el-option>
+                                                    <el-option label="Wednesday" value="Wednesday" ></el-option>
+                                                    <el-option label="Thursday " value="Thursday " ></el-option>
+                                                    <el-option label="Friday" value="Friday" ></el-option>
+                                                    <el-option label="Saturday" value="Saturday" ></el-option>
+                                                    <el-option label="Sunday" value="Sunday" ></el-option>
+                                                </el-select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="message_wrap flex">
+                                    <div class="title size19">Professional field</div>
+                                    <div class="mean size16_s" v-if="edit">
+                                        <span v-if="userDetail.prdfessionalField">{{userDetail.prdfessionalField}}</span>
+                                        <span v-else>-</span>
+                                    </div>
+                                    <div v-else class="prdfessionalField al"><input type="text" v-model="userDetail.prdfessionalField"></div>
+                                </div>
+                            </div>
+                            <div class="aboutMe_mobile">
+                                <div class="size19">More about you</div>
+                                <div v-if="edit" class="size16_s">
+                                    <span v-if="userDetail.extend">{{userDetail.extend}}</span>
+                                    <span v-else>No data</span>
+                                </div>
+                                <div v-else class="aboutMe_text">
+                                    <textarea name="" id="" cols="30" v-model="userDetail.extend" rows="10"></textarea>
+                                </div>
+                            </div>
+                            <div class="vetReset sa">
+                                <div></div>
+                                <div class="resetBtn al ju cursor" @click="reset">Reset Password</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -263,12 +274,14 @@ export default {
             userDetails: {},
             default_address: '',
             showimg: '',
-            img_loading: false
+            img_loading: false,
+            copyDetail: {}
         }
     },
     watch: {
         userDetail: {
             handler (val) {
+                this.copyDetail = JSON.parse(JSON.stringify(this.userDetail))
                 if (val.genderId == 1) {
                     this.sex = 'Male'
                 } else if (val.genderId == 2) {
@@ -370,6 +383,7 @@ export default {
             // }
         },
         cancelBtn () {
+            this.userDetail = this.copyDetail 
             this.edit = true
             this.showimg = ''
             this.userDetail.headUr = this.userDetail.userImage
@@ -438,6 +452,9 @@ export default {
     .size26 {
         font-size: 26px;
         color: #5E5E5E;
+        @media screen and (max-width: 1000px){
+            font-size: 20px;
+        }
     }
     .vetSetting_content {
         width: 96.5%;
@@ -470,16 +487,29 @@ export default {
         top: 10%;
         padding: 5px 0;
         border-radius: 10px;
+        @media screen and (max-width: 400px) {
+            flex-direction: column;
+        }
     }
     .edit {
         background: @helpBtn;
         width: 80px;
+        @media screen and (max-width: 1000px) {
+            padding: 3px 5px;
+            font-size: 14px;
+            width: 50px;
+        }
     }
     .save {
         background: @hdColor;
         width: 80px;
         padding: 5px 0;
         border-radius: 10px;
+        @media screen and (max-width: 1000px) {
+            padding: 3px 5px;
+            font-size: 14px;
+            width: 57px;
+        }
     }
     .cancel {
         background: @helpBtn;
@@ -487,25 +517,60 @@ export default {
         border-radius: 10px;
         padding: 5px 0;
         margin-left: 5px;
+        @media screen and (max-width: 1000px) {
+            padding: 3px 5px;
+            font-size: 14px;
+            width: 57px;
+        }
+        @media screen and (max-width: 400px) {
+            margin-left: 0;
+            margin-top: 8px;
+        }
+    }
+    .profile {
+        margin-top: 25px;
+        @media screen and (max-width: 564px) {
+            flex-direction: column;
+        }
     }
     .profile_message1 {
         width: 45%;
         padding-left: 60px;
+        @media screen and (max-width: 1100px) {
+            padding-left: 20px;
+        }
+        @media screen and (max-width: 800px) {
+            padding: 0;
+            width: 100%;
+        }
         .address_child {
             color: #7c7878;
             // padding: 0 !important;
         }
         .message_wrap {
             // width: 300px;
-            height: 69px;
-            padding: 20px 0;
+            padding: 10px 0 30px 0;
+            white-space: nowrap;
+            @media screen and (max-width: 800px) {
+                width: 100%;
+                padding: 10px 0 0 0;
+            }
             .title{    
                 width: 260px;
+                min-width: 169px;
+                @media screen and (max-width: 1100px) {
+                    width: 230px;
+                    min-width: 169px;
+                }
             }
             .mean {
                 // width: 200px;
                 white-space: nowrap;
                 color: gray;
+                @media screen and (max-width: 800px) {
+                    width: 100%;
+                    text-align: end !important;
+                }
             }
         }
     }
@@ -526,21 +591,51 @@ export default {
         height: 100%;
     }
     .profile_message {
-        width: 25%;
+        width: 35%;
+        @media screen and (max-width: 1100px) {
+            width: 31%;
+        }
+        @media screen and (max-width: 800px) {
+            width: 100%;
+        }
         .message_wrap {
             // width: 300px;
             padding: 10px 0;
+            @media screen and (max-width: 800px) {
+                width: 100%;
+                padding: 10px 0 0 0;
+            }
             .title {    
                 width: 146px;
-                height: 29px;
+                // height: 29px;
+                white-space: nowrap;
+                min-width: 125px;
             }
             .mean  {
                 width: 210px;
-                height: 29px;
+                // height: 29px;
+                @media screen and (max-width: 800px) {
+                    width: 100%;
+                    text-align: end !important;
+                }
             }
         }
         .aboutMe {
             margin-top: 50px;
+            min-width: 165px;
+            @media screen and (max-width: 800px) {
+                display: none;
+                margin-top: 20px;
+            }
+        }
+    }
+    .aboutMe_mobile {
+        margin-top: 50px;
+        min-width: 165px;
+        display: none;
+        @media screen and (max-width: 800px) {
+            display: block;
+            margin-top: 30px;
         }
     }
     .aboutMe_text {
@@ -560,20 +655,44 @@ export default {
     }
     .profile_img {
         width: 25%;
+        min-width: 200px;
+        @media screen and (max-width: 1000px) {
+            min-width: 170px;
+        }
+        @media screen and (max-width: 800px) {
+            min-width: 145px;
+        }
+        @media screen and (max-width: 564px) {
+            margin: auto;
+            min-width: 100px;
+        }
     }
     .profile_img_wrap {
         width: 230px;
         height: 230px;
         border: solid 1px;
         border-radius: 50%;
+        margin-top: 15px;
         overflow: hidden;
-        @media screen and (max-width: 1300px) {
+        @media screen and (max-width: 1500px) {
             width: 180px;
             height: 180px;
+        }
+        @media screen and (max-width: 1300px) {
+            width: 160px;
+            height: 160px;
         }
         @media screen and (max-width: 1100px) {
             width: 140px;
             height: 140px;
+        }
+        @media screen and (max-width: 800px) {
+            width: 115px;
+            height: 115px;
+        }
+        @media screen and (max-width: 564px) {
+            width: 75px;
+            height: 75px;
         }
     }
     .profileimg {
@@ -648,6 +767,10 @@ export default {
             font-size: 16px;
             font-weight: bold;
         }
+        @media screen and (max-width: 800px){
+            font-size: 14px;
+            font-weight: bold;
+        }
     }
     .size16_s {
         font-size: 17px;
@@ -655,6 +778,9 @@ export default {
         transition: 0.1s;
         @media screen and (max-width: 1000px){
             font-size: 16px;
+        }
+        @media screen and (max-width: 800px){
+            font-size: 14px;
         }
     }
     .s_location {
@@ -677,6 +803,14 @@ export default {
             transform: translate(-50%,0);
             z-index: 10;
             cursor: pointer;
+        }
+    }
+    .direction {
+        width: 100%;
+        @media screen and (max-width: 800px) {
+            
+            flex-direction: column;
+            padding: 0 15px;
         }
     }
 </style>

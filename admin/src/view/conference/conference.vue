@@ -70,13 +70,13 @@ export default {
         },
         dele (item) {
             console.log(item)
-            let data = {
-                webId: item.id
-            }
-            delMetting(data).then(res => {
-                console.log(res,'删除')
-                this.getMetting()
-            })
+            // let data = {
+            //     webId: item.id
+            // }
+            // delMetting(data).then(res => {
+            //     console.log(res,'删除')
+            //     this.getMetting()
+            // })
         },
         getMetting () {
             getMetting().then(res => {

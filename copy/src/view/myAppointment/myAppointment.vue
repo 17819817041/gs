@@ -6,16 +6,18 @@
     }
     .myAppointment_wrap {
         flex: 10;
-        height: 100%;
+        height: calc(100% - 0px);
         background: @content;
         padding-right: 10px;
         .myAppointment_item {
             width: 98%;
+            margin-bottom: 25px;
         }
     }
     .myAppointment_wrap_item {
-        height: 100%;
+        height: calc(100% - 60px);
         overflow: auto;
+        margin-bottom: 25px;
     }
     .myAppointment_wrap_item::-webkit-scrollbar {
         width: 8px;
@@ -28,9 +30,12 @@
         width: 98%;
         background: white;
         padding: 40px 20px;
-        margin-bottom: 25px;
+        // margin-bottom: 25px;
         border-radius: 10px;
         box-shadow: 0 2px 2px 1px rgb(190, 184, 184);
+        @media screen and (max-width: 564px){
+            padding: 40px 20px 40px 0;
+        }
     }
     .head_image {
         width: 25%;
@@ -51,25 +56,52 @@
                 height: 116px;
                 overflow: hidden;
             }
+            @media screen and (max-width: 800px){
+                border: solid 1px rgb(224, 223, 223);
+                border-radius: 50%;
+                width: 90px;
+                height: 90px;
+                overflow: hidden;
+            }
+            @media screen and (max-width: 564px){
+                border: solid 1px rgb(224, 223, 223);
+                border-radius: 50%;
+                width:70px;
+                height: 70px;
+                overflow: hidden;
+            }
         }
-        
     }
     .dateAndPet {
         width: 100%;
         margin-top: 50px;
+        white-space: nowrap;
         @media screen and (max-width: 1200px){
             width: 100%;
             margin-top: 36px;
         }
+        @media screen and (max-width: 800px){
+            width: 100%;
+            margin-top: 20px;
+        }
+        @media screen and (max-width: 564px){
+            width: 100%;
+            margin-top: 10px;
+        }
+        // @media screen and (max-width: 700px){
+        //     width: 100%;
+        //     margin-top: 20px;
+        //     flex-direction: column;
+        // }
         .dateAndPet_date, .dateAndPet_pet {
             width: 50%;
         }
     }
     .dateAndPet_date {
         min-width: 193px;
-        // @media screen and (max-width: 940px){
-        //     width: 40%;
-        // }
+        @media screen and (max-width: 564px){
+            min-width: 174px;
+        }
     }
     .message_wrap {
         width: 60%;
@@ -80,21 +112,27 @@
     }
 
     .Way {
+        width: 30%;
         color: white;
     }
     .video_btn {
         height: 45px;
         border-radius: 7px;
         margin-bottom: 55px;
-        width: 220px;
         transition: 0.1s;
         background: #15BC83;
+        padding: 0 10px;
         @media screen and (max-width: 1200px){
             height: 34px;
             border-radius: 7px;
             margin-bottom: 55px;
-            width: 192px;
             background: #15BC83;
+        }
+    }
+    .video_text {
+        white-space: nowrap;
+        @media screen and (max-width: 700px){
+            display: none;
         }
     }
     .phone_btn {
@@ -117,6 +155,9 @@
         @media screen and (max-width: 1200px){
             font-size: 16px;
         }
+        @media screen and (max-width: 700px){
+            font-size: 14px;
+        }
     }
     .size20 {
         font-size: 16px;
@@ -124,6 +165,10 @@
         transition: 0.1s;
         @media screen and (max-width: 1200px){
             font-size: 12px;
+            color: #767676;
+        }
+        @media screen and (max-width: 700px){
+            font-size: 14px;
             color: #767676;
         }
     }
@@ -138,14 +183,27 @@
     .NoMessage {
         height: 100%;
     }
+    .acting {
+        width: 100%;
+        padding: 50px 0;
+        // border: solid 1px;
+        @media screen and (max-width: 564px) {
+            width: 100%;
+            padding: 20px 0;
+        }
+    }
+    .nameAndWay {
+        white-space: nowrap;
+    }
 </style>
 <template>
-    <div class="myAppointment" v-loading="loading">            <!-- //客户 -->
+    <div class="myAppointment">            <!-- //客户 -->
         <div class="myAppointment_wrap">
             <div class="explan bold al"><img src="@/assets/img/appointment.png" alt="">Appointment</div>
             <div v-if="bookingList" class="myAppointment_wrap_item" @scroll="docScroll" ref="doctorList">
-                <div ref="doctorList_height">
-                    <div class="myAppointment_item mg" @click="appointmentDetalis(item.booking.bookingId,item.docImage)" v-for="(item) in bookingList" :key="item.bookingId">
+                <div ref="doctorList_height" style="    padding-bottom: 25px;">
+                    <div class="myAppointment_item mg" @click="appointmentDetalis(item.booking.bookingId,item.docImage)" 
+                        v-for="(item) in bookingList" :key="item.bookingId">
                         <div class="myAppointment_item_message mg al">
                             <div class="head_image ju al">
                                 <div class="head_image_wrap ju al">
@@ -173,14 +231,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="Way">
+                            <div class="Way flexEnd">
                                 <div class="video_btn ju al cursor" @click.stop="starBook(item)">
                                     <img src="@/assets/img/video1.png" alt="">
-                                    Video Consultation
+                                    <span class="video_text">Video Consultation</span>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="acting float ju al" v-if="l_loading">
+                    <div class="loading" v-loading="true"></div>
                 </div>
             </div>
             <div v-else-if="bookingList === null" class="NoMessage ju">
@@ -203,9 +264,10 @@ export default {
     data () {
         return {
             bookingList: [],
-            loading: false,
             APM: '',
-            today: ''
+            today: '',
+            pageNum: 1,
+            totalRecordsCount: 0
         }
     },
     created () {
@@ -248,10 +310,26 @@ export default {
 			}
 		},
 		pet () {return this.$store.state.user.pet},
+        l_loading: {
+            get () { return this.$store.state.user.n_loading },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "n_loading",
+                    value: val
+                })
+            },
+        },
     },
     methods: {
         docScroll (e) {
             this.$store.commit('setUser',{ key: 'dom', value: 'myAppointment_wrap_item' })
+            if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
+                if (this.bookingList.length >= this.totalRecordsCount) {
+                } else {
+                    this.pageNum += 1
+                    this.bookingUserId()
+                }
+            }
             if ( this.$refs.doctorList.scrollTop > 300 ) {
                 this.$store.commit('setUser', { key: 'scrollTop', value: true } )
             } else {
@@ -312,49 +390,56 @@ export default {
             })
         },
         bookingUserId () {
-            this.loading = true
             let data = {
                 userId: localStorage.getItem('userId'),
                 userType: 1,
-                pageNum: 1,
-                pageSize: 100
+                pageNum: this.pageNum,
+                pageSize: 15
                 // data: this.today
             }
-            allBooking(data).then(res => {
-                console.log(res,'booking')
-                if (res.data.rtnCode == 200) {
-                    // res.data.data.reverse()
-                    res.data.data.pageT.forEach(item => {
-                        if (item.booking.bookingState == 1 || item.booking.bookingState == 2 ) {
-                            let date = item.booking.bookingDate
-                            let En = new Date(date).toDateString()
-                            let arr = En.split(' ')
-                            item.booking.bookingDate = arr[2] + ' ' + arr[1] + ','+ arr[3]
-                            item.booking.APM = ''
-                            var hour = Number(item.booking.bookingStartTime.split(':')[0])
-                            var minute = Number(item.booking.bookingStartTime.split(':')[1])
-                            if ( hour >= 12 && minute >= 0) {
-                                item.booking.APM = 'PM'
-                            } else {
-                                item.booking.APM = 'AM'
+            if ((this.totalRecordsCount == this.bookingList.length) && this.totalRecordsCount !=0 ) {
+                this.$store.commit("setUser",{ key: "n_loading", value: false })
+                
+            } else {
+                this.$store.commit("setUser",{ key: "n_loading", value: true })
+                allBooking(data).then(res => {
+                    this.$store.commit("setUser",{ key: "n_loading", value: false })    
+                    if (res.data.rtnCode == 200) {
+                        // res.data.data.reverse()
+                        res.data.data.pageT.forEach(item => {
+                            if (item.booking.bookingState == 1 || item.booking.bookingState == 2 ) {
+                                let date = item.booking.bookingDate
+                                let En = new Date(date).toDateString()
+                                let arr = En.split(' ')
+                                item.booking.bookingDate = arr[2] + ' ' + arr[1] + ','+ arr[3]
+                                item.booking.APM = ''
+                                var hour = Number(item.booking.bookingStartTime.split(':')[0])
+                                var minute = Number(item.booking.bookingStartTime.split(':')[1])
+                                if ( hour >= 12 && minute >= 0) {
+                                    item.booking.APM = 'PM'
+                                } else {
+                                    item.booking.APM = 'AM'
+                                }
+                                // this.bookingList.push(item)
                             }
-                            this.bookingList.push(item)
-                        }
+                        })
+                        this.bookingList = this.bookingList.concat(res.data.data.pageT)
+                        this.totalRecordsCount = res.data.data.totalRecordsCount
+                    } else if (res.data.rtnCode == 201 ) {
+                        this.bookingList = res.data.data
+                    } else {
+                        this.bookingList = null
+                    }
+                }).catch(e => {
+                    console.log(e)
+                    this.$message({
+                        type: 'error',
+                        message: 'Fail to load!'
                     })
-                    // this.bookingList = res.data.data
-                    this.loading = false
-                } else if (res.data.rtnCode == 201 ) {
-                    this.bookingList = res.data.data
-                    this.loading = false
-                }
-            }).catch(e => {
-                console.log(e)
-                this.loading = false
-                this.$message({
-                    type: 'error',
-                    message: 'Fail to load!'
+                    this.$store.commit("setUser",{ key: "n_loading", value: false })
                 })
-            })
+            }
+            
         },
         getDAY () {
             var date = new Date();

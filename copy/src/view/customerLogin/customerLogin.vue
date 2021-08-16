@@ -5,6 +5,7 @@
     }
     .FormL {
         width: 700px;
+        padding: 0 25px;
     }
     .title {
         padding: 40px 0;
@@ -117,6 +118,11 @@
             height: 60px;
         }
     }
+    .three_log {
+        @media screen and (max-width: 377px) {
+            flex-direction: column;
+        }
+    }
 </style>
 
 <template>
@@ -152,22 +158,24 @@
                             </div>
                         </el-form-item>
                         <el-form-item>
-                            <div class="size12 al ju">
-                                <span class="cursor" @click="forget">Forgot your password?</span> <span class="cursor">or Login With</span>
-                                <div class="al label cursor">
-                                    <label for="facebook al">
-                                        <img class="cursor facebookLogo" src="@/assets/img/facebook.png" alt="">
-                                        <div id="facebook" class="al cursor" style="opacity:0;border:solid 1px">
-                                            <fb-signin-button
-                                                :params="fbSignInParams"
-                                                @success="onSignInSuccess"
-                                                @error="onSignInError">
-                                                facebook
-                                            </fb-signin-button>
-                                        </div>
-                                    </label>
+                            <div class="size12 al ju three_log">
+                                <span style="white-space:nowrap"><span class="cursor" @click="forget">Forgot your password?</span> <span class="cursor">or Login With</span></span>
+                                <div class="al">
+                                    <div class="al label cursor">
+                                        <label for="facebook al">
+                                            <img class="cursor facebookLogo" src="@/assets/img/facebook.png" alt="">
+                                            <div id="facebook" class="al cursor" style="opacity:0;border:solid 1px">
+                                                <fb-signin-button
+                                                    :params="fbSignInParams"
+                                                    @success="onSignInSuccess"
+                                                    @error="onSignInError">
+                                                    facebook
+                                                </fb-signin-button>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="al label"><img class="cursor googleLogo" ref="google" src="@/assets/img/GoogleImg.png" alt=""></div>
                                 </div>
-                                <div class="al label"><img class="cursor googleLogo" ref="google" src="@/assets/img/GoogleImg.png" alt=""></div>
                             </div>
                         </el-form-item>
                     </el-form>
@@ -191,7 +199,7 @@ export default {
             },
             form: {
                 platform:1,
-                email:'1257354834@qq.com',
+                email:'15@qq.com',
                 password:'123'
 
                 // platform: 1,
@@ -274,6 +282,7 @@ export default {
                 }
             }).catch(e => {
                 console.log(e)
+                that.loading = false
                 that.$message({
                     type: 'error',
                     message: 'Fail'
@@ -338,7 +347,7 @@ export default {
                     Email: profile.getEmail()
                 }))
             }, function(error) {
-                this.loading = false
+                that.loading = false
                 console.log(JSON.stringify(error, undefined, 2));
             });
         },

@@ -19,12 +19,21 @@
     }
     .record_message {
         margin-bottom: 20px;
-        white-space: nowrap;
+        // white-space: nowrap;
+        @media screen and (max-width: 620px){
+            margin-bottom: 0px;
+        }
         .record_item {
             margin-bottom: 15px;
             width: 98%;
             background: white;
             border-radius: 10px;
+            @media screen and (max-width: 620px){
+                padding-right: 15px;
+            }
+            @media screen and (max-width: 400px){
+                flex-direction: column;
+            }
         }
         .about {
             padding: 0 0 7px 30px;
@@ -35,21 +44,28 @@
     }
     .record_wrap {
         padding: 25px 0;
+        @media screen and (max-width: 620px){
+            flex-direction: column;
+        }
     }
     .noPadding {
         padding: 0 0 4px 30px !important;
     }
     .record_message1 {
         margin-left: 60px;
-        width: 50%;
+        // width: 50%;
         position: relative;
         white-space: nowrap;
         @media screen and (max-width: 1000px){
             margin-left: 20px;
         }
+        @media screen and (max-width: 620px){
+            margin-left: 0px;
+        }
     }
     .record_image {
         width: 21%;
+        min-width: 80px;
     }
     .record_image div {
         padding: 25px 0;
@@ -64,6 +80,10 @@
             width: 150px;
             height: 150px;
         }
+        @media screen and (max-width: 564px){
+            width: 125px;
+            height: 125px;
+        }
     } 
     .dog_img{
         height: 100%;
@@ -71,7 +91,10 @@
     .children {
         transition: 0.25s;
         @media screen and (max-width:1430px) {
-            width: 40% !important;
+            width: 40%;
+        }
+        @media screen and (max-width: 620px){
+            width: 100%;
         }
     }
     .about {
@@ -104,6 +127,16 @@
             color: rgb(70, 70, 70);
             padding-left: 20px;
         }
+        @media screen and (max-width: 620px){
+            width: 100%;
+            text-align: end;
+        }
+    }
+    .size16 .about div {
+        @media screen and (max-width: 620px){
+            width: 100%;
+            text-align: end;
+        }
     }
     .medialRecord {
         max-height: 321px;
@@ -123,7 +156,13 @@
         top: 0;
     }
     .cancel_item {
+        padding: 5px 10px;
+        border-radius: 12px;
+        color: white;
         background: @denger;
+        @media screen and (max-width: 800px) {
+            font-size: 13px;
+        }
     }
     .medialRecord::-webkit-scrollbar {
             width: 8px;
@@ -135,6 +174,10 @@
     .vetRecord {
         width: 80%;
         word-wrap: break-word;
+    }
+
+    .mobile_msg {
+        min-width: 135px;
     }
 </style>
 
@@ -150,14 +193,14 @@
                     <div class="record_message">
                         <div class="record_item flex mg">
                             <div class="record_image ju">
-                                <div>
+                                <div class="ju">
                                     <img class="dog_img" src="@/assets/img/dog.png" alt="">
                                 </div>
                             </div>
                             <div style="flex:10">
                                 <div class="record_wrap flex">
                                     <div class="record_message flex ">
-                                        <div class="size17">
+                                        <div class="size17" style="min-width: 83px">
                                             <div class="flex about">
                                                 <div>Pet ID</div>
                                             </div>
@@ -196,7 +239,7 @@
                                         </div>
                                     </div>
                                     <div class="record_message1 flex">
-                                        <div class="children size17">
+                                        <div class="children size17 mobile_msg">
                                             <div class="about">
                                                 <div>Gender</div>
                                             </div>
@@ -238,7 +281,7 @@
                                 <div class="medialRecord" v-if="userAndPet.petMedicalRecordDtos">
                                     <div class="medialRecord_item" v-for="(item,i) in userAndPet.petMedicalRecordDtos" :key="i">
                                         <div class="cancel cursor">
-                                            <el-button class="cancel_item width100" type="primary" @click="deleMedical(item)" round>Cancel Record</el-button>
+                                            <div class="cancel_item width100" type="primary" @click="deleMedical(item)" round>Delete</div>
                                         </div>
                                         <div class=" size17">Medical Record</div>
                                         <div style="padding: 5px 0 5px 15px"> 

@@ -137,7 +137,15 @@ export default {
         }
     },
     created () {
-        this.judge_login()
+        // this.judge_login()
+    },
+    watch: {
+        login: {
+            handler (val) {
+                this.login = false
+            },
+            immediate: true
+        }
     },
     computed: {
         login: {
@@ -152,7 +160,7 @@ export default {
     },
     methods: {
         judge_login () {
-            if (localStorage.getItem("Token") ) {
+            if (localStorage.getItem("adminToken") ) {
                 if (this.$route.name == 'index') {
                     this.$router.replace("/home")
                 }
@@ -161,15 +169,27 @@ export default {
         toLogin () {
             this.loading = true
             login(this.form).then(res => {
-                console.log(res)
+                this.login = true
+                this.loading = false
                 if (res.data.rtnCode == 200) {
                     localStorage.setItem('adminPlatform',res.data.data.platform)
                     localStorage.setItem('adminUserId',res.data.data.userId)
                     localStorage.setItem('adminToken',res.data.data.token)
-                    this.$router.push('/home')
-                    this.login = true
-                    this.loading = false
+                    this.$router.replace('/home')
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message:'Login failed, please check the network!'
+                    })
                 }
+            }).catch(e => {
+                console.log(e)
+                this.login = true
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message:'Login failed, please check the network!'
+                })
             })
             
             // let that = this

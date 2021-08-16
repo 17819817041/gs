@@ -219,7 +219,7 @@ export default {
 		up_top () {
 			// 每0.01秒向上移动100像素，直到小于或等于0结束
 			let timer = setInterval(() => {
-				document.getElementsByClassName(this.dom)[0].scrollTop -= 100;
+				document.getElementsByClassName(this.dom)[0].scrollTop -= 500;
 				// 为负数，浏览器会不处理得
 				if (document.getElementsByClassName(this.dom)[0].scrollTop <= 0) {
 					clearInterval(timer)
@@ -299,20 +299,6 @@ export default {
 		sure2 () {
 			this.$router.push("/agora")
 			this.callModal2 = false
-			// let that = this
-			// setTimeout(function ()  {
-			// 	let data = {
-			// 		type: "confirmCall"
-			// 	}
-			// 	let id = that.$conn.getUniqueId();                 // 生成本地消息id
-			// 	let msg = new that.$WebIM.message('txt', id);      // 创建文本消息
-			// 	msg.set({
-			// 		msg: JSON.stringify(data),                  // 消息内容
-			// 		to: JSON.stringify(that.caller.userId) + 'A1',     
-			// 		chatType: 'singleChat',                  // 设置为单聊   
-			// 	});
-			// 	that.$conn.send(msg.body);
-			// },500)
 		},
 		cancel2 () {
 			this.callModal2 = false
@@ -404,6 +390,11 @@ export default {
 		background: white !important;
 		box-shadow: 0 0 2px 1px #818080 !important;
 		outline: none !important;
+	}
+	.form_select .el-select .el-input__inner::-webkit-input-placeholder {
+		@media screen and (max-width: 564px) {
+			font-size: 12px !important;
+		}
 	}
 	.form_select .typeFlex .el-form-item__error {
 		width: 100%;
@@ -515,6 +506,12 @@ export default {
 	}
 	.star_time .el-date-editor .el-input__inner {
 		background: white !important;
+		
+	}
+	.star_time .el-date-editor .el-input__inner::-webkit-input-placeholder {
+		@media screen and (max-width: 564px) {
+			font-size: 12px !important;
+		}
 	}
 	.end_time .el-date-editor {
 		width: 100% !important;
@@ -643,6 +640,9 @@ export default {
 	.cursor {
 		cursor: pointer;
 		user-select: none;
+		@media screen and (max-width: 800px) {
+			cursor: none;
+		}
 	}
 	.cursor:hover {
 		opacity: 0.8;
@@ -659,7 +659,7 @@ export default {
 	}
 	.mask {
 		position: fixed;
-		z-index: 800;
+		z-index: 2800;
 		width: 100vw;
 		height: 100vh;
 		background: rgba(0, 0, 0, 0.4);
@@ -703,20 +703,6 @@ export default {
 		font-size: 14px;
 		color: gray;
 	}
-	.calendar .calendarMini .el-calendar-day {
-		height: 30px !important;
-		text-align: center;
-	}
-	.calendar .calendarMini .el-calendar-table__row .prev, .calendar .calendarMini .el-calendar-table__row .current, 
-	.calendar .calendarMini .el-calendar-table__row .next {
-		border: none !important;
-	}
-	.calendar .calendarMini thead {
-		font-size: 14px !important;
-	}
-	.calendar .calendarMini tbody {
-		font-size: 12px !important;
-	}
 	.el-carousel__item h3 {
         color: #475669;
         font-size: 14px;
@@ -725,7 +711,31 @@ export default {
         margin: 0;
     }
 	.first_pet .el-carousel__container {
-		height: 250px;
+		height: 243px;
+		@media screen and (max-width: 1500px) {
+            height: 203px;
+        }
+        @media screen and (max-width: 1200px) {
+            height: 180px;
+        }
+        @media screen and (max-width: 1100px) {
+            height: 150px;
+        }
+        @media screen and (max-width: 800px) {
+            height: 125px;
+        }
+        @media screen and (max-width: 600px) {
+            height: 85px;
+        }
+        @media screen and (max-width: 440px) {
+            height: 65px;
+        }
+	}
+	.first_pet .el-carousel__container .el-carousel__arrow--left {
+		left: 0 !important;
+	}
+	.first_pet .el-carousel__container .el-carousel__arrow--right {
+		right: 0 !important;
 	}
 	.agora .el-button {
 		border-radius: 20px !important;
@@ -735,8 +745,11 @@ export default {
 	}
 	.first_item .first_pet .is-active {
 		display: flex;
-		padding: 0 75px;
+		padding: 0 40px;
 		justify-content: space-between !important;
+		@media screen and (max-width: 600px) {
+            padding: 0 10px;
+        }
 	}
 	.first_item .first_pet .el-carousel__container {
 		width: 100% !important;
@@ -754,5 +767,66 @@ export default {
 	}
 	.headerLogoPage .mobile_s .oicq_inp .el-input--small .el-input__icon {
 		line-height: 0 !important;
+	}
+
+	.el-message-box__wrapper .el-message-box {
+		@media screen and (max-width: 564px) {
+			width: 293px;
+		}
+	}
+	.v-modal {
+		display: none;
+		@media screen and (max-width: 800px) {
+			display: block;
+		}
+	}
+	.record .el-collapse .el-collapse-item .el-collapse-item__header {
+		height: 60px !important;
+	}
+
+	.customer_content .pet_message .el-drawer__wrapper .el-drawer__body {
+		height: 100% !important;
+	}
+	
+	.appointment .calendar .el-calendar__header {
+		@media screen and (max-width: 564px) {
+			flex-direction: column !important;
+		}
+	}
+	.appointment .calendar .el-calendar__button-group {
+		@media screen and (max-width: 564px) {
+			margin: auto !important;
+			margin-top: 5px !important;
+		}
+	}
+	.appointment .calendar .el-button--plain {
+		@media screen and (max-width: 1100px) {
+			padding: 7px 10px !important;
+		}
+		@media screen and (max-width: 564px) {
+			padding: 5px !important;
+			font-size: 12px !important;
+		}
+	}
+	.appointment .calendar .el-calendar-table thead {
+		@media screen and (max-width: 1250px) {
+			font-size: 15px;
+		}
+		@media screen and (max-width: 800px) {
+			font-size: 13px;
+		}
+	}
+	.appointment .calendar .el-calendar-table .el-calendar-day {
+		@media screen and (max-width: 1250px) {
+			font-size: 14px;
+			height: 70px;
+		}
+		@media screen and (max-width: 1150px) {
+			height: 60px;
+		}
+		@media screen and (max-width: 1050px) {
+			font-size: 12px;
+			height: 50px;
+		}
 	}
 </style>

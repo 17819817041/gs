@@ -50,18 +50,17 @@
                             <img class="cursor" src="@/assets/img/clip.png" alt="">
                         </div>
                         <div class="add al">
-                            <img class="cursor" @click="send" src="@/assets/img/Ball.png" alt="">
-                            <img class="arrowon cursor" @click="send" src="@/assets/img/arrowon.png" alt="">
+                            <img class="cursor" @click="send" src="@/assets/img/msg_send.png" alt="">
                         </div>
                     </div>
                 </div>
             </div>
-           
         </div>
     </div>
 </template>
 
 <script>
+// import {conn, WebIM} from "@/assets/js/websdk.js"
 export default {
     data () {
         return {
@@ -72,7 +71,8 @@ export default {
             headImage: '',
             now_player: 0,
             im_player: '',
-            Today: ''
+            Today: '',
+            pk: 0
         }
     },
     created () {
@@ -153,6 +153,7 @@ export default {
                 key: "fromIM",
                 value: key
             })
+
             this.messageList = this.message[key].messageList
             this.headImage = this.message[key].userDetail.userImage
             this.$nextTick(() => {
@@ -262,8 +263,7 @@ export default {
 @import "@/less/css.less";
     .chatRoom {
         flex: 10;
-        height: 100%;
-        
+        height: calc(100% - 10px);
     }
     .chat_admin {
         // border: solid 1px;
@@ -273,14 +273,13 @@ export default {
     .wrap {
         width: 100%;
         height: 100%;
-        // padding: 0 20px;
     }
     .chatLogo {
         width: 40px;
         margin-right: 7px;
     }
     .chat_item {
-        height: calc(100% - 59px);
+        height: calc(100% - 53px);
         background: white;
     }
     .friendsList {
@@ -316,19 +315,8 @@ export default {
     }
 
     .inpMessage {
-        padding: 5px 10px;
+        padding: 2.5px 10px;
         border: solid rgb(218, 217, 217) 1px;
-    }
-    .add {
-        position: relative;
-        .arrowon {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-77%,-50%);
-            width: 19px;
-            height: 23px;
-        }
     }
     .add img {
         height: 36px;

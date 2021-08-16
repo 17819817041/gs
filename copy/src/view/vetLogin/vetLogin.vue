@@ -165,7 +165,7 @@ export default {
             },
             form: {
                 platform:2,
-                email:'972307875@qq.com',
+                email:'14@qq.com',
                 password:'123'
 
                  

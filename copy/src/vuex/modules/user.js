@@ -1,4 +1,4 @@
-import { petList, getUserDetails, vetDetails, doctorList, bookingUserId, notice, onlineState, balance, addMetting, s_online } from "@/axios/request.js"
+import { petList, getUserDetails, vetDetails, doctorList, bookingUserId, notice, onlineState, balance, addMetting, s_online, joinRoom } from "@/axios/request.js"
 import router from "@/router/router/router.js"
 import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 import Vue from "vue"
@@ -53,6 +53,8 @@ export default {
         noticeList: [],
         balance: {},
         default_img:'',
+        setTime_S: false,
+        online_mask: false,
         adminList: {
             'admin': {
                 messageList: [
@@ -63,7 +65,7 @@ export default {
         },
         message: {},
         chatList: [],
-        newMsg_dot: false
+        newMsg_dot: JSON.parse(JSON.stringify(localStorage.getItem('new_msg')))
     },
     mutations: {
         setUser (state,data) {
@@ -74,6 +76,9 @@ export default {
         },
         pageAdd_n (state,data) {
             state.noticeList = state.noticeList.concat(data)
+        },
+        medicalAdd (state,data) {
+            state.getDoctorMedicalLimitList = state.getDoctorMedicalLimitList.concat(data)
         },
     },
     actions: {
@@ -94,7 +99,6 @@ export default {
             // rtc.client = data.rtc.createClient({mode: option.mode, codec: option.codec})
             // store.commit('setUser', { key: 'rtc', value: rtc })
             rtc.client.init(option.appID, function () {
-                console.log("init success",option,rtc.client)
                 rtc.client.join(option.token ? option.token : null, option.channel, option.uid ? +option.uid : null, function (uid) {
                 //   console.log("join channel: " + option.channel + " success, uid: " + uid)
                   rtc.joined = true
@@ -112,7 +116,7 @@ export default {
                     // play stream with html element id "local_stream"
 
                     if (localStorage.getItem('platform') == 2) {                    //医生成功加入频道         !!!!!!!!!!!!
-                        const caller = option.vm.$store.state.user.caller
+                        const caller = store.state.caller
                         let data0 = {
                             type: "confirmCall"
                         }
@@ -128,10 +132,10 @@ export default {
                         let D = new Date
                         var date = D.toLocaleDateString()
                         let detail = {
-                            petName: option.vm.$store.state.user.pet.petName,
-                            petId: option.vm.$store.state.user.petId,                 
-                            caller: option.vm.$store.state.user.caller,
-                            callTo: option.vm.$store.state.user.userDetail,
+                            petName: store.state.pet.petName,
+                            petId: store.state.petId,                 
+                            caller: store.state.caller,
+                            callTo: store.state.userDetail,
                             createdTime: date,
                             roomNumber: 'petavi_' + localStorage.getItem('sroom')
                         }
@@ -161,8 +165,9 @@ export default {
 
                     rtc.localStream.play("player_a2")
                     rtc.client.publish(rtc.localStream, function (err) {
-                        console.log('publish success')
+                        
                     })
+                    store.commit('setUser',{ key: 'setTime_S', value: true })
                   }, function (err)  {
                     console.error("init local stream failed ", err)
 
@@ -181,7 +186,7 @@ export default {
                         conn.send(msg.body);
                     }
 
-                    option.vm.$message.error('The browser cannot get the camera or the device does not support!')
+                    data.vm.$message.error('The browser cannot get the camera or the device does not support!')
                     router.back()
                   })
                 }, function(err) {
@@ -200,11 +205,11 @@ export default {
                         });
                         conn.send(msg.body);
                     }
-                    option.vm.$message.error('Client join failed')
+                    data.vm.$message.error('Client join failed')
                     router.back()
                 })
             }, (err) => {
-                option.vm.$message.error('Client join failed')
+                data.vm.$message.error('Client join failed')
                 router.back()
                 console.error(err,'catchCamera')
             })
@@ -297,6 +302,7 @@ export default {
                         store.dispatch('getNoticeList', page)
                         store.commit("setUser",{ key: "userDetail", value: res.data.data }) 
                         store.dispatch("IMLogin")
+                        store.dispatch("joinRoom")
                         store.commit("setUser",{ key: "login", value: true })
                     } else if (res.data.rtnCode == 500) {
                         store.commit("setUser",{ key: "login", value: false })
@@ -356,6 +362,7 @@ export default {
                         store.commit("setUser",{ key: "userDetail", value: res.data.data }) 
                         store.commit("setUser",{ key: "login", value: true }) 
                         store.dispatch("IMLogin")
+                        store.dispatch("joinRoom")
                         let page = {
                             pageNum: 1
                         }
@@ -468,7 +475,7 @@ export default {
             const doctor = {
                 platform: localStorage.getItem("platform"),
                 userId: localStorage.getItem("userId"),
-                pageNum: num,
+                pageNum: num.num,
                 pageSize:20
             }
             store.commit("setUser",{ key: "loading6", value: true })
@@ -493,9 +500,18 @@ export default {
                         // }
                     } else {
                         store.commit("setUser",{ key: "loading6", value: false })
+                        store.commit("pageAdd", null )
+                        num.vm.$message({
+                            type: 'error',
+                            message: 'Loading timed out, please check the network!'
+                        })
                     }
                 }).catch(e => {
                     console.log(e)
+                    num.vm.$message({
+                        type: 'error',
+                        message: 'Loading timed out, please check the network!'
+                    })
                     store.commit("setUser",{ key: "loading6", value: false })
                     store.commit("setUser",{ key: "doctorList", value: [] })
                     
@@ -571,5 +587,13 @@ export default {
                 }
             }
         },
+        joinRoom (store,data) {
+            let data_j = {
+                userId: localStorage.getItem('userId'),
+                userType: localStorage.getItem('platform')
+            }
+            joinRoom(data_j).then(res => {
+            })
+        }
     }
 }

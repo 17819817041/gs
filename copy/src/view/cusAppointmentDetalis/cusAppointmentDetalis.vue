@@ -16,9 +16,17 @@
                         </div>
                         <div class="calendar_wrap">
                             <div class="calendar_item">
-                                <div class="size23">
-                                    <span v-if="confirmKey.booking.bookingDoctor">{{confirmKey.booking.bookingDoctor}}</span>
-                                    <span v-else>No Name</span>
+                                <div class="flex">
+                                    <div class="size23">
+                                        <span v-if="confirmKey.booking.bookingDoctor">{{confirmKey.booking.bookingDoctor}}</span>
+                                        <span v-else>No Name</span>
+                                    </div>
+                                    <div class="telephone_or_video_mobile">
+                                        <div class="videoConsultation cursor ju al">
+                                            <img src="@/assets/img/video1.png" alt="">
+                                            <span class="text_v_btn">Video Consultation</span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="size17" style="color:#9F9F9F">Video Consultation</div>
                             </div>
@@ -78,8 +86,10 @@
                             </div>
                         </div>
                         <div class="telephone_or_video">
-                            <div class="videoConsultation cursor ju al"><img src="@/assets/img/video1.png" alt="">Video Consultation</div>
-                            <div class="chat cursor ju al"><img src="@/assets/img/chat1.png" alt="">Chat</div>
+                            <div class="videoConsultation cursor ju al">
+                                <img src="@/assets/img/video1.png" alt="">
+                                <span class="text_v_btn">Video Consultation</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -211,6 +221,9 @@ export default {
         box-shadow: 0 2px 5px 1px rgb(170, 167, 167);
         background: white;
         padding-bottom: 100px;
+        @media screen and (max-width: 564px) {
+            flex-direction: column;
+        }
     }
     .head_image {
         width: 170px;
@@ -218,12 +231,30 @@ export default {
         overflow: hidden;
         border-radius: 50%;
         margin: 50px 80px;
+        @media screen and (max-width: 1350px) {
+            width: 125px;
+            height: 125px;
+            margin: 40px 30px;
+        }
+        @media screen and (max-width: 800px) {
+            width: 85px;
+            height: 85px;
+        }
+        @media screen and (max-width: 564px) {
+            width: 75px;
+            height: 75px;
+            margin: 10px auto;
+        }
     }
     .Appointment_img {
         height: 100%;
     }
     .calendar_wrap {
-        width: 27%;
+        width: 30%;
+        min-width: 250px;
+        @media screen and (max-width: 564px) {
+            margin: 0 auto;
+        }
     }
     .Reschedule {
         width: 90px;
@@ -254,21 +285,47 @@ export default {
     }
     .calendar_item {
         margin-top: 40px;
+        @media screen and (max-width: 800px) {
+            margin-top: 20px;
+        }
     }
     .size23 {
         font-size: 23px;
+        @media screen and (max-width: 1350px) {
+            font-size: 20px;
+        }
     }
     .size16 {
         color: #9F9F9F;
         font-size: 16px;
+        @media screen and (max-width: 1350px) {
+            font-size: 14px;
+        }
     }
     .size17 {
         font-size: 17px;
+        @media screen and (max-width: 1350px) {
+            font-size: 15px;
+        }
     }
     .telephone_or_video {
         flex: 10;
         transform: rotateY(180deg);
         padding: 40px 50px;
+        @media screen and (max-width: 1350px) {
+            padding: 40px 30px;
+        }
+        @media screen and (max-width: 564px) {
+            display: none;
+        }
+    }
+    .telephone_or_video_mobile {
+        flex: 10;
+        transform: rotateY(180deg);
+        display: none;
+        @media screen and (max-width: 564px) {
+            display: block;
+        }
     }
     .videoConsultation {
         background: #15BC83;
@@ -278,6 +335,19 @@ export default {
         height: 40px;
         transform: rotateY(180deg);
         margin-bottom: 10px;
+        @media screen and (max-width: 1350px) {
+            font-size: 15px;
+            width: 200px;
+        }
+        @media screen and (max-width: 800px) {
+            width: 60px;
+            height: 30px;
+        }
+    }
+    .text_v_btn {
+        @media screen and (max-width: 800px) {
+            display: none;
+        }
     }
     .phoneConsultation {
         background: #FF9500;

@@ -35,8 +35,8 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="location">
-                        <el-select v-model="form.location" @change="getAddressId" placeholder="Location">
-                            <el-option v-for="(item,i) in locationSelect" :key="i" :label="item.addressName" :value="item.areaId"></el-option>
+                        <el-select v-model="addressName0" @change="getAddressId" placeholder="Location">
+                            <el-option v-for="(item,i) in locationSelect" :key="i" :label="item.addressName" :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>
 
@@ -57,6 +57,7 @@
                                 <div  :class="['arrow', { rotate: starRotate }]"></div>
                                 <el-time-select
                                     v-model="form.starTime"
+                                    :editable='false'
                                     :picker-options="{
                                         start: '08:30',
                                         step: '00:15',
@@ -94,7 +95,7 @@
                                     </el-select>
                                 </div>
                             </el-form-item>
-                            <el-form-item  class="years" prop="years">
+                            <el-form-item  class="year" prop="years">
                                 <div>
                                     <el-select v-model="form.years" placeholder="Year">
                                         <el-option v-for="(item,i) in yearsSelect" :key="i" :value="item"></el-option>
@@ -116,7 +117,7 @@
 </template>
 
 <script>
-import { doctorList, booking, address, getDoctorByLocationId, notice } from "@/axios/request.js"
+import { doctorList, booking, address, getDoctorByLocationId } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -134,6 +135,7 @@ export default {
                 years: '',
             },
             doctorId: null,
+            addressName0: '',
             doctorSelect: [],
             locationSelect: [],
             petId: null,
@@ -206,6 +208,7 @@ export default {
         this.getPetSelect()
         this.getDay()
         this.getAddress()
+        this.first_booking(this.$route.query.areaId, this.$route.query.doctorId)
     },
     watch: {
         petList: {
@@ -213,7 +216,7 @@ export default {
                 this.petSelect = JSON.parse(JSON.stringify(this.petList))
             }
         }
-    },
+    }, 
     computed: {
         userDetails () { return this.$store.state.user.userDetail },
         petList () { return this.$store.state.user.petList },
@@ -299,6 +302,7 @@ export default {
             })
         },
         getAddressId (val) {
+            this.form.location = val
             this.doctorSelect = []
             this.form.doctor = ''
             let data = {
@@ -430,6 +434,51 @@ export default {
         },
         starBlur () {
             this.starRotate = false
+        },
+        first_booking (areaId, doctorId) {
+            this.loading = true
+            address().then(res => {
+                res.data.data.forEach(area => {
+                    if (area.id == areaId) {
+                        this.addressName0 = area.addressName
+                        this.form.location = area.areaId
+                    }
+                })
+                this.doctorSelect = []
+                this.form.doctor = ''
+                let data = {
+                    addressId: areaId
+                }
+                getDoctorByLocationId(data).then(res => {
+                    this.loading = false
+                    if (res.data.rtnCode == 200) {
+                        this.doctorSelect = res.data.data
+                        res.data.data.forEach(item => {
+                            if (item.userId == doctorId) {
+                                this.form.doctor = item.doctorName
+                                this.doctorId = item.userId
+                            }
+                        })
+                    } else if (res.data.rtnCode == 201) {
+                        this.$message({
+                            type: 'info',
+                            message: 'No doctors in this area!'
+                        })
+                    } else {
+                        this.$message({
+                            type: 'info',
+                            message: 'No doctors in this area!'
+                        })
+                    }
+                }).catch(e => {
+                    console.log(e)
+                    this.loading = false
+                })
+            }).catch(e => {
+                console.log(e)
+                this.loading = false
+            })
+            
         }
     }
 }
@@ -438,7 +487,16 @@ export default {
 <style lang="less" scoped>
 @import "@/less/css.less";
     .booking {
-        width: 700px;
+        width: 45%;
+        @media screen and (max-width: 1300px) {
+            width: 55%;
+        }
+        @media screen and (max-width: 1100px) {
+            width: 65%;
+        }
+        @media screen and (max-width: 800px) {
+            width: 95%;
+        }
     }
     .visitAndWay {
         width: 99%;
@@ -503,5 +561,11 @@ export default {
     }
     .rotate {
         transform: translate(-50%,-50%) rotateZ(-180deg);
+    }
+    .year, .month, .day {
+        width: 32%;
+    }
+    .month {
+        margin: 0 2%;
     }
 </style>

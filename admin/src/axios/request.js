@@ -88,9 +88,9 @@ export function petType (data) {                           //宠物类型列表
     })
 }
 
-export function bookingUserId (data) {                 //userId获取当前预约信息  大于等于今天的记录
+export function getBookings (data) {                 //获取预约信息  String startDay, String endDay, int pageNum, int pageSize  sort   1 按 创建时间排序    2 按 预约时间排序
     return request({
-        url: "/booking/getBookingList",
+        url: "/booking/getBookings",
         method: "POST",
         params: data
     })
@@ -142,6 +142,14 @@ export function asd (data) {
     return request({                                  
         url: '/agora/recoding',
         method: "POST",
+        params: data
+    })
+}
+
+export function getPetMedicalRecord (data) {            //医生治疗记录
+    return request({
+        url: "/PetMedicalRecord/getPetMedicalRecordPageByDocId",
+        method: 'POST',
         params: data
     })
 }

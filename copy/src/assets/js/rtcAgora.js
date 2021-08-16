@@ -18,14 +18,14 @@ function initRtc (Agora) {
         console.log(err)
     })
     rtc.client.on("stream-removed", function (evt) {
-        var remoteStream = evt.stream
-        var id = remoteStream.getId()
-        if(remoteStream.isPlaying()) {
-            remoteStream.stop()
-        }
-        rtc.remoteStreams = rtc.remoteStreams.filter(function (stream) {
-            return stream.getId() !== id
-        })
+        // var remoteStream = evt.stream
+        // var id = remoteStream.getId()
+        // if(remoteStream.isPlaying()) {
+        //     remoteStream.stop()
+        // }
+        // rtc.remoteStreams = rtc.remoteStreams.filter(function (stream) {
+        //     return stream.getId() !== id
+        // })
         console.log("stream-removed remote-uid: ",evt)
     })
     rtc.client.on("peer-leave", function (evt) {
@@ -57,7 +57,10 @@ function initRtc (Agora) {
         })
         router.back()
         console.log("peer-leave", id)
-        
+        store.commit("setUser", {
+            key: "setTime_S",
+            value: false
+        })
     })
     rtc.client.on("stream-published", function (evt) {
         console.log("stream-published")
@@ -107,32 +110,38 @@ function initRtc (Agora) {
         })
         console.log("onTokenPrivilegeWillExpire")
     })
-      rtc.client.on("onTokenPrivilegeDidExpire", function(){
+    rtc.client.on("onTokenPrivilegeDidExpire", function(){
         // After requesting a new token
         // client.renewToken(token);
-            if(rtc.localStream.isPlaying()) {
-                rtc.localStream.stop()
-            }
-            rtc.localStream.close()
-            rtc.localStream = null
-            let data = {
-                userId: store.state.user.callTo.doctorId,
-                platform: 2
-            }
-            s_online(data).then(res => {
-                // console.log(res,'在线')
-            })
-            let data_dele = {
-                webId: store.state.user.mettingId
-            }
-            delMetting(data_dele).then(res => {
-                console.log(res,'删除')
-            })
-            router.back()
-            console.log("client leaves channel success")
-            console.log("onTokenPrivilegeDidExpire")
+        if(rtc.localStream.isPlaying()) {
+            rtc.localStream.stop()
+        }
+        rtc.localStream.close()
+        rtc.localStream = null
+        store.commit("setUser", {
+            key: "setTime_S",
+            value: false
         })
-
+        let data = {
+            userId: store.state.user.callTo.doctorId,
+            platform: 2
+        }
+        s_online(data).then(res => {
+            // console.log(res,'在线')
+        })
+        let data_dele = {
+            webId: store.state.user.mettingId
+        }
+        delMetting(data_dele).then(res => {
+            console.log(res,'删除')
+        })
+        router.back()
+        console.log("client leaves channel success")
+        console.log("onTokenPrivilegeDidExpire")
+    })
+    rtc.client.on("connection-state-change", function (val) {
+        console.log(val,'connection-state-change+++++++++++++++++++++++++++++++++++++++++++++')
+    })
 }
 
 export default initRtc

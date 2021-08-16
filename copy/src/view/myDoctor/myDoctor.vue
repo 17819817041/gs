@@ -1,90 +1,9 @@
 <template>
     <div class="myDoctor flex">
-        <transition name="fade">
-            <div class="phone_doc_detail noBar" v-show="mobile_doc_detail">
-                <div class="details_item mg">
-                    <div class="ju" style="padding:15px 0">
-                        <div class="head_image al ju">
-                            <img style="height:100%" :src="detail.userHead" v-if="detail.userHead" alt="">
-                            <img style="height:100%;" v-else :src="default_img" alt="">
-                            <!-- <i class="el-icon-picture-outline" style="font-size:40px;color:gray" v-else></i> -->
-                        </div>
-                        <div style="padding-left: 15px;">
-                            <div class="doctor_name tc" v-if="detail.doctorName">{{detail.doctorName}}</div>
-                            <div class="doctor_name tc" v-else>Name</div>
-                            <div class="size15 tc">General Obstetrics </div>
-                            <div class="star_mobile ju">
-                                <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ju mg" style="width:70%">
-                        <div class="relation_mobile ju">
-                            <div @click="booking"><img src="@/assets/img/calendar.png" alt=""></div>
-                        </div>
-                        <div class="toVideo" @click="toVideo">
-                            <el-button class="width100 videoBtn" type="primary">
-                                <img src="@/assets/img/video.png" alt="">
-                            </el-button>
-                        </div>
-                    </div>
-                    <div class="reviews_mobile sb">
-                        <div>
-                            <div class="size12">{Experience}</div>
-                            <div class="size13">
-                                <span v-if="detail.experience">{{detail.experience}}</span>
-                                <span v-else>0</span>
-                                + years
-                            </div>
-                        </div>
-                        <div class="xian"></div>
-                        <div class="tc likes">
-                            <div class="size12 al">Likes</div>
-                            <div><span class="size13">{{detail.totalLike}}</span><span class="size12"> ({{detail.likingRate}})</span></div>
-                        </div>
-                        <div class="xian"></div>
-                        <div style="text-align:end">
-                            <div class="size12">Reviews</div>
-                            <div class="size13">230</div>
-                        </div>
-                    </div>
-                    <div class="working_mobile al">
-                        <div class="al" style="padding-right:10px"><img src="@/assets/img/time.png" alt=""></div>
-                        <div style="width:92%">
-                            <div class="sb">
-                                <div class="size16" style="margin-bottom:4px;">Open Today</div>
-                                <div class="blue">ALL TIMING</div>
-                            </div>
-                            <div class="time blue">10:30 Am -07:30Pm</div>
-                        </div>
-                    </div>
-                    <div class="introduce text-overflow">
-                        <span class="text-overflows" v-if="detail.doctorContent">
-                            {{detail.doctorContent}}
-                        </span>
-                        <span v-else>No introduction!</span>
-                    </div>
-                    <div class="blue flexEnd" v-show="showMore">
-                        <span  class="cursor">more</span>
-                    </div>
-                    <div class="aboutUs_mobile">
-                        <div class="child al flex">
-                            <img style="width:40px" src="@/assets/img/personal1.png" alt="">
-                            <div class="size16">Personal Information</div>
-                        </div>
-                        <div class="child flex al">
-                            <img style="width:40px" src="@/assets/img/addressimg1.png" alt="">
-                            <div class="size16">Working Address</div>
-                        </div>
-                        <div class="child flex al">
-                            <img style="width:40px" src="@/assets/img/reviewer1.png" alt="">
-                            <div class="size16">Reviewer (230)</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </transition>
-        <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList">
+        <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList !==null">
+            <transition name="fade"><div class="online_mask cursor" @click="getDoctorList1" v-show="online_mask">
+                The doctor login status changes, click refresh
+            </div></transition>
             <div class="width102 clear" ref="doctorList_height">
                 <div class="doctor_item float" v-for="(item,i) in doctorList" :key="i" @click="getDetail(item)">
                     <div class="image flex">
@@ -149,7 +68,7 @@
                     <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
                 </div>
                 <div class="relation ju">
-                    <div class="cursor" @click="booking"><img src="@/assets/img/calendar.png" alt=""></div>
+                    <div class="cursor" @click="booking(detail.addressId,detail.doctorId)"><img src="@/assets/img/calendar.png" alt=""></div>
                 </div>
                 <div class="toVideo cursor" @click="toVideo">
                     <el-button class="width100 videoBtn" type="primary">
@@ -183,12 +102,24 @@
                             <div class="size16" style="margin-bottom:4px;">Open Today</div>
                             <div class="blue">ALL TIMING</div>
                         </div>
-                        <div class="time blue">10:30 Am -07:30Pm</div>
+                        <div class="time blue">
+                            <span>
+                                <span v-if="detail.startTime">{{detail.startTime}}</span>
+                                <span v-else>09:00</span>
+                                <span style="padding-left: 3px;">AM</span>
+                            </span>
+                            <span style="padding: 0 5px;">-</span>
+                            <span>
+                                <span v-if="detail.endTime">{{detail.endTime}}</span>
+                                <span v-else>18:00</span>
+                                <span style="padding-left: 5px;">PM</span>
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <div class="introduce text-overflow">
                     <span class="text-overflows" v-if="detail.doctorContent">
-                        {{detail.doctorContent}}
+                        {{detail.doctorContent}}666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
                     </span>
                     <span v-else>No introduction!</span>
                 </div>
@@ -196,21 +127,121 @@
                     <span  class="cursor">more</span>
                 </div>
                 <div class="aboutUs">
-                    <div class="child al flex">
+                    <div class="child al flex cursor" @click="docInformation">
                         <img style="width:40px" src="@/assets/img/personal1.png" alt="">
                         <div class="size16">Personal Information</div>
                     </div>
-                    <div class="child flex al">
+                    <div class="child flex al cursor" @click="map">
                         <img style="width:40px" src="@/assets/img/addressimg1.png" alt="">
                         <div class="size16">Working Address</div>
                     </div>
-                    <div class="child flex al">
+                    <div class="child flex al cursor">
                         <img style="width:40px" src="@/assets/img/reviewer1.png" alt="">
                         <div class="size16">Reviewer (230)</div>
                     </div>
                 </div>
             </div>
         </div>
+        <el-drawer
+            class="el_drawer_mobile"
+            title="Doctor Detail"
+            :visible.sync="drawer"
+            size='80%'>
+            <div class="phone_doc_detail noBar">
+                <div class="details_item mg">
+                    <div class="mg" style="padding:15px 0">
+                        <div class="head_image mg al ju">
+                            <img style="height:100%" :src="detail.userHead" v-if="detail.userHead" alt="">
+                            <img style="height:100%;" v-else :src="default_img" alt="">
+                            <!-- <i class="el-icon-picture-outline" style="font-size:40px;color:gray" v-else></i> -->
+                        </div>
+                        <div style="padding-left: 15px;">
+                            <div class="doctor_name tc" v-if="detail.doctorName">{{detail.doctorName}}</div>
+                            <div class="doctor_name tc" v-else>Name</div>
+                            <div class="size15 tc">General Obstetrics </div>
+                            <div class="star_mobile ju">
+                                <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ju mg" style="width: 80%;">
+                        <div class="toVideo" @click="toVideo">
+                            <el-button class="width100 videoBtn" type="primary">
+                                <img src="@/assets/img/video.png" alt="">
+                            </el-button>
+                        </div>
+                        <div class="relation_mobile ju">
+                            <div @click="booking"><img src="@/assets/img/calendar.png" alt=""></div>
+                        </div>
+                    </div>
+                    <div class="reviews_mobile sb">
+                        <div>
+                            <div class="size12">{Experience}</div>
+                            <div class="size13">
+                                <span v-if="detail.experience">{{detail.experience}}</span>
+                                <span v-else>0</span>
+                                + years
+                            </div>
+                        </div>
+                        <div class="xian"></div>
+                        <div class="tc likes">
+                            <div class="size12 al">Likes</div>
+                            <div><span class="size13">{{detail.totalLike}}</span><span class="size12"> ({{detail.likingRate}})</span></div>
+                        </div>
+                        <div class="xian"></div>
+                        <div style="text-align:end">
+                            <div class="size12">Reviews</div>
+                            <div class="size13">230</div>
+                        </div>
+                    </div>
+                    <div class="working_mobile al">
+                        <div class="al" style="padding-right:10px"><img src="@/assets/img/time.png" alt=""></div>
+                        <div style="width:92%">
+                            <div class="sb">
+                                <div class="size16" style="margin-bottom:4px;">Open Today</div>
+                                <div class="blue">ALL TIMING</div>
+                            </div>
+                            <div class="time blue">
+                                <span>
+                                    <span v-if="detail.startTime">{{detail.startTime}}</span>
+                                    <span v-else>09:00</span>
+                                    <span style="padding-left: 3px;">AM</span>
+                                </span>
+                                <span style="padding: 0 5px;">-</span>
+                                <span>
+                                    <span v-if="detail.endTime">{{detail.endTime}}</span>
+                                    <span v-else>18:00</span>
+                                    <span style="padding-left: 5px;">PM</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="introduce text-overflow">
+                        <span class="text-overflows" v-if="detail.doctorContent">
+                            {{detail.doctorContent}}
+                        </span>
+                        <span v-else>No introduction!</span>
+                    </div>
+                    <div class="blue flexEnd" v-show="showMore">
+                        <span  class="cursor">more</span>
+                    </div>
+                    <div class="aboutUs_mobile">
+                        <div class="child al flex cursor" @click="docInformation">
+                            <img style="width:40px" src="@/assets/img/personal1.png" alt="">
+                            <div class="size16">Personal Information</div>
+                        </div>
+                        <div class="child flex al cursor" @click="map">
+                            <img style="width:40px" src="@/assets/img/addressimg1.png" alt="">
+                            <div class="size16">Working Address</div>
+                        </div>
+                        <div class="child flex al cursor">
+                            <img style="width:40px" src="@/assets/img/reviewer1.png" alt="">
+                            <div class="size16">Reviewer (230)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </el-drawer>
     </div>
 </template>
 <script>
@@ -219,22 +250,25 @@ export default {
         return {
             active:true,
             change:true,
-            // rate:0,
-            // detail: {},
+            drawer: false,
             pageNum: 1,
             showMore: false,
             timer: null,
-            mobile_doc_detail: false
         }
     },
     created () {
         this.doctorList = []
-        // if (!this.doctorList.length ) {
         this.getDoctorList()
-        // }
     },
     mounted () {
         
+    },
+    beforeMount() {
+        window.addEventListener('resize', (e) => {
+            if (e.target.innerWidth <= 800) {
+                this.drawer = false
+            }
+        })
     },
     watch: {
         detail: {
@@ -259,15 +293,12 @@ export default {
                 }
             }
         },
-        top_up_mask: {
+        online_mask: {
             handler (val) {
                 if (val) {
-                    this.top_up_mask = val
-                } else {
-                    this.mobile_doc_detail = false
+                    this.online_mask = val
                 }
-            },
-            deep:true
+            }
         }
     },
     computed: {
@@ -309,6 +340,15 @@ export default {
                 })
             }
         },
+        online_mask: {
+            get () { return this.$store.state.user.online_mask },
+            set (val) {
+                this.$store.commit('setUser', {
+                    key: 'online_mask',
+                    value: val
+                })
+            }
+        },
         totalRecordsCount () { return this.$store.state.user.totalRecordsCount },
         inp: {
             get () {return this.$store.state.user.inp},
@@ -319,18 +359,11 @@ export default {
                 })
             },
         },
-        default_img () { return this.$store.state.user.default_img },
-        top_up_mask: {
-            get () { return this.$store.state.user.mobile_b },
-            set (val) {
-                this.$store.commit('setUser', { key: 'mobile_b', value: val })
-            }
-        },
+        default_img () { return this.$store.state.user.default_img }
     },
     methods: {
         getDetail (item) {
-            this.$store.commit('setUser', { key: 'mobile_b', value: !this.top_up_mask })
-            this.mobile_doc_detail = true
+            this.drawer = !this.drawer
             if (item.doctorName == null) {
                 item.doctorName = 'No name'
             }
@@ -369,7 +402,18 @@ export default {
             }
         },
         getDoctorList () {
-            this.$store.dispatch('getDoctorList',this.pageNum)
+            this.$store.dispatch('getDoctorList',{num: this.pageNum, vm: this})
+        },
+        getDoctorList1 () {
+            this.$store.commit("setUser", {
+                key: "doctorList",
+                value: []
+            })
+            this.$store.commit('setUser', {
+                key: 'online_mask',
+                value: false
+            })
+            this.getDoctorList()
         },
         edit () {
             this.change = !this.change
@@ -380,7 +424,6 @@ export default {
             })
         },
         toVideo () {
-            console.log(this.detail)
             if (this.detail.doctorOnLineState == 0 || this.detail.doctorOnLineState == 2) {
                 this.$message({
                     type: 'info',
@@ -403,9 +446,26 @@ export default {
                 }
             }
         },
-        booking () {
-            this.$router.push("/booking")
+        booking (areaId,doctorId) {
+            this.$router.push({
+                name: 'booking',
+                query: {
+                    areaId: areaId,
+                    doctorId: doctorId
+                }
+            })
         },
+        map () {
+            this.$router.push('/map')
+        },
+        docInformation () {
+            this.$router.push({
+                name: 'docInformation',
+                query: {
+                    id: this.detail.doctorId
+                }
+            })
+        }
     }
 }
 </script>
@@ -440,6 +500,7 @@ export default {
             // padding: 30px;
             border: #F3F3F3 solid 1px;
             border-radius: 4px;
+            position: relative;
             @media screen and (max-width:1050px) {
                 width: 100%;
             }
@@ -457,9 +518,22 @@ export default {
             height: 100%;
             overflow: auto;
             // border: solid 1px;
-            @media screen and (max-width:564px) {
+            @media screen and (max-width:800px) {
                 display: none;
             }
+        }
+    }
+    .online_mask {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        padding: 5px 10px;
+        background: #46D3FA;
+        color: white;
+        border-radius: 10px;
+        transform: translate(-50%, 0);
+        @media screen and (max-width:800px) {
+            font-size: 12px;
         }
     }
     .phone_doc_detail {
@@ -473,9 +547,9 @@ export default {
         border-radius: 12px;
         z-index: 901;
         overflow: auto;
-        transform: translate(-50%,-50%);
+        transform: translate(-50%,-46%);
         display: none;
-        @media screen and (max-width:564px) {
+        @media screen and (max-width:800px) {
             display: block;
         }
     }
@@ -549,12 +623,12 @@ export default {
         transition: 0.25s;
         @media screen and (max-width:1145px) {
             width: 45%;
-            margin: 0 1.5% 5px 3.5%;
-        }
-        @media screen and (max-width:759px) {
-            width: 95%;
             margin: 0 1.5% 5px 2.5%;
         }
+        // @media screen and (max-width:759px) {
+        //     width: 95%;
+        //     margin: 0 1.5% 5px 2.5%;
+        // }
         @media screen and (max-width:564px) {
             width: 97%;
             margin: 0 3.5% 5px 0.5%;
@@ -728,5 +802,15 @@ export default {
         width: 100%;
         padding: 50px 0;
         // border: solid 1px;
+        @media screen and (max-width: 564px) {
+            width: 100%;
+            padding: 20px 0;
+        }
+    }
+    .el_drawer_mobile {
+        display: none;
+        @media screen and (max-width: 800px) {
+			display: block;
+		}
     }
 </style>

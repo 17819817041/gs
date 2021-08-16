@@ -12,6 +12,8 @@ import myHeader from "@/components/myHeader/myHeader.vue"
 import myHeaderL from "@/components/myHeaderL/myHeaderL.vue"
 import vetMessage from "@/components/vetMessage/vetMessage.vue"   
 import agoraMsg from "@/components/agoraMsg/agoraMsg.vue"
+import myNav from "@/components/myNav/myNav.vue" 
+Vue.component("myNav", myNav)
 Vue.component('agoraMsg',agoraMsg)
 Vue.component("vetMessage",vetMessage)
 Vue.component("myHeaderL",myHeaderL)
@@ -39,8 +41,6 @@ import { google } from "@/assets/js/google.js"
 
 import FBSignInButton from 'vue-facebook-signin-button'
 Vue.use(FBSignInButton)
-
-
 
 import element from "element-ui"
 import "@/assets/theme/index.css"
@@ -113,6 +113,29 @@ Vue.prototype.dealImg = function (file, success, error) {
 	}
 }
 
+//div拖拽
+Vue.directive("drag", function(el) {
+	el.onmousedown = function(e) {
+		//获取鼠标点击处分别与div左边和上边的距离：鼠标位置-div位置
+		var divx = e.clientX - el.offsetLeft;
+		var divy = e.clientY - el.offsetTop;
+		//包含在onmousedown里，表示点击后才移动，为防止鼠标移出div，使用document.onmousemove
+		document.onmousemove = function(e) {
+			//获取移动后div的位置：鼠标位置-divx/divy
+			var l = e.clientX - divx;
+			var t = e.clientY - divy;
+			el.style.left = l + "px";
+			el.style.top = t + "px";
+			el.style.right = "auto";
+		};
+		document.onmouseup = function() {
+			document.onmousemove = null;
+			document.onmouseup = null;
+		};
+	};
+})
+// 然后在需要用的组件上加上v-drag
+// <div class="drag" v-drag></div>
 new Vue({
   router,
   store,

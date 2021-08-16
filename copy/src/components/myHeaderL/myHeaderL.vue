@@ -24,6 +24,9 @@
             @media screen and (max-width:950px) {
                 transform: translate(-180px,0);
             }
+            @media screen and (max-width:800px) {
+                display: none;
+            }
             @media screen and (max-width: 564px) {
                 height: 70px;
                 padding: 10px 10px 0 10px;
@@ -49,10 +52,21 @@
             height: 40px;
             border-radius: 30px;
             background: @helpBtn;
+            position: relative;
             @media screen and (max-width: 564px) {
                 transform: scale(0.8);
             }
-            
+            span {
+                position: absolute;
+                right: -1px;
+                top: -3px;
+                overflow: hidden;
+                border-radius: 50%;
+                .dot_h {
+                    width: 16px;
+                    height: 16px;
+                }
+            }
         }
         .logout {
             width: 120px;
@@ -191,7 +205,7 @@
     }
     .div .search {
         @media screen and (max-width:1200px) {
-            width: 40%;
+            width: 50%;
         }
     }
     .div .function {
@@ -208,8 +222,12 @@
     .dropimg {
         padding-left: 5px;
         width: 11px;
-        height: 12px;
+        // height: 12px;
         margin-top: 2px;
+        @media screen and (max-width: 800px) {
+            width: 11px;
+            height: 12px;
+        }
     }
     .category {
         font-size: 12px;
@@ -249,20 +267,22 @@
         width: 30px;
         height: 30px;
         position: relative;
-        z-index: 1000;
+        z-index: 890;
         img {
             transition: 0.2s;
             height: 100%;
         }
-        .mobile_expand {
-            position: absolute;
-            left: -85px;
-            top: 30px;
-            width: 135px;
-            transition: 0.2s;
-            opacity: 0;
-            // border: solid 1px;
-        }
+        
+    }
+    .mobile_expand {
+        position: absolute;
+        right: 16px;
+        top: 45px;
+        width: 135px;
+        transition: 0.2s;
+        opacity: 0;
+        z-index: 1000;
+        // border: solid 1px;
     }
     .mobile_opacity{
         opacity: 1 !important;
@@ -298,11 +318,142 @@
 	.fade-enter, .leave-active {
 		opacity: 0;
 	}
+
+    .present_item {
+        width: 90%;
+        margin: auto;
+        margin-top: 20px;
+    }
+    .pet_img {
+        margin-top: 30px;
+        width: 100px;
+        height: 100px;
+        border: solid 1px rgb(230, 223, 223);
+        border-radius: 50%;
+        overflow: hidden;
+        img {
+            height: 100%;
+        }
+    }
+    .pet_name {
+        padding: 10px 0;
+    }
+    .more_message {
+        text-align: end;
+        margin-top: 20px;
+    }
+
+    .el-carousel__item:nth-child(2n) {
+        background-color: #ffffff;
+        cursor: none !important;
+    }
+    
+    .el-carousel__item:nth-child(2n+1) {
+        background-color: #e4e9ee;
+        cursor: none !important;
+    }
+    .car_petImage {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+    .size16_P {
+        font-size: 14px;
+        padding: 5px 0;
+    }
+    .d_pet {
+        padding: 5px 0;
+        color: gray;
+        border-bottom: solid 1px rgb(180, 180, 180);
+    }
+    .drawer_wrap {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: auto;
+        .physical_H {
+            position: absolute;
+            left: 50%;
+            bottom: 5px;
+            transform: translate(-50%, 0);
+        }
+    }
+    .physical_img {
+        padding-right: 5px;
+    }
 </style>
 
 <template>
     <div>
+        <el-drawer
+            title="Pet"
+            :visible.sync="drawer"
+            :direction="direction"
+            size='70%'>
+            <div class="drawer_wrap noBar">
+                <el-carousel type="card" height="100px" arrow='never' 
+                indicator-position='none' :autoplay='false' @change="cutPet">
+                    <el-carousel-item v-for="item in petList" :key="item.id">
+                        <div class="car_petImage ju al mg">
+                            <img style="height: 100%;" v-if="item.image" :src="item.image" alt="">
+                            <img style="height:100%;" v-else :src="default_img" alt="">
+                        </div>
+                    </el-carousel-item>
+                </el-carousel>
+                <div class="present_item">
+                    <div class="pet_name size21 bold" v-if="pet.name">{{pet.name}}</div>
+                    <div class="pet_name size21 bold" v-else>No Name</div>
+                    <div class="details size16_P">
+                        <div class="sb d_pet">
+                            <div>Pet ID : </div>
+                            <div>{{pet.id}}</div>
+                        </div>
+                        <div class="sb d_pet">
+                            <div>Age : </div>
+                            <div>{{pet.age}}</div>
+                        </div>
+                        <div class="sb d_pet">
+                            <div>Breed : </div>
+                            <div>{{breed}}</div>
+                        </div>
+                        <div class="sb d_pet">
+                            <div>Sex :</div>   
+                            <div><span v-if="pet.gender == 1">Male</span> <span v-else-if="pet.gender == 2">Female</span></div>
+                        </div>
+                        <div class="sb d_pet">
+                            <div>Neutered status : </div>
+                            <div><span v-if="pet.petJueYue == 1">Sterilization</span> 
+                            <span v-else-if="pet.petJueYu == 2">Unneutered</span> </div>
+                        </div>
+                        <div class="sb d_pet">
+                            <div>Weight : </div>
+                            <div>{{pet.weight}} kg</div>
+                        </div>
+                    </div>
+                    <div class="more_message size12 cursor" @click="petDetails">
+                        More...
+                    </div>
+                </div>
+                <div class="physical_H">
+                    <img class="physical_img" @click="firstDid" src="@/assets/img/physical.png" alt="">
+                </div>
+            </div>
+        </el-drawer>
         <div class="headerLogoPage">
+            <transition name="fade">
+                <div :class="['mobile_expand',{ 'mobile_opacity': head_mobile_extand }]" v-show="head_mobile_extand">
+                    <div class="flexEnd" style="overflow:hidden;"><div class="m_arrow"></div></div>
+                    <div class="expand_content">
+                        <div  class="expand_content_item" @click="home">Home</div>
+                        <div class="expand_content_item" @click="myAppointment">Appointments</div>
+                        <div class="expand_content_item"  @click="Record">Medical Record</div>
+                        <div class="expand_content_item" @click="paymentHistory" >Payments History</div>
+                        <div class="expand_content_item" @click="setting">Setting</div>
+                        <div  class="expand_content_item" @click="logout">Logout</div>
+                    </div>
+                </div>
+            </transition>
             <div :class="['logo',{ logo_width: rotate }]">
                 <div class="drawer_list_wrap">
                     <img class="logo_IMG" @click="home" src="@/assets/img/logo.png" alt="">
@@ -313,8 +464,11 @@
             </div>
             <div class="div sb al">
                 <div class="search al sa" v-if="login">
-                    <div class="top cursor" v-if="identity" @click="doctor">All Doctors</div>
-                    <div class="top cursor" v-else @click="patient">All Patients</div>
+                    <div class="top cursor" v-if="identity" @click="doctor">
+                        <span v-if="platform == 1">All Doctors</span>
+                        <span v-else-if="platform == 2">All Patients</span>
+                    </div>
+                    <div class="top cursor" v-else @click="patient">All Doctors</div>
                     <div class="select top" >
                         <div class="category">
                             Category
@@ -331,7 +485,7 @@
                 </div>
                 <div v-else></div>
                 <div class="function al">
-                    <div class="al sb function_item" v-if="login" >
+                    <div class="al sb function_item" v-if="login">
                         <div class="userName al sb">
                             <div class="myMessage al">
                                 <label for="ava" class="cursor label_img ju al">
@@ -359,6 +513,10 @@
                         </div>
                     </div>
                     <div class="helpBtn cursor al ju" @click="support">
+                        <span v-if="newMsg_dot !== null">
+                            <img class="dot_h" v-show="newMsg_dot.boo && newMsg_dot.user == T_userId" src="@/assets/img/dot.png" alt="">
+                        </span>
+                        <span v-else><img class="dot_h" v-show="false" src="@/assets/img/dot.png" alt=""></span>
                         <div class="al">
                             <img src="@/assets/img/what.png" alt="">
                         </div>
@@ -369,8 +527,8 @@
             <div class="mobile_s">
                 <div class="sb al">
                     <div class="oicq flex white">
-                        <div class="oicq_img">
-                            <img style="height:100%;" v-if="userDetails.userImage" :src="userDetails.userImage" alt="">
+                        <div class="oicq_img ju al">
+                            <img style="height:100%;" v-if="userDetails.userImage" :src="userDetails.userImage" alt="" @click="drawer_s">
                             <img style="height:100%;" v-else :src="default_img" alt="">
                         </div>
                         <div>
@@ -393,19 +551,6 @@
                     <div class="flex">
                         <div class="more_fun">
                             <img :class="[{ 'more_fun_rotate': head_mobile_extand }]" @click="top_up" src="@/assets/img/more_fun.png" alt="">
-                            <transition name="fade">
-                                <div :class="['mobile_expand',{ 'mobile_opacity': head_mobile_extand }]" v-show="head_mobile_extand">
-                                    <div class="flexEnd" style="overflow:hidden;"><div class="m_arrow"></div></div>
-                                    <div class="expand_content">
-                                        <div  class="expand_content_item">Home</div>
-                                        <div class="expand_content_item">Appointments</div>
-                                        <div class="expand_content_item">Medical Record</div>
-                                        <div class="expand_content_item">Payments History</div>
-                                        <div class="expand_content_item">Setting</div>
-                                        <div  class="expand_content_item">Logout</div>
-                                    </div>
-                                </div>
-                            </transition>
                         </div>
                         <div>
                             <div class="informationImg cursor top al" @click="notice">
@@ -427,7 +572,7 @@
     </div>
 </template>
 <script>
-import { searchDoc, updateUserDetails, file, vetDetails, updateVetDetails } from "@/axios/request.js"
+import { searchDoc, updateUserDetails, file, petType, updateVetDetails } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -436,11 +581,18 @@ export default {
             rotate: false,
             doctorID: -1,
             petOrDoc: 2,
-            head_mobile_extand: false
+            head_mobile_extand: false,
+            T_userId: localStorage.getItem('userId'),
+            drawer: false,
+            direction: 'rtl',
+            breed: '',
+            options: [],
+            platform: localStorage.getItem('platform')
         }
     },
     created () {
         this.getUser()
+        this.getPetType()
         if (localStorage.getItem('platform') == 2) {
             if (this.$route.name == 'vetDoctor') {
                 this.identity = false
@@ -481,7 +633,28 @@ export default {
                 }
             },
             deep:true
-        }
+        },
+        newMsg_dot: {
+            handler (val) {
+                if (val) {
+                    this.newMsg_dot = val
+                }
+            }
+        },
+        pet: {
+            handler (val) {
+                if (val) {
+                    this.pet = val
+                }
+            }
+        },
+        petId1: {
+            handler (val) {
+                if (val) {
+                    this.getPetType()
+                }
+            }
+        },
     },
     computed: {
         noticeState: {
@@ -527,6 +700,48 @@ export default {
                 this.$store.commit('setUser', { key: 'mobile_b', value: val })
             }
         },
+        newMsg_dot: {
+            get () { return this.$store.state.user.newMsg_dot },
+            set (val) {
+                this.$store.commit('setUser', { key: 'newMsg_dot', value: val })
+            }
+        },
+        petList: {
+            get () {return this.$store.state.user.petList},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "petList",
+                    value: val
+                })
+            },
+        },
+        pet: {
+            get () {return this.$store.state.user.pet},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "pet",
+                    value: val
+                })
+            },
+        },
+        petId1: {
+            get () {return this.$store.state.user.petId},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "petId",
+                    value: val
+                })
+            },
+        },
+        firstPet: {
+            get () {return this.$store.state.user.firstPet},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "firstPet",
+                    value: val
+                })
+            },
+        },
     },
     methods: {
         top_up () {
@@ -543,7 +758,19 @@ export default {
                     searchType: 1,
                     doctorId: this.doctorID
                 }
+                this.$store.commit("setUser", {
+                    key: "doctorList",
+                    value: []
+                })
+                this.$store.commit("setUser", {
+                    key: "loading6",
+                    value: true
+                })
                 searchDoc(data).then(res => {
+                    this.$store.commit("setUser", {
+                        key: "loading6",
+                        value: false
+                    })
                     if (res.data.rtnCode == 200) {
                         this.$store.commit("setUser", {
                             key: "doctorList",
@@ -566,7 +793,26 @@ export default {
                     searchType: this.petOrDoc,
                     doctorId: localStorage.getItem('userId')
                 }
+                if (this.petOrDoc == 1) {
+                    this.$store.commit("setUser", {
+                        key: "doctorList",
+                        value: []
+                    })
+                } else if (this.petOrDoc == 2) {
+                    this.$store.commit("setUser", {
+                        key: "getDoctorMedicalLimitList",
+                        value: []
+                    })
+                }
+                this.$store.commit("setUser", {
+                    key: "loading6",
+                    value: true
+                })
                 searchDoc(data).then(res => {
+                    this.$store.commit("setUser", {
+                        key: "loading6",
+                        value: false
+                    })
                     if (this.petOrDoc == 1) {
                         if (res.data.rtnCode == 200) {
                             this.$store.commit("setUser", {
@@ -589,6 +835,15 @@ export default {
                                 key: "getDoctorMedicalLimitList",
                                 value: res.data.data
                             })
+                        } else {
+                            this.$store.commit("setUser", {
+                                key: "getDoctorMedicalLimitList",
+                                value: []
+                            })
+                            this.$store.commit("setUser", {
+                                key: "loading6",
+                                value: false
+                            })
                         }
                     }
                 })
@@ -602,6 +857,10 @@ export default {
         },
         getUser () {
             this.$store.dispatch("getUser",this)
+        },
+        petDetails () {
+            this.drawer = false
+            this.$router.push("/petDetails")
         },
         getImage (e) {
             if (localStorage.getItem("platform") == 1) {
@@ -663,6 +922,8 @@ export default {
             }
         },
         home () {
+            this.head_mobile_extand = false
+            this.$store.commit('setUser', { key: 'mobile_b', value: !this.top_up_mask })
             if (localStorage.getItem("platform") == 1) {
                 this.$router.push("/customerhomepage")
             } else if (localStorage.getItem("platform") == 2) {
@@ -685,6 +946,19 @@ export default {
                 this.$router.push("/myDoctor")
             }
         },
+        setting () {
+            this.head_mobile_extand = false
+            this.$store.commit('setUser', { key: 'mobile_b', value: !this.top_up_mask })
+            if (localStorage.getItem('platform') == 1) {
+                this.$router.push({
+                    name: 'setting'
+                })
+            } else if (localStorage.getItem('platform') == 2) {
+                this.$router.push({
+                    name: 'vetSetting'
+                })
+            }
+        },
         patient () {
             if (localStorage.getItem("platform") == 2) {
                 this.doctorID = localStorage.getItem('userId')
@@ -692,6 +966,86 @@ export default {
                 this.identity = true
                 this.$router.push("/myCustomer")
             }
+        },
+        Record () {
+            this.head_mobile_extand = false
+            this.$store.commit('setUser', { key: 'mobile_b', value: !this.top_up_mask })
+            if (localStorage.getItem('platform') == 1) {
+                this.$router.push({
+                    name: 'allRecord'
+                })
+            } else if (localStorage.getItem('platform') == 2) {
+                this.$router.push({
+                    name: 'medical'
+                })
+            }
+        },
+        paymentHistory () {
+            this.head_mobile_extand = false
+            this.$store.commit('setUser', { key: 'mobile_b', value: !this.top_up_mask })
+            if (localStorage.getItem('platform') == 1) {
+                this.$router.push({
+                    name: 'paymentHistory'
+                })
+            } else if (localStorage.getItem('platform') == 2) {
+                this.$router.push({
+                    name: 'myPaymentHistory'
+                })
+            }
+        },
+        myAppointment () {
+            this.head_mobile_extand = false
+            this.$store.commit('setUser', { key: 'mobile_b', value: !this.top_up_mask })
+            if (localStorage.getItem('platform') == 1) {
+                this.$router.push("/myAppointment")
+            } else if (localStorage.getItem('platform') == 2) {
+                this.$router.push("/appointment") 
+            }
+        },
+        drawer_s () {
+            if (localStorage.getItem('platform') == 1) {
+                this.drawer = !this.drawer
+            }
+            
+        },
+        getPetType () {
+            let data = {
+                userId: localStorage.getItem('userId'),
+                platform: localStorage.getItem('platform'),
+                token: localStorage.getItem('Token')
+            }
+            petType(data).then(res => {
+                console.log(res)
+                res.data.forEach(item => {
+                    item.children.forEach(child => {
+                        child.children = []
+                    })
+                })
+                this.options = res.data
+                this.TYPE()
+            })
+        },
+        TYPE () {
+            this.options.forEach(op => {
+                if (this.pet.petType == op.petTypeId) {
+                    this.breed = child.petTypeName
+                }
+                if (op.children) {
+                    op.children.forEach(child => {
+                        if (this.pet.petType == child.petTypeId) {
+                            this.breed = child.petTypeName
+                        }
+                    })
+                }
+            })
+        },
+        cutPet(val) {
+            this.firstPet = val
+            this.$store.commit("setUser", { key: "pet",value: this.petList[val] })
+            this.$store.commit("setUser", { key: "petId",value: this.petList[val].id })
+        },
+        firstDid () {
+            this.$router.push("/firstAid")
         }
     }
 }

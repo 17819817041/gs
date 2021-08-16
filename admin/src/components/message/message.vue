@@ -49,21 +49,27 @@
             padding-right: 3px;
         }
     }
-    .physical_wrap {
+    // .physical_wrap {
+        
+    // }
+    .chatRoom_d {
+        width: 108px;
+        height: 108px;
+        margin-top: 50px;
         position: relative;
         .newMsg {
             position: absolute;
-            top: 60px;
-            left: 51%;
-            width: 10px;
+            bottom: 2px;
+            right: 5px;
+            width: 25px;
             border-radius: 50%;
             overflow: hidden;
-            height: 10px;
+            height: 25px;
         }
     }
     .physical {
         width: 108px;
-        margin-top: 50px;
+        height: 108px;
     }
 </style>
 <template>
@@ -113,8 +119,10 @@
                         <div>Setting</div>
                     </div>
                     <div class="physical_wrap">
-                        <!-- <img class="newMsg" src="@/assets/img/dot.png" alt=""> -->
-                        <img class="physical cursor" src="@/assets/img/chatLogo.png" alt="" @click="adminChat">
+                        <div class="chatRoom_d">
+                            <img class="newMsg" v-show="newMsg_dot" src="@/assets/img/onLine1.png" alt="">
+                            <img class="physical cursor" src="@/assets/img/chatLogo.png" alt="" @click="adminChat">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -128,7 +136,7 @@
 export default {
     data () {
         return {
-            active: false
+            active: false,
         }
     },
     mounted () {
@@ -153,6 +161,23 @@ export default {
                 }
             },
             immediate: true
+        },
+        message: {
+            handler (val) {
+                if (val) {
+                    this.newMsg_dot_cut()
+                }
+            },
+            deep: true,
+            immediate: true
+        },
+        newMsg_dot: {
+            handler (val) {
+                if (val) {
+                    this.newMsg_dot = val
+                }
+            },
+            deep: true
         }
     },
     computed: {
@@ -164,17 +189,37 @@ export default {
                     value: val
                 })
             },
+        },
+        message: {
+            get () { return this.$store.state.user.message },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "message",
+                    value: val
+                })
+            },
+        },
+        newMsg_dot: {
+            get () { return this.$store.state.user.newMsg_dot },
+            set (val) {
+                this.$store.commit('setUser', { key: 'newMsg_dot', value: val })
+            }
         }
     },
     methods: {
+        newMsg_dot_cut () {
+            var obj = JSON.parse(localStorage.getItem('message'))
+            var arr = []
+            for (let i in obj) {
+                arr.push(obj[i])
+            }
+            this.newMsg_dot = arr.find(item => item.msg != 0)
+        },
         adminChat () {
             this.$router.push('/chatRoom')
         },
         setting () {
             this.$router.push("/setting")
-        },
-        petDetails () {
-            this.$router.push("/petDetails")
         },
         appointment () {
             this.$router.push("/appointment")
@@ -183,10 +228,10 @@ export default {
             this.$router.push("/myCustomer")
         },
         myPaymentHistory () {
-            this.$router.push("/myPaymentHistory")
+            // this.$router.push("/myPaymentHistory")
         },
         vetRecord () {
-            this.$router.push("/vetRecord")
+            this.$router.push("/medical")
         }
     }
 }

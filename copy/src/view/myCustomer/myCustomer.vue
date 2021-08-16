@@ -1,36 +1,42 @@
 <template>
-    <div class="myCustomer flex" v-loading="loading">
+    <div class="myCustomer flex">
         <div class="animal">
-            <div class="wrap clear" v-if="getDoctorMedicalLimitList[0]">
-                <div class="wrap_item float" v-for="(item,i) in getDoctorMedicalLimitList" :key="i" @click="toPatients(item)">
-                    <div class="flex al">
-                        <div class="ju al Personal">
-                            <img class="personal_img" style="height:100%;" v-if="item.image" :src="item.image? item.image: null " alt="">
-                            <i class="el-icon-picture-outline" style="font-size:25px;color:gray" v-else></i>
-                        </div>
-                        <div class="name">
-                            <div class="size18 petName flex" v-if="item.name">
-                                <div class="address_img"></div>
-                                <div>{{item.name? item.name: "No Name"}}</div>
+            <div class="wrap" v-if="getDoctorMedicalLimitList !== null" @scroll="docScroll" ref="doctorList">
+                <div class="clear" ref="doctorList_height">
+                    <div class="wrap_item float" v-for="(item,i) in getDoctorMedicalLimitList" :key="i" @click="toPatients(item)">
+                        <div class="flex al">
+                            <div class="ju al Personal">
+                                <img class="personal_img" style="height:100%;" v-if="item.image" :src="item.image? item.image: null " alt="">
+                                <i class="el-icon-picture-outline" style="font-size:25px;color:gray" v-else></i>
                             </div>
-                            <div class="size18 flex" v-else>
-                                <div class="address_img"></div>
-                                <div>No Name</div>
-                            </div>
-                            <div class="size_14 flex">
-                                <div class="address_img"></div>
-                                <div>{{item.petId? item.petId: 'No Id'}}</div>
-                            </div>
-                            <div class="address flex">
-                                <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
-                                <div class="size_14 address_name">{{item.address? item.address: "No Address"}}</div>
+                            <div class="name">
+                                <div class="size18 petName flex" v-if="item.name">
+                                    <div class="address_img"></div>
+                                    <div>{{item.name? item.name: "No Name"}}</div>
+                                </div>
+                                <div class="size18 flex" v-else>
+                                    <div class="address_img"></div>
+                                    <div>No Name</div>
+                                </div>
+                                <div class="size_14 flex">
+                                    <div class="address_img"></div>
+                                    <div>{{item.petId? item.petId: 'No Id'}}</div>
+                                </div>
+                                <div class="address flex">
+                                    <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
+                                    <div class="size_14 address_name">{{item.address? item.address: "No Address"}}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="acting ju al" v-if="loading">
+                        <div style="height: 100px;" v-loading="true"></div>
+                    </div>
                 </div>
+
             </div>
             <div v-else>
-                <div class="tc bold"  style="padding-top: 150px;color:gray;font-size:23px">No treatment record!</div>
+                <div class="tc bold"  style="padding-top: 150px;color: gray;font-size: 23px">No treatment record!</div>
             </div>
         </div>
         <div class="personWithAnimal noBar">
@@ -109,23 +115,102 @@
                 </div>
             </div>
         </div>
+
+        <el-drawer
+            class="el_drawer_mobile"
+            title="Customer Detail"
+            :visible.sync="drawer"
+            size='80%'>
+            <div class="personWithAnimal_mobile noBar">
+                <div class="information_wrap">
+                    <div class="petDetails">
+                        <div class="petDetails_item">
+                            <div class="Title sb">
+                                <div class="size19">Pet Details</div>
+                            </div>
+                            <div class="ju mg al PET_IMG">
+                                <img class="Img" :src="petAndUser.petHeadUrl" alt="" v-if="petAndUser.petHeadUrl">
+                                <img style="height:100%;" v-else :src="default_img" alt="">
+                                <!-- <i class=" el-icon-picture-outline Icon" style="font-size:60px;color:gray;" v-else></i> -->
+                            </div>
+                            <div class="pet_information">
+                                <div class="pet_name size19" v-if="petAndUser.petName">{{petAndUser.petName}}</div>
+                                <div class="pet_name size19" v-else>No Name</div>
+                                <div class="size15bl">Pet ID : {{petAndUser.petId}}</div>
+                                <div class="size15bl">Age : {{petAndUser.petAge}}</div>
+                                <div class="size15bl">Sex : {{petAndUser.petGenderName}}</div>
+                                <div class="size15bl">neutered status : 
+                                    <span v-if="petAndUser.neuteredState == 1">Sterilization</span> 
+                                    <span v-else-if="petAndUser.neuteredState == 2">Unneutered</span> 
+                                </div>
+                                <div class="size15bl">Weight : {{petAndUser.petWeight}}kg</div>
+                            </div>
+                            <!-- <div class="petMore te cursor"><span>More...</span></div> -->
+                        </div>
+                    </div>
+                    <div style="height: 560px;">
+                        <div class="guardianDetails mg size19">Guardian Details</div>
+                        <div class="ju al patients_img_wrap mg">
+                            <img class="patients_img" v-if="petAndUser.userHead" :src="petAndUser.userHead" alt="">
+                            <img style="height:100%;" v-else :src="default_img" alt="">
+                            <!-- <i class=" el-icon-picture-outline Icon" style="font-size:40px;color:gray;" v-else></i> -->
+                        </div>
+                        <div class="size19 tc personal_name">{{petAndUser.userName}}</div>
+                        <div class="address ju">
+                            <div>
+                                <img class="address_img" src="@/assets/img/location.png" alt="">
+                            </div>
+                            <div class="size13">
+                                <span v-if="petAndUser.address">{{petAndUser.address}}</span>
+                                <span v-else>No Address</span>
+                            </div>
+                        </div>
+                        <div class="ju CHAT">
+                            <div class="ju al"><img class="relationWay cursor" src="@/assets/img/videoWay.png" alt=""></div>
+                        </div>
+                        <div class="message_list size15bl">
+                            <div style="width:100%" class="flex al ts">
+                                <div class="const">User ID</div>
+                                <div class="event">{{petAndUser.userId}}</div>
+                            </div>
+                            <div style="width:100%" class="flex al ts">
+                                <div class="const">Name</div>
+                                <div class="event">{{petAndUser.userName}}</div>
+                            </div>
+                            <div style="width:100%" class="flex al ts">
+                                <div class="const">Age</div>
+                                <div class="event">{{petAndUser.age}}</div>
+                            </div>
+                            <div style="width:100%" class="flex al ts">
+                                <div class="const">Location</div>
+                                <div class="event">
+                                    <span v-if="petAndUser.address">{{petAndUser.address}}</span>
+                                    <span v-else>No Address</span>
+                                </div>
+                            </div>
+                            <div style="width:100%" class="flex al ts">
+                                <div class="const">Mobile</div>
+                                <div class="event">{{petAndUser.moble}}</div>
+                            </div>
+                        </div>
+                        <div class="personMore mg te cursor"><span @click="moreDetail">More...</span></div>
+                    </div>
+                </div>
+            </div>
+        </el-drawer>
     </div>
 </template>
 
 <script>
-import { getUserByPetId, PetMedicalRecord, getPetMedicalRecord, s_online } from "@/axios/request.js"
+import { getUserByPetId, getPetMedicalRecord, s_online } from "@/axios/request.js"
 export default {
     data () {
         return {
-            pageNum: 0,
-            pageSize: 100,
+            pageNum: 1,
             petAndUser: {},
             changePage: {},
-            getDoctorMedicalLimitListStatus: true,
-            // getDoctorMedicalLimitList: [],
-            pageNum_m: 1,
-            pageSize_m: 100,
-            loading: true
+            drawer: false,
+            totalRecordsCount: 0
         }
     },
     mounted () {
@@ -134,40 +219,47 @@ export default {
             platform: localStorage.getItem('platform')
         }
         s_online(data).then(res => {
-            console.log(res,'在线')
+            
         })
-
-        // let D = new Date()
-        // let time = D.toTimeString().split(' ')[0]
-        // this.disabled = false
-        // this.recordDate = '2021-06-07' + ' ' + time.split(':')[0] + ':' + time.split(':')[1]
-        // let data1 = {
-        //     userId: 572,
-        //     doctorId: localStorage.getItem('userId'),
-        //     petId: 69,
-        //     content: 'nothing',
-        //     createdAt: this.recordDate,
-        //     medicineIds: 2
-        // }
-        // PetMedicalRecord(data1).then(res => {
-        //     console.log(res,'tianjiarecord')
-        //     if (res.data.rtnCode == 200) {
-        //         this.disabled = false
-        //     } else {
-
-        //     }
-        // }).catch(e =>{
-        //     console.log(e)
-        // })
     },
     created () {
+        this.$store.commit("setUser", {
+            key: "getDoctorMedicalLimitList",
+            value: []
+        })
         this.PetMedicalRecord()
+    },
+    beforeMount() {
+        window.addEventListener('resize', (e) => {
+            if (e.target.innerWidth <= 800) {
+                this.drawer = false
+            }
+        })
     },
     watch: {
         getDoctorMedicalLimitList: {
             handler (val) {
                 if (val) {
                     this.getDoctorMedicalLimitList = val
+                }
+            },
+        },
+        inp: {
+            handler (val) {
+                this.pageNum = 1
+                if (!val) {
+                    this.$store.commit("setUser", {
+                        key: "getDoctorMedicalLimitList",
+                        value: []
+                    })
+                    this.PetMedicalRecord()
+                }
+            }
+        },
+        loading: {
+            handler (val) {
+                if (val) {
+                    this.loading = val
                 }
             },
         },
@@ -183,33 +275,75 @@ export default {
             },
         },
         default_img () { return this.$store.state.user.default_img },
+        inp: {
+            get () {return this.$store.state.user.inp},
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "inp",
+                    value: val
+                })
+            },
+        },
+        loading: {
+            get () { return this.$store.state.user.loading6 },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "loading6",
+                    value: val
+                })
+            }
+        },
     },
     methods: {
+        docScroll () {
+            if (this.inp) {
+                return false
+            }
+            this.$store.commit('setUser',{ key: 'dom', value: 'wrap' })
+            if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 130) {
+                if (this.getDoctorMedicalLimitList.length >= this.totalRecordsCount) {
+                    
+                } else {
+                    if (!this.loading) {
+                        this.pageNum += 1
+                        this.PetMedicalRecord()
+                    }
+                }
+            }
+            if ( this.$refs.doctorList.scrollTop > 300 ) {
+                this.$store.commit('setUser', { key: 'scrollTop', value: true } )
+            } else {
+                this.$store.commit('setUser', { key: 'scrollTop', value: false } )
+            }
+        },
         PetMedicalRecord () {
             let data = {
                 doctorId: localStorage.getItem('userId'),
-                pageNum: this.pageNum_m,
-                pageSize: this.pageSize_m
+                pageNum: this.pageNum,
+                pageSize: 10
             }
-            getPetMedicalRecord(data).then(res => {
-                console.log(res,'PetMedicalRecord')
-                if (res.data.rtnCode == 200) {
-                    // this.getDoctorMedicalLimitList = res.data.data.pageT
-                    this.$store.commit("setUser", {
-                        key: "getDoctorMedicalLimitList",
-                        value: res.data.data.pageT
-                    })
-                    let id = res.data.data.pageT[0].petId
-                    this.getUserByPetId(id)
+            if ((this.totalRecordsCount == this.getDoctorMedicalLimitList.length) && this.totalRecordsCount !=0 ) {
+                this.$store.commit("setUser",{ key: "loading6", value: false })
+                
+            } else {
+                this.loading = true
+                getPetMedicalRecord(data).then(res => {
                     this.loading = false
-                } else if (res.data.rtnCode == 201) {
-                    this.getDoctorMedicalLimitListStatus = false
+                    if (res.data.rtnCode == 200) {
+                        // this.getDoctorMedicalLimitList = res.data.data.pageT
+                        this.totalRecordsCount = res.data.data.totalRecordsCount
+                        this.$store.commit("medicalAdd", res.data.data.pageT)
+                        let id = res.data.data.pageT[0].petId
+                        this.getUserByPetId(id)
+                    } else {
+                        this.getDoctorMedicalLimitList = null
+                    }
+                }).catch(e => {
+                    console.log(e)
                     this.loading = false
-                }
-            }).catch(e => {
-                console.log(e)
-                this.loading = false
-            })
+                })
+            }
+            
         },
         getUserByPetId (id) {
             let data = {
@@ -225,12 +359,7 @@ export default {
         },
         toPatients (item,i) {
             this.getUserByPetId(item.petId)
-            // let data = {
-            //     petMedicalRecordId: item.id
-            // }
-            // delPetMedicalRecordById (data).then(res => {
-            //     console.log(res)
-            // })
+            this.drawer = !this.drawer
         },
         moreDetail () {
             if (this.changePage) {
@@ -245,17 +374,6 @@ export default {
 
 <style lang="less" scoped>
     @import "@/less/css.less";
-    #player1 {
-        z-index: 100;
-        width: 200px;
-        height: 200px;
-        border: solid 1px;
-    }
-    .player {
-        width: 98%;
-        height: 600px;
-        border: solid 1px;
-    }
     .myCustomer {
         height: 100%;
         width: 100%;
@@ -264,15 +382,17 @@ export default {
         width: 74%;
         border: #F3F3F3 solid 1px;
         border-radius: 4px;
-        // margin-top: 10px;
         @media screen and (max-width:1050px) {
             width: 100%;
         }
         .wrap {
             width: 102.5%;
-            padding: 1.8% 1.3% 1.8% 1.8%;
+            padding: 10px 1.3% 10px 1.3%;
             height: 100%;
             overflow: auto;
+            @media screen and (max-width:800px) {
+                width: 100%;
+            }
         }
     }
     .wrap::-webkit-scrollbar {
@@ -288,22 +408,26 @@ export default {
     .wrap_item {
         width: 30.33%;
         padding: 20px 0;
-        box-shadow: 0 2px 1px 1px #D5D5D5;
+        box-shadow: 0 1px 2px 1px #D5D5D5;
         margin: 0 3% 10px 0%;
         transition: 0.2s;
         padding: 25px 20px;
         @media screen and (max-width:1100px) {
             width: 45%;
-            margin: 0 1.5% 5px 2.5%;
+            margin: 0 1.5% 10px 2.5%;
+        }
+        @media screen and (max-width:1000px) {
+            width: 45%;
+            margin: 0 1.5% 10px 2%;
+        }
+        @media screen and (max-width:800px) {
+            width: 45%;
+            margin: 0 1.5% 10px 3%;
         }
         @media screen and (max-width:564px) {
-            width: 45%;
-            margin: 0 1.5% 5px 2%;
+            width: 95%;
+            margin: 0 1.5% 10px 2%;
         }
-        // @media screen and (max-width:1000px) {
-        //     width: 80%;
-        //     margin: 0 3.5% 5px 8.5%;
-        // }
     }
     .patients_img_wrap {
         width: 100px;
@@ -330,7 +454,7 @@ export default {
         height: 100%;
         overflow: auto;
         width: 26%;
-        @media screen and (max-width:564px) {
+        @media screen and (max-width:800px) {
             min-width: 0;
             display: none;
         }
@@ -338,6 +462,17 @@ export default {
             width: 90%;
             margin: auto;
             height: 100%;
+        }
+    }
+    .personWithAnimal_mobile {
+        white-space: nowrap !important;
+        min-width: 310px;
+        height: 100%;
+        overflow: auto;
+        width: 95%;
+        .information_wrap {
+            width: 90%;
+            margin: auto;
         }
     }
     .name {
@@ -369,17 +504,29 @@ export default {
     }
     .size19 {
         font-size: 19px;
+        @media screen and (max-width: 564px) {
+            font-size: 17px;
+        }
     }
     .size_14 {
         color: #9F9F9F;
         font-size: 14px;
+        @media screen and (max-width: 564px) {
+            font-size: 12px;
+        }
     }
     .size13 {
         font-size: 13px;
         color: #9F9F9F;
+        @media screen and (max-width: 564px) {
+            font-size: 12px;
+        }
     }
     .size15bl {
         font-size: 15px;
+        @media screen and (max-width: 564px) {
+            font-size: 12px;
+        }
     }
     .patients_img {
         height: 100%;
@@ -434,6 +581,9 @@ export default {
             color: #1976D2;
             font-size: 16px;
             text-decoration: underline;
+            @media screen and (max-width: 564px) {
+                font-size: 13px;
+            }
         }
     }
     .relationWay {
@@ -449,6 +599,10 @@ export default {
         border: solid 1px rgb(218, 210, 210);
         border-radius: 50%;
         overflow: hidden;
+        @media screen and (max-width: 800px) {
+			width: 100px;
+            height: 100px;
+		}
     }
     .CHAT {
         div {
@@ -459,6 +613,21 @@ export default {
             img {
                 height: 100%;
             }
+        }
+    }
+    .el_drawer_mobile {
+        display: none;
+        height: 100%;
+        @media screen and (max-width: 800px) {
+			display: block;
+		}
+    }
+    .acting {
+        width: 100%;
+        padding: 40px 0;
+        // border: solid 1px;
+        @media screen and (max-width: 564px) {
+            padding: 20px 0;
         }
     }
 </style>

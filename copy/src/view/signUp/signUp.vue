@@ -209,16 +209,16 @@ export default {
                 })
                 return false
             }
-            var p_reg = /^1[0-9]{10}$/;
-            if (p_reg.test(this.data.phone)) {
+            // var p_reg = /^1[0-9]{10}$/;
+            // if (p_reg.test(this.data.phone)) {
                 
-            } else {
-                this.$message({
-                    type: 'error',
-                    message: 'Phone number format is incorrect!'
-                })
-                return false
-            }
+            // } else {
+            //     this.$message({
+            //         type: 'error',
+            //         message: 'Phone number format is incorrect!'
+            //     })
+            //     return false
+            // }
 
             if (this.data.confirmPwd === this.data.password) {
                 this.Vloading = true

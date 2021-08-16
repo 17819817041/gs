@@ -1,5 +1,8 @@
 <style lang="less" scoped>
 @import "@/less/css.less";
+    .customerPage {
+        height: 100%;
+    }
     .customer_content {
         box-sizing: border-box;
         .present_message {
@@ -7,12 +10,12 @@
             transition: 0.25s;
             height: 100%;
             @media screen and (max-width:1300px) {
-                width: 167px;
+                width: 180px;
             }
         }
     }
     .present_item {
-        height: 374px;
+        height: calc(100% - 421.88px);
     }
     .administrator {
         width: 167px;

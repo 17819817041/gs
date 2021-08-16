@@ -136,9 +136,9 @@
                     <el-form-item>
                         <el-input placeholder="Remark" v-model="addPetMessage.remark"></el-input>
                     </el-form-item>
-                    <el-form-item>
+                    <!-- <el-form-item>
                         <el-button class="width100" type="warning">Other Pet</el-button>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item>
                         <el-button class="width100" type="primary" @click="submit">Submit</el-button>
                     </el-form-item>

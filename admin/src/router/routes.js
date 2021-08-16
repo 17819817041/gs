@@ -82,6 +82,11 @@ export default [
                 name: "setting",
                 component: () => import("@/view/setting/setting.vue")
             },
+            {
+                path: "/medical",
+                name: "medical",
+                component: () => import("@/view/medical/medical.vue")
+            },
         ]
     },
     {

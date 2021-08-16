@@ -1,10 +1,10 @@
 <template>
     <div class="confirm mg">
-        <div class="ju"><img class="ok_img" src="@/assets/img/OK.png" alt=""></div>
+        <div class="ju booking_okImg"><img class="ok_img" src="@/assets/img/OK.png" alt=""></div>
         <div class="size23 tc thank">THANK YOU!</div>
-        <div class="size13 tc" style="padding:0 0 30px 0">We have received your request and confirm you after few minutes.</div>
-        <div class="ju al" style="padding:20px 0"> 
-            <div class="size14">REFERENCE ID </div> 
+        <div class="size13 tc booking_message">We have received your request and confirm you after few minutes.</div>
+        <div class="ju al booking_id"> 
+            <div class="size14" style="padding-right: 5px;">REFERENCE ID </div> 
             <div> {{bookSuccess.bookingId}}</div> 
         </div>
         <svg class="width100" style="height:22px" xmlns="http://www.w3.org/2000/svg" version="1.1">
@@ -12,7 +12,7 @@
         </svg>
 
         <div class="confirm_message sa">
-            <div class="confirm_item ju">
+            <div class="confirm_item IMAGE_DOC ju">
                 <div class="docHead_wrap ju">
                     <img class="docHead" :src="bookSuccess.docImage" alt="">
                 </div>
@@ -61,7 +61,6 @@ export default {
     },
     created () {
         this.getMsg()
-        console.log(this.$route.query)
     },
     methods: {
         getMsg () {
@@ -90,38 +89,74 @@ export default {
     // }
     .ok_img {
         width: 130px;
+        @media screen and (max-width: 564px) {
+            width: 70px;
+        }
     }
     .size23 {
         font-size: 23px;
     }
     .confirm_item {
         width: 30%;
+        min-width: 171px;
+        @media screen and (max-width: 564px) {
+            min-width: 151px;
+        }
     }
     .margin {
         margin: 35px 0;
+        @media screen and (max-width: 564px) {
+            margin: 15px 0;
+        }
     }
     .size14 {
         font-size: 14px;
         color: #9F9F9F;
+        @media screen and (max-width: 564px) {
+            font-size: 12px;
+        }
     }
     .size19 {
         font-size: 19px;
         padding: 3px 0;
+        @media screen and (max-width: 564px) {
+            font-size: 15px;
+        }
+    }
+    .booking_id {
+        padding:20px 0;
+        @media screen and (max-width: 564px) {
+            padding: 10px 0;
+        }
+    }
+    .IMAGE_DOC {
+        @media screen and (max-width: 564px) {
+            display: none;
+        }
+    }
+    .booking_message {
+        padding:0 0 30px 0;
+        @media screen and (max-width: 564px) {
+            padding:0 0 10px 0;
+        }
     }
     .docHead_wrap {
         width: 250px;
         height: 250px;
         border-radius: 50%;
         overflow: hidden;
+        border: solid 1px;
+        @media screen and (max-width: 1500px) {
+            width: 200px;
+            height: 200px;
+        }
+        @media screen and (max-width: 1200px) {
+            width: 150px;
+            height: 150px;
+        }
     }
     .docHead {
         height: 100%;
         transition: 0.3s;
-        @media screen and (max-width: 1500px) {
-            height: 90%;
-        }
-        @media screen and (max-width: 1200px) {
-            height: 80%;
-        }
     }
 </style>

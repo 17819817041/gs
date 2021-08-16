@@ -21,10 +21,9 @@
         width: calc(100%);
         background: @content;
         transition: 0.25s;
+        margin: auto;
         @media screen and (max-width:1200px) {
             width: 98%;
-            margin: auto;
-            margin-top: 30px;
             border-radius: 6px;
         }
     }
@@ -48,6 +47,10 @@
     .size25 {
         font-size: 25px;
         color: @explanTitle;
+        white-space: nowrap;
+        @media screen and (max-width:800px) {
+            font-size: 20px;
+        }
     }
     .size22 {
         font-size: 22px;
@@ -62,24 +65,44 @@
         border-radius: 17px;
         margin-top: 20px;
     }
+    .person_image {
+        @media screen and (max-width: 800px) {
+            height: 220px;
+        }
+        
+    }
     .details_image, .person_image {
         width: 27%;
+        min-width: 130px;
+        @media screen and (max-width: 400px) {
+            min-width: 70px;
+        }
     } 
     .person_image div, .details_image div {
         width: 200px;
         height: 200px;
         border-radius: 50%;
         overflow: hidden;
+        @media screen and (max-width:1300px) {
+            width: 150px;
+            height: 150px;
+        }
+        @media screen and (max-width:800px) {
+            width: 100px;
+            height: 100px;
+        }
+        @media screen and (max-width:400px) {
+            width: 70px;
+            height: 70px;
+        }
+        @media screen and (max-width:350px) {
+            width: 50px;
+            height: 50px;
+        }
     }
     .dog_img, .felame {
         height: 100%;
-        border: solid 1px;
-        border-radius: 50%;
-        overflow: hidden;
         transition: 0.25s;
-        // @media screen and (max-width:1500px) {
-        //     width: 150px;
-        // }
     }
     .message1, .message2 {
         width: 30%;
@@ -87,11 +110,17 @@
         @media screen and (max-width:1500px) {
             width: 50%;
         }
+        @media screen and (max-width:800px) {
+            width: 100%;
+        }
     }
     .children, .details_message, .message1_item, .message2_item{
         transition: 0.25s;
         @media screen and (max-width:1725px) {
-            font-size: 17px !important;
+            font-size: 17px;
+        }
+        @media screen and (max-width:564px) {
+            font-size: 13px;
         }
     }
     .name1 div{
@@ -101,12 +130,12 @@
         padding-right: 25px;
     }
     .name2 div {
+        white-space: nowrap;
         padding-bottom: 20px;
     }
     .name2:nth-child(1) {
         padding-right: 25px;
     }
-
     .details_item {
         background: white;
         border-radius: 8px;
@@ -128,21 +157,43 @@
         .about {
             padding: 0 0 7px 30px;
         }
+        @media screen and (max-width:800px) {
+            width: 100% !important;
+        }
     }
     .noPadding {
         padding: 0 0 4px 30px !important;
     }
     .details_message1 {
         width: 48%;
+        transition: 0.25s;
         position: relative;
+        @media screen and (max-width:800px) {
+            width: 100% !important;
+        }
         .children {
             width: 30%;
+            // min-width: 150px;
+            white-space: nowrap;
+            @media screen and (max-width:1430px) {
+                width: 40% !important;
+            }
+            @media screen and (max-width:800px) {
+                width: 100% !important;
+                text-align: end;
+            }
         }
     }
-    .children {
-        transition: 0.25s;
-        @media screen and (max-width:1430px) {
-            width: 40% !important;
+    .mobile_msg {
+        @media screen and (max-width:800px) {
+            text-align: end;
+            width: 100% !important;
+        }
+    }
+    .pet_msg_mobile {
+        white-space: nowrap;
+        @media screen and (max-width:800px) {
+            width: 73%;
         }
     }
     .about {
@@ -162,6 +213,18 @@
         @media screen and (max-width:1430px) {
             opacity: 1;
         }
+        @media screen and (max-width:800px) {
+            left: 0;
+        }
+        @media screen and (max-width:564px) {
+            left: -20%;
+        }
+        @media screen and (max-width:450px) {
+            left: -30%;
+        }
+        @media screen and (max-width:350px) {
+            left: -40%;
+        }
         div {
             margin: 0 2px 0 10px;
         }
@@ -179,11 +242,27 @@
     .medial_item {
         background: @logout !important;
     }
+    .medial_item1 {
+        background: @logout !important;
+        width: 125px;
+        padding: 5px;
+        border-radius: 12px;
+        margin-right: 15px;
+        font-size: 13px;
+        color: white;
+    }
+    .add_item1 {
+        background: @helpBtn !important;
+        width: 125px;
+        padding: 5px;
+        border-radius: 12px;
+        margin-right: 15px;
+        font-size: 13px;
+        color: white;
+    }
     .cancel_item {
         background: @denger;
     }
-
-
     .textarea_wrap {
         width: 90%;
         border: gray solid 1px;
@@ -225,6 +304,13 @@
         background: @helpBtn;
         color: white;
     }
+    .direction {
+        width:80%;
+        @media screen and (max-width: 800px) {
+            padding-right: 20px;
+            flex-direction: column;
+        }
+    }
 </style>
 
 <template>
@@ -263,13 +349,13 @@
                     <div class="personal_message mg">
                         <div class="size25 bold tc item_title">Guadian Details</div>
                         <div class="detail flex width100 al">
-                            <div class="person_image">
-                                <div class="mg al ju">
-                                    <img class="felame" v-if="userAndPet.userHead" :src="userAndPet.userHead" alt="" mode="widthFix">
-                                    <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
+                                <div class="person_image">
+                                    <div class="mg al ju">
+                                        <img class="felame" v-if="userAndPet.userHead" :src="userAndPet.userHead" alt="">
+                                        <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="flex" style="width:73%">
+                            <div class="flex direction">
                                 <div class="message1">   
                                     <div class="message1_item ts flex size22 al">
                                         <div class="name1">
@@ -279,7 +365,7 @@
                                             <div>Location</div>
                                             <div>Mobile</div>
                                         </div>
-                                        <div class="name1">
+                                        <div class="name1 mobile_msg">
                                             <div v-if="userAndPet.userId">{{userAndPet.userId}}</div>
                                             <div v-else> --</div>
                                             <div v-if="userAndPet.userName">{{userAndPet.userName}}</div>
@@ -300,7 +386,7 @@
                                             <div>Preferred Vet</div>
                                             <div>Remarks</div>
                                         </div>
-                                        <div class="name2">
+                                        <div class="name2 mobile_msg">
                                             <div v-if="userAndPet.petGenderName">{{userAndPet.petGenderName}}</div>
                                             <div v-else>No data</div>
                                             <div v-if="userAndPet.preferredVetName">{{userAndPet.preferredVetName}}</div>
@@ -315,98 +401,100 @@
                             <div class="size25 bold tc item_title2">Pet Details</div>
                             <div class="details_image ">
                                 <div class="mg ju al">
-                                    <img class="dog_img" v-if="userAndPet.petHeadUrl" :src="userAndPet.petHeadUrl" alt="" mode="widthFix">
+                                    <img class="dog_img" v-if="userAndPet.petHeadUrl" :src="userAndPet.petHeadUrl" alt="">
                                     <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
                                 </div>
                             </div>
-                            <div class="details_message flex size22">
-                                <div>
-                                    <div class="flex about">
-                                        <div>Pet ID</div>
-                                    </div>
-                                    <div class="flex about">
-                                        <div>Name</div>
-                                    </div>
-                                    <div class="flex about">
-                                        <div>Age</div>
-                                    </div>
-                                    <div class="flex about">
-                                        <div>Pet Type</div>
-                                    </div>
-                                    <div class="flex about">
-                                        <div>Breed</div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="flex about">
-                                        <div v-if="userAndPet.petId">{{userAndPet.petId}}</div>
-                                    </div>
-                                    <div class="flex about">
-                                        <div v-if="userAndPet.petName">{{userAndPet.petName}}</div>
-                                        <div v-else>No name</div>
-                                    </div>
-                                    <div class="flex about">
-                                        <div v-if="userAndPet.petAge">{{userAndPet.petAge}}</div>
-                                        <div v-else>No data</div>
-                                    </div>
-                                    <div class="flex about">
-                                        <div >{{petType}}</div>
-                                    </div>
-                                    <div class="flex about">
-                                        <div>{{breed}}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="details_message1 flex">
-                                <div class="children size22">
-                                    <div class="flex about">
-                                        <div>Gender</div>
-                                    </div>
-                                    <div class="flex about">
-                                        <div>Neutered status</div>
-                                    </div>
-                                    <div class="flex about">
-                                        <div>Weight</div>
-                                    </div>
-                                    <div class="flex about">
-                                        <div>Remarks</div>
-                                    </div>
-                                </div>
-                                <div class="children size22">
-                                    <div class="flex about">
-                                        <div v-if="userAndPet.petGenderName">{{userAndPet.petGenderName}}</div>
-                                        <div v-else>No data</div>
-                                    </div>
-                                    <div class="flex about">
-                                        <div>
-                                            <span v-if="userAndPet.neuteredState == 1">Sterilization</span>
-                                            <span v-else-if="userAndPet.neuteredState == 2">Unneutered</span>
-                                            <span v-else-if="userAndPet.neuteredState === null">No data</span>
+                            <div class="direction flex">
+                                <div class="details_message flex size22">
+                                    <div class="pet_msg_mobile">
+                                        <div class="flex about">
+                                            <div>Pet ID</div>
+                                        </div>
+                                        <div class="flex about">
+                                            <div>Name</div>
+                                        </div>
+                                        <div class="flex about">
+                                            <div>Age</div>
+                                        </div>
+                                        <div class="flex about">
+                                            <div>Pet Type</div>
+                                        </div>
+                                        <div class="flex about">
+                                            <div>Breed</div>
                                         </div>
                                     </div>
-                                    <div class="flex about">
-                                        <div v-if="userAndPet.petWeight">{{userAndPet.petWeight}}kg</div>
-                                        <div v-else>No data</div>
-                                    </div>
-                                    <div class="flex about">
-                                        <div v-if="userAndPet.remark">{{userAndPet.remark}}</div>
-                                        <div v-else>No data</div>
+                                    <div class="mobile_msg">
+                                        <div class="flex about mobile_msg">
+                                            <div class="mobile_msg" v-if="userAndPet.petId">{{userAndPet.petId}}</div>
+                                        </div>
+                                        <div class="flex about mobile_msg">
+                                            <div class="mobile_msg" v-if="userAndPet.petName">{{userAndPet.petName}}</div>
+                                            <div class="mobile_msg" v-else>No name</div>
+                                        </div>
+                                        <div class="flex about mobile_msg">
+                                            <div class="mobile_msg" v-if="userAndPet.petAge">{{userAndPet.petAge}}</div>
+                                            <div class="mobile_msg" v-else>No data</div>
+                                        </div>
+                                        <div class="flex about mobile_msg">
+                                            <div class="mobile_msg">{{petType}}</div>
+                                        </div>
+                                        <div class="flex about mobile_msg">
+                                            <div class="mobile_msg">{{breed}}</div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="record">
-                                    <div class="medial cursor">
-                                        <el-button class="medial_item width100" type="primary" @click="toRecord" round>Medical Record</el-button>
+                                <div class="details_message1 flex">
+                                    <div class="children size22">
+                                        <div class="flex about">
+                                            <div>Gender</div>
+                                        </div>
+                                        <div class="flex about">
+                                            <div>Neutered status</div>
+                                        </div>
+                                        <div class="flex about">
+                                            <div>Weight</div>
+                                        </div>
+                                        <div class="flex about">
+                                            <div>Remarks</div>
+                                        </div>
                                     </div>
-                                    <div class="add cursor">
-                                        <el-button class="add_item width100" type="warning" @click="addRecord" round>Add Record</el-button>
+                                    <div class="children size22">
+                                        <div class="flex about mobile_msg">
+                                            <div class="mobile_msg" v-if="userAndPet.petGenderName">{{userAndPet.petGenderName}}</div>
+                                            <div class="mobile_msg" v-else>No data</div>
+                                        </div>
+                                        <div class="flex about mobile_msg">
+                                            <div class="mobile_msg">
+                                                <span v-if="userAndPet.neuteredState == 1">Sterilization</span>
+                                                <span v-else-if="userAndPet.neuteredState == 2">Unneutered</span>
+                                                <span v-else-if="userAndPet.neuteredState === null">No data</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex about mobile_msg">
+                                            <div class="mobile_msg" v-if="userAndPet.petWeight">{{userAndPet.petWeight}}kg</div>
+                                            <div class="mobile_msg" v-else>No data</div>
+                                        </div>
+                                        <div class="flex about mobile_msg">
+                                            <div class="mobile_msg" v-if="userAndPet.remark">{{userAndPet.remark}}</div>
+                                            <div class="mobile_msg" v-else>No data</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="record1">
-                                    <div class="medial cursor">
-                                        <el-button class="medial_item width100" type="primary" @click="toRecord" round>Medical Record</el-button>
+                                    <div class="record">
+                                        <div class="medial cursor">
+                                            <el-button class="medial_item width100" type="primary" @click="toRecord" round>Medical Record</el-button>
+                                        </div>
+                                        <div class="add cursor">
+                                            <el-button class="add_item width100" type="warning" @click="addRecord" round>Add Record</el-button>
+                                        </div>
                                     </div>
-                                    <div class="add cursor">
-                                        <el-button class="add_item width100" type="warning" @click="addRecord" round>Add Record</el-button>
+                                    <div class="record1 tc">
+                                        <div class="medial">
+                                            <div class="medial_item1 width100 cursor" type="primary" @click="toRecord" round>Medical Record</div>
+                                        </div>
+                                        <div class="add">
+                                            <div class="add_item1 width100 cursor" type="warning" @click="addRecord" round>Add Record</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

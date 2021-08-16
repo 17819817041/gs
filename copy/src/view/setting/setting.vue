@@ -6,14 +6,15 @@
         position: relative;
         .top_up_mask {
             position: absolute;
-            width: 560px;
+            width: 50%;
+            min-width: 265px;
             top: 50%;
             left: 50%;
             background: white;
             box-shadow: 0px 3px 3px 0px #D0D0D0;
             border-radius: 15px;
             z-index: 1000;
-            transform: translate(-72%,-50%);
+            transform: translate(-50%,-50%);
         }
     }
     .setting_content {
@@ -80,6 +81,13 @@
             background: @helpBtn;
             position: absolute;
             box-shadow: 0 1px 2px 1px rgb(214, 210, 210);
+            @media screen and (max-width: 800px) {
+                top: 27px;
+                width: 60px;
+                padding: 3px 0;
+                font-size: 14px;
+                cursor: none;
+            }
         }
     }
     .save {
@@ -89,6 +97,12 @@
         border-radius: 12px;
         background: @hdColor;
         box-shadow: 0 1px 2px 1px rgb(214, 210, 210);
+        @media screen and (max-width: 800px) {
+            width: 60px;
+            padding: 3px 0;
+            font-size: 14px;
+            cursor: none;
+        }
     }
     .cancel {
         width: 90px;
@@ -98,15 +112,37 @@
         background: @helpBtn;
         padding: 8px 0px;
         box-shadow: 0 1px 2px 1px rgb(214, 210, 210);
+        @media screen and (max-width: 800px) {
+            width: 60px;
+            padding: 3px 0;
+            font-size: 14px;
+            cursor: none;
+        }
+        @media screen and (max-width: 400px) {
+            margin-left: 0;
+            margin-top: 8px;
+        }
     }
     .wrap_save {
         position: absolute;
         right: 20px;
         top: 0px;
         font-size: 15px;
+        @media screen and (max-width: 800px) {
+            top: 27px;
+            font-size: 14px;
+        }
+        @media screen and (max-width: 400px) {
+            top: 27px;
+            font-size: 13px;
+            flex-direction: column;
+        }
     }
     .detail {
         padding: 50px 0;
+        @media screen and (max-width: 564px) {
+            flex-direction: column;
+        }
     }
     .btnColor {
         width: 70%;
@@ -117,8 +153,9 @@
     }
     .person_image{
         width: 27%;
-        @media screen and (max-width: 600px) {
-            display: none;
+        @media screen and (max-width: 564px) {
+            margin: auto;
+            min-width: 100px;
         }
         .felame {
             width: 200px;
@@ -130,9 +167,17 @@
                 width: 180px;
                 height: 180px;
             }
-            @media screen and (max-width: 1000px) {
+            @media screen and (max-width: 1100px) {
                 width: 140px;
                 height: 140px;
+            }
+            @media screen and (max-width: 800px) {
+                width: 115px;
+                height: 115px;
+            }
+            @media screen and (max-width: 564px) {
+                width: 75px;
+                height: 75px;
             }
         }
     } 
@@ -146,9 +191,16 @@
     }
     .message2 {
         width: 40%;
+        @media screen and (max-width: 800px) {
+            width: 100%;
+        }
+    }
+    .message2_item {
+        width: 100%;
     }
     .name1 div{
         margin-bottom: 10px;
+        height: 25px;
     }
     .name1 .inp input {
         color:gray;
@@ -157,6 +209,7 @@
         padding-right: 25px;
     }
     .name2_t {
+        min-width: 133.06px;
         white-space: nowrap;
     }
     .name2 .name_item {
@@ -170,12 +223,18 @@
     .name2:nth-child(1) {
         padding-right: 25px;
     }
+    .name2_2 {
+        @media screen and (max-width: 800px) {
+            transform: translate(-2.5px, -7px);
+        }
+    }
     .inp {
         width: 140px;
         border: solid 1px ;
         border-radius: 10px;
         overflow: hidden;
         height: 25px;
+        padding-left: 15px;
         input {
             width: 100%;
             border: none;
@@ -234,6 +293,9 @@
             border-radius: 12px;
             box-shadow: 0 2px 2px 2px #e7e4e4;
             margin-left: 25px;
+            @media screen and (max-width: 800px) {
+                display: none;
+            }
         }
     }
     .balance_title {
@@ -308,6 +370,7 @@
     }
     .Remark {
         width: 100%;
+        min-width: 250px;
         border: solid 1px;
         border-radius: 20px;
         overflow: hidden;
@@ -381,6 +444,9 @@
         border-bottom: solid 3px white;
         padding: 7px 20px 7px 20px;
         transition: 0.1s;
+        @media screen and (max-width: 600px) {
+            padding: 7px 15px;
+        }
         img {
             height: 100%;
         }
@@ -405,6 +471,9 @@
     }
     .mask_title {
         padding: 30px 60px;
+        @media screen and (max-width: 650px) {
+            padding: 20px 20px;
+        }
         .back_check {
             img {
                 width: 12px;
@@ -413,18 +482,25 @@
     }
     .Amount {
         padding: 10px 50px;
+        @media screen and (max-width: 650px) {
+            padding: 10px 20px;
+        }
         .select_item {
             width: 100%;
         }
     }
     .amount_item {
         width: 30%;
+        min-width: 105px;
         padding: 5px 10px;
         color: #0C4E76;
         border: solid gray 1px;
         border-radius: 7px;
         margin-top: 15px;
         margin: 15px 1.5% 0px 1.7%;
+        @media screen and (max-width: 1076px) {
+            width: 45%;
+        }
     }
     .amount_item:hover {
         background: rgb(243, 243, 243);
@@ -438,6 +514,9 @@
     }
     .pay_W {
         padding: 0  50px;
+        @media screen and (max-width: 650px) {
+            padding: 0px 20px;
+        }
     }
     .much {
         background: rgb(240, 240, 240);
@@ -501,12 +580,17 @@
         padding: 16.5px 0;
     }
     .point {
-        width: 100%;
+        width: calc(100% + 14px);
         position: absolute;
         top: 0;
         left: 0;
         z-index: 500;
         pointer-events: none;
+        height: 55px;
+        background: #FC6011;
+        overflow: hidden;
+        border-radius: 12px;
+        transform: translate(-7px, 0);
     }
     .COLOR {
         color: #FF970F;
@@ -555,7 +639,7 @@
     }
     .mobile_t {
         @media screen and (max-width: 810px) {
-            width: 133px;
+            width: 133.06px;
         }
     }
 </style>
@@ -563,11 +647,7 @@
 <template>
     <div class="setting" v-loading="load">
         <div class="top_up_mask" v-show="top_up_mask">
-            <div class="mask_title sb al">
-                <div class="back_check al size12 bold" style="opacity: 0">
-                    <img src="@/assets/img/arrowL.png" alt="">Back to checkout
-                </div>
-                <!-- <div class="payment_d bold size25">Payment details</div> -->
+            <div class="mask_title flexEnd al">
                 <div class="back_check al bold size12 cursor" @click="closeback">
                     <img src="@/assets/img/arrowL.png" style="margin-right: 5px;" alt="">Back to checkout
                 </div>
@@ -575,12 +655,12 @@
             <div class="Amount">
                 <div class="p_title" style="padding-left: 15px">Select Amount</div>
                 <div class="select_item clear">
-                    <div @click="HK = 5,goodId = 5,getGoodsId(5)" :class="['amount_item float cursor', { much: HK == 5 }]">HK$ 5</div>
-                    <div @click="HK = 10,goodId = 6,getGoodsId(4)" :class="['amount_item float cursor', { much: HK == 10 }]">HK$ 10</div>
-                    <div @click="HK = 20,goodId = 7,getGoodsId(7)" :class="['amount_item float cursor', { much: HK == 20 }]">HK$ 20</div>
-                    <div @click="HK = 50,goodId = 8,getGoodsId(8)" :class="['amount_item float cursor', { much: HK == 50 }]">HK$ 50</div>
-                    <div @click="HK = 100,goodId = 9,getGoodsId(9)" :class="['amount_item float cursor', { much: HK == 100 }]">HK$ 100</div>
-                    <div @click="HK = 200,goodId = 10,getGoodsId(10)" :class="['amount_item float cursor', { much: HK == 200 }]">HK$ 200</div>
+                    <div @click="HK = 5,goodId = 5" :class="['amount_item float cursor', { much: HK == 5 }]">HK$ 5</div>
+                    <div @click="HK = 10,goodId = 6" :class="['amount_item float cursor', { much: HK == 10 }]">HK$ 10</div>
+                    <div @click="HK = 20,goodId = 7" :class="['amount_item float cursor', { much: HK == 20 }]">HK$ 20</div>
+                    <div @click="HK = 50,goodId = 8" :class="['amount_item float cursor', { much: HK == 50 }]">HK$ 50</div>
+                    <div @click="HK = 100,goodId = 9" :class="['amount_item float cursor', { much: HK == 100 }]">HK$ 100</div>
+                    <div @click="HK = 200,goodId = 10" :class="['amount_item float cursor', { much: HK == 200 }]">HK$ 200</div>
                 </div>
             </div>
             <div class="pay_W">
@@ -635,12 +715,12 @@
                             <div class="cancel cursor tc al ju" @click="cancel">cancel</div>
                         </div>
                     </div>
-                    <div class="detail flex width100 al">
-                        <div class="person_image al ju">
+                    <div class="detail flex width100">
+                        <div class="person_image ju">
                             <div class="felame">
                                 <label for="ava3" :class="['label_i']">
                                     <input type="file" id="ava3" v-if="!editBtn" v-show="false" @change="getImage">
-                                    <div :class="['ju al circle  img_wrap_p', { cursor: !editBtn } ]" v-loading="img_loading"
+                                    <div :class="['ju circle  img_wrap_p', { cursor: !editBtn } ]" v-loading="img_loading"
                                     element-loading-text="Loading..."
                                     element-loading-spinner="el-icon-loading"
                                     element-loading-background="rgba(0, 0, 0, 0.8)">
@@ -652,11 +732,11 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="flex my_msg_detail" style="width:73%">
+                        <div class="flex my_msg_detail" style="width:83%">
                             <div class="message1">   
                                 <div class="message1_item ts flex size22 al">
                                     <div class="name1 size19 mobile_t">
-                                        <div>User ID</div>
+                                        <div class="">User ID</div>
                                         <div>Name</div>
                                         <div>Age</div>
                                         <div>Location</div>
@@ -678,8 +758,8 @@
                             <div class="message2">
                                 <div class="message2_item flex ts al">
                                     <div class="name2 name2_t size19">
-                                        <div class="name_item">Gender</div>
-                                        <div class="name_item">Preferred Vet</div>
+                                        <div class="name_item ">Gender</div>
+                                        <div class="name_item ">Preferred Vet</div>
                                         <div class="name_item height50">Remarks</div>
                                     </div>
                                     <div class="name2 size16_s">
@@ -688,7 +768,7 @@
                                             <span v-else-if="user.userGender == 2">Female</span>
                                             <span v-else-if="user.userGender == 0">No data</span>    
                                         </div>  <!-- null -->
-                                        <div v-else class="gender al name_item name_item_1">
+                                        <div v-else class="gender al name_item name2_2 name_item_1">
                                             <el-select class="option width100" @change="getGender" name="" id="" v-model="Gender">
                                                 <el-option value="1" label="Male"></el-option>
                                                 <el-option value="2" label="Female"></el-option>
@@ -698,18 +778,17 @@
                                             <span v-if="user.userChoiceDoctor">{{bestDocName}}</span>
                                             <span v-else>No Preferred Vet</span>
                                         </div>
-                                        <div v-else class="gender al name_item ">
+                                        <div v-else class="gender al name2_2 name_item ">
                                             <el-select class="option width100" @change="userChoiceDoctor" name="" id="" v-model="bestDocName">
                                                 <el-option v-for="(doc) in myBestDoc" :key="doc.userId" :value="doc.userId" :label="doc.doctorName"></el-option>
                                             </el-select>
                                         </div>
-
-                                        <div class="name_item user_remark height50" style="word-wrap:wrap;min-width: 155px;" v-if="editBtn">
+                                        <div class="name_item user_remark height50" v-if="editBtn">
                                             <span v-if="user.extend">{{user.extend}}</span>
                                             <span v-else-if="user.extend === null">No remark</span>
                                             <span v-else-if="user.extend == ''">No remark</span>
                                         </div>
-                                        <div class="name_item" v-else style="color:white">-</div>
+                                        <div class="name_item name2_2" v-else style="color:white">-</div>
                                     </div>
                                 </div>
                                 <div @click="reset" v-if="editBtn">
@@ -805,7 +884,7 @@
 </template>
 
 <script>
-import { pay, updateUserDetails, file, allOrder, paypals, bestDoc, contentId, paymentRecord } from "@/axios/request.js"
+import { pay, updateUserDetails, file, allOrder, paypals, bestDoc, paymentRecord } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -862,7 +941,6 @@ export default {
         this.changeDoc()
     },
     mounted () {
-        this.getGoodsId()
         this.getPaypal()
     },
     computed: {
@@ -897,7 +975,6 @@ export default {
         },
         changeDoc () {
             bestDoc().then(res => {
-                console.log(res,'dasdasd')
                 this.myBestDoc = res.data.data
                 this.userChoiceDoctor(this.user.userChoiceDoctor)
             })
@@ -982,7 +1059,7 @@ export default {
             }
         },
         getPaypal () {
-            this.getGoodsId()
+            // this.getGoodsId()
             let that = this
             paypal.Buttons({
                 // env: 'sandbox', /* sandbox | production */
@@ -999,7 +1076,7 @@ export default {
 
                 createOrder: function() {
                 /* Set up a url on your server to create the order */
-                var CREATE_URL = '/api/stripe/createOrder?orderId=' + that.data;
+                var CREATE_URL = '/api/stripe/createOrder?userId=' + localStorage.getItem('userId') + '&goodsId=' +  that.goodId + '&paymentTypeId=5';
                 /* Make a call to your server to set up the payment */
                 return fetch(CREATE_URL,{
                     method: 'post'
@@ -1030,7 +1107,7 @@ export default {
                 }).then(function(data) {
                     if(data.state == 1)
                     // alert(data.content.id,orderId)
-                    window.location.href='/api/stripe/successs?orderId='+data.content.id+"&petaviorderId="+that.data;
+                    window.location.href='/api/stripe/successs?orderId='+data.content.id;
                     else{
                     alert(data.msg);
                     }
@@ -1041,23 +1118,6 @@ export default {
                 }
 
             }).render('#paypal-button-container');
-        },
-        getGoodsId (id) {
-            var userId = localStorage.getItem('userId');
-            var goodsId = this.goodId
-            console.log()
-            var paymentTypeId = 5;
-            let data = {
-                userId,
-                goodsId,
-                paymentTypeId
-            }
-            paypals(data).then(res => {
-                this.data = res.data.data
-            }).catch(e => {
-                console.log(e)
-                this.pay_loading = false
-            })
         },
         getGender (val) {
             this.user.userGender = val
@@ -1099,17 +1159,21 @@ export default {
             this.user.userImage = this.AllDetail.headUr
         },
         save () {
-            var reg = /^1[0-9]{10}$/;
-            if (reg.test(this.user.userPhone)) {
-                this.load = true
-                this.updateDetails()
-                this.editBtn = true
-            } else {
-                this.$message({
-                    type: 'error',
-                    message: 'Phone number format is incorrect!'
-                })
-            }
+            // var reg = /^1[0-9]{10}$/;
+            // if (reg.test(this.user.userPhone)) {
+            //     this.load = true
+            //     this.updateDetails()
+            //     this.editBtn = true
+            // } else {
+            //     this.$message({
+            //         type: 'error',
+            //         message: 'Phone number format is incorrect!'
+            //     })
+            // }
+
+            this.load = true
+            this.updateDetails()
+            this.editBtn = true
         },
         getImage (e) {
             this.dealImg(e.target.files[0],(img) => {

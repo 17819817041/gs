@@ -87,6 +87,25 @@ export default {
     created () {
        
     },
+    watch: {
+        login: {
+            handler (val) {
+                this.login = false
+            },
+            immediate: true
+        }
+    },
+    computed: {
+        login: {
+            get () { return this.$store.state.user.login },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "login",
+                    value: val
+                })
+            },
+        }
+    },
     methods: {
         index () {
             this.$router.push('/index')

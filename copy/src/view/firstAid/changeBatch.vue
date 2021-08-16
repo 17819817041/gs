@@ -48,6 +48,10 @@
                     <span v-else>The doctor has no profile yet</span>
                 </div>
             </div>
+            <!-- <div class="batch_doc float" style="height: 191px;border: solid 1px"></div>
+            <div class="batch_doc float" style="height: 191px;border: solid 1px"></div>
+            <div class="batch_doc float" style="height: 191px;border: solid 1px"></div>
+            <div class="batch_doc float" style="height: 191px;border: solid 1px"></div> -->
         </div>
         <div class="changeBatch_c mg" v-else>
             <div class="firstAid_title tc">
@@ -137,8 +141,22 @@ export default {
             }
         },
         starBook (item) {
+            if (item.doctorName == null) {
+                item.doctorName = 'No name'
+            }
+            this.$store.commit("setUser",{
+                key: "vDetail",
+                value: item
+            })
+            this.$store.commit("setUser",{
+                key: "mask",
+                value: item
+            })
+            this.$store.commit("setUser", {
+                key: "callTo",
+                value: this.detail
+            })
             this.callModal = true
-            this.sendMsg(item)
         },
         sendMsg (item) {
 			let D = new Date().getTime()
@@ -173,6 +191,21 @@ export default {
 <style lang="less" scoped>
     .changeBatch_c {
         width: 80%;
+        @media screen and (max-width:1847px) {
+            width: 68%;
+        }
+        @media screen and (max-width:1764px) {
+            width: 57%;
+            min-width: 800px;
+        }
+        @media screen and (max-width:1000px) {
+            // width: 45%;
+            min-width: 511px;
+        }
+        @media screen and (max-width:564px) {
+            width: 90%;
+            min-width: 0;
+        }
         .batch_doc {
             width: 19%;
             background: white;
@@ -182,6 +215,19 @@ export default {
             border-radius: 9px;
             box-shadow: 0px 1px 2px gray;
             padding: 10px;
+            // @media screen and (max-width:1847px) {
+            //     margin: 10px 2.5%;
+            // }
+            // @media screen and (max-width:1764px) {
+            //     margin: 10px 5.5%;
+            // }
+            // @media screen and (max-width:1602px) {
+            //     margin: 10px 12.5%;
+            // }
+            @media screen and (max-width:564px) {
+                width: 100%;
+                min-width: 0;
+            }
         }
     }
     // .about_doc {
@@ -197,6 +243,10 @@ export default {
         border: solid 1px rgb(207, 207, 207);
         border-radius: 50%;
         overflow: hidden;
+        @media screen and (max-width:1000px) {
+            width: 55px;
+            height: 55px;
+        }
     }
     .d_size16 {
         font-size: 16px;
@@ -223,6 +273,9 @@ export default {
     }
     .doc_content {
         margin-top: 15px;
+        @media screen and (max-width: 1000px) {
+            font-size: 13px;
+        }
     }
     .d_name {
         text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
@@ -231,6 +284,9 @@ export default {
         -webkit-box-orient: vertical;
         overflow : hidden; 
         word-break: break-all;/*在任何地方换行*/
+        @media screen and (max-width: 1000px) {
+            font-size: 16px;
+        }
     }
     .d_location {
         text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
@@ -245,15 +301,40 @@ export default {
         font-size: 45px;
         font-weight:bold;
         color: #707070;
+        @media screen and (max-width: 1500px) {
+            font-size: 30px;
+        }
+        @media screen and (max-width: 1100px) {
+            font-size: 20px;
+        }
     }
     .choose {
         font-size: 25px;
         color: #4A4B4D;
         padding: 50px 0 30px 0;
+        @media screen and (max-width: 1100px) {
+            padding: 30px 0 20px 0;
+            font-size: 15px;
+        }
     }
     .cut_d {
         color: gray;
         font-size: 20px;
         width: 80%;
+        @media screen and (max-width:1847px) {
+            width: 68%;
+        }
+        @media screen and (max-width:1764px) {
+            width: 57%;
+            min-width: 800px;
+        }
+        @media screen and (max-width:1000px) {
+            // width: 45%;
+            min-width: 511px;
+        }
+        @media screen and (max-width:564px) {
+            width: 90%;
+            min-width: 0;
+        }
     }
 </style>

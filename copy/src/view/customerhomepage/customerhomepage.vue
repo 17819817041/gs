@@ -30,9 +30,9 @@
             height: calc(100% + 119px);
             z-index: 900;
             background: rgb(0, 0, 0);
-            opacity: 0.1;
+            opacity: 0.5;
             display: none;
-            @media screen and (max-width:564px) {
+            @media screen and (max-width:800px) {
                 display: block;
             }
         }
@@ -51,8 +51,11 @@
             border-right: rgb(236, 236, 236) solid 1px;
             width: 180px;
             transform: translate(-180px,0);
-            height: 100%;
+            height: calc(100% + 90px);
             // opacity: 0;
+        }
+        @media screen and (max-width:800px) {
+            display: none;
         }
     }
     .drawer_width {
@@ -87,6 +90,9 @@
         @media screen and (max-width:950px) {
             left: -30px !important;
             top: 65px;
+        }
+        @media screen and (max-width:800px) {
+            display: none;
         }
     }
     .po_lisy {

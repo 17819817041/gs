@@ -59,11 +59,11 @@ conn.listen({
                     user: e.from,
                     userDetail: data.key,
                     messageList: [ obj ],
-                    msg: -1
+                    msg: 0
                 }
             }
             localStorage.setItem('msgTime', data.localTime)
-            store.commit("addMsg",{ key: 'message', value: { content: message, user: e.from } })
+            store.commit("addTime",{ key: 'message', value: { content: message, user: e.from } })
         }
         if (data.type == 'needHelp') {
             var obj = {
@@ -71,6 +71,13 @@ conn.listen({
                 value: data.value,
                 time: data.time,
                 APM: data.APM
+            }
+            var D = new Date()
+            var obj1 = {
+                type: 3,
+                value: '',
+                time: D.toLocaleDateString() + ' ' + D.getHours() + ':' + D.getMinutes(),
+                APM: ''
             }
             var message = JSON.parse(JSON.stringify(store.state.user.message))
             if (message[from]) {
@@ -80,14 +87,16 @@ conn.listen({
                 message[from] = {
                     user: e.from,
                     userDetail: data.key,
-                    messageList: [ obj ],
+                    messageList: [ obj1,obj ],
+                    // messageList: [ obj ],
                     msg: 0
                 }
             }
             localStorage.setItem('msgTime', data.localTime)
             store.commit("addMsg",{ key: 'message', value: { content: message, user: e.from } })
+            localStorage.setItem('new_msg', true)
+            store.commit('setUser', { key: 'newMsg_dot', value: true })
         }
-        
     },    //收到文本消息
 });
 

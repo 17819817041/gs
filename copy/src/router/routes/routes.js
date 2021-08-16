@@ -86,7 +86,7 @@ export default [
             },
             {
                 path:'/booking',
-                name:'paymentHistory',
+                name:'booking',
                 component: () => import("@/view/booking/booking.vue")
             },
             {
@@ -131,6 +131,16 @@ export default [
                 path:'/reset',
                 name:'reset',
                 component: () => import("@/view/reset/reset.vue")
+            },
+            {
+                path:'/map',
+                name:'map',
+                component: () => import("@/view/map/map.vue")
+            },
+            {
+                path:'/docInformation',
+                name:'docInformation',
+                component: () => import("@/view/docInformation/docInformation.vue")
             }
         ]
     },

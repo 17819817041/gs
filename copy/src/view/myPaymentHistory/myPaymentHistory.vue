@@ -5,7 +5,7 @@
             My Payment History
         </div>
         <div class="paymentHistory_content" @scroll="docScroll" ref="doctorList" v-if="orderList.length !== 0">   
-            <div ref="doctorList_height">
+            <div ref="doctorList_height" style="padding-bottom: 12px">
                 <div class="paymentHistory_content_item sb mg" v-for="(item,i) in orderList" :key="i">
                     <div class="flex al">
                         <div class="payment_man_img ju al">
@@ -22,7 +22,7 @@
                         </div>
                     </div>
                     <div class="much al">
-                        <div>
+                        <div class="size16">
                             <div :class="[ 'te', {'COLOR': item.paymentRecord.orderTypeId == 1}, {'COLOR1': item.paymentRecord.orderTypeId == 4}]">
                                 <span v-if="item.consumeType == 0">-</span>
                                 <span v-else-if="item.consumeType == 1">+</span>
@@ -31,9 +31,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="acting float ju al" v-if="l_loading">
-                    <div class="loading" v-loading="true"></div>
-                </div>
+            </div>
+            <div class="acting float ju al" v-if="l_loading">
+                <div class="loading" v-loading="true"></div>
             </div>
         </div>
         <div class="paymentHistory_content" v-else>
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { pay, updateUserDetails, file, allOrder, paymentRecord } from "@/axios/request.js"
+import { paymentRecord } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -88,8 +88,9 @@ export default {
                 this.$store.commit("setUser",{ key: "n_loading", value: false })
                 
             } else {
+                this.$store.commit("setUser",{ key: "n_loading", value: true })
                 paymentRecord(data).then(res => {
-                    console.log(res,'paymentRecord')
+                    this.$store.commit("setUser",{ key: "n_loading", value: false })
                     if (res.data.rtnCode == 200) {
                         var D = new Date()
                         let a = new Date().toLocaleDateString()
@@ -107,7 +108,6 @@ export default {
                         this.totalRecordsCount = res.data.data.totalRecordsCount
                         this.orderList = this.orderList.concat(res.data.data.pageT)
                         this.loading = false
-                        console.log(this.totalRecordsCount, this.orderList.length, this.totalRecordsCount !=0)
                         if ((this.totalRecordsCount == this.orderList.length) && this.totalRecordsCount !=0 ) {
                             this.$store.commit("setUser",{ key: "n_loading", value: false })
                         }
@@ -117,6 +117,7 @@ export default {
                 }).catch(e => {
                     console.log(e)
                     this.loading = false
+                    this.$store.commit("setUser",{ key: "n_loading", value: false })
                 })
             }
             
@@ -147,6 +148,9 @@ export default {
         height: 100%;
         background: @content;
         padding: 0 15px;
+        @media screen and (max-width: 350px) {
+            padding: 0;
+        }
         .paymentHistory_content {
             height: calc(100% - 59px);
             overflow: auto;
@@ -172,19 +176,36 @@ export default {
         overflow: hidden;
         border-radius: 50%;
         margin: 10px 20px;
+        @media screen and (max-width: 390px) {
+            width: 45px;
+            height: 45px;
+            overflow: hidden;
+            border-radius: 50%;
+            margin: 10px 10px;
+        }
         img {
             height: 100%;
         }
     }
     .much {
         margin: 0 20px;
+        white-space: nowrap;
     }
     .size16 {
         color: #9F9F9F;
         font-size: 16px;
+        @media screen and (max-width: 564px) {
+            font-size: 12px;
+        }
     }
     .size17 {
         font-size: 17px;
+        @media screen and (max-width: 564px) {
+            font-size: 13px;
+        }
+    }
+    .payment_details {
+        white-space: nowrap;
     }
     .noThing {
         font-size: 19px;
@@ -202,5 +223,9 @@ export default {
         width: 100%;
         padding: 50px 0;
         // border: solid 1px;
+        @media screen and (max-width: 564px) {
+            width: 100%;
+            padding: 20px 0;
+        }
     }
 </style>

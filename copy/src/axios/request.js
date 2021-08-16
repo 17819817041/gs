@@ -115,11 +115,10 @@ export function doctorList (data) {      //医生列表          0 离线   1在
     })
 }
 
-export function vetDetails (data) {      //医生详情
+export function vetDetails (data) {                            //医生详情
     return request(
         {
             url: "/doctorDetails/getDoctorDetailsByUserId",
-            // url: "/doctorDetails/getUserDetails",
             method: "POST",
             params: data
         }
@@ -531,9 +530,9 @@ export function resetPasswordByForget (data) {         //忘记密码修改 Stri
     })
 }
 
-export function asd (data) {       
+export function joinRoom (data) {                        //加入聊天室接收上线通知
     return request({                                  
-        url: '/agora/recoding',
+        url: '/user/joinChatRoom',
         method: "POST",
         params: data
     })

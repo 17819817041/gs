@@ -1,9 +1,9 @@
+// const CompressionPlugin = require('compression-webpack-plugin');
 module.exports = {
     publicPath:"./",
     lintOnSave: false,
     devServer: {
-        https: true,
-		// host: '192.168.1.105',
+        // https: true,
 		hot:true,
         proxy: {
 			"api": {
@@ -13,14 +13,8 @@ module.exports = {
 				pathRewrite: {
 					"^/api": ""
 				}
-			},
-			"db": {
-				target: "https://douban.uieee.com",
-				changeOrigin: true,
-				pathRewrite: {
-					"^/db": ""
-				}
 			}
 		}
-    },
+    }
 }
+

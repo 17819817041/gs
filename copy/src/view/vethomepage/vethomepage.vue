@@ -22,6 +22,20 @@
             background: gray;
             opacity: 0.5;
         }
+        .background_mobile {
+            position: absolute;
+            top: -119px;
+            left: 0;
+            width: calc(100%);
+            height: calc(100% + 119px);
+            z-index: 900;
+            background: rgb(0, 0, 0);
+            opacity: 0.3;
+            display: none;
+            @media screen and (max-width:800px) {
+                display: block;
+            }
+        }
     }
     .present_message {
         background: white;
@@ -47,7 +61,7 @@
         height: calc(100% - 119px);
         // border:  solid green;
         position: relative;
-        @media screen and (max-width:564px) {
+        @media screen and (max-width:1300px) {
             height: calc(100% - 90px);
         }
     }
@@ -84,6 +98,12 @@
     // .rotate1 {
     //     transform: rotateZ(-180deg);
     // }
+    .fade-enter-active, .fade-leave-active {
+		transition: opacity 0.1s;
+	}
+	.fade-enter, .leave-active {
+		opacity: 0;
+	}
 </style>
 
 <template>
@@ -91,6 +111,7 @@
         <div><myHeaderL></myHeaderL></div>
         <div class="customer_content flex">
             <div v-show="showback" class="background" @click="closeback"></div>
+            <transition name="fade"><div v-show="mobile_b" class="background_mobile" @click="mobile_background"></div></transition>
             <div  :class="['present_message noBar',{ drawer_width: drawer }]">
                 <vetMessage></vetMessage>
             </div>
@@ -121,6 +142,15 @@ export default {
     computed: {
         drawer () { return this.$store.state.user.rotate },
         showback () { return this.$store.state.user.showback },
+        mobile_b: {
+            get () { return this.$store.state.user.mobile_b },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "mobile_b",
+                    value: val
+                })
+            }
+        },
     },
     methods: {
         closeback () {
@@ -128,6 +158,9 @@ export default {
                 key: "showback",
                 value: false
             })
+        },
+        mobile_background () {
+            this.$store.commit('setUser', { key: 'mobile_b', value: !this.mobile_b })
         },
     }
 }

@@ -1,18 +1,19 @@
 <style lang="less" scoped>
 @import "@/less/css.less";
-.customerPage {
-    // position: fixed;
-    // top: 119px;
-    // left: 0;
-    // width: 202px !important;
-    background: white;
-}
+    .customerPage {
+        // position: fixed;
+        // top: 119px;
+        // left: 0;
+        // width: 202px !important;
+        background: white;
+    }
     .customer_content {
         width: 100%;
         box-sizing: border-box;
         .present_message {
             width: 202px;
             transition: 0.1s;
+            height: 100%;
             @media screen and (max-width:1300px) {
                 background: white;
                 // position: fixed;
@@ -124,7 +125,7 @@
                             <span v-if="pet.petJueYue == 1">Sterilization</span> 
                             <span v-else-if="pet.petJueYu == 2">Unneutered</span> 
                         </div>
-                        <div>Weight : {{pet.weight}}</div>
+                        <div>Weight : {{pet.weight}} kg</div>
                     </div>
                     <div class="more_message size12 cursor" @click="petDetails">
                         More...
@@ -151,8 +152,8 @@
                         <div><img src="@/assets/img/profile.png" alt=""></div>
                         <div>Setting</div>
                     </div>
-                    <div class="ju cursor">
-                        <img class="physical" @click="firstDid" src="@/assets/img/physical.png" alt="">
+                    <div class="ju ">
+                        <img class="physical cursor" @click="firstDid" src="@/assets/img/physical.png" alt="">
                     </div>
                 </div>
             </div>
@@ -272,7 +273,6 @@ export default {
                 token: localStorage.getItem('Token')
             }
             petType(data).then(res => {
-                console.log(res)
                 res.data.forEach(item => {
                     item.children.forEach(child => {
                         child.children = []

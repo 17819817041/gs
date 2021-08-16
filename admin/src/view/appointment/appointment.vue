@@ -11,25 +11,26 @@
         height: 100%;
         background: @content;
         flex: 10;
+        overflow: auto;
     }
     .appointment_content_item_wrap {
         width: 98%;
-        height: 100%;
-        overflow: auto;
+        height: calc(100% - 60px);
     }
     .calendar {
         width: 100%;
         height: 100%;
         // border: solid 1px;
         .calendar_item {
-            width: 65%;
+            width: 68%;
             height: 100%;
             overflow: auto;
             margin: 0px 10px;
             background: white;
         }
         .appointment_details {
-            width: 40%;
+            width: 32%;
+            min-width: 429px;
             height: 100%;
             // border: solid 1px;
             overflow: auto;
@@ -42,15 +43,16 @@
         width: 95%;
         background: white;
         box-shadow: 0 4px 7px 1px #D5D5D5;
-        margin: 20px auto;
+        margin: 30px auto;
         border-radius: 10px;
         overflow: hidden;
+        padding: 5px 0;
     }
     .appointment_details_img_wrap {
         border: solid 1px rgb(223, 223, 223);
         border-radius: 50%;
-        width: 60px;
-        height: 65px;
+        width: 55px;
+        height: 55px;
         overflow: hidden;
     }
     .appointment_details_img {
@@ -63,7 +65,7 @@
         background: @logout;
         font-size: 12px;
         color: white;
-        padding: 5px 2px;
+        padding: 3px 0px;
         margin: 3px;
     }
     .Cancel {
@@ -73,7 +75,7 @@
         background: @cancel;
         font-size: 12px;
         color: white;
-        padding: 5px 2px;
+        padding: 3px 0px;
         margin: 3px;
     }
     .DateTime, .pet_name,.appointment_details_name {
@@ -83,9 +85,9 @@
         color: gray;
         border-bottom: solid 1px #DCDEE1;
     }
-    .calendarMini {
-        width: 30%;
-    }
+    // .calendarMini {
+    //     width: 30%;
+    // }
     .calendarX {
         width: 100%;
     }
@@ -94,14 +96,36 @@
         height: 25px;
         padding: 20px 20px;
     }
+
+    .calendar-day{
+        text-align: center;
+        color: #202535;
+        line-height: 30px;
+        font-size: 12px;
+    }
+    .is-selected{
+        color: #F8A535;
+        font-size: 10px;
+        margin-top: 5px;
+    }
+    #calendar .el-button-group>.el-button:not(:first-child):not(:last-child):after{
+        content: '当月';
+    }
+    .size14_a {
+        font-size: 12px;
+        color: #767676;
+    }
+    .size13_a {
+        font-size: 12px;
+    }
 </style>
 
 <template>
     <div class="appointment">      <!-- 医生 -->
         <div class="appointment_content flex">
-            <div class="appointment_content_item">
-                <div class="appointment_content_item_wrap mg noBar">
-                    <div class="explan al">
+            <div class="appointment_content_item noBar">
+                <div class="appointment_content_item_wrap mg">
+                    <div class="explan bold al">
                         <img src="@/assets/img/appointment.png" alt="">
                         Appointment
                     </div>
@@ -114,58 +138,60 @@
                                 <div class="size21 bold al">Calendar</div>
                             </div>
                             <div class="flex">
-                                <!-- <div class="calendarMini">
-                                    <el-calendar v-model="value"></el-calendar>
-                                </div> -->
                                 <div class="calendarX">
+
                                     <el-calendar v-model="value">
-                                        <!-- <template
+                                        <template
                                             slot="dateCell"
                                             slot-scope="{date, data}">
-                                            <div
-                                                class="item"
-                                                :disabled="!holiday.hasOwnProperty(data.day)"
-                                                effect="dark"
-                                                placement="top-start">
-                                                <div slot="content"  v-for="(item,i) in holiday[data.day]" :key="i">
-                                                    <p>{{item}}</p>
-                                                </div>
-                                                <p class="day" :class="data.isSelected ? 'is-selected' : ''">
-                                                    <span>{{ Number(data.day.split('-')[2]) }}</span>
-                                                    <span class="dots" v-if="holiday.hasOwnProperty(data.day)"></span>
-                                                </p>
+                                            <div >
+                                                <!-- //'Have an appointment with' + ' ' +
+                                                    //booking.find(b => b.booking.calanderDate==data.day).booking.bookingDoctor  -->
+                                                <div>{{data.day.slice(8)}}</div>
+                                                <div class="size12">{{
+                                                    booking.find(b => b.booking.calanderDate==data.day) ? 
+                                                    
+                                                    'video call'
+                                                    : 
+                                                    ''
+                                                }}</div>
                                             </div>
-                                        </template> -->
+                                        </template>
                                     </el-calendar>
+                                    
                                 </div>
                             </div>
                         </div>
-                        <div class="appointment_details noBar">
+                        <div class="appointment_details noBar" v-loading="loading" v-if="booking[0]">
                             <div class="appointment_details_item sa" v-for="(item) in booking" :key="item.booking.bookingId">
                                 <div class="appointment_details_img_wrap ju al">
                                     <img class="appointment_details_img" v-if="item.userImage" :src="item.userImage" alt="">
-                                    <i class="el-icon-picture-outline" v-else style="font-size:27px;color:gray"></i>
+                                    <img style="height:100%;" v-else :src="default_img" alt="">
+                                    <!-- <i class="el-icon-picture-outline" v-else style="font-size:27px;color:gray"></i> -->
                                 </div>
                                 <div class="appointment_details_name">
-                                    <div class="size13">{{item.booking.userName}}</div>
+                                    <div style="padding-bottom:7px;" class="size13">{{item.booking.userName}}</div>
                                     <div class="size12 al">
-                                        <img src="@/assets/img/callimg.png" alt="">
+                                        <img style="width:15px;height:14px;" src="@/assets/img/callimg.png" alt="">
                                         Phone Counsultation
                                     </div>
                                 </div>
                                 <div class="DateTime">
-                                    <div class="size15">Date and Time</div>
-                                    <div class="size13">{{item.booking.bookingDate}} - {{item.booking.bookingStartTime}} {{item.booking.APM}}</div>
+                                    <div style="padding-bottom:7px;" class="size14_a">Date and Time</div>
+                                    <div class="size13_a">{{item.booking.bookingDate}} - {{item.booking.bookingStartTime}} {{item.booking.APM}}</div>
                                 </div>
                                 <div class="pet_name">
-                                    <div class="size12">Pet Name</div>
-                                    <div class="size13">Daisy</div>
+                                    <div style="padding-bottom:7px;" class="size12">Pet Name</div>
+                                    <div class="size13_a">{{item.booking.petName}}</div>
                                 </div>
-                                <div>
-                                    <div class="Reschedule size13 cursor tc" @click="reschedule(item)">Reschedule</div>
-                                    <div class="Cancel size13 cursor tc">Cancel</div>
-                                </div>
+                                <!-- <div>
+                                    <div class="Reschedule cursor tc" @click="reschedule(item.booking.bookingId)">Reschedule</div>
+                                    <div class="Cancel cursor tc" @click="cancelBook(item)">Cancel</div>
+                                </div> -->
                             </div>
+                        </div>
+                        <div class="appointment_details" v-else>
+                            <div class="tc " style="font-size: 20px;color:gray;padding-top:30px">No reservation</div>
                         </div>
                     </div>
                 </div>
@@ -175,19 +201,24 @@
 </template>
 
 <script>
-import { bookingUserId, allBooking } from "@/axios/request.js"
+import { getBookings } from "@/axios/request.js"
 // import holiday from "@/assets/js/holiday.js"
 export default {
     data () {
         return {
             value: new Date(),
             booking: [],
-            today: ''
+            today: '',
+            pageNum: 1,
+            loading: true
         }
     },
     created () {
         this.getDAY()
-        // this.getBooking()
+        this.getBooking()
+    },
+    computed: {
+        default_img () { return this.$store.state.user.default_img }
     },
     methods: {
         reschedule (key) {
@@ -202,14 +233,16 @@ export default {
         },
         getBooking () {
             let data = {
-                userId: localStorage.getItem('userId'),
-                userType: 2,
-                data: this.today
+                startDay: this.today,
+                endDay: '',
+                pageNum: this.pageNum,
+                pageSize: 20,
             }
-            bookingUserId(data).then(res => {
+            getBookings(data).then(res => {
                 console.log(res,'booking')
+                this.loading = false
                 if (res.data.rtnCode == 200) {
-                    res.data.data.forEach(item => {
+                    res.data.data.pageT.forEach(item => {
                         let date = item.booking.bookingDate.split('-')
                         item.booking.bookingDate = date[2] + '/' + date[1] + '/'+ date[0]
                         item.booking.APM = ''
@@ -221,14 +254,13 @@ export default {
                             item.booking.APM = 'AM'
                         }
                     })
-                    this.booking = res.data.data
-                    // this.loading = false
+                    this.booking = res.data.data.pageT
                 } else if (res.data.rtnCode == 201) {
 
                 }
             }).catch(e => {
                 console.log(e)
-                // this.loading = false
+                this.loading = false
             })
         },
         getDAY () {

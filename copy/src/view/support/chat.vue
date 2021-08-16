@@ -6,12 +6,19 @@
     }
     .chat_title {
         background: #FAFAFA;
+        font-size: 23px;
         box-shadow: 0px 3px 3px 0px #D0D0D0; 
+        @media screen and (max-width: 564px) {
+            font-size: 15px;
+        }
     }
     .chat_img {
         padding: 0 10px;
         img{
             width: 32px;
+            @media screen and (max-width: 564px) {
+                width: 25px;
+            }
         }
     }
     .chat_content {
@@ -25,17 +32,6 @@
     .inpMessage {
         padding: 5px 10px;
         border: solid rgb(240, 239, 239) 1px;
-    }
-    .add {
-        position: relative;
-        .arrowon {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-77%,-50%);
-            width: 19px;
-            height: 23px;
-        }
     }
     .add img {
         height: 36px;
@@ -101,13 +97,17 @@
             height: 100%;
         }
     }
+    .msg_T {
+        font-size: 12px;
+        color: gray;
+    }
 </style>
 
 <template>
     <div class="chatPage">
-        <div class="chat_title flex al">
+        <div class="chat_title bold flex al">
             <div class="chat_img"><img src="@/assets/img/chatLogo.png" alt=""></div>
-            <h2>Chat with Admin</h2>
+            <div>Chat with Admin</div>
         </div>
         <div class="chat_content noBar" ref="Cus">
             <div class="msg_item_wrap">
@@ -129,11 +129,10 @@
                 <input type="text" v-model="customerInp" class="width100" placeholder="Type a message" @keydown.enter="send">
             </div>
             <div class="add al">
-                <img class="cursor" src="@/assets/img/clip.png" alt="">
+                <img class="cursor" @click="kl" src="@/assets/img/clip.png" alt="">
             </div>
             <div class="add al">
-                <img class="cursor" @click="send" src="@/assets/img/Ball.png" alt="">
-                <img class="arrowon cursor" @click="send" src="@/assets/img/arrowon.png" alt="">
+                <img class="cursor" @click="send" src="@/assets/img/msg_send.png" alt="">
             </div>
         </div>
     </div>
@@ -146,7 +145,7 @@ export default {
             customerInp: '',
             list: [],
             userId: localStorage.getItem('userId'),
-            Today: ''
+            Today: '',
         }
     },
     created () {
@@ -186,11 +185,12 @@ export default {
         newMsg_dot: {
             handler (val) {
                 if (val) {
-                    this.newMsg_dot = false
+                    this.$store.commit('setUser', { key: 'newMsg_dot', value: false })
+                    localStorage.setItem('new_msg', {boo: false, value: localStorage.getItem('userId')})
                 }
-            }
-        },
-        Immediate: true
+            },
+            immediate: true
+        }
     },
     computed: {
         adminList: {
@@ -211,6 +211,19 @@ export default {
         }
     },
     methods: {
+        kl () {
+            var a = 'admin'
+            var options = {
+                queue: a.toLowerCase(), //需特别注意queue属性值为大小写字母混合，以及纯大写字母，会导致拉取漫游为空数组，因此注意将属性值装换为纯小写
+                isGroup: false,
+                count: 10,
+                success: function(res){
+                    console.log(res,666) //获取拉取成功的历史消息
+                },
+                fail: function(){}
+            }
+            this.$WebIM.conn.fetchHistoryMessages(options)
+        },
         saveRecord (val) {
             this.$nextTick(() => {
                 this.$refs.Cus.scrollTop = 10000
@@ -308,6 +321,7 @@ export default {
             let data = {
                 type: "needHelp_T",
                 platform: localStorage.getItem('platform'),
+                key: this.userDetail,
                 time: date,
                 localTime: D.getTime()
             }

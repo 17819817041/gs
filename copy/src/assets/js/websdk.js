@@ -24,15 +24,19 @@ conn = WebIM.conn = new WebIM.connection({
 
 conn.listen({
     onOpened: function ( message ) {
-        console.log("open登录",message)
+        // console.log("open登录")
     },         //连接成功回调 
     onClosed: function ( message ) {
-        console.log("close登出")
+        // console.log("close登出")
     },         //连接关闭回调
     onTextMessage: function ( e ) {
-        console.log("收到消息", e,e.data)
+        // console.log("收到消息", e)
         if (e.sourceMsg == 'PetaviNotice') {
             store.commit("setUser",{ key: 'noticeState', value: true })
+        }
+        //上线通知
+        if (e.sourceMsg == "PetaviOnlineList") {
+            store.commit("setUser",{ key: 'online_mask', value: true })
         }
         
         let data = JSON.parse(e.data)    
@@ -86,11 +90,13 @@ conn.listen({
                 adminList[from] = {
                     user: e.from,
                     userDetail: data.key,
-                    messageList: [ obj ]
+                    messageList: [ obj ],
                 }
             }
             store.commit("setUser",{ key: 'adminList', value: adminList })
-            store.commit('setUser', { key: 'newMsg_dot', value: true })
+            localStorage.setItem('new_msg', JSON.stringify({boo: true, user: data.userId}))
+            store.commit('setUser', { key: 'newMsg_dot', value: {boo: true, user: data.userId} })
+            
         }
         // 收到来电
         if (data.type == 'Call') {
@@ -138,7 +144,6 @@ conn.listen({
             store.commit("setUser",{ key: 'callLoading', value: false })
             router.push("/agora")
         }
-
 
 
 

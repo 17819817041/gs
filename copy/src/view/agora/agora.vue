@@ -1,10 +1,11 @@
 <style lang="less" scoped>
 @import "@/less/css.less";
-.agora {
-    width: 100%;
-    overflow: hidden;
-    height: 100%;
-}
+    .agora {
+        width: 100%;
+        overflow: hidden;
+        height: 100%;
+        position: relative;
+    }
     .logo_wrap {
         position: relative;
         height: 109px;
@@ -33,7 +34,21 @@
         flex: 8;
         height: 100%;
         overflow: auto;
-        // position: relative;
+        position: relative;
+        .longTime {
+            position: absolute;
+            bottom: 135px;
+            left: 50%;
+            z-index: 103;
+            transform: translate(-50%,0);
+            color: white;
+            @media screen and (max-width: 1200px) {
+                bottom: 165px;
+            }
+            @media screen and (max-width: 564px) {
+                bottom: 125px;
+            }
+        }
         .video_wrap {
             height: 100%;
             position: relative;
@@ -54,6 +69,31 @@
             }
             @media screen and (max-width: 1200px) {
                 bottom: 65px;
+            }
+            @media screen and (max-width: 564px) {
+                right: 10px;
+                top: 20px;
+            }
+        }
+        .video_child_cut {
+            position: absolute;
+            width: 123px;
+            height: 150px;
+            // border: solid 1px green;
+            bottom: 20px;
+            right: 20px;
+            z-index: 102;
+            // background: black;
+            // box-shadow: 0 0 5px #999;
+            @media screen and (max-width: 1600px) {
+                bottom: 45px;
+            }
+            @media screen and (max-width: 1200px) {
+                bottom: 65px;
+            }
+            @media screen and (max-width: 564px) {
+                right: 10px;
+                top: 20px;
             }
         }
         .video_parent {
@@ -83,6 +123,10 @@
                 width: 100%;
                 bottom: 85px;
             }
+            @media screen and (max-width: 660px) {
+                width: 100%;
+                bottom: 55px;
+            }
         }
     }
     .doctorMessage_wrap {
@@ -108,13 +152,6 @@
             transition: 0.1s;
         }
     }
-    // .drawer {
-    //     @media screen and (max-width: 1500px) {
-    //         width: 15px !important;
-    //         left: -30px !important;
-    //         transform: translate(100%,0) !important;
-    //     }
-    // }
     .box1 {
         width: 0;
         height: 0;
@@ -193,6 +230,21 @@
         background: @helpBtn;
         img {
             padding-right: 5px;
+        }
+        position: relative;
+        @media screen and (max-width: 564px) {
+            transform: scale(0.8);
+        }
+        span {
+            position: absolute;
+            right: -10px;
+            top: -3px;
+            .dot_h {
+                width: 16px;
+                height: 16px;
+                overflow: hidden;
+                border-radius: 50%;
+            }
         }
     }
     .DOCTOR {
@@ -405,6 +457,9 @@
         img {
             width: 100%;
         }
+        @media screen and (max-width: 600px) {
+            cursor: none;
+        }
     }
     .video_fun img {
         @media screen and (max-width: 930px) {
@@ -415,10 +470,166 @@
     .z_index {
         z-index: 101 !important;
     }
+    .v_opacity {
+        opacity: 0;
+    }
+
+    .chatPage {
+        position: absolute;
+        width: 700px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 400px;
+        background: white;
+        z-index: 1000;
+        @media screen and (max-width: 800px) {
+            width: 300px;
+            height: 500px;
+        }
+    }
+    .chat_title {
+        background: #FAFAFA;
+        position: relative;
+        z-index: 1;
+        user-select: none;
+        font-size: 23px;
+        padding: 10px 0;
+        box-shadow: 0px 3px 3px 0px #D0D0D0; 
+        @media screen and (max-width: 564px) {
+            font-size: 15px;
+        }
+    }
+    .chat_img {
+        padding: 0 10px;
+        img{
+            width: 32px;
+            user-select: none;
+            @media screen and (max-width: 564px) {
+                width: 25px;
+            }
+        }
+    }
+    .chat_content {
+        height: calc(100% - 120px);
+        padding: 5px 15px;
+        overflow: auto;
+    }
+    .msg_item_wrap {
+        height: 100%;
+    }
+    .inpMessage {
+        padding: 5px 10px;
+        border: solid rgb(240, 239, 239) 1px;
+    }
+    .add img {
+        height: 36px;
+        margin-left: 10px;
+    }
+    .Input {
+        width: 100%;
+        border: solid rgb(197, 195, 195) 1px;
+        border-radius: 25px;
+        background: @content;
+        overflow: hidden;
+        input {
+            border: none;
+            outline: none; 
+            background: @content;
+            height: 100%;
+            padding: 10px;
+        }
+        input::placeholder {
+            padding-left: 15px;
+        }
+    }
+    .msg_item {
+        padding: 5px 10px;
+        
+    }
+    .msg_child {
+        max-width: 80%;
+        min-width: 75px;
+        display: inline-block;
+        margin-bottom: 20px;
+        position: relative;
+        .msg_time {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 12px;
+        }
+    }
+    .gray {
+        color: gray !important;
+    }
+    .mySend {
+        background: #1976D2;
+        border-radius: 12px 12px 0px 12px;
+        padding: 3px 35px 30px 15px;
+        word-wrap: break-word;
+        color: white;
+    }
+    .theySend {
+        background: #EEEEEE;
+        border-radius: 0px 12px 12px 12px;
+        padding: 3px 35px 30px 15px;
+        word-wrap: break-word;
+    }
+    .adverse_img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 25px;
+        img {
+            height: 100%;
+        }
+    }
+    .msg_T {
+        font-size: 12px;
+        color: gray;
+    }
 </style>
 
 <template>
     <div class="agora">
+        <div class="chatPage" v-show="admin_mask" id="box" v-drag>
+            <div class="chat_title bold sb al">
+                <div class="flex">
+                    <div class="chat_img"><img draggable="false" src="@/assets/img/chatLogo.png" alt=""></div>
+                    <div>Chat with Admin</div>
+                </div>
+                <div><img class="cursor" @click="cutDown_mask" @mousedown.stop @mousemove.stop  src="@/assets/img/delete.png" alt=""></div>
+            </div>
+            <div class="chat_content noBar" ref="Cus" @mousedown.stop @mousemove.stop >
+                <div class="msg_item_wrap">
+                    <div v-for="(item,i) in adminList['admin'].messageList" :key="i" :class="[{ 'flexEnd':item.type == 1 }]">
+
+                        <div class="msg_T width100 tc" v-if="item.type == 3">{{item.time.split(' ')[0] == Today? 
+                        'Today': item.time.split(' ')[0]}} {{item.time.split(' ')[1]}}</div>
+                        
+                        <div :class="['msg_child', { mySend: item.type == 1 }, 
+                            { theySend: item.type == 2 },]" v-if="item.userId == userId"
+                            >{{item.value}}
+                            <div :class="['msg_time', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>   
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inpMessage al" @mousedown.stop @mousemove.stop >
+                <div class="Input al">
+                    <input type="text" v-model="customerInp1" class="width100" placeholder="Type a message">
+                </div>
+                <div class="add al">
+                    <img class="cursor" draggable="false" @mousedown.stop @mousemove.stop  src="@/assets/img/clip.png" alt="">
+                </div>
+                <div class="add al">
+                    <img class="cursor" draggable="false" @click="send" @mousedown.stop @mousemove.stop src="@/assets/img/msg_send.png" alt="">
+                </div>
+            </div>
+        </div>
+
         <div class="flex" style="height:100%">
             <div class="MESSAGE">
                 <div class="logo_wrap">
@@ -435,17 +646,21 @@
                 </div>
             </div>
             <div class="showVideo">
+
+                <div class="longTime"> {{t_H}}{{H}}:{{ten_M}}{{M}}:{{t_num}}{{num}}</div>
+
                 <div class="video_wrap">
                     <div class="answer flex">
-                        <div class="cursor video_fun"><img src="@/assets/img/answer_audeo.png" alt=""></div>
-                        <div class="cursor video_fun"><img src="@/assets/img/answer_video.png" alt=""></div>
-                        <div class="cursor video_fun" @click="removeStream"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
+                        <div class="cursor video_fun ju"><img src="@/assets/img/answer_audeo.png" alt=""></div>
+                        <div class="cursor video_fun ju"><img @click="video_active" src="@/assets/img/answer_video.png" alt=""></div>
+                        <div class="cursor video_fun ju" @click="removeStream"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
                     </div>
                     <!-- <video :class="['video_parent']" autoplay width="400px" height="400px" id="video" ref="video"></video>
                     <video :class="['video_child']" autoplay id="localVideo"></video> -->
 
                     <div :class="[{'video_parent': type, 'video_child': !type, 'z_index': !type}]" autoplay id="player_a1" ref="video"></div>
-                    <div :class="[{'video_parent': !type, 'video_child': type, 'z_index': type}]" autoplay id="player_a2" @click="type = !type"></div>
+                    <div :class="[{'video_parent': !type, 'video_child': type, 'z_index': type, 'v_opacity': videoActive}]" autoplay id="player_a2"></div>
+                    <div class="video_child_cut" @click="type = !type" ></div>
                 </div>
             </div>
             <div :class="[ 'doctorMessage_wrap', { Drawer: drawer } ]">
@@ -472,7 +687,11 @@
                         </div>
                         <div class="myOperation sb al">
                             <div class="outLogo size12 bold cursor al ju">Logout</div>
-                            <div class="helpAbout cursor al ju">
+                            <div class="helpAbout cursor al ju" @click="show_mask_admin">
+                                <span v-if="newMsg_dot !== null">
+                                    <img class="dot_h" v-show="newMsg_dot.boo && newMsg_dot.user == T_userId" src="@/assets/img/dot.png" alt="">
+                                </span>
+                                <span v-else><img class="dot_h" v-show="false" src="@/assets/img/dot.png" alt=""></span>
                                 <img src="@/assets/img/what.png" alt="">
                                 Help & Support
                             </div>
@@ -581,9 +800,8 @@
         </div>
     </div>
 </template>
-
 <script>
-import { addMetting, delMetting, PetMedicalRecord, updatePetMedicalRecord, s_online, getAgoraToken, docGoodsId, order, orderDetail } from "@/axios/request.js"
+import { delMetting, PetMedicalRecord, s_online, getAgoraToken, docGoodsId, order, orderDetail } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -595,6 +813,7 @@ export default {
             day: '',
             daySelect: [],
             month: '',
+            videoActive: false,
             monthSelect: [ 
                 { label: 'Jan', value: '1' }, 
                 { label: 'Feb', value: '2' }, 
@@ -616,9 +835,25 @@ export default {
             content: '',
             recordDate: '',
             disabled: true,
-
+            timer: '',
             type:true,      // 切换摄像头
             remoteUsers : {},
+            num:0,
+            t_num: 0,
+            M: 0,
+            ten_M: 0,
+            H: 0,
+            t_H: 0,
+
+            customerInp1: '',
+            list: [],
+            userId: localStorage.getItem('userId'),
+            Today: '',
+            T_userId: localStorage.getItem('userId'),
+            admin_mask: false,
+            originX: 0,
+            originY: 0,
+            isMouseDown: false
         }
     },
     mounted () {
@@ -630,7 +865,7 @@ export default {
         } else {
             this.joinAgora2()
         }
-        
+        this.initRecord_mask()
     },
     created () {
         this.callToDoctor = this.callTo
@@ -640,6 +875,56 @@ export default {
         this.years = D[0]
         this.month = D[1]
         this.day = D[2]
+        this.$store.commit('setUser', { key: 'mobile_b', value: false})
+        this.$store.commit("setUser", {
+            key: "scrollTop",
+            value: false
+        })
+        this.mask_chat()
+    },
+    watch: {
+        messageList: {
+            handler (val) {
+                if (val) {
+                    this.messageList = val
+                    this.saveRecord_mask(val)
+                }
+            },
+        },
+        callerIM: {
+            handler (val) {
+                if (val) {
+                    this.initRecord()
+                }
+            },
+            immediate: true
+        },
+        setTime_S: {
+            handler (val) {
+                this.S()
+            }
+        },
+        adminList: {
+            handler (val) {
+                if (val) {  
+                    this.saveRecord_mask()
+                }
+            }
+        },
+        newMsg_dot: {
+            handler (val) {
+                console.log(val)
+                if (val.boo) {
+                    if (this.admin_mask) {
+                        this.$store.commit('setUser', { key: 'newMsg_dot', value: false })
+                    } else {
+                        this.$store.commit('setUser', { key: 'newMsg_dot', value: val })
+                    }
+                    localStorage.setItem('new_msg', {boo: false, value: localStorage.getItem('userId')})
+                }
+            },
+            immediate: true
+        }
     },
     computed: {
         remoteStream () { return this.$store.state.app.remoteStream },
@@ -685,26 +970,215 @@ export default {
                 })
 			}
 		},
-    },
-    watch: {
-        messageList: {
-            handler (val) {
-                if (val) {
-                    this.messageList = val
-                    this.saveRecord(val)
-                }
+        setTime_S: {
+			get () { return this.$store.state.user.setTime_S },
+			set (val) {
+				this.$store.commit("setUser", {
+                    key: "setTime_S",
+                    value: val
+                })
+			}
+		},
+        adminList: {
+            get () { return this.$store.state.user.adminList },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "adminList",
+                    value: val
+                })
             },
         },
-        callerIM: {
-            handler (val) {
-                if (val) {
-                    this.initRecord()
-                }
-            },
-            immediate: true
+        newMsg_dot: {
+            get () { return this.$store.state.user.newMsg_dot },
+            set (val) {
+                this.$store.commit('setUser', { key: 'newMsg_dot', value: val })
+            }
         }
     },
     methods: {
+        show_mask_admin () {
+            this.admin_mask = !this.admin_mask
+            this.$nextTick(() => {
+                document.getElementsByClassName('chat_content')[0].scrollTop = 100000
+            })
+            this.$store.commit('setUser', { key: 'newMsg_dot', value: false })
+        },
+        cutDown_mask () {
+            this.admin_mask = false
+        },
+        mask_chat () {
+            var adminList = {
+                'admin': {
+                    messageList: [
+                        // { type: 1, value: "star",userId: '486' },
+                        // { type: 2, value: "12123" },
+                    ]
+                },
+            }
+            var newsList = []
+            if (localStorage.getItem('adminList')) {
+
+            } else {
+                localStorage.setItem('adminList',JSON.stringify(adminList))
+            }
+            if (localStorage.getItem('newsList')) {
+                
+            } else {
+                localStorage.setItem('newsList',JSON.stringify(newsList))
+            }
+            var D = new Date()
+            this.Today = D.toLocaleDateString()
+        },
+        saveRecord_mask (val) {
+            this.$nextTick(() => {
+                this.$refs.Cus.scrollTop = 10000
+            })
+        },
+        initRecord_mask () {
+            if (localStorage.getItem('adminList') || localStorage.getItem('newsList')) {
+                if (localStorage.getItem('adminList')) {
+                    this.adminList = JSON.parse(localStorage.getItem('adminList'))
+                } else {
+                    this.adminList = []
+                }
+                
+                this.list = JSON.parse(localStorage.getItem('newsList'))
+                // this.$nextTick(() => {
+                //     this.$refs.Cus.scrollTop = 10000
+                // })
+            }
+        },
+        send () {
+            if (this.customerInp1) {
+                let D = new Date()
+                let T = D.getTime()
+                if (T - localStorage.getItem('msgTime') >= 180000 && localStorage.getItem('msgTime') !== null) {
+                    this.timeSend()
+                    this.adminList['admin'].messageList.push({
+                        type: 3,
+                        value: '',
+                        userId: localStorage.getItem('userId'),
+                        time:this.Today + ' ' + D.getHours() + ':' + D.getMinutes(),
+                        APM: ''
+                    })
+                    localStorage.setItem('msgTime', T )
+                } else {
+                    if (localStorage.getItem('msgTime') === null) {
+                        this.adminList['admin'].messageList.push({
+                            type: 3,
+                            value: '',
+                            userId: localStorage.getItem('userId'),
+                            time:this.Today + ' ' + D.getHours() + ':' + D.getMinutes(),
+                            APM: ''
+                        })
+                    }
+                    localStorage.setItem('msgTime', T)
+                }
+                let hour = D.getHours()
+                let minute = D.getMinutes()
+                this.adminList['admin'].messageList.push({
+                    type: 1,
+                    value: this.customerInp1,
+                    userId: localStorage.getItem('userId'),
+                    time: D.getHours() + ':' + D.getMinutes(),
+                    APM: hour >= 12 && minute >= 0? 'PM':'AM'
+                })
+                localStorage.setItem('newsList',JSON.stringify(this.list))
+                let data = {
+                    type: "needHelp",
+                    value: this.customerInp1,
+                    key: this.userDetail,
+                    platform: localStorage.getItem('platform'),
+                    time: D.getHours() + ':' + D.getMinutes(),
+                    APM: hour >= 12 && minute >= 0? 'PM':'AM',
+                    localTime: T
+                }
+                let id = this.$conn.getUniqueId();                 // 生成本地消息id
+                let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+                msg.set({
+                    msg: JSON.stringify(data),                // 消息内容
+                    to: 'admin',     
+                    // to: '322_2',                     // 接收消息对象（用户id）
+                    chatType: 'singleChat',                  // 设置为单聊    
+                    ext: {
+                        
+                    },                    
+                    success: function (id, serverMsgId) {
+                        console.log('send private text Success',id,serverMsgId);  
+                    }, 
+                    fail: function(e){
+                        console.log(e)
+                        console.log("Send private text error");  
+                    }
+                });
+                this.$conn.send(msg.body);
+                this.$nextTick(() => {
+                    this.$refs.Cus.scrollTop = 10000
+                })
+                this.customerInp1 = ''
+            } else {
+
+            }
+        },
+        timeSend () {
+            var D = new Date()
+            var date = D.toLocaleDateString() + ' ' + D.getHours() + ':' + D.getMinutes()
+            let data = {
+                type: "needHelp_T",
+                platform: localStorage.getItem('platform'),
+                key: this.userDetail,
+                time: date,
+                localTime: D.getTime()
+            }
+            let id = this.$conn.getUniqueId();                 // 生成本地消息id
+            let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+            msg.set({
+                msg: JSON.stringify(data),                // 消息内容
+                to: 'admin',                     // 接收消息对象（用户id）
+                chatType: 'singleChat',                  // 设置为单聊    
+                ext: {
+                    
+                },                    
+                success: function (id, serverMsgId) {
+                    console.log('send private text Success',id,serverMsgId);  
+                }, 
+                fail: function(e){
+                    console.log(e)
+                    console.log("Send private text error");  
+                }
+            });
+            this.$conn.send(msg.body);
+        },
+        S () {
+            this.timer = setInterval(this.A, 1000)
+        },
+        A () {
+            this.num++
+            if (this.num > 9) {
+                this.num = 0
+                this.t_num++
+            }
+            if (this.t_num > 5) {
+                this.t_num = 0
+                this.M++
+            }
+            if (this.M > 9) {
+                this.M = 0
+                this.ten_M++
+            }
+            if (this.ten_M > 5) {
+                this.ten_M = 5
+                this.H++
+            }
+            if (this.H > 9) {
+                this.H = 0
+                this.t_H++
+            }
+        },
+        video_active () {
+            this.type = true
+            this.videoActive = !this.videoActive
+        },
         joinAgora () {
             if (localStorage.getItem('bookingDoc')) {
                 let bookingAgo = JSON.parse(localStorage.getItem('bookingDoc'))
@@ -745,6 +1219,7 @@ export default {
                 docGoodsId(docId).then(res => {
                     let data = {
                         expirationTime: res.data.data.min,
+                        // expirationTime: 1,
                         userId: localStorage.getItem('userId'),
                         roomNumber: 'petavi_' + localStorage.getItem('sroom')
                     }
@@ -791,7 +1266,6 @@ export default {
                     })
                 }
             })
-            this.addConfr()
         },
         removeStream () {
             this.$store.dispatch('removeStream', { rtc: this.$V })
@@ -808,6 +1282,10 @@ export default {
             if (this.content == '' && localStorage.getItem('platform') == 2) {    //医生挂断添加record
                 this.addPetMedicalRecord()
             }
+            this.$store.commit("setUser", {
+                key: "setTime_S",
+                value: false
+            })
             this.dele()
         },
         dele () {
@@ -815,31 +1293,9 @@ export default {
                 webId: this.mettingId
             }
             delMetting(data).then(res => {
-                console.log(res,'删除')
+               
             })
         },
-        addConfr () {
-			let D = new Date
-			var date = D.toLocaleDateString()
-			let detail = {
-				petName: this.pet.name,
-				petId: this.petId,                 
-				caller: this.caller,
-				callTo: this.userDetail,
-				createdTime: date,
-                roomNumber: 'petavi_' + localStorage.getItem('sroom')
-			}
-			let data = {
-				'jo': [{
-					userId: this.caller.userId + 'A1',
-					doctorId: this.userDetail.userId + 'A2',
-					password: JSON.stringify(detail),
-				}]
-			}
-			addMetting(data).then(res => {
-				this.mettingId = res.data.data[0].id
-			})
-		},
         addPetMedicalRecord () {
             let D = new Date()
             let time = D.toTimeString().split(' ')[0]
@@ -890,23 +1346,6 @@ export default {
         },
         DRAWER () {
             this.drawer = !this.drawer
-        },
-        endCall () {
-            this.removeStream()
-
-            // window.eMedia.mgr.exitConference()
-            // let id = {
-            //     webId: this.mettingId
-            // }
-            // delMetting(id).then(res => {})
-            // let data = {
-            //     userId: localStorage.getItem('userId'),
-            //     platform: localStorage.getItem('platform')
-            // }
-            // s_online(data).then(res => {
-            //     console.log(res,'在线')
-            // })
-            // this.$router.back()
         },
         getDay () {
             // let month = new Date().getMonth() + 1      //获取月份
@@ -1032,8 +1471,6 @@ export default {
             }
             
         },
-
-        
     }
 }
 </script>
