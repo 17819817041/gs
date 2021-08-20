@@ -137,7 +137,7 @@ export default {
         }
     },
     created () {
-        // this.judge_login()
+        this.judge_login()
     },
     watch: {
         login: {

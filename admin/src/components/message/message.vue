@@ -6,10 +6,8 @@
             width: 202px;
             transition: 0.25s;
             height: 100%;
-            @media screen and (max-width:1200px) {
-                max-width: 0px;
-                max-height: 0px;
-                overflow: hidden;
+            @media screen and (max-width:1300px) {
+               width: 167px !important;
             }
         }
     }
@@ -49,9 +47,11 @@
             padding-right: 3px;
         }
     }
-    // .physical_wrap {
-        
-    // }
+    .physical_wrap {
+        @media screen and (max-width:1300px) {
+            margin-left: 15px;
+        }
+    }
     .chatRoom_d {
         width: 108px;
         height: 108px;

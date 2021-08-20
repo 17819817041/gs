@@ -1,5 +1,6 @@
 <template>
     <div class="myCustomer flex">
+        <el-backtop target=".wrap"></el-backtop>
         <div class="animal">
             <div class="wrap" v-if="getDoctorMedicalLimitList !== null" @scroll="docScroll" ref="doctorList">
                 <div class="clear" ref="doctorList_height">
@@ -299,7 +300,6 @@ export default {
             if (this.inp) {
                 return false
             }
-            this.$store.commit('setUser',{ key: 'dom', value: 'wrap' })
             if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 130) {
                 if (this.getDoctorMedicalLimitList.length >= this.totalRecordsCount) {
                     
@@ -309,11 +309,6 @@ export default {
                         this.PetMedicalRecord()
                     }
                 }
-            }
-            if ( this.$refs.doctorList.scrollTop > 300 ) {
-                this.$store.commit('setUser', { key: 'scrollTop', value: true } )
-            } else {
-                this.$store.commit('setUser', { key: 'scrollTop', value: false } )
             }
         },
         PetMedicalRecord () {

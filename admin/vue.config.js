@@ -2,7 +2,7 @@ module.exports = {
     publicPath:"./",
     lintOnSave: false,
     devServer: {
-        https: true,
+        // https: true,
 		// host: '192.168.1.105',
 		hot:true,
         proxy: {
@@ -12,13 +12,6 @@ module.exports = {
 				changeOrigin: true,
 				pathRewrite: {
 					"^/api": ""
-				}
-			},
-			"db": {
-				target: "https://douban.uieee.com",
-				changeOrigin: true,
-				pathRewrite: {
-					"^/db": ""
 				}
 			}
 		}

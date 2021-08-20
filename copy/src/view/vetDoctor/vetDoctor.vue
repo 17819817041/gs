@@ -1,5 +1,6 @@
 <template>
     <div class="myDoctor flex">
+        <el-backtop target=".scrollUp"></el-backtop>
         <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList">
             <div class="width102 clear" ref="doctorList_height">
                 <div class="doctor_item float" v-for="(item,i) in doctorList" :key="i" @click="getDetail(item)">
@@ -255,7 +256,6 @@ export default {
             if (this.inp) {
                 return false
             }
-            this.$store.commit('setUser',{ key: 'dom', value: 'scrollUp' })
             if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
                 if (this.doctorList.length >= this.totalRecordsCount) {
                     
@@ -265,11 +265,6 @@ export default {
                         this.getDoctorList()
                     }
                 }
-            }
-            if ( this.$refs.doctorList.scrollTop > 300 ) {
-                this.$store.commit('setUser', { key: 'scrollTop', value: true } )
-            } else {
-                this.$store.commit('setUser', { key: 'scrollTop', value: false } )
             }
         },
         getDoctorList () {

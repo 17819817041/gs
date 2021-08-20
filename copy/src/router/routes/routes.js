@@ -141,6 +141,11 @@ export default [
                 path:'/docInformation',
                 name:'docInformation',
                 component: () => import("@/view/docInformation/docInformation.vue")
+            },
+            {
+                path:'/reviewer',
+                name:'reviewer',
+                component: () => import("@/view/reviewer/reviewer.vue")
             }
         ]
     },
@@ -179,6 +184,11 @@ export default [
                 path:"/appointment",
                 name:'appointment',
                 component: () => import("@/view/appointment/appointment.vue")
+            },
+            {
+                path:"/mobileBooking",
+                name:'mobileBooking',
+                component: () => import("@/view/appointment/booking.vue")
             },
             {
                 path:"/reschedule",

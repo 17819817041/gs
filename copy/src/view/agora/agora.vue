@@ -120,10 +120,9 @@
                 bottom: 85px;
             }
             @media screen and (max-width: 930px) {
-                width: 100%;
                 bottom: 85px;
             }
-            @media screen and (max-width: 660px) {
+            @media screen and (max-width: 564px) {
                 width: 100%;
                 bottom: 55px;
             }
@@ -178,7 +177,7 @@
         height: 100%;
         overflow: auto;
         transition: 0.3s;
-        @media screen and (max-width: 1200px) {
+        @media screen and (max-width: 1300px) {
             transform: translate(-40px,-75px) scale(0.8);
             height: calc(100% + 150px);
         }
@@ -590,6 +589,19 @@
         font-size: 12px;
         color: gray;
     }
+
+    .fixed_wrap {
+        @media screen and (max-width: 1100px) {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background: white;
+            z-index: 700;
+        }
+    }
+    .disnone {
+        display: none;
+    }
 </style>
 
 <template>
@@ -651,7 +663,10 @@
 
                 <div class="video_wrap">
                     <div class="answer flex">
-                        <div class="cursor video_fun ju"><img src="@/assets/img/answer_audeo.png" alt=""></div>
+                        <div class="cursor video_fun ju">
+                            <img :class="[{'disnone': none}]" @click="unMute" src="@/assets/img/answer_audeo.png" alt="">
+                            <img :class="[{'disnone': !none}]" @click="none = false" src="@/assets/img/mute.png" alt="">
+                        </div>
                         <div class="cursor video_fun ju"><img @click="video_active" src="@/assets/img/answer_video.png" alt=""></div>
                         <div class="cursor video_fun ju" @click="removeStream"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
                     </div>
@@ -663,135 +678,137 @@
                     <div class="video_child_cut" @click="type = !type" ></div>
                 </div>
             </div>
-            <div :class="[ 'doctorMessage_wrap', { Drawer: drawer } ]">
-                <div class="drawer cursor" @click="DRAWER">
-                    <div class="box1"></div>
-                    <div class="box2 al ju">
-                        <img :class="[ 'arrow_drawer', {rotate: drawer} ]" src="@/assets/img/arrow_drawer.png" alt="">
+            <div class="fixed_wrap">
+                <div :class="[ 'doctorMessage_wrap', { Drawer: drawer } ]">
+                    <div class="drawer cursor" @click="DRAWER">
+                        <div class="box1"></div>
+                        <div class="box2 al ju">
+                            <img :class="[ 'arrow_drawer', {rotate: drawer} ]" src="@/assets/img/arrow_drawer.png" alt="">
+                        </div>
+                        <div class="box3"></div>
                     </div>
-                    <div class="box3"></div>
-                </div>
-                <div :class="['doctorMessage noBar', { Drawer: drawer },{ Drawer1: drawer } ]">
-                    <div class="about_me sb">
-                        <div class="myName al">
-                            <div class="al" style="width:80%">
-                                <div class="userHead_img ju al">
-                                    <!-- <img class="userHead" src="@/assets/img/john.png" alt=""> -->
-                                    <img v-if="userDetailMessage.userImage" class="userHead" :src="userDetailMessage.userImage" alt="">
-                                    <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i>
-                                </div>
-                                <div class="tc size14" v-if="userDetailMessage.userName">{{userDetailMessage.userName}}</div>
-                                <div v-else class="tc" style="font-size:12px">No Name</div>
-                            </div>
-                            <div><img style="width:17px;height:22px;margin-left:5px" src="@/assets/img/information.png" alt=""></div>
-                        </div>
-                        <div class="myOperation sb al">
-                            <div class="outLogo size12 bold cursor al ju">Logout</div>
-                            <div class="helpAbout cursor al ju" @click="show_mask_admin">
-                                <span v-if="newMsg_dot !== null">
-                                    <img class="dot_h" v-show="newMsg_dot.boo && newMsg_dot.user == T_userId" src="@/assets/img/dot.png" alt="">
-                                </span>
-                                <span v-else><img class="dot_h" v-show="false" src="@/assets/img/dot.png" alt=""></span>
-                                <img src="@/assets/img/what.png" alt="">
-                                Help & Support
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="platform == 1">
-                        <div class="atPresentDoctor mg sa">
-                            <div class="DOCTOR">
-                                <div class="docHead_img mg ju">
-                                    <el-image class="docHead al" :src="callToDoctor.userHead" alt="" fit="cover">
-                                        <div slot="error" class="image-slot al" style="height: 100%;width:100%">
-                                            <i class="el-icon-picture-outline" style="font-size:40px"></i>
-                                        </div>
-                                    </el-image>
-                                </div>
-                                <div class="tc">{{callToDoctor.doctorName}}</div>
-                                <div class="tc">Hispital Name</div>
-                            </div>
-                            <div class="about_the_doctor">
-                                Dr. Beck is a vet in Hong Kong and has an experience of 8+ years in this field. We provide services in hospitalsonline consultation as video and audio
-                            </div>
-                        </div>
-                        <div class="chat_user mg">
-                            <div ref="customerChat" class="user_content noBar">
-                                <div ref="CmsgHeight" >
-                                    <div v-for="(item,i) in messageList" :key="i" 
-                                        :class="['msgItem',{'flexEnd': item.type==1},]">
-                                        <div :class="[ { Mright: item.type == 1 } ]">
-                                            <div :class="[ { flexEnd: item.type == 1 } ]">{{userDetailMessage.userName}}</div>
-                                            <div :class="[ {mySend: item.type == 1},{ adverse: item.type == 2 } ]">{{item.value}}</div>
-                                        </div>
+                    <div :class="['doctorMessage noBar', { Drawer: drawer },{ Drawer1: drawer } ]">
+                        <div class="about_me sb">
+                            <div class="myName al">
+                                <div class="al" style="width:80%">
+                                    <div class="userHead_img ju al">
+                                        <!-- <img class="userHead" src="@/assets/img/john.png" alt=""> -->
+                                        <img v-if="userDetailMessage.userImage" class="userHead" :src="userDetailMessage.userImage" alt="">
+                                        <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i>
                                     </div>
+                                    <div class="tc size14" v-if="userDetailMessage.userName">{{userDetailMessage.userName}}</div>
+                                    <div v-else class="tc" style="font-size:12px">No Name</div>
                                 </div>
+                                <div><img style="width:17px;height:22px;margin-left:5px" src="@/assets/img/information.png" alt=""></div>
                             </div>
-                            <div class="INP sa al">
-                                <div class="INP_item al ju">
-                                    <input placeholder="Type a message" v-model="customerInp" @keydown.enter="customerSend" />
+                            <div class="myOperation sb al">
+                                <div class="outLogo size12 bold cursor al ju">Logout</div>
+                                <div class="helpAbout cursor al ju" @click="show_mask_admin">
+                                    <span v-if="newMsg_dot !== null">
+                                        <img class="dot_h" v-show="newMsg_dot.boo && newMsg_dot.user == T_userId" src="@/assets/img/dot.png" alt="">
+                                    </span>
+                                    <span v-else><img class="dot_h" v-show="false" src="@/assets/img/dot.png" alt=""></span>
+                                    <img src="@/assets/img/what.png" alt="">
+                                    Help & Support
                                 </div>
-                                <div class="send_img al ju"><img class="cursor" src="@/assets/img/send.png" @click="customerSend" alt=""></div>
                             </div>
                         </div>
-                    </div>
-                    <div v-else-if="platform == 2" >
-                        <div class="atPresentDoctor mg">
-                            <div>Medical Record</div>
-                            <div style="padding:13px 0">Date</div>
-                            <div class="get_day flex">
-                                <div class="day_time ju al">
-                                    <el-select v-model="day" placeholder="Day" :disabled="!disabled">
-                                        <el-option v-for="(item,i) in daySelect" :key="i" :value="item"></el-option>
-                                    </el-select>
-                                </div>
-                                <div class="time al ju">
-                                    <el-select v-model="month" placeholder="Month" @change="chooseMonth" :disabled="!disabled">
-                                        <el-option v-for="(item,i) in monthSelect" :key="i" :label="item.label" :value="item.value"></el-option>
-                                    </el-select>
-                                </div>
-                                <div class="time al ju">
-                                    <!-- year
-                                    <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
-                                    <el-select v-model="years" placeholder="Year" :disabled="!disabled">
-                                        <el-option v-for="(item,i) in yearsSelect" :key="i" :value="item"></el-option>
-                                    </el-select>
-                                </div>
-                            </div>
-                            <div style="padding:25px 0 10px 0">Details</div>
-                            <div class="textarea">
-                                <textarea name="" id="" cols="30" rows="10" v-model="content"></textarea>
-                            </div>
-                            <div class="button sb tc">
-                                <div class="save ju cursor al">
-                                    <el-button type="primary" :disabled="disabled" @click="editPetMedicalRecord" class="width100">Edit</el-button>
-                                </div>
-                                <div class="sb tc">
-                                    <div class="submit ju cursor al">
-                                        <el-button type="warning" @click="addPetMedicalRecord" :disabled="!disabled" class="width100">Submit</el-button>
+                        <div v-if="platform == 1">
+                            <div class="atPresentDoctor mg sa">
+                                <div class="DOCTOR">
+                                    <div class="docHead_img mg ju">
+                                        <el-image class="docHead al" :src="callToDoctor.userHead" alt="" fit="cover">
+                                            <div slot="error" class="image-slot al" style="height: 100%;width:100%">
+                                                <i class="el-icon-picture-outline" style="font-size:40px"></i>
+                                            </div>
+                                        </el-image>
                                     </div>
-                                    <div><img class="clipImg cursor" src="@/assets/img/clip.png" alt=""></div>
+                                    <div class="tc">{{callToDoctor.doctorName}}</div>
+                                    <div class="tc">Hispital Name</div>
+                                </div>
+                                <div class="about_the_doctor">
+                                    Dr. Beck is a vet in Hong Kong and has an experience of 8+ years in this field. We provide services in hospitalsonline consultation as video and audio
                                 </div>
                             </div>
-                        </div>
-                        <div class="chat mg">
-                            <div class="wrap_message noBar" ref="vetChat">
-                                <div class="message_item" ref="VmsgHeight">
-                                    <div>
+                            <div class="chat_user mg">
+                                <div ref="customerChat" class="user_content noBar">
+                                    <div ref="CmsgHeight" >
                                         <div v-for="(item,i) in messageList" :key="i" 
                                             :class="['msgItem',{'flexEnd': item.type==1},]">
                                             <div :class="[ { Mright: item.type == 1 } ]">
-                                                <div :class="[ { flexEnd: item.type == 1 } ]">{{userDetailMessage.doctorName}}</div>
+                                                <div :class="[ { flexEnd: item.type == 1 } ]">{{userDetailMessage.userName}}</div>
                                                 <div :class="[ {mySend: item.type == 1},{ adverse: item.type == 2 } ]">{{item.value}}</div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="INP sa al">
-                                <div class="INP_item al ju">
-                                    <input placeholder="Type a message" v-model="vetInp" @keydown.enter="vetSend"/>
+                                <div class="INP sa al">
+                                    <div class="INP_item al ju">
+                                        <input placeholder="Type a message" v-model="customerInp" @keydown.enter="customerSend" />
+                                    </div>
+                                    <div class="send_img al ju"><img class="cursor" src="@/assets/img/send.png" @click="customerSend" alt=""></div>
                                 </div>
-                                <div class="send_img al ju"><img class="cursor" @click="vetSend" src="@/assets/img/send.png" alt=""></div>
+                            </div>
+                        </div>
+                        <div v-else-if="platform == 2" >
+                            <div class="atPresentDoctor mg">
+                                <div>Medical Record</div>
+                                <div style="padding:13px 0">Date</div>
+                                <div class="get_day flex">
+                                    <div class="day_time ju al">
+                                        <el-select v-model="day" placeholder="Day" :disabled="!disabled">
+                                            <el-option v-for="(item,i) in daySelect" :key="i" :value="item"></el-option>
+                                        </el-select>
+                                    </div>
+                                    <div class="time al ju">
+                                        <el-select v-model="month" placeholder="Month" @change="chooseMonth" :disabled="!disabled">
+                                            <el-option v-for="(item,i) in monthSelect" :key="i" :label="item.label" :value="item.value"></el-option>
+                                        </el-select>
+                                    </div>
+                                    <div class="time al ju">
+                                        <!-- year
+                                        <img class="min_arrow" src="@/assets/img/minarrow.png" alt=""> -->
+                                        <el-select v-model="years" placeholder="Year" :disabled="!disabled">
+                                            <el-option v-for="(item,i) in yearsSelect" :key="i" :value="item"></el-option>
+                                        </el-select>
+                                    </div>
+                                </div>
+                                <div style="padding:25px 0 10px 0">Details</div>
+                                <div class="textarea">
+                                    <textarea name="" id="" cols="30" rows="10" v-model="content"></textarea>
+                                </div>
+                                <div class="button sb tc">
+                                    <div class="save ju cursor al">
+                                        <el-button type="primary" :disabled="disabled" @click="editPetMedicalRecord" class="width100">Edit</el-button>
+                                    </div>
+                                    <div class="sb tc">
+                                        <div class="submit ju cursor al">
+                                            <el-button type="warning" @click="addPetMedicalRecord" :disabled="!disabled" class="width100">Submit</el-button>
+                                        </div>
+                                        <div><img class="clipImg cursor" src="@/assets/img/clip.png" alt=""></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat mg">
+                                <div class="wrap_message noBar" ref="vetChat">
+                                    <div class="message_item" ref="VmsgHeight">
+                                        <div>
+                                            <div v-for="(item,i) in messageList" :key="i" 
+                                                :class="['msgItem',{'flexEnd': item.type==1},]">
+                                                <div :class="[ { Mright: item.type == 1 } ]">
+                                                    <div :class="[ { flexEnd: item.type == 1 } ]">{{userDetailMessage.doctorName}}</div>
+                                                    <div :class="[ {mySend: item.type == 1},{ adverse: item.type == 2 } ]">{{item.value}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="INP sa al">
+                                    <div class="INP_item al ju">
+                                        <input placeholder="Type a message" v-model="vetInp" @keydown.enter="vetSend"/>
+                                    </div>
+                                    <div class="send_img al ju"><img class="cursor" @click="vetSend" src="@/assets/img/send.png" alt=""></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -844,6 +861,7 @@ export default {
             ten_M: 0,
             H: 0,
             t_H: 0,
+            none: false,
 
             customerInp1: '',
             list: [],
@@ -995,7 +1013,24 @@ export default {
             }
         }
     },
+    beforeMount() {
+        window.addEventListener('resize', (e) => {
+            if (e.target.innerWidth <= 1100) {
+                this.drawer = true
+            } else {
+                this.drawer = false
+            }
+        })
+    },
     methods: {
+        unMute () {
+            this.none = true
+            this.$store.dispatch('unMuteAudio')
+        },
+        mute () {
+            this.none = false
+            this.$store.dispatch('muteAudio')
+        },
         show_mask_admin () {
             this.admin_mask = !this.admin_mask
             this.$nextTick(() => {

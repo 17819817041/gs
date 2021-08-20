@@ -1,5 +1,11 @@
 <template>
     <div class="myDoctor flex">
+        <el-backtop target=".scrollUp"></el-backtop>
+        <div class="doc_infor" v-show="dialogVisible" @click="dialogVisible = false">
+            <div class="doc_infor_wrap noBar">
+                <div style="width: 100%;"> {{detail.doctorContent}}</div>
+            </div>
+        </div>
         <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList !==null">
             <transition name="fade"><div class="online_mask cursor" @click="getDoctorList1" v-show="online_mask">
                 The doctor login status changes, click refresh
@@ -119,12 +125,12 @@
                 </div>
                 <div class="introduce text-overflow">
                     <span class="text-overflows" v-if="detail.doctorContent">
-                        {{detail.doctorContent}}666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+                        {{detail.doctorContent}}
                     </span>
                     <span v-else>No introduction!</span>
                 </div>
                 <div class="blue flexEnd" v-show="showMore">
-                    <span  class="cursor">more</span>
+                    <span class="cursor" @click="dialogVisible = true">more</span>
                 </div>
                 <div class="aboutUs">
                     <div class="child al flex cursor" @click="docInformation">
@@ -135,7 +141,7 @@
                         <img style="width:40px" src="@/assets/img/addressimg1.png" alt="">
                         <div class="size16">Working Address</div>
                     </div>
-                    <div class="child flex al cursor">
+                    <div class="child flex al cursor" @click="reviewer">
                         <img style="width:40px" src="@/assets/img/reviewer1.png" alt="">
                         <div class="size16">Reviewer (230)</div>
                     </div>
@@ -216,14 +222,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="introduce text-overflow">
-                        <span class="text-overflows" v-if="detail.doctorContent">
+                    <div class="introduce text-overflow_mobile">
+                        <span class="text-overflows_mobile" v-if="detail.doctorContent">
                             {{detail.doctorContent}}
                         </span>
                         <span v-else>No introduction!</span>
                     </div>
-                    <div class="blue flexEnd" v-show="showMore">
-                        <span  class="cursor">more</span>
+                    <div class="blue flexEnd" v-show="showMore_mobile">
+                        <span @click="dialogVisible = true" class="cursor">more</span>
                     </div>
                     <div class="aboutUs_mobile">
                         <div class="child al flex cursor" @click="docInformation">
@@ -234,7 +240,7 @@
                             <img style="width:40px" src="@/assets/img/addressimg1.png" alt="">
                             <div class="size16">Working Address</div>
                         </div>
-                        <div class="child flex al cursor">
+                        <div class="child flex al cursor" @click="reviewer">
                             <img style="width:40px" src="@/assets/img/reviewer1.png" alt="">
                             <div class="size16">Reviewer (230)</div>
                         </div>
@@ -253,7 +259,9 @@ export default {
             drawer: false,
             pageNum: 1,
             showMore: false,
+            showMore_mobile: false,
             timer: null,
+            dialogVisible: false
         }
     },
     created () {
@@ -280,6 +288,17 @@ export default {
                     } else {
                         this.showMore = false
                     }  
+                    
+                    var dom = document.getElementsByClassName('text-overflow_mobile')[0]
+                    if (dom) {
+                        var sHeight_mobile = document.getElementsByClassName('text-overflow_mobile')[0].scrollHeight;
+                        if (sHeight_mobile > 63) {
+                            this.showMore_mobile = true
+                        } else {
+                            this.showMore_mobile = false
+                        }  
+                    }
+                    
                 })
             },
             deep: true
@@ -362,6 +381,14 @@ export default {
         default_img () { return this.$store.state.user.default_img }
     },
     methods: {
+        reviewer () {
+            this.$router.push({
+                name: 'reviewer',
+                query: {
+                    id: this.detail.doctorId
+                }
+            })
+        },
         getDetail (item) {
             this.drawer = !this.drawer
             if (item.doctorName == null) {
@@ -384,7 +411,6 @@ export default {
             if (this.inp) {
                 return false
             }
-            this.$store.commit('setUser',{ key: 'dom', value: 'scrollUp' })
             if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
                 if (this.doctorList.length >= this.totalRecordsCount) {
                     
@@ -394,11 +420,6 @@ export default {
                         this.getDoctorList()
                     }
                 }
-            }
-            if ( this.$refs.doctorList.scrollTop > 300 ) {
-                this.$store.commit('setUser', { key: 'scrollTop', value: true } )
-            } else {
-                this.$store.commit('setUser', { key: 'scrollTop', value: false } )
             }
         },
         getDoctorList () {
@@ -465,7 +486,7 @@ export default {
                     id: this.detail.doctorId
                 }
             })
-        }
+        },
     }
 }
 </script>
@@ -520,6 +541,29 @@ export default {
             // border: solid 1px;
             @media screen and (max-width:800px) {
                 display: none;
+            }
+        }
+    }
+    .doc_infor {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0%;
+        top: 0%;
+        z-index: 2500;
+        .doc_infor_wrap {
+            width: 45%;
+            min-width: 280px;
+            overflow-y: auto;
+            height: 70%;
+            margin: 40px auto;
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            border: solid 1px;
+            box-shadow: 0 2px 1px 1px #D5D5D5;
+            div {
+                word-wrap: break-word !important;
             }
         }
     }

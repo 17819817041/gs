@@ -94,7 +94,7 @@ export default {
 	}
 	#app {
 		height: 100%;
-		min-width: 1000px;
+		min-width: 1100px;
 	}
 	.white {
 		color: white;

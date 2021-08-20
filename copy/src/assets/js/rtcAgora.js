@@ -77,6 +77,7 @@ function initRtc (Agora) {
     })
     rtc.client.on("stream-subscribed", function (evt) {
         var remoteStream = evt.stream
+        store.commit('setUser', { key: 'remoteStream_mute', value: remoteStream })
         var id = remoteStream.getId()
         rtc.remoteStreams.push(remoteStream)
         remoteStream.play("player_a1")

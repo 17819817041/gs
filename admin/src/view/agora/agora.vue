@@ -278,6 +278,7 @@
         position: absolute;
         left: 50%;
         top: 50%;
+        z-index: 1000;
         transform: translate(-50%, -50%);
         box-shadow: gray 0px 5px 7px 2px;
         background: white;
@@ -441,23 +442,41 @@
                 </div>
                 <div class="chat_ui">
                     <div class="showMSG">
-                        <div class="message_item noBar" id="CHAT" ref="showMsgTop">
+                        <div class="message_item noBar" id="CHAT" ref="showMsgTop" v-show="sendFromIM">
                             <div>
                                 <div :class="['msg_item flex', { flexEnd: item.type == 1 }]" 
                                     v-for="(item,i) in messageList" :key="i">
-                                        
-                                        <div class="msg_T width100 tc" v-if="item.type == 3">{{item.time.split(' ')[0] == Today? 
-                                        'Today': item.time.split(' ')[0]}} {{item.time.split(' ')[1]}}</div>
 
-                                        <div class="fromImg ju" v-show="item.type != 3">
-                                            <img v-show="item.type == 2" :src="headImage" v-if="headImage" draggable="false" alt="">
-                                            <img style="height:100%;" v-else :src="default_img" draggable="false" alt="">
-                                        </div>
-                                        <div :class="['msg_child', { mySend: item.type == 1 }, 
-                                            { theySend: item.type == 2 }]"
-                                        >{{item.value}}
-                                        <div :class="['msg_time', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>
+                                    <div class="msg_T width100 tc" v-if="item.type == 3">{{item.time.split(' ')[0] == Today? 
+                                    'Today': item.time.split(' ')[0]}} {{item.time.split(' ')[1]}}</div>
+
+                                    <div class="fromImg ju" v-show="item.type != 3">
+                                        <img v-show="item.type == 2" :src="headImage" v-if="headImage" alt="">
+                                        <img style="height:100%;" v-else :src="default_img" alt="">
                                     </div>
+
+                                    <div :class="['msg_child', { mySend: item.type == 1 }, { theySend: item.type == 2 }, 
+                                    { cursor: item.msg_type != 'text' && item.msg_type != 'jpg' && item.msg_type != 'png' }]" @click="filesave(item.url)">
+                                        <div v-if="item.msg_type == 'text'">{{item.value}}</div>
+
+                                        <div v-else-if="item.msg_type == 'jpg' || item.msg_type == 'png' " class="file_img ju al">
+                                            <img style="height: 100%;" v-if="item.value" :src="item.value" alt="">
+                                            <div v-else v-loading='true'></div>
+                                        </div>
+
+                                        <div v-else-if="item.msg_type == 'zip' || item.msg_type == 'bmp' ||
+                                            item.msg_type == 'pdf' || item.msg_type == 'doc' || item.msg_type == 'docx' ||
+                                            item.msg_type == 'txt' " class="file_zip flex">
+                                            <div class="file_name">
+                                                {{item.fileName}}
+                                            </div>
+                                            <img class="file_zip_img" src="@/assets/img/file-zip.png" alt="">
+                                        </div>
+
+                                        <div :class="['msg_time', { gray:item.type == 2, white: item.type == 1 }]" 
+                                        v-show="item.type != 3 && item.msg_type !== ''">{{item.time}} {{item.APM}}</div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -721,6 +740,7 @@ export default {
                 APM: ''
             }
             let from = item.userId + 'a' + platform
+            // this.sendFromIM = from
             if (this.message[from]) {
                 // this.message[from].messageList.push(obj)
                 // this.message[from].msg = 0
@@ -823,7 +843,8 @@ export default {
                         value: '',
                         userId: localStorage.getItem('adminUserId'),
                         time:this.Today + ' ' + D.getHours() + ':' + D.getMinutes(),
-                        APM: ''
+                        APM: '',
+                        msg_type: 'text'
                     })
                     localStorage.setItem('msgTime', T )
                 } else {
@@ -835,7 +856,8 @@ export default {
                     type: 1,
                     value: this.adminInp,
                     time: D.getHours() + ':' + D.getMinutes(),
-                    APM: hour >= 12 && minute >= 0? 'PM':'AM'
+                    APM: hour >= 12 && minute >= 0? 'PM':'AM',
+                    msg_type: 'text'
                 })
                 let data = {
                     type: "fromAdmin",

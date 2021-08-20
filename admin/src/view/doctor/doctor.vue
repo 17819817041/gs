@@ -1,5 +1,6 @@
 <template>
     <div class="myDoctor flex">
+        <el-backtop target=".scrollUp"></el-backtop>
         <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList">
             <div class="width102 clear" ref="doctorList_height">
                 <div class="doctor_item float" v-for="(item,i) in doctorList" :key="i" @click="getDetail(item)">
@@ -256,7 +257,6 @@ export default {
             if (this.inp) {
                 return false
             }
-            this.$store.commit('setUser',{ key: 'dom', value: 'scrollUp' })
             if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
                 if (this.doctorList.length >= this.totalRecordsCount) {
                     
@@ -267,14 +267,9 @@ export default {
                     }
                 }
             }
-            if ( this.$refs.doctorList.scrollTop > 300 ) {
-                this.$store.commit('setUser', { key: 'scrollTop', value: true } )
-            } else {
-                this.$store.commit('setUser', { key: 'scrollTop', value: false } )
-            }
         },
         getDoctorList () {
-            this.$store.dispatch('getDoctorList',this.pageNum)
+            this.$store.dispatch('getDoctorList',{num: this.pageNum, vm: this})
         },
         edit () {
             this.change = !this.change
@@ -351,6 +346,10 @@ video {
             border-radius: 50%;
             border: solid rgb(216, 214, 214) 1px;
             overflow: hidden;
+            @media screen and (max-width: 1200px) {
+                width: 55px;
+                height: 55px;
+            }
         }
         .grade {
             position: absolute;
@@ -360,6 +359,9 @@ video {
             background: @helpBtn;
             padding: 3px 6px;
             border-radius: 3px;
+            @media screen and (max-width: 1200px) {
+                padding: 2px 6px;
+            }
         }
         .onLine {
             position: absolute;
@@ -480,10 +482,6 @@ video {
             padding: 0 15px;
         }
     }
-    .toVideo {
-        width: 60%;
-        margin: auto;
-    }
     .reviews {
         width: 94%;
         margin: auto;
@@ -556,6 +554,7 @@ video {
     }
     .toVideo {
         width: 70%;
+        min-width: 225px;
         margin: auto;
         margin-top: 15px;
     }

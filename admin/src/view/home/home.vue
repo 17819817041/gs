@@ -27,9 +27,12 @@
     .customer_content {
         width: 100%;
         box-sizing: border-box;
-        height: calc(100% - 119px);
+        height: calc(100% - 109px);
         position: relative;
         overflow: auto;
+        @media screen and (max-width: 1300px) {
+            height: calc(100% - 80px); 
+        }
     }
 </style>
 

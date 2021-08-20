@@ -12,6 +12,7 @@ export default {
             remoteStreams: [],
             params: {}
         },
+        remoteStream_mute: {},
         IMuser: {},
         login: false,
         petList:[],
@@ -32,14 +33,12 @@ export default {
         rotate: false,
         vDetail: {},
         rate: 0,
-        dom: '',
         sureCall: true,
         nameList: true,
         petType: [],
         firstPet: 0,
         inp: '',
         getDoctorMedicalLimitList: [],
-        scrollTop: false,
         userBooking: [],
         callLoading: false,    //等待接听
         callerIM: '',
@@ -248,6 +247,14 @@ export default {
             })
             router.back()
         },
+        muteAudio (store) {             //静音
+            // rtc.remoteStreams[0].setAudioVolume(0);
+            console.log(store.state.remoteStream_mute)
+            store.state.remoteStream_mute.setAudioVolume(0);
+        },
+        unMuteAudio (store) {             //UN静音
+            store.state.remoteStream_mute.setAudioVolume(100);
+        },
         getPetList (store,data) {
             petList(data).then(res => {
                 if (res.data.rtnCode == 200) {
@@ -414,7 +421,7 @@ export default {
                 pwd: 123,
                 appKey: WebIM.config.appkey,
                 success (res) {
-                    console.log(res,'IMLogin')
+                    // console.log(res,'IMLogin')
                     store.commit("setUser", { key: 'IMuser', value: res.user })
                     localStorage.setItem("IMtoken",res.access_token)
                     var eMedia = require("@/assets/js/emedia.js").emedia
@@ -487,6 +494,17 @@ export default {
                     if (res.data.rtnCode == 200) {
                         store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
                         store.commit("pageAdd", res.data.data.pageT )
+                        var arr = store.state.doctorList
+                        var b = []
+                        var c = []
+                        for (let i = 0;i < arr.length; i++) {{
+                            if (arr[i].doctorOnLineState == 1) {
+                                c.push(arr[i])
+                            }
+                        }}
+                        b = arr.filter(item => item.doctorOnLineState != 1)
+                        store.commit("setUser",{ key: "doctorList", value: c.concat(b) })
+
                         if (doctor.pageNum <= 1) {
                             store.commit("setUser",{
                                 key: "mask",
@@ -541,7 +559,7 @@ export default {
             let data = {
                 userId: localStorage.getItem('userId'),
                 pageNum: page.pageNum,
-                pageSize: 15
+                pageSize: 10
             }
             store.commit("setUser",{ key: "n_loading", value: true })
             if (store.state.noticeList) {
@@ -562,7 +580,8 @@ export default {
                                 let bb = b.split(':')
                                 item.createdAt = arr + ' ' + bb[0] + ':' + bb[1]
                             })
-                            store.commit("pageAdd_n", res.data.data.pageT )
+                            // store.commit("pageAdd_n", res.data.data.pageT )
+                            store.commit("setUser",{ key: "noticeList", value: res.data.data.pageT })
                             if (localStorage.getItem('platform') == 2) {
                                 store.commit('setUser',{
                                     key: "noticeState",
@@ -582,6 +601,7 @@ export default {
                         }
                     }).catch(e => {
                         console.log(e)
+                        store.commit("setUser",{ key: "noticeList", value: null })
                         store.commit("setUser",{ key: "n_loading", value: false })
                     })
                 }

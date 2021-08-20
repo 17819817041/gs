@@ -218,6 +218,14 @@ export function allBooking (data) {                     //userId获取所有预�
     })
 }
 
+export function sortBooking (data) {                    //时间筛选获取预约信息?startDay=2021-8-4&endDay=2021-8-4&pageNum=2&pageSize=10&sort=1
+    return request({
+        url: "/booking/getBookings",
+        method: "POST",
+        params: data
+    })
+}
+
 export function updateBooking (data) {                //修改预约
     return request({
         url: "/booking/updateBooking",
@@ -533,6 +541,22 @@ export function resetPasswordByForget (data) {         //忘记密码修改 Stri
 export function joinRoom (data) {                        //加入聊天室接收上线通知
     return request({                                  
         url: '/user/joinChatRoom',
+        method: "POST",
+        params: data
+    })
+}
+
+export function comment (data) {                        //获取当前医生评论?userId=574&score=5&content=测试&doctorId=573&pageNum=1&pageSize=10
+    return request({                                  
+        url: '/comment/getListByDoctorId',
+        method: "POST",
+        params: data
+    })
+}
+
+export function addComment (data) {                        //添加医生评论?userId=574&score=5&content=测试&doctorId=573
+    return request({                                  
+        url: '/comment/add',
         method: "POST",
         params: data
     })

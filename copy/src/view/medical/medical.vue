@@ -193,7 +193,7 @@
         word-wrap: break-word;
     }
     .record_message_wrap {
-        height: calc(100% - 61px);
+        height: calc(100% - 93px);
         overflow: auto;
     }
     .record_message_wrap::-webkit-scrollbar {
@@ -346,7 +346,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="el-collapse_wrap">
                             <el-collapse v-model="activeName" accordion>
                                 <el-collapse-item v-for="(item,i) in getDoctorMedicalLimitList" :key="i" :name="i+1">
@@ -479,10 +478,19 @@
                                 </el-collapse-item>
                             </el-collapse>
                         </div>
-                    
                     </div>
                     <div class="record_message_wrap bold tc" v-else style="font-size:23px;color:gray;margin-top:30px">
                         No Message
+                    </div>
+                    <div class="ju" style="background: white;">
+                        <el-pagination
+                            :small="small"
+                            :pager-count='7'
+                            :page-size='2'
+                            layout="prev, pager, next"
+                            :total="totalRecordsCount"
+                            @current-change='pageCut'>
+                        </el-pagination>
                     </div>
                 </div>
             </div>
@@ -500,26 +508,41 @@ export default {
             options: [],
             getDoctorMedicalLimitList: [],
             pageNum_m: 1,
-            pageSize_m: 100,
-            activeName: 1
+            pageSize_m: 2,
+            activeName: 1,
+            totalRecordsCount: 1,
+            small: false
         }
     },
     created () {
         this.PetMedicalRecord()
         // this.TYPE()
     },
+    beforeMount() {
+        window.addEventListener('resize', (e) => {
+            if (e.target.innerWidth <= 564) {
+                this.small = true
+            } else {
+                this.small = false
+            }
+        })
+    },
     methods: {
+        pageCut (val) {
+            this.pageNum_m = val
+            this.PetMedicalRecord()
+        },
         PetMedicalRecord () {
             let data = {
                 doctorId: localStorage.getItem('userId'),
                 pageNum: this.pageNum_m,
                 pageSize: this.pageSize_m
             }
+            this.loading = true
             getPetMedicalRecord(data).then(res => {
-                console.log(res,'medical')
                 if (res.data.rtnCode == 200) {
                     this.getDoctorMedicalLimitList = res.data.data.pageT
-                    this.loading = false
+                    this.totalRecordsCount = res.data.data.totalRecordsCount
                     this.getPetType()
                 } else {
                     this.loading = false
@@ -545,15 +568,17 @@ export default {
                 this.$nextTick(() => {
                     this.TYPE()
                 })
+            }).catch(e => {
+                this.loading = false
             })
         },
         TYPE () {
+            this.loading = false
             this.getDoctorMedicalLimitList.forEach(item => {
                 this.options.forEach(op => {
                     if (op.children) {
                         op.children.forEach(child => {
                             if (item.petType == child.petTypeId) {
-                                console.log(op.petTypeName,child.petTypeName)
                                 item.pet_name = op.petTypeName
                                 item.breed_name = child.petTypeName
                                 let obj = this.options.find(op1 => op1.petTypeId == child.petTyepParentId)
@@ -562,18 +587,12 @@ export default {
                             }
                         })
                         this.getDoctorMedicalLimitList = [...this.getDoctorMedicalLimitList]
-                        this.loading = false
-                    } else {
-                        this.loading = false
                     }
                     if (op.children.length == 0) {
                         if (item.petType == op.petTypeId) {
                             item.breedList = []
                             item.pet_name = op.petTypeName
                         }
-                        this.loading = false
-                    } else {
-                        this.loading = false
                     }
                 })
             })

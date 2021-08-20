@@ -19,5 +19,5 @@ export default {
 
     delivery: false,                           // 是否发送已读回执
 
-    useOwnUploadFun: false         // 是否使用自己的上传方式（如将图片文件等上传到自己的服务器，构建消息时只传url）
+    useOwnUploadFun: true         // 是否使用自己的上传方式（如将图片文件等上传到自己的服务器，构建消息时只传url）
 }

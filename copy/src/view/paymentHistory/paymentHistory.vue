@@ -1,11 +1,11 @@
 <template>
-    <div class="paymentHistory" v-loading="loading">
+    <div class="paymentHistory paymentHistory_cus" v-loading="l_loading">
         <div class="explan al">
             <img src="@/assets/img/account.png" alt="">
             My Payment History
         </div>
-        <div class="paymentHistory_content" @scroll="docScroll" ref="doctorList" v-if="orderList.length !== 0">   
-            <div ref="doctorList_height" style="padding-bottom: 12px">
+        <div class="paymentHistory_content" v-if="orderList">   
+            <div>
                 <div class="paymentHistory_content_item sb mg" v-for="(item,i) in orderList" :key="i">
                     <div class="flex al">
                         <div class="payment_man_img ju al">
@@ -32,12 +32,18 @@
                     </div>
                 </div>
             </div>
-            <div class="acting float ju al" v-if="l_loading">
-                <div class="loading" v-loading="true"></div>
-            </div>
         </div>
-        <div class="paymentHistory_content" v-else>
+        <div class="paymentHistory_content" v-else-if="orderList === null">
             <div class="tc noThing">No records!</div>
+        </div>
+        <div class="ju">
+            <el-pagination
+                :small="small"
+                :pager-count='7'
+                layout="prev, pager, next"
+                :total="totalRecordsCount"
+                @current-change='pageCut'>
+            </el-pagination>
         </div>
     </div>
 </template>
@@ -48,10 +54,10 @@ export default {
     data () {
         return {
             orderList: [],
-            loading: true,
             pageNum: 1,
             pageSize: 15,
-            totalRecordsCount: 0
+            totalRecordsCount: 0,
+            small: false
         }
     },
     computed: {
@@ -77,6 +83,15 @@ export default {
     created () {
         this.paymentRecord()
     },
+    beforeMount() {
+        window.addEventListener('resize', (e) => {
+            if (e.target.innerWidth <= 564) {
+                this.small = true
+            } else {
+                this.small = false
+            }
+        })
+    },
     methods: {
         paymentRecord () {
             let data = {
@@ -86,11 +101,10 @@ export default {
             }
             if ((this.totalRecordsCount == this.orderList.length) && this.totalRecordsCount !=0 ) {
                 this.$store.commit("setUser",{ key: "n_loading", value: false })
-                
             } else {
                 this.$store.commit("setUser",{ key: "n_loading", value: true })
                 paymentRecord(data).then(res => {
-                    console.log(res,'paymentRecord')
+                    console.log(res,666)
                     this.$store.commit("setUser",{ key: "n_loading", value: false })
                     if (res.data.rtnCode == 200) {
                         var D = new Date()
@@ -107,37 +121,25 @@ export default {
                             }
                         })
                         this.totalRecordsCount = res.data.data.totalRecordsCount
-                        this.orderList = this.orderList.concat(res.data.data.pageT)
+                        // this.orderList = this.orderList.concat(res.data.data.pageT)
+                        this.orderList = res.data.data.pageT
                         this.loading = false
-                        console.log(this.totalRecordsCount, this.orderList.length, this.totalRecordsCount !=0)
-                        if ((this.totalRecordsCount == this.orderList.length) && this.totalRecordsCount !=0 ) {
-                            this.$store.commit("setUser",{ key: "n_loading", value: false })
-                        }
                     } else {
                         this.loading = false
+                        this.orderList = null
                     }
                 }).catch(e => {
                     console.log(e)
                     this.loading = false
+                    this.orderList = null
                     this.$store.commit("setUser",{ key: "n_loading", value: false })
                 })
             }
             
         },
-        docScroll (e) {
-            this.$store.commit('setUser',{ key: 'dom', value: 'paymentHistory_content' })
-            if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
-                if (this.orderList.length >= this.totalRecordsCount) {
-                } else {
-                    this.pageNum += 1
-                    this.paymentRecord()
-                }
-            }
-            if ( this.$refs.doctorList.scrollTop > 300 ) {
-                this.$store.commit('setUser', { key: 'scrollTop', value: true } )
-            } else {
-                this.$store.commit('setUser', { key: 'scrollTop', value: false } )
-            }
+        pageCut (val) {
+            this.pageNum = val
+            this.paymentRecord()
         },
     },
 }
@@ -150,11 +152,11 @@ export default {
         height: 100%;
         background: @content;
         padding: 0 15px;
-        @media screen and (max-width: 350px) {
+        @media screen and (max-width: 371px) {
             padding: 0;
         }
         .paymentHistory_content {
-            height: calc(100% - 59px);
+            height: calc(100% - 90px);
             overflow: auto;
         }
         .paymentHistory_content::-webkit-scrollbar {
@@ -178,9 +180,11 @@ export default {
         overflow: hidden;
         border-radius: 50%;
         margin: 10px 20px;
-        @media screen and (max-width: 390px) {
+        @media screen and (max-width: 397px) {
             width: 45px;
             height: 45px;
+            min-width: 45px;
+            min-height: 45px;
             overflow: hidden;
             border-radius: 50%;
             margin: 10px 10px;
@@ -208,6 +212,10 @@ export default {
     }
     .payment_details {
         white-space: nowrap;
+        @media screen and (max-width: 340px) {
+            white-space: normal;
+            // word-wrap: break-word !important;
+        }
     }
     .noThing {
         font-size: 19px;

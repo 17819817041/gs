@@ -829,4 +829,20 @@ export default {
 			height: 50px;
 		}
 	}
+	.myAppointment .el-select .el-input--suffix .el-input__inner {
+		background: white !important;
+	}
+
+	.notice .el-pagination .btn-prev, .notice .el-pagination .btn-next, 
+	.notice .el-pagination .el-pager .number, .notice .el-pagination .el-pager .el-icon-more,
+	.vetNotice .el-pagination .btn-prev, .vetNotice .el-pagination .btn-next, 
+	.vetNotice .el-pagination .el-pager .number, .vetNotice .el-pagination .el-pager .el-icon-more,
+	.paymentHistory_cus .el-pagination .btn-prev, .paymentHistory_cus .el-pagination .btn-next, 
+	.paymentHistory_cus .el-pagination .el-pager .number, .paymentHistory_cus .el-pagination .el-pager .el-icon-more,
+	.paymentHistory_vet .el-pagination .btn-prev, .paymentHistory_vet .el-pagination .btn-next, 
+	.paymentHistory_vet .el-pagination .el-pager .number, .paymentHistory_vet .el-pagination .el-pager .el-icon-more,
+	.myAppointment .el-pagination .btn-prev, .myAppointment .el-pagination .btn-next, 
+	.myAppointment .el-pagination .el-pager .number, .myAppointment .el-pagination .el-pager .el-icon-more {      
+		background: #F2F2F2 !important;
+	}
 </style>

@@ -506,11 +506,14 @@
         background: rgb(243, 243, 243);
     }
     .pay_btn {
-        width: 60%;
-        border-radius: 9px;
+        width: 63%;
+        border-radius: 10px;
+        overflow: hidden;
+        height: 59px;
         color: white;
         margin: 30px auto;
         position: relative;
+        background: #FC6011;
     }
     .pay_W {
         padding: 0  50px;
@@ -586,7 +589,7 @@
         left: 0;
         z-index: 500;
         pointer-events: none;
-        height: 55px;
+        height: 59px;
         background: #FC6011;
         overflow: hidden;
         border-radius: 12px;
@@ -682,16 +685,16 @@
                     </div>
                 </div>
             </div>
-            <div class="pay_btn tc bold cursor" v-show="type_pay == 5">
+            <div class="pay_btn tc bold cursor al" v-show="type_pay == 5">
                 <div id="paypal-button-container"></div>
-                <div class="point cursor">
+                <div class="point cursor al">
                     <el-button class="PAY_BTN width100" type="primary" :loading="pay_loading">
                         <!-- <span class="span">Login</span> -->
                         Continue
                     </el-button>
                 </div>
             </div>
-            <div class="pay_btn tc bold cursor" @click="pay_p" v-show="type_pay !==5">
+            <div class="pay_btn tc bold cursor al" @click="pay_p" v-show="type_pay !==5">
                 <el-button class="PAY_BTN width100" type="primary" :loading="pay_loading">
                     <!-- <span class="span">Login</span> -->
                     Continue

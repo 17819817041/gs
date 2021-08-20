@@ -10,9 +10,18 @@ export default {
             
         }
     },
+    created () {
+       
+    },
     mounted () {
         this.getMap()
-    },
+
+
+        fetch('https://restapi.amap.com/v5/ip?key=a89fe83d6d4647b3ba4309c8cdf58cb2')
+            .then(response => response.json())
+            .then(data => console.log('data is', data))
+            .catch(error => console.log('error is', error));
+        },
     methods: {
         getMap () {
             var map = new AMap.Map('container', {

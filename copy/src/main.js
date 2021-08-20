@@ -44,6 +44,7 @@ Vue.use(FBSignInButton)
 
 import element from "element-ui"
 import "@/assets/theme/index.css"
+// import 'element-ui/lib/theme-chalk/index.css'; 
 import locale from 'element-ui/lib/locale/lang/en'
 Vue.use(element,{locale})
 

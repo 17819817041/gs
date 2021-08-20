@@ -118,6 +118,7 @@ export default {
                 console.log(e)
                 // store.commit("setUser",{ key: "login", value: false }) localStorage.removeItem("adminToken")
                 localStorage.removeItem("adminUserId")
+                localStorage.removeItem("adminToken")
                 localStorage.removeItem("adminPaltform")
                 localStorage.removeItem("IMtoken")
                 localStorage.removeItem('IM')
@@ -173,7 +174,7 @@ export default {
             const doctor = {
                 platform: localStorage.getItem("adminPlatform"),
                 userId: localStorage.getItem("adminUserId"),
-                pageNum: num,
+                pageNum: num.num,
                 pageSize:18
             }
             store.commit("setUser",{ key: "loading6", value: true })
@@ -198,12 +199,24 @@ export default {
                         // }
                     } else {
                         store.commit("setUser",{ key: "loading6", value: false })
+                        store.commit("pageAdd", null )
+                        num.vm.$message({
+                            type: 'error',
+                            duration: 0,
+                            showClose: true,
+                            message: 'Loading timed out, please check the network!'
+                        })
                     }
                 }).catch(e => {
                     console.log(e)
                     store.commit("setUser",{ key: "loading6", value: false })
                     store.commit("setUser",{ key: "doctorList", value: [] })
-                    
+                    num.vm.$message({
+                        type: 'error',
+                        duration: 0,
+                        showClose: true,
+                        message: 'Loading timed out, please check the network!'
+                    })
                 })
             }
         },

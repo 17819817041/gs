@@ -66,12 +66,17 @@
         width: 16px;
         height: 16px;
         border-radius: 50%;
+        overflow: hidden;
     }
     .navMenu {
         display: none;
         @media screen and (max-width: 800px) {
             display: block;
         }
+    }
+    .dot_h {
+        width: 16px;
+        height: 16px;
     }
 </style>
 
@@ -108,7 +113,10 @@
                 
                         <router-link class="cursor bold second last" to="/chat" style="color:#686760;text-decoration: none;position:relative">
                             Chat with Admin
-                            <img class="dot" v-show="newMsg_dot" src="@/assets/img/dot.png" alt="">    
+                            <span class="dot" v-if="newMsg_dot !== null">
+                                <img class="dot_h" v-show="newMsg_dot.boo && newMsg_dot.user == T_userId" src="@/assets/img/dot.png" alt="">
+                            </span>
+                            <span v-else><img class="dot_h" v-show="false" src="@/assets/img/dot.png" alt=""></span>
                         </router-link>
                     </div>
                     <div class="support_introduce">
@@ -124,6 +132,7 @@
 export default {
     data () {
         return {
+            T_userId: localStorage.getItem('userId'),
             nav: [ {name:'Top Questions'}, {name:'Registration and Login', path: '/RegistrationAndLogin'}, {name:'Petavi First Aid'}, {name:'Setting'}, {name:'Payment'}, 
             {name:'Terms & Conditions'}, {name:'Other'}, {name:'Chat with Admin', path: '/chat'} ]
         }

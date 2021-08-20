@@ -15,24 +15,14 @@
     }
     .appointment_content_item_wrap {
         width: 98%;
-        height: calc(100% - 91px);
+        height: calc(100% - 60px);
     }
     .calendar {
         width: 100%;
         height: 100%;
         // border: solid 1px;
-        .calendar_item {
-            width: 68%;
-            height: 100%;
-            overflow: auto;
-            margin: 0px 10px;
-            background: white;
-            @media screen and (max-width: 750px) {
-                width: 100%;
-            }
-        }
         .appointment_details {
-            width: 32%;
+            width: 100%;
             min-width: 429px;
             height: 100%;
             margin: 0px 10px;
@@ -40,9 +30,6 @@
             box-shadow: 0px 1px 2px 1px rgb(187, 184, 184);
             @media screen and (max-width: 1080px) {
                 min-width: 300px;
-            }
-            @media screen and (max-width: 750px) {
-                display: none;
             }
         }
     }
@@ -61,7 +48,7 @@
         width: 55px;
         height: 55px;
         overflow: hidden;
-        @media screen and (max-width: 1080px) {
+        @media screen and (max-width: 400px) {
             display: none;
         }
     }
@@ -95,9 +82,6 @@
         @media screen and (max-width: 1080px) {
             text-align: end;
         }
-    }
-    .calendarX {
-        width: 100%;
     }
     .calendar-day{
         text-align: center;
@@ -171,35 +155,8 @@
                             <img src="@/assets/img/appointment.png" alt="">
                             Appointment
                         </div>
-                        <div class="Booking_list bold cursor" @click="mobile_booking">Booking</div>
                     </div>
                     <div class="calendar flex">
-                        <div class="calendar_item noBar">
-                            <!-- 'appointment with' + ' ' + booking.find(b => b.booking.calanderDate==data.day).booking.bookingDoctor  -->
-                            <div class="flex">
-                                <div class="calendarX">
-                                    <el-calendar v-model="value">
-                                        <template
-                                            slot="dateCell"
-                                            slot-scope="{date, data}">
-                                            <div >
-                                                <div>{{data.day.slice(8)}}</div>
-                                                <el-tooltip effect="dark" content="Have appointment" placement="top-start">
-                                                    <div class="size12">{{
-                                                        booking.find(b => b.booking.calanderDate==data.day) ? 
-                                                        
-                                                        '✔️'
-                                                        : 
-                                                        ''
-                                                    }}</div>
-                                                </el-tooltip>
-                                            </div>
-                                        </template>
-                                    </el-calendar>
-                                </div>
-                            </div>
-                            
-                        </div>
                         <div class="appointment_details" v-loading="l_loading" v-if="booking">
                             <div class="appointment_details_child noBar">
                                 <div class="appointment_details_item sa cursor" v-for="(item) in booking" :key="item.booking.bookingId" 
@@ -285,9 +242,6 @@ export default {
         })
     },
     methods: {
-        mobile_booking () {
-            this.$router.push('/mobileBooking')  
-        },
         pageCut (val) {
             this.pageNum = val
             this.getBooking()

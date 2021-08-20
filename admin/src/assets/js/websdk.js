@@ -70,7 +70,8 @@ conn.listen({
                 type: 2,
                 value: data.value,
                 time: data.time,
-                APM: data.APM
+                APM: data.APM,
+                msg_type: 'text'
             }
             var D = new Date()
             var obj1 = {
@@ -98,8 +99,44 @@ conn.listen({
             store.commit('setUser', { key: 'newMsg_dot', value: true })
         }
     },    //收到文本消息
-});
 
+    onFileMessage: function ( e ) {
+        console.log("Location of Picture is ", e);
+        var obj = {
+            type: 2,
+            value: e.url,
+            time: e.ext.time,
+            APM: e.ext.APM,
+            msg_type: e.ext.fileType,
+            fileName: e.filename,
+            url: e.url
+        }
+        var D = new Date()
+        var obj1 = {
+            type: 3,
+            value: '',
+            time: D.toLocaleDateString() + ' ' + D.getHours() + ':' + D.getMinutes(),
+            APM: ''
+        }
+        var message = JSON.parse(JSON.stringify(store.state.user.message))
+        if (message[e.from]) {
+            message[e.from].messageList.push(obj)
+            // message[from].msg = 0
+        } else {
+            message[e.from] = {
+                user: e.from,
+                userDetail: e.ext.detail,
+                messageList: [ obj1,obj ],
+                // messageList: [ obj ],
+                msg: 0
+            }
+        }
+        localStorage.setItem('msgTime', e.ext.localTime)
+        store.commit("addMsg",{ key: 'message', value: { content: message, user: e.from } })
+        localStorage.setItem('new_msg', true)
+        store.commit('setUser', { key: 'newMsg_dot', value: true })
+    },    //收到文件消息
+});
 
 
 import webrtc from 'easemob-webrtc'

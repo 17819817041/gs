@@ -44,7 +44,7 @@
         font-size: 12px;
     }
     .vetNotice_content_item {
-        height: calc(100% - 59px);
+        height: calc(100% - 91px);
         overflow: auto;
     }
     .vetNotice_content_item::-webkit-scrollbar {
@@ -79,12 +79,13 @@
 </style>
 
 <template>
-    <div class="vetNotice">
+    <div class="vetNotice" v-loading='l_loading'>
+        <el-backtop target=".vetNotice_content_item"></el-backtop>
         <div class="vetNotice_content">
             <div class="vetNotice_content_wrap">
                 <div class="explan al"><img src="@/assets/img/information.png" alt="">Notice</div>
-                <div class="vetNotice_content_item flex" @scroll="docScroll" ref="doctorList">
-                    <div v-if="vetNoticeList[0]" style="width:100%" ref="doctorList_height">
+                <div class="vetNotice_content_item flex">
+                    <div v-if="vetNoticeList" style="width:100%">
                         <div class="vetNotice_item flex al cursor" v-for="(item,i) in vetNoticeList" :key="i" @click="checkNotice(item,i)">
                             <div class="state"> 
                                 <div class="read tc" v-if="item.noticeState == 1">Have read</div>
@@ -101,10 +102,16 @@
                             </div>
                         </div>
                     </div>
-                    <div v-else class="tc size21 bold" style="width:100%;color:gray;margin-top:30px;">No New Message</div>
+                    <div v-else-if="vetNoticeList === null" class="tc size21 bold" style="width:100%;color:gray;margin-top:30px;">No New Message</div>
                 </div>
-                <div class="acting float ju al" v-if="l_loading">
-                    <div class="loading" v-loading="true"></div>
+                <div class="ju">
+                    <el-pagination
+                        :small="small"
+                        :pager-count='7'
+                        layout="prev, pager, next"
+                        :total="totalRecordsCount"
+                        @current-change='pageCut'>
+                    </el-pagination>
                 </div>
             </div>
         </div>
@@ -112,17 +119,27 @@
 </template>
 
 <script>
-import { updateNoticeState, notice } from "@/axios/request.js"
+import { updateNoticeState } from "@/axios/request.js"
 export default {
     data () {
         return {
             active: true,
             pageNum: 1,
-            pageSize: 15
+            pageSize: 15,
+            small: false
         }
     },
     created () {
         
+    },
+    beforeMount() {
+        window.addEventListener('resize', (e) => {
+            if (e.target.innerWidth <= 564) {
+                this.small = true
+            } else {
+                this.small = false
+            }
+        })
     },
     computed: {
         vetNoticeList: {
@@ -132,29 +149,16 @@ export default {
             }
         },
         totalRecordsCount () { return this.$store.state.user.totalRecordsCount1 },
-        l_loading () { return this.$store.state.user.loading },
+        l_loading () { return this.$store.state.user.n_loading },
         default_img () { return this.$store.state.user.default_img }
     },
     methods: {
-        docScroll (e) {
-            this.$store.commit('setUser',{ key: 'dom', value: 'vetNotice_content_item' })
-            if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
-                if (this.vetNoticeList.length >= this.totalRecordsCount) {
-                    
-                } else {
-                    this.pageNum += 1
-                    let page = {
-                        vm: this,
-                        pageNum: this.pageNum
-                    }
-                    this.$store.dispatch('getNoticeList', page)
-                }
+        pageCut (val) {
+            let page = {
+                vm: this,
+                pageNum: val
             }
-            if ( this.$refs.doctorList.scrollTop > 300 ) {
-                this.$store.commit('setUser', { key: 'scrollTop', value: true } )
-            } else {
-                this.$store.commit('setUser', { key: 'scrollTop', value: false } )
-            }
+            this.$store.dispatch('getNoticeList', page)
         },
         checkNotice (item,i) {
             if (item.noticeState == 1) {

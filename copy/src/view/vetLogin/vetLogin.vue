@@ -219,14 +219,12 @@ export default {
             this.$refs.form.validate(flag => {
                 if (flag) {
                     login(that.form).then(res => {
-                        console.log(res, "兽医登陆")
                         this.loading = false
                         if (res.data.rtnCode == 200) {
                             localStorage.setItem("userId", res.data.data.userId)
                             localStorage.setItem("platform", res.data.data.platform)
                             localStorage.setItem("Token",res.data.data.token)
                             localStorage.setItem("IM",that.form.password)
-                            // this.$store.dispatch("IMSignUp")
                             this.$store.dispatch("getUser")
                             this.$router.push({
                                 name: "vethomepage",

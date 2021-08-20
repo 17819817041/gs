@@ -1,16 +1,13 @@
 <template>
-    <div class="vetSetting noBar">
-        <div class="explan bold al Explan_title mg">
-            <img class="setting_img" src="@/assets/img/setting.png" alt="">
-            Doctor Information
-        </div>
+    <div class="reviewer">
+        <el-backtop target=".border"></el-backtop>
         <div class="vetSetting_content mg">
             <div class="vetSetting_content_item">
                 <div class="profile flex">
                     <div class="profile_img">
                         <div class="profile_img_wrap mg">
                             <label for="avaSet">
-                                <div style="width:100%;margin:auto;height:100%" class="ju al img_wrap_p"
+                                <div style="width:100%;margin:auto;height:100%" class="ju al img_wrap_p" @click="add"
                                     element-loading-text="Loading..."
                                     element-loading-spinner="el-icon-loading"
                                     element-loading-background="rgba(0, 0, 0, 0.8)">
@@ -138,41 +135,94 @@
                 </div>
             </div>
         </div>
+        <el-divider content-position="left">Comment</el-divider>
+        <div class="vetSetting_content border mg">
+            <div class="comment_item flex" v-for="(item) in commentList" :key="item.id">
+                <div class="customer_img_wrap">
+                    <div class="customer_img mg ju al"><img style="height: 100%;" :src="item.userImage" alt=""></div>
+                    <div class="customer_name tc bold"> {{item.userName}} </div>
+                </div>
+                <div class="rate_date_c_wrap">
+                    <div class="rate_date sb al">
+                        <div> <el-rate class="Rate" v-model="item.score" :disabled="true"></el-rate> </div>
+                        <div>Date</div>
+                    </div>
+                    <div class="rate_date_c">
+                        {{item.content}}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
-import { vetDetails, HospitalList, address } from "@/axios/request.js"
+import { vetDetails, HospitalList, address , comment, addComment} from "@/axios/request.js"
 export default {
     data () {
         return {
+            size: 'mini',
             hospitalList: [],
             sex: '',
             address: [],
             wookingDay: '',
             default_address: '',
-            userDetail: {}
+            userDetail: {},
+            pageNum: 1,
+            commentList: [],
+            totalRecordsCount: 0
         }
-    },
-    computed: {
-        default_img () { return this.$store.state.user.default_img },
     },
     created () {
         this.getHospitalList()
         this.getAddress()
+        this.getcommentList()
         var data = {
             userId: this.$route.query.id
         }
         vetDetails(data).then(res => {
             if (res.data.rtnCode == 200) {
-                console.log(res)
                 this.userDetail = res.data.data
             } else {}
         }).catch(e => {
             console.log(e)
         })
     },
+    computed: {
+        default_img () { return this.$store.state.user.default_img },
+    },
     methods: {
+        add () {
+            let data = {
+                userId: localStorage.getItem('userId'),
+                score: 4.5,
+                content: '123',
+                doctorId: this.$route.query.id,
+            }
+            addComment(data).then(res => {
+                console.log(res,'add')
+                this.getcommentList()
+            })
+        },
+        getcommentList () {
+            let data = {
+                doctorId: this.$route.query.id,
+                pageNum: this.pageNum,
+                pageSize: 10
+            }
+            comment(data).then(res => {
+                console.log(res,6666)
+                if (res.data.rtnCode == 200) {
+                    this.commentList = res.data.data.pageT
+                    this.totalRecordsCount = res.data.data.totalRecordsCount
+                } else {
+                    this.commentList = null
+                }
+            }).catch(e => {
+                console.log(e)
+                this.commentList = null
+            })
+        },
         getAddress () {
             address().then(res => {
                 this.address = res.data.data
@@ -196,14 +246,41 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-    @import "@/less/css.less";
-    .vetSetting {
-        flex: 10;
-        height: 100%;
-        background: @content;
-        overflow: auto;
+<style lang='less' scoped>
+@import "@/less/css.less";
+.reviewer {
+    height: 100%;
+}
+    .comment_item {
+        padding: 10px 15px;
+        margin: 10px 0;
+        width: 99%;
+        border: solid 1px;
+        border-radius: 8px;
     }
+    .customer_img_wrap {
+        padding: 0 20px;
+        width: 125px;
+        min-width: 125px;
+        .customer_img {
+            width: 70px;
+            height: 70px;
+            overflow: hidden;
+            border-radius: 50%;
+            margin-bottom: 5px;
+        }
+        .customer_name {
+            font-size: 14px;
+        }
+    }
+    .rate_date_c_wrap {
+        width: calc(100% - 125px);
+        .rate_date {
+            padding: 0 10px;
+            border-bottom: solid 1px rgb(192, 192, 192);
+        }
+    }
+
     .setting_img {
         width: 37px;
         padding-right: 5px;
@@ -229,6 +306,19 @@ export default {
             box-shadow: 0 2px 2px 1px gray;
         }
     }
+    .border {
+        // border: solid 1px;
+        height: calc(100% - 465px);
+        overflow: auto;
+    }
+    .border::-webkit-scrollbar {
+        width: 8px;
+    }
+    .border::-webkit-scrollbar-thumb {
+        border-radius: 15px;
+        background: rgb(216, 216, 216);
+    }
+
     .prdfessionalField {
         width: 170px;
         height: 29px;
@@ -237,7 +327,7 @@ export default {
         overflow: hidden;
     }
     .profile {
-        margin-top: 25px;
+        // margin-top: 25px;
         @media screen and (max-width: 564px) {
             flex-direction: column;
         }
@@ -258,7 +348,7 @@ export default {
         }
         .message_wrap {
             // width: 300px;
-            padding: 10px 0 30px 0;
+            padding: 10px 0 16px 0;
             white-space: nowrap;
             @media screen and (max-width: 800px) {
                 width: 100%;
@@ -283,7 +373,6 @@ export default {
             }
         }
     }
-    
     .message_wrap_work {
         max-width: 460px;
         flex-wrap: wrap;
@@ -311,7 +400,7 @@ export default {
         }
         .message_wrap {
             // width: 300px;
-            padding: 10px 0;
+            padding: 6px 0;
             @media screen and (max-width: 800px) {
                 width: 100%;
                 padding: 10px 0 0 0;
@@ -333,7 +422,7 @@ export default {
         }
         .aboutMe {
             width: 215%;
-            margin-top: 50px;
+            margin-top: 20px;
             min-width: 165px;
             @media screen and (max-width: 800px) {
                 display: none;
@@ -365,8 +454,8 @@ export default {
         }
     }
     .profile_img_wrap {
-        width: 230px;
-        height: 230px;
+        width: 200px;
+        height: 200px;
         border: solid 1px;
         border-radius: 50%;
         margin-top: 15px;

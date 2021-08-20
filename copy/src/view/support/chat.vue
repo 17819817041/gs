@@ -129,7 +129,10 @@
                 <input type="text" v-model="customerInp" class="width100" placeholder="Type a message" @keydown.enter="send">
             </div>
             <div class="add al">
-                <img class="cursor" @click="kl" src="@/assets/img/clip.png" alt="">
+                <label for="file_img" class="al">
+                    <input type="file" id="file_img" v-show="false" @change="getFile">
+                    <img class="cursor" src="@/assets/img/clip.png" alt="">
+                </label>
             </div>
             <div class="add al">
                 <img class="cursor" @click="send" src="@/assets/img/msg_send.png" alt="">
@@ -211,16 +214,82 @@ export default {
         }
     },
     methods: {
-        kl () {
-            var a = 'admin'
+        getFile (e) {
+            this.file_send()
+            // this.dealImg(e.target.files[0],(img) => {
+            //     var formData = new FormData();
+            //     formData.append('file', img);
+            //     this.file_send()
+            // })
+        },
+        file_send () {
+            let D = new Date()
+            let T = D.getTime()
+            let hour = D.getHours()
+            let minute = D.getMinutes()
+            var id = this.$conn.getUniqueId();                   // 生成本地消息id
+            var msg = new this.$WebIM.message('file', id);        // 创建文件消息
+            var input = document.getElementById('file_img');  // 选择文件的input
+            var file = this.$WebIM.utils.getFileUrl(input);      // 将文件转化为二进制文件
+            console.log(file)
+
+            var allowType = {
+                'jpg': true,
+                'gif': true,
+                'png': true,
+                'bmp': true,
+                'zip': true,
+                'txt': true,
+                'doc': true,
+                'pdf': true,
+                'docx': true
+            };
+            if (file.filetype.toLowerCase() in allowType) {
+                var option = {
+                    file: file,
+                    to: 'admin',                       // 接收消息对象
+                    chatType: 'singleChat',               // 设置单聊
+                    onFileUploadError: function () {      // 消息上传失败
+                        console.log('onFileUploadError');
+                    },
+                    onFileUploadProgress: function (e) { // 上传进度的回调
+                        console.log(666666)
+                    },
+                    onFileUploadComplete: function () {   // 消息上传成功
+                        console.log('onFileUploadComplete');
+                    },
+                    success: function () {                // 消息发送成功
+                        console.log('Success');
+                    },
+                    fail: function(e){
+                        console.log("Fail");              //如禁言、拉黑后发送消息会失败
+                    },
+                    flashUpload: this.$WebIM.flashUpload,
+                    ext: {
+                        file_length: file.data.size,
+                        detail: this.userDetail,
+                        platform: localStorage.getItem('platform'),
+                        time: D.getHours() + ':' + D.getMinutes(),
+                        APM: hour >= 12 && minute >= 0? 'PM':'AM',
+                        localTime: T,
+                        fileType: file.filetype
+                    }
+                };
+                msg.set(option);
+                this.$conn.send(msg.body);
+            }
+        },
+        kl () {    //须先加入聊天室
             var options = {
-                queue: a.toLowerCase(), //需特别注意queue属性值为大小写字母混合，以及纯大写字母，会导致拉取漫游为空数组，因此注意将属性值装换为纯小写
+                queue: 'admin', //需特别注意queue属性值为大小写字母混合，以及纯大写字母，会导致拉取漫游为空数组，因此注意将属性值装换为纯小写
                 isGroup: false,
-                count: 10,
+                count: 100,
                 success: function(res){
-                    console.log(res,666) //获取拉取成功的历史消息
+                    console.log(res) //获取拉取成功的历史消息
                 },
-                fail: function(){}
+                fail: function(e){
+                    console.log(e,321)
+                }
             }
             this.$WebIM.conn.fetchHistoryMessages(options)
         },
@@ -292,8 +361,7 @@ export default {
                 let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
                 msg.set({
                     msg: JSON.stringify(data),                // 消息内容
-                    to: 'admin',     
-                    // to: '322_2',                     // 接收消息对象（用户id）
+                    to: 'admin',                         // 接收消息对象（用户id）
                     chatType: 'singleChat',                  // 设置为单聊    
                     ext: {
                         

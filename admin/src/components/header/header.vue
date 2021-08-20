@@ -230,9 +230,6 @@ export default {
         @media screen and (max-width: 1300px) {
             height: 80px;
         }
-        @media screen and (max-width:564px) {
-            height: 70px;
-        }
         width: 100%;
         height: 109px;
         background: @ThemeColor;
@@ -245,10 +242,6 @@ export default {
         top: 0;
         z-index: 600;
         padding: 15px 30px 0 62px;
-        @media screen and (max-width: 564px) {
-            height: 70px;
-            padding: 10px 10px 0 10px;
-        }
     }
     .logo .logo_IMG {
         width: 110px;
@@ -258,10 +251,6 @@ export default {
         @media screen and (max-width: 1300px) {
             width: 75px;
             height: 85px;
-        }
-        @media screen and (max-width: 564px) {
-            width: 50px;
-            height: 60px;
         }
     }
 
@@ -280,22 +269,13 @@ export default {
             right: -207px;
         }
         @media screen and (max-width: 1230px) {
-            width: 106%;
-            right: -150px;
-        }
-        @media screen and (max-width:564px) {
-            height: 30px;
-            bottom: 5px;
+            width: 109%;
+            right: -197px;
         }
     }
     .div .search {
         @media screen and (max-width:1200px) {
-            width: 40%;
-        }
-    }
-    .div .function {
-        @media screen and (max-width:564px) {
-            width: 37%;
+            width: 45%;
         }
     }
     .div div {

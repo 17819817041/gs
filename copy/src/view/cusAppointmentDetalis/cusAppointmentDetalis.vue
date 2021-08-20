@@ -1,5 +1,5 @@
 <template>
-    <div class="reschedule">
+    <div class="reschedule" v-loading='loading'>
         <div class="reschedule flex">
             <div class="reschedule_content">
                 <div class="appointment_content_item_wrap mg">
@@ -109,7 +109,8 @@ export default {
             },
             change: true,
             value: '',
-            value1: ''
+            value1: '',
+            loading: false
         }
     },
     created () {
@@ -174,8 +175,9 @@ export default {
                 let data = {
                     bookingId: this.$route.query.key
                 }
+                this.loading = true
                 deleteBooking(data).then(res => {
-                    console.log(res)
+                    this.loading = false
                     if (res.data.rtnCode == 200 ) {
                         this.$message({
                             type: "success",
@@ -190,6 +192,7 @@ export default {
                     }
                 })
             }).catch (e => {
+                this.loading = false
                 console.log(e)
                 this.$message({
                     type: "error",
