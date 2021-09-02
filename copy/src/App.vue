@@ -1,7 +1,10 @@
 <template>
 	<div id="app">
 		<router-view></router-view>
-
+		<!-- <keep-alive>
+			<router-view v-if="$route.meta.keepAlive"></router-view>
+		</keep-alive>
+		<router-view v-if="!$route.meta.keepAlive"></router-view> -->
 		<transition name='fade'>
 			<div class="mask flex" v-if="callModal">
 				<div class="confirmBox mg">
@@ -57,10 +60,6 @@
 				</div>
 			</div>
 		</transition>
-
-		<transition name="fade">
-			<div class="scrollTop cursor tc" v-show="scrollTop" @click="up_top">UP</div>
-		</transition>
 	</div>
 </template>
 
@@ -79,7 +78,8 @@ export default {
 	created () {
 		this.$store.dispatch("default", d_img)
 		let userId = localStorage.getItem("userId")
-		if (userId) {
+		let platform = localStorage.getItem('platform')
+		if (userId && platform == 2) {
 			this.start()
 		}
 	},
@@ -216,16 +216,6 @@ export default {
 		}
     },
 	methods: {
-		up_top () {
-			// 每0.01秒向上移动100像素，直到小于或等于0结束
-			let timer = setInterval(() => {
-				document.getElementsByClassName(this.dom)[0].scrollTop -= 500;
-				// 为负数，浏览器会不处理得
-				if (document.getElementsByClassName(this.dom)[0].scrollTop <= 0) {
-					clearInterval(timer)
-				}
-			}, 10)
-		},
 		saveRecord (val) {
             localStorage.setItem('adminList',JSON.stringify(this.adminList))
         },
@@ -242,7 +232,7 @@ export default {
 			})
 		},
 		sure () {
-			if (this.my_Balance.balance >= 50) {
+			if (this.my_Balance.balance >= 20) {
 				this.callLoading = true
 				this.sendMsg()
 			} else {
@@ -646,10 +636,17 @@ export default {
 	}
 	.cursor:hover {
 		opacity: 0.8;
+		@media screen and (max-width: 800px) {
+			cursor: none;
+		}
 	}
 	.cursor:active {
 		opacity: 0.6;
 		user-select: none;
+		@media screen and (max-width: 800px) {
+			cursor: none;
+			user-select: auto;
+		}
 	}
 	.mg {
 		margin: auto;
@@ -787,48 +784,54 @@ export default {
 	.customer_content .pet_message .el-drawer__wrapper .el-drawer__body {
 		height: 100% !important;
 	}
-	
-	.appointment .calendar .el-calendar__header {
+
+
+	.appointment .calendar .fc {
+		min-height: 430px !important;
+		height: 100% !important;
+	}
+	.appointment .calendar .fc .fc-scroller-liquid-absolute {
+		-ms-overflow-style:none !important;scrollbar-width: none !important;
+	}
+	.appointment .calendar .fc .fc-scroller-liquid-absolute::-webkit-scrollbar { display: none !important; }
+	.appointment .calendar .fc .fc-scroller-liquid-absolute .fc-daygrid-event-dot {
+		@media screen and (max-width: 564px) {
+			margin: 0;
+		}
+		@media screen and (max-width: 310px) {
+			display: none;
+		}
+	}
+	.appointment .calendar .fc .fc-scroller-liquid-absolute .fc-daygrid-event {
+		@media screen and (max-width: 564px) {
+			font-size: 12px !important;
+		}
+	}
+	.appointment .calendar .fc-header-toolbar {
 		@media screen and (max-width: 564px) {
 			flex-direction: column !important;
 		}
 	}
-	.appointment .calendar .el-calendar__button-group {
-		@media screen and (max-width: 564px) {
-			margin: auto !important;
-			margin-top: 5px !important;
-		}
-	}
-	.appointment .calendar .el-button--plain {
-		@media screen and (max-width: 1100px) {
-			padding: 7px 10px !important;
+	.appointment .calendar .fc-button {
+		@media screen and (max-width: 1350px) {
+			padding: 2px;
+			height: 32px;
 		}
 		@media screen and (max-width: 564px) {
-			padding: 5px !important;
-			font-size: 12px !important;
+			padding: 0 12px;
+			height: 32px;
 		}
 	}
-	.appointment .calendar .el-calendar-table thead {
-		@media screen and (max-width: 1250px) {
-			font-size: 15px;
+	.appointment .calendar .fc-toolbar-title {
+		@media screen and (max-width: 1350px) {
+			font-size: 1.50em;
 		}
-		@media screen and (max-width: 800px) {
-			font-size: 13px;
-		}
-	}
-	.appointment .calendar .el-calendar-table .el-calendar-day {
-		@media screen and (max-width: 1250px) {
-			font-size: 14px;
-			height: 70px;
-		}
-		@media screen and (max-width: 1150px) {
-			height: 60px;
-		}
-		@media screen and (max-width: 1050px) {
-			font-size: 12px;
-			height: 50px;
+		@media screen and (max-width: 1350px) {
+			font-size: 1.50em;
+			padding: 5px 0;
 		}
 	}
+
 	.myAppointment .el-select .el-input--suffix .el-input__inner {
 		background: white !important;
 	}
@@ -844,5 +847,9 @@ export default {
 	.myAppointment .el-pagination .btn-prev, .myAppointment .el-pagination .btn-next, 
 	.myAppointment .el-pagination .el-pager .number, .myAppointment .el-pagination .el-pager .el-icon-more {      
 		background: #F2F2F2 !important;
+	}
+
+	.vet .el-form-item__content {
+		white-space: nowrap !important;
 	}
 </style>

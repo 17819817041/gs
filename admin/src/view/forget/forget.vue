@@ -6,7 +6,6 @@
             <div class="size12 tc pwdText">Please enter the email address associated</div>
             <div class="size12 tc pwdText">with your email. We will email you a </div>
             <div class="size12 tc pwdText">link to reset your password.</div>
-
             <div class="pwdInput">
                 <el-form :model="data" :rules="rules">
                     <el-form-item prop="email">
@@ -33,7 +32,7 @@ export default {
     data () {
         return {
             data: {
-                platform: localStorage.getItem("platform"),
+                platform: localStorage.getItem("adminPlatform"),
                 email: ""
             },
             rules: {

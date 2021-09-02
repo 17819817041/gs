@@ -21,15 +21,8 @@
             z-index: 600;
             padding: 15px 30px 0 62px;
             transition: 0.2s;
-            @media screen and (max-width:950px) {
-                transform: translate(-180px,0);
-            }
-            @media screen and (max-width:800px) {
-                display: none;
-            }
             @media screen and (max-width: 564px) {
-                height: 70px;
-                padding: 10px 10px 0 10px;
+                padding: 15px 20px 0 42px;
             }
         }
         .logo .logo_IMG {
@@ -43,7 +36,7 @@
             }
             @media screen and (max-width: 564px) {
                 width: 50px;
-                height: 60px;
+                height: 62px;
             }
         }
         .helpBtn {
@@ -78,6 +71,18 @@
         .userName {
             // width: 250px;
             height: 40px;
+        }
+    }
+    .mobile_logo {
+        @media screen and (max-width:950px) {
+            transform: translate(-180px,0);
+        }
+        @media screen and (max-width:800px) {
+            display: none;
+        }
+        @media screen and (max-width: 564px) {
+            height: 70px;
+            padding: 10px 10px 0 10px;
         }
     }
     .logo_width {
@@ -382,6 +387,14 @@
     .physical_img {
         padding-right: 5px;
     }
+    .mobile_s1 {
+        position: relative;
+        .mobile_s_item {
+            position: absolute;
+            bottom: 0px;
+            right: 10px;
+        }
+    }
 </style>
 
 <template>
@@ -450,14 +463,15 @@
                         <div class="expand_content_item"  @click="Record">Medical Record</div>
                         <div class="expand_content_item" @click="paymentHistory" >Payments History</div>
                         <div class="expand_content_item" @click="setting">Setting</div>
+                        <div class="expand_content_item" @click="support">Support</div>
                         <div  class="expand_content_item" @click="logout">Logout</div>
                     </div>
                 </div>
             </transition>
-            <div :class="['logo',{ logo_width: rotate }]">
+            <div :class="['logo',{ logo_width: rotate, 'mobile_logo': login }]">
                 <div class="drawer_list_wrap">
                     <img class="logo_IMG" @click="home" src="@/assets/img/logo.png" alt="">
-                    <div :class="['drawer_list',{rotate: rotate}]">
+                    <div :class="['drawer_list',{rotate: rotate}]" v-show="login">
                         <img style="height:100%;transition:0.2s." src="@/assets/img/list.png" alt="" @click="showDetails">
                     </div>  <!-- //抽屉 -->
                 </div>
@@ -489,10 +503,10 @@
                         <div class="userName al sb">
                             <div class="myMessage al">
                                 <label for="ava" class="cursor label_img ju al">
-                                    <input id="ava" v-show="false" type="file" @change="getImage" />   <!-- 头像路径-->
+                                    <!-- <input id="ava" v-show="false" type="file" @change="getImage" />   -->
                                     <div class="ju al" style="height:55px;overflow:hidden;border-radius:50%;transform:scale(1)">
-                                        <img style="height:100%;" v-if="userDetails.userImage" :src="userDetails.userImage" alt="">
-                                        <img style="height:100%;" v-else :src="default_img" alt="">
+                                        <img style="height:100%;" v-if="userDetails.userImage" :src="userDetails.userImage" alt="" @click="getImage">
+                                        <img style="height:100%;" v-else :src="default_img" alt="" @click="getImage">
                                         <!-- <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i> -->
                                     </div>
                                 </label>
@@ -524,7 +538,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mobile_s">
+            <div class="mobile_s" v-show="login">
                 <div class="sb al">
                     <div class="oicq flex white">
                         <div class="oicq_img ju al">
@@ -566,6 +580,16 @@
                     </div>
                     <el-input style="transform:scale(1);border:none;" v-model="inp" @keyup.enter.native="search"
                     prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
+                </div>
+            </div>
+            <div class="mobile_s mobile_s1" v-show="!login">
+                <div class="mobile_s_item">
+                    <div class="helpBtn cursor al ju" @click="support">
+                        <div class="al">
+                            <img src="@/assets/img/what.png" alt="">
+                        </div>
+                        <div class="suppot size12"> Help & Support </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -864,55 +888,61 @@ export default {
         },
         getImage (e) {
             if (localStorage.getItem("platform") == 1) {
-                this.dealImg(e.target.files[0],(img) => {
-                    var formData = new FormData();
-                    formData.append('file', img);
-                    file(formData).then(res => {
-                        if (res.data.rtnCode == 200) {
-                            this.userDetails.userImage = res.data.data
+                this.$router.push('/setting')
+                // this.dealImg(e.target.files[0],(img) => {
+                //     var formData = new FormData();
+                //     formData.append('file', img);
+                //     file(formData).then(res => {
+                //         if (res.data.rtnCode == 200) {
+                //             this.userDetails.userImage = res.data.data
                             
-                            updateUserDetails(this.userDetails).then(res => {
-                                if (res.data.rtnCode == 200) {
-                                    this.getUser()
-                                } else {
+                //             updateUserDetails(this.userDetails).then(res => {
+                //                 if (res.data.rtnCode == 200) {
+                //                     this.getUser()
+                //                 } else {
                                     
-                                }
-                            }).catch(e => {
-                                console.log(e)
-                            })
-                        } else {
-                            this.userDetails = {}
-                        }
-                    })
-                })
-                
+                //                 }
+                //             }).catch(e => {
+                //                 console.log(e)
+                //             })
+                //         } else {
+                //             this.userDetails = {}
+                //         }
+                //     })
+                // })
             } else if (localStorage.getItem("platform") == 2) {
-                this.dealImg(e.target.files[0],(img) => {
-                    var formData = new FormData();
-                    formData.append('file', img);
-                    file(formData).then(res => {
-                        if (res.data.rtnCode == 200) {
-                            this.userDetails.headUr = res.data.data
-                            this.userDetails.doctorName = "Beck"
-                            updateVetDetails(this.userDetails).then(res => {
-                                if (res.data.rtnCode == 200) {
-                                    this.getUser()
-                                }
-                            }).catch(e => {
-                                console.log(e)
-                            })
-                        } else {
-                            this.userDetails = {}
-                        }
-                    })
-                })
-                
+                this.$router.push('/vetSetting')
+                // this.dealImg(e.target.files[0],(img) => {
+                //     var formData = new FormData();
+                //     formData.append('file', img);
+                //     file(formData).then(res => {
+                //         if (res.data.rtnCode == 200) {
+                //             this.userDetails.headUr = res.data.data
+                //             this.userDetails.doctorName = "Beck"
+                //             updateVetDetails(this.userDetails).then(res => {
+                //                 if (res.data.rtnCode == 200) {
+                //                     this.getUser()
+                //                 }
+                //             }).catch(e => {
+                //                 console.log(e)
+                //             })
+                //         } else {
+                //             this.userDetails = {}
+                //         }
+                //     })
+                // })
             }
         },
         support () {
-            this.$router.push({
-                name:'support'
-            })
+            if (localStorage.getItem("platform") == 1) {
+                this.$router.push({
+                    name:'support'
+                })
+            } else if (localStorage.getItem("platform") == 2) {
+                this.$router.push({
+                    name:'v_support'
+                })
+            }
         },
         notice () {
             if (localStorage.getItem("platform") == 1) {
@@ -1015,7 +1045,6 @@ export default {
                 token: localStorage.getItem('Token')
             }
             petType(data).then(res => {
-                console.log(res)
                 res.data.forEach(item => {
                     item.children.forEach(child => {
                         child.children = []

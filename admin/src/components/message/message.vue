@@ -56,6 +56,7 @@
         width: 108px;
         height: 108px;
         margin-top: 50px;
+        border-radius: 50%;
         position: relative;
         .newMsg {
             position: absolute;
@@ -88,7 +89,7 @@
                             <div>Pet ID : {{agoraPet.petId}}</div>
                             <div>Pet Owner : {{agoraPet.userName}}</div>
                             <div>Age : {{agoraPet.petAge}}</div>
-                            <div>Breed : {{agoraPet.breed}}</div>
+                            <div>Breed : {{agoraPet.petTypeName}}</div>
                             <div>Sex :  {{agoraPet.petGenderName}} </div>
                             <div>Neutered status :  
                                 <span v-if="agoraPet.neuteredState == 1">Sterilization</span> 
@@ -119,9 +120,9 @@
                         <div>Setting</div>
                     </div>
                     <div class="physical_wrap">
-                        <div class="chatRoom_d">
+                        <div class="chatRoom_d cursor">
                             <img class="newMsg" v-show="newMsg_dot" src="@/assets/img/onLine1.png" alt="">
-                            <img class="physical cursor" src="@/assets/img/chatLogo.png" alt="" @click="adminChat">
+                            <img class="physical" src="@/assets/img/chatLogo.png" alt="" @click="adminChat">
                         </div>
                     </div>
                 </div>
@@ -228,7 +229,7 @@ export default {
             this.$router.push("/myCustomer")
         },
         myPaymentHistory () {
-            // this.$router.push("/myPaymentHistory")
+            this.$router.push("/payHistory")
         },
         vetRecord () {
             this.$router.push("/medical")

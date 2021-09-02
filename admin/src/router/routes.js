@@ -87,6 +87,41 @@ export default [
                 name: "medical",
                 component: () => import("@/view/medical/medical.vue")
             },
+            {
+                path:'/map',
+                name:'map',
+                component: () => import("@/view/map/map.vue")
+            },
+            {
+                path:'/docInformation',
+                name:'docInformation',
+                component: () => import("@/view/docInformation/docInformation.vue")
+            },
+            {
+                path:'/reviewer',
+                name:'reviewer',
+                component: () => import("@/view/reviewer/reviewer.vue")
+            }, 
+            {
+                path:'/schedule',
+                name:'schedule',
+                component: () => import("@/view/schedule/schedule.vue")
+            }, 
+            {
+                path:'/reschedule',
+                name:'reschedule',
+                component: () => import("@/view/reschedule/reschedule.vue")
+            },
+            {
+                path:'/reset',
+                name:'reset',
+                component: () => import("@/view/reset/reset.vue")
+            }, 
+            {
+                path:'/payHistory',
+                name:'payHistory',
+                component: () => import("@/view/payHistory/payHistory.vue")
+            },
         ]
     },
     {

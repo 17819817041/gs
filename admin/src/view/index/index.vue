@@ -81,9 +81,8 @@
                             <el-input class="input" placeholder="Your Email" v-model="form.email"></el-input>
                         </el-form-item>
                         <el-form-item prop="password">
-                            <el-input class="input" placeholder=" Password" show-password v-model="form.password"></el-input>
+                            <el-input class="input" placeholder=" Password" show-password @keyup.enter.native="toLogin" v-model="form.password"></el-input>
                         </el-form-item>
-
                         <el-form-item>
                             <div class="google cursor" @click="toLogin">
                                 <el-button class="faceBook width100" type="primary">
@@ -93,7 +92,6 @@
                         </el-form-item>
 
                         <el-form-item>
-                            <div class=" size12 cursor" @click="forget">Forgot your password?</div>
                             <div>
                                 <span class="size12">Forgot your password?</span>
                                 <span class="chick cursor" @click="forget">Chick here</span>

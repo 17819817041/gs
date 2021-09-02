@@ -127,7 +127,7 @@
                 <div class="bold" style="font-size: 18px">My Profile</div>
             </div>
             <div class="flex al buttom_i flexEnd">
-                <div class="reset_b bold cursor" v-if="edit == 1">Reset Password</div>
+                <div class="reset_b bold cursor" v-if="edit == 1" @click="reset">Reset Password</div>
                 <div :class="[ 'ju al tc', {'edit_b': edit == 1}, {'save_b': edit == 2}]">
                     <div class="edit_btn cursor" v-if="edit == 1" @click="edit = 2">Edit</div>
                     <div v-else-if="edit == 2" class="flex save_i">
@@ -241,7 +241,9 @@ export default {
                     }
                 })
             })
-            
+        },
+        reset () {
+            this.$router.push('/reset')
         }
     }
 }

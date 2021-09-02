@@ -47,7 +47,7 @@
                             <div class="size14">Likes</div>
                             <div><span class="size16">{{item.totalLike}}</span><span class="size14"> ({{item.likingRate}}) </span></div>
                         </div>
-                        <div class="call">
+                        <div class="call" @click="doc_call(item)">
                             <el-button class="callBtn cursor width100" type="primary">Call</el-button>
                         </div>
                     </div>
@@ -467,6 +467,44 @@ export default {
                 }
             }
         },
+        doc_call (item) {
+            if (item.doctorName == null) {
+                item.doctorName = 'No name'
+            }
+            this.$store.commit("setUser",{
+                key: "vDetail",
+                value: item
+            })
+            this.$store.commit("setUser",{
+                key: "rate",
+                value: item.baseScore
+            })
+            this.$store.commit("setUser",{
+                key: "mask",
+                value: item
+            })
+            if (this.detail.doctorOnLineState == 0 || this.detail.doctorOnLineState == 2) {
+                this.$message({
+                    type: 'info',
+                    message: "The doctor is temporarily offline!"
+                })
+            } else {
+                if (this.detail.doctorOnLineState == 1) {
+                    if (this.detail.doctorId) {
+                        this.$store.commit("setUser", {
+                            key: "callTo",
+                            value: this.detail
+                        })
+                        this.callModal = true
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: "Please choose a doctor"
+                        })
+                    }
+                }
+            }
+        },
         booking (areaId,doctorId) {
             this.$router.push({
                 name: 'booking',
@@ -572,6 +610,7 @@ export default {
         top: 0;
         left: 50%;
         padding: 5px 10px;
+        z-index: 1;
         background: #46D3FA;
         color: white;
         border-radius: 10px;

@@ -8,14 +8,21 @@
                 <div class="explan bold"> Help & Suppot </div>
             </div>
             <div class="chat_item flex">
-                <div class="friendsList">
-                    <div :class="['friend_item al bold', { 'f-act':i == sendFromIM }]" v-for="(item,i) in message" :key="i" @click="changeWindow(i,item.userDetail.userId,item.user)">
+                <div class="friendsList noBar">
+                    <div :class="['friend_item al bold', { 'f-act':i == sendFromIM }]" v-for="(item,i) in message" :key="i" 
+                        @click="changeWindow(i,item.userDetail.userId,item.user)">
                         <div class="adverse_img ju">
                             <img v-if="item.userDetail.userImage" :src="item.userDetail.userImage" alt="">
                             <img style="height:100%;" v-else :src="default_img" alt="">
                         </div>
                         <div>{{item.userDetail.userName}}</div>
                         <div class="newMsg tc" v-show="now_player != item.userDetail.userId && item.msg != 0">{{item.msg}}</div>
+                        <div class="dele_item" @click.stop="delete_item(i,item.userDetail.userId,item.user)" >
+                            <img class="cursor" v-if="sendFromIM == item.user"
+                            style="height: 100%;" src="@/assets/img/delete1.png" alt="">
+                            <img class="cursor" v-else
+                            style="height: 100%;" src="@/assets/img/delete.png" alt="">
+                        </div>
                     </div>
                 </div>
                 <div class="chat_ui">
@@ -34,7 +41,8 @@
                                     </div>
 
                                     <div :class="['msg_child', { mySend: item.type == 1 }, { theySend: item.type == 2 }, 
-                                    { cursor: item.msg_type != 'text' && item.msg_type != 'jpg' && item.msg_type != 'png' }]" @click="filesave(item.url)">
+                                        { cursor: item.msg_type != 'text' && item.msg_type != 'jpg' && item.msg_type != 'png' && 
+                                            item.fail != 'fail' }]" @click="filesave(item.url)">
                                         <div v-if="item.msg_type == 'text'">{{item.value}}</div>
 
                                         <div v-else-if="item.msg_type == 'jpg' || item.msg_type == 'png' " class="file_img ju al">
@@ -42,33 +50,42 @@
                                             <div v-else v-loading='true'></div>
                                         </div>
 
-                                        <div v-else-if="item.msg_type == 'zip' || item.msg_type == 'bmp' ||
-                                            item.msg_type == 'pdf' || item.msg_type == 'doc' || item.msg_type == 'docx' ||
-                                            item.msg_type == 'txt' " class="file_zip flex">
+                                        <div v-else-if="item.msg_type && item.msg_type != 'jpg' && item.msg_type != 'png'" class="file_zip flex">
                                             <div class="file_name">
                                                 {{item.fileName}}
                                             </div>
-                                            <img class="file_zip_img" src="@/assets/img/file-zip.png" alt="">
+                                            <img v-if="item.type == 1" class="file_zip_img" src="@/assets/img/file-zip1.png" alt="">
+                                            <img v-else class="file_zip_img" src="@/assets/img/file-zip.png" alt="">
                                         </div>
 
                                         <div :class="['msg_time', { gray:item.type == 2, white: item.type == 1 }]" 
                                         v-show="item.type != 3 && item.msg_type !== ''">{{item.time}} {{item.APM}}</div>
-                                    </div>
 
+                                        <div class="loading_file" v-loading='item.location == location && item.type == 1 && file_loading'></div>
+                                        <div class="loading_file ju al" v-show="item.fail == 'fail'">
+                                            
+                                            <el-tooltip class="item" effect="dark" content="Upload Failed!" placement="top">
+                                                <img class="fail_img_h" src="@/assets/img/fail.png" alt="">
+                                            </el-tooltip>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="inpMessage al">
+                    <div class="inpMessage al" v-show="sendFromIM">
                         <div class="Input al">
                             <el-input type="text" class="width100" v-model="adminInp" :disabled="disabled"
                             placeholder="Type a message" @keyup.enter.native="send"></el-input>
                         </div>
                         <div class="add al">
-                            <img class="cursor" src="@/assets/img/clip.png" alt="">
+                            <label for="file_img" class="al">
+                                <input type="file" id="file_img" v-show="false" @change="file_send" :class="['cursor']">
+                                <img :class="['cursor']" src="@/assets/img/clip.png" alt="">
+                            </label>
                         </div>
                         <div class="add al">
-                            <img class="cursor" @click="send" src="@/assets/img/msg_send.png" alt="">
+                            <img :class="['cursor']" @click="send" src="@/assets/img/msg_send.png" alt="">
                         </div>
                     </div>
                 </div>
@@ -90,7 +107,9 @@ export default {
             now_player: 0,
             im_player: '',
             Today: '',
-            pk: 0
+            pk: 0,
+            location: 0,
+            file_loading: false
         }
     },
     created () {
@@ -105,6 +124,22 @@ export default {
     },
     mounted () {
         this.initRecord()
+        if (this.$route.params.key) {
+            this.im_player = this.$route.params.key
+            this.sendFromIM = this.$route.params.key
+            this.now_player = this.$route.params.id
+            this.$store.commit("deMsg", {
+                key: "message",
+                value: this.$route.params.key
+            })
+            this.disabled = false
+            this.$store.commit("setUser", {
+                key: "fromIM",
+                value: this.$route.params.key
+            })
+            this.messageList = this.message[this.$route.params.key].messageList
+            this.headImage = this.message[this.$route.params.key].userDetail.userImage
+        }
     },
     watch: {
         message: {
@@ -159,10 +194,11 @@ export default {
     },
     methods: {
         filesave (url) {
-            console.log(url)
+            // console.log(url)
             window.location.href = url
         },
         changeWindow (key,userId,imUser) {
+            // console.log(key,userId,imUser)
             this.now_player = userId
             this.im_player = imUser
             this.$store.commit("deMsg", {
@@ -178,6 +214,7 @@ export default {
 
             this.messageList = this.message[key].messageList
             this.headImage = this.message[key].userDetail.userImage
+            let mask_dot = JSON.parse(localStorage.getItem('mask_dot'))
             this.$nextTick(() => {
                 this.$refs.showMsgTop.scrollTop = 90000
             })
@@ -279,6 +316,139 @@ export default {
                 }
             });
             this.$conn.send(msg.body);
+        },
+        file_send () {
+            let D = new Date()
+            let T = D.getTime()
+            let that = this
+            let hour = D.getHours()
+            let minute = D.getMinutes()
+            var id = this.$conn.getUniqueId();                   // 生成本地消息id
+            var msg = new this.$WebIM.message('file', id);        // 创建文件消息
+            var input = document.getElementById('file_img');  // 选择文件的input
+            var file = this.$WebIM.utils.getFileUrl(input);      // 将文件转化为二进制文件
+            console.log(file)
+            this.location = T
+            this.file_loading = true
+            if (T - localStorage.getItem('msgTime') >= 180000 && localStorage.getItem('msgTime') !== null) {
+                if (file.data.size <= 10485760) {
+                    this.timeSend()
+                }
+                this.message[this.sendFromIM].messageList.push({
+                    type: 3,
+                    value: '',
+                    userId: localStorage.getItem('userId'),
+                    time:this.Today + ' ' + D.getHours() + ':' + D.getMinutes(),
+                    APM: '',
+                    msg_type: 'text'
+                })
+                localStorage.setItem('msgTime', T )
+            } else {
+                if (localStorage.getItem('msgTime') === null) {
+                    this.message[this.sendFromIM].messageList.push({
+                        type: 3,
+                        value: '',
+                        userId: localStorage.getItem('userId'),
+                        time:this.Today + ' ' + D.getHours() + ':' + D.getMinutes(),
+                        APM: '',
+                        msg_type: 'text'
+                    })
+                }
+                localStorage.setItem('msgTime', T)
+            }
+            var obj = {
+                type: 1,
+                value: file.url,
+                time: D.getHours() + ':' + D.getMinutes(),
+                APM: hour >= 12 && minute >= 0? 'PM':'AM',
+                msg_type: file.filetype,
+                fileName: file.filename,
+                userId: localStorage.getItem('userId'),
+                url: file.url,
+                location: T
+            }
+            var f_obj = {
+                type: 1,
+                value: file.url,
+                time: D.getHours() + ':' + D.getMinutes(),
+                APM: hour >= 12 && minute >= 0? 'PM':'AM',
+                msg_type: file.filetype,
+                fileName: file.filename,
+                userId: localStorage.getItem('userId'),
+                url: file.url,
+                location: T,
+                fail: 'fail'
+            }
+            if (file.data.size > 10485760) {
+                this.message[this.sendFromIM].messageList.push(f_obj)
+                that.file_loading = false
+                this.$nextTick(() => {
+                    this.$refs.showMsgTop.scrollTop = 10000
+                })
+                return false
+            } else {
+                this.message[this.sendFromIM].messageList.push(obj)
+            }
+            //自定义发送消息类型
+            var id = this.$conn.getUniqueId();                 // 生成本地消息id
+            var msg = new this.$WebIM.message('file', id);   // 创建自定义消息
+            var customEvent = "flie";             // 创建自定义事件
+            var customExts = {'file': file.url};                         // 消息内容，key/value 需要 string 类型
+            msg.set({
+                file: file,
+                to: this.sendFromIM,                          // 接收消息对象（用户id）
+                customEvent,
+                customExts,
+                ext: {
+                    fileName: file.filename,
+                    file_length: file.data.size,
+                    detail: this.userDetail,
+                    platform: localStorage.getItem('adminPlatform'),
+                    userId: localStorage.getItem('adminUserId'),
+                    time: D.getHours() + ':' + D.getMinutes(),
+                    APM: hour >= 12 && minute >= 0? 'PM':'AM',
+                    localTime: T,
+                    fileType: file.filetype
+                },                                 // 消息扩展
+                roomType: false,
+                flashUpload: this.$WebIM.flashUpload,
+                success: function (id, serverMsgId) {
+                    that.file_loading = false
+                },
+                fail: function(e){
+                    // console.log(e,'fail')
+                    that.file_loading = false
+                    // console.log(that.message[that.sendFromIM].messageList.reverse()[0])
+                    // that.message[that.sendFromIM].messageList.reverse()[0].fail = 'fail'
+                }
+            });
+            this.$conn.send(msg.body);
+            this.$nextTick(() => {
+                this.$refs.showMsgTop.scrollTop = 10000
+            })
+        },
+        delete_item (key,userId,imUser) {
+            this.$confirm('Are you sure to log outAre you sure you want to delete the conversation? The chat history will be cleared after deletion!', 'Attention', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                this.im_player = ''
+                this.now_player = 0
+                this.sendFromIM = ''
+                this.$store.commit("setUser", {
+                    key: "fromIM",
+                    value: ''
+                })
+
+                this.messageList = []
+                this.headImage = []
+                this.$nextTick(() => {
+                    this.$store.commit('deleteMSG',{ key: 'message', value: key })
+                })
+            }).catch (e => {
+                console.log(e)
+            })
         }
     }
 }
@@ -310,6 +480,7 @@ export default {
     .friendsList {
         width: 270px;
         border: solid 1px rgb(185, 181, 181);
+        overflow: auto;
     }
     .friend_item {
         padding: 10px 0;
@@ -325,10 +496,30 @@ export default {
             color: white;
             padding: 1px 10px;
             font-size: 12px;
+            transition: 0.2s;
+        }
+        .dele_item {
+            position: absolute;
+            right: 10px;
+            width: 25px;
+            height: 25px;
+            transform: translate(0,-50%);
+            transition: 0.2s;
+            opacity: 0;
+            top: 50%;
         }
     }
+    .friend_item:hover {
+        background: rgb(218, 218, 218);
+    }
+    .friend_item:hover .newMsg {
+        right: 40px;
+    }
+    .friend_item:hover .dele_item {
+        opacity: 0.9;
+    }
     .f-act {
-        background: @logout;
+        background: @logout !important;
         color: white;
     }
     .chat_ui {
@@ -387,6 +578,17 @@ export default {
             right: 5px;
             font-size: 12px;
         }
+        .loading_file {
+            position: absolute;
+            top: 50%;
+            left: -60px;
+            width: 40px;
+            height: 40px;
+            transform: translate(0, -50%);
+        }
+    }
+    .fail_img_h {
+        height: 70%;
     }
     .gray {
         color: gray !important;
@@ -452,5 +654,10 @@ export default {
             height: 45px;
             margin-left: 10px;
         }
+    }
+    .pointer {
+        pointer-events: none !important;
+        cursor: default;
+        opacity: 0.6;
     }
 </style>

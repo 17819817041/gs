@@ -22,19 +22,16 @@
                 </div>
             </div>
             <div v-else></div>
-            <!-- <div class="input" >
-                <el-input style="transform:scale(1);border:none;" prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
-            </div> -->
             <div class="function al">
                 <div class="al sb function_item" v-if="login" >
                     <div class="userName al sb">
                         
                         <div class="myMessage al">
                             <label for="ava" class="cursor label_img ju al">
-                                <input id="ava" v-show="false" type="file" @change="getImage"/>   <!-- 头像路径-->
-                                <div class="ju al headimg_wrap">
+                                <!-- <input id="ava" v-show="false" type="file" @change="getImage"/>  -->
+                                <div class="ju al headimg_wrap"  @click="getImage">
                                     <img style="height:100%;" v-if="userDetail.image" :src="userDetail.image" alt="">
-                                    <i class="el-icon-picture-outline" style="font-size:30px;color:gray" v-else></i>
+                                    <img style="height:100%;" v-else :src="default_img" alt="">
                                 </div>
                             </label>
                             <div class="name white al">{{userDetail.name}}</div>
@@ -112,6 +109,7 @@ export default {
                 })
             },
         },
+        default_img () { return this.$store.state.user.default_img },
     },
     created () {
         this.getUser()
@@ -146,54 +144,74 @@ export default {
             this.$router.push("/petPage")
         },
         getImage (e) {
-            this.dealImg(e.target.files[0],(img) => {
-                var formData = new FormData();
-                formData.append('file', img);
-                file(formData).then(res => {
-                    console.log(res)
-                    if (res.data.rtnCode == 200) {
-                        this.userDetail.image = res.data.data
-                        let data = {
-                            userId: localStorage.getItem('adminUserId'),
-                            image: this.userDetail.image
-                        }
-                        updateAdmin(data).then(res => {
-                            if (res.data.rtnCode == 200) {
-                                this.$store.dispatch('getUser',this)
-                                this.$message({
-                                    type: 'success',
-                                    message: 'Successfully modified!'
-                                })
-                                this.edit = 1
-                            } else {
-                                this.$message({
-                                    type: 'error',
-                                    message: 'Fail to edit!'
-                                })
-                            }
-                        }).catch(e => {
-                            this.$message({
-                                type: 'error',
-                                message: 'Fail to edi!'
-                            })
-                        })
-                    } else {
-                        this.userDetail.image = ''
-                    }
-                })
-            })
-            
+            this.$router.push('/setting')
+            // this.dealImg(e.target.files[0],(img) => {
+            //     var formData = new FormData();
+            //     formData.append('file', img);
+            //     file(formData).then(res => {
+            //         console.log(res)
+            //         if (res.data.rtnCode == 200) {
+            //             this.userDetail.image = res.data.data
+            //             let data = {
+            //                 userId: localStorage.getItem('adminUserId'),
+            //                 image: this.userDetail.image
+            //             }
+            //             updateAdmin(data).then(res => {
+            //                 if (res.data.rtnCode == 200) {
+            //                     this.$store.dispatch('getUser',this)
+            //                     this.$message({
+            //                         type: 'success',
+            //                         message: 'Successfully modified!'
+            //                     })
+            //                     this.edit = 1
+            //                 } else {
+            //                     this.$message({
+            //                         type: 'error',
+            //                         message: 'Fail to edit!'
+            //                     })
+            //                 }
+            //             }).catch(e => {
+            //                 this.$message({
+            //                     type: 'error',
+            //                     message: 'Fail to edi!'
+            //                 })
+            //             })
+            //         } else {
+            //             this.userDetail.image = ''
+            //         }
+            //     })
+            // })
         },
         search () {
             if (!this.inp) {
                 return false
             }
+            
             let data = {
                 name: this.inp,
                 searchType: this.petOrDoc,
                 doctorId: -1
             }
+            if (this.petOrDoc == 1) {
+                this.$store.commit("setUser", {
+                    key: "doctorList",
+                    value: []
+                })
+            } else if (this.petOrDoc == 2) {
+                this.$store.commit("setUser", {
+                    key: "getDoctorMedicalLimitList",
+                    value: []
+                })
+            }
+            this.$store.commit("setUser", {
+                key: "loading6",
+                value: true
+            })
             searchDoc(data).then(res => {
+                this.$store.commit("setUser", {
+                    key: "loading6",
+                    value: false
+                })
                 if (this.petOrDoc == 1) {
                     if (res.data.rtnCode == 200) {
                         this.$store.commit("setUser", {
@@ -215,6 +233,15 @@ export default {
                         this.$store.commit("setUser", {
                             key: "getDoctorMedicalLimitList",
                             value: res.data.data
+                        })
+                    } else {
+                        this.$store.commit("setUser", {
+                            key: "getDoctorMedicalLimitList",
+                            value: []
+                        })
+                        this.$store.commit("setUser", {
+                            key: "loading6",
+                            value: false
                         })
                     }
                 }
@@ -270,7 +297,7 @@ export default {
         }
         @media screen and (max-width: 1230px) {
             width: 109%;
-            right: -197px;
+            right: -157px;
         }
     }
     .div .search {

@@ -19,7 +19,7 @@
     }
     .calendar {
         width: 100%;
-        height: 100%;
+        height: calc(100% - 26px);
         // border: solid 1px;
         .appointment_details {
             width: 100%;
@@ -48,9 +48,7 @@
         width: 55px;
         height: 55px;
         overflow: hidden;
-        @media screen and (max-width: 400px) {
-            display: none;
-        }
+        margin: 5px auto;
     }
     .appointment_details_img {
         height: 100%;
@@ -142,6 +140,20 @@
             display: block;
         }
     }
+    .wrap_img_b {
+        min-width: 150px;
+        @media screen and (max-width: 564px) {
+            min-width: 75px;
+        }
+    }
+    .sort_booking {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        border: solid 2px rgb(199, 199, 199);
+        margin-left: 7px;
+        width: 150px;
+    }
 </style>
 
 <template>
@@ -155,30 +167,42 @@
                             <img src="@/assets/img/appointment.png" alt="">
                             Appointment
                         </div>
+                        <div class="sort_booking">
+                            <el-select v-model="sort_m" placeholder="Classification" @change="sort_t">
+                                <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </div>
                     </div>
                     <div class="calendar flex">
                         <div class="appointment_details" v-loading="l_loading" v-if="booking">
                             <div class="appointment_details_child noBar">
-                                <div class="appointment_details_item sa cursor" v-for="(item) in booking" :key="item.booking.bookingId" 
-                                @click="toConfirm(item.booking.bookingId)">
-                                    <div class="appointment_details_img_wrap ju al">
-                                        <img class="appointment_details_img" v-if="item.userImage" :src="item.userImage" alt="">
-                                        <img style="height:100%;" v-else :src="default_img" alt="">
+                                <div class="appointment_details_item sb cursor" v-for="(item) in booking" :key="item.booking.bookingId" 
+                                    @click="toConfirm(item.booking.bookingId)">
+                                    <div class="wrap_img_b">
+                                        <div class="appointment_details_img_wrap ju al">
+                                            <img class="appointment_details_img" v-if="item.userImage" :src="item.userImage" alt="">
+                                            <img style="height:100%;" v-else :src="default_img" alt="">
+                                        </div>
+                                        <div class="size13 user_b tc">{{item.booking.userName}}</div>
                                     </div>
-                                    <div class="appointment_details_name user_b">
-                                        <div style="padding-bottom:7px;" class="size13 user_b">{{item.booking.userName}}</div>
-                                        <div class="size12 al">
+                                    <div style="width: 100%;min-width: 190px;">
+                                        <div class="size12 al ju">
                                             <img class="callimg" src="@/assets/img/callimg.png" alt="">
                                             Phone Counsultation
                                         </div>
-                                    </div>
-                                    <div class="DateTime">
-                                        <div style="padding-bottom:7px;" class="size14_a">Date and Time</div>
-                                        <div class="size13_a">{{item.booking.bookingDate}} - {{item.booking.bookingStartTime}} {{item.booking.APM}}</div>
-                                    </div>
-                                    <div class="pet_name">
-                                        <div style="padding-bottom:7px;" class="size12">Pet Name</div>
-                                        <div class="size13_a">{{item.booking.petName}}</div>
+                                        <div class="DateTime sb">
+                                            <div style="padding-bottom:7px;" class="size14_a">Date and Time</div>
+                                            <div class="size13_a">{{item.booking.bookingDate}} - {{item.booking.bookingStartTime}} {{item.booking.APM}}</div>
+                                        </div>
+                                        <div class="pet_name sb">
+                                            <div style="padding-bottom:7px;" class="size12">Pet Name</div>
+                                            <div class="size13_a">{{item.booking.petName}}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -203,7 +227,7 @@
 </template>
 
 <script>
-import { bookingUserId, allBooking,deleteBooking } from "@/axios/request.js"
+import { bookingUserId, allBooking_doc,deleteBooking } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -214,6 +238,20 @@ export default {
             pageNum: 1,
             totalRecordsCount: 0,
             small: false,
+
+            options: [{
+                value: 1,
+                label: 'All'
+                }, {
+                value: 2,
+                label: 'Undone'
+                }, {
+                value: 3,
+                label: 'Completed'
+            }],
+            value: 1,
+            small: false,
+            sort_m: 1
         }
     },
     created () {
@@ -281,9 +319,8 @@ export default {
         },
         getBooking () {
             let data = {
-                userId: localStorage.getItem('userId'),
-                userType: 2,
-                data: this.today,
+                doctorId: localStorage.getItem('userId'),
+                type: 3,
                 pageNum: this.pageNum,
                 pageSize: 10,
                 sort: 1
@@ -293,7 +330,7 @@ export default {
                 
             } else {
                 this.$store.commit("setUser",{ key: "n_loading", value: true })
-                bookingUserId(data).then(res => {
+                allBooking_doc(data).then(res => {
                     this.$store.commit("setUser",{ key: "n_loading", value: false }) 
                     if (res.data.rtnCode == 200) {
                         res.data.data.pageT.forEach(item => {
@@ -310,7 +347,6 @@ export default {
                             }
                             item.booking.calanderDate = date[0] + "-" + date[1] + "-" + date[2]
                         })
-                        // this.booking = this.booking.concat(res.data.data.pageT)
                         this.booking = res.data.data.pageT
                         this.totalRecordsCount = res.data.data.totalRecordsCount
                         this.loading = false
@@ -349,6 +385,106 @@ export default {
                 name: 'vetConfirm',
                 query: id
             })
+        },
+        sort_t (val) {
+            this.booking = []
+            this.loading = true
+            this.pageNum = 1
+            // let Y = new Date()
+            // Y.setTime(Y.getTime()-24*60*60*1000);
+            // var yday = Y.getFullYear()+"-" + (Y.getMonth()+1) + "-" + Y.getDate();
+
+            if (val == 1) {
+                this.getBooking()
+            } else if (val == 2) {
+                this.Undone()
+            } else if (val == 3) {
+                this.Completed()
+            }
+        },
+        Undone () {         
+            let data = {
+                doctorId: localStorage.getItem('userId'),
+                type: 2,
+                pageNum: this.pageNum,
+                pageSize: 10,
+                sort: 1
+            }
+            if ((this.totalRecordsCount == this.booking.length) && this.totalRecordsCount !=0 ) {
+                this.$store.commit("setUser",{ key: "n_loading", value: false })
+            } else { 
+                this.$store.commit("setUser",{ key: "n_loading", value: true })
+                allBooking_doc(data).then(res => {
+                    // console.log(res, '未完成')
+                    this.$store.commit("setUser",{ key: "n_loading", value: false })
+                    if (res.data.rtnCode == 200) {
+                        res.data.data.pageT.forEach(item => {
+                            if (item.booking.bookingState == 1 || item.booking.bookingState == 2 ) {
+                                let date = item.booking.bookingDate
+                                let En = new Date(date).toDateString()
+                                let arr = En.split(' ')
+                                item.booking.bookingDate = arr[2] + ' ' + arr[1] + ','+ arr[3]
+                                item.booking.APM = ''
+                                var hour = Number(item.booking.bookingStartTime.split(':')[0])
+                                var minute = Number(item.booking.bookingStartTime.split(':')[1])
+                                if ( hour >= 12 && minute >= 0) {
+                                    item.booking.APM = 'PM'
+                                } else {
+                                    item.booking.APM = 'AM'
+                                }
+                            }
+                        })
+                        this.booking = this.booking.concat(res.data.data.pageT)
+                        this.totalRecordsCount = res.data.data.totalRecordsCount
+                    } else if (res.data.rtnCode == 201 ) {
+                        this.booking = res.data.data
+                    } else {
+                        this.booking = null
+                    }
+                })
+            }
+        },
+        Completed () {
+            let data = {
+                doctorId: localStorage.getItem('userId'),
+                type: 1,
+                pageNum: this.pageNum,
+                pageSize: 10,
+                sort: 1
+            }
+            if ((this.totalRecordsCount == this.booking.length) && this.totalRecordsCount !=0 ) {
+                this.$store.commit("setUser",{ key: "n_loading", value: false })
+            } else { 
+                this.$store.commit("setUser",{ key: "n_loading", value: true })
+                allBooking_doc(data).then(res => {
+                    // console.log(res,'已完成')
+                    this.$store.commit("setUser",{ key: "n_loading", value: false })
+                    if (res.data.rtnCode == 200) {
+                        res.data.data.pageT.forEach(item => {
+                            if (item.booking.bookingState == 1 || item.booking.bookingState == 2 ) {
+                                let date = item.booking.bookingDate
+                                let En = new Date(date).toDateString()
+                                let arr = En.split(' ')
+                                item.booking.bookingDate = arr[2] + ' ' + arr[1] + ','+ arr[3]
+                                item.booking.APM = ''
+                                var hour = Number(item.booking.bookingStartTime.split(':')[0])
+                                var minute = Number(item.booking.bookingStartTime.split(':')[1])
+                                if ( hour >= 12 && minute >= 0) {
+                                    item.booking.APM = 'PM'
+                                } else {
+                                    item.booking.APM = 'AM'
+                                }
+                            }
+                        })
+                        this.booking = this.booking.concat(res.data.data.pageT)
+                        this.totalRecordsCount = res.data.data.totalRecordsCount
+                    } else if (res.data.rtnCode == 201 ) {
+                        this.booking = res.data.data
+                    } else {
+                        this.booking = null
+                    }
+                })
+            }
         }
     }
 }

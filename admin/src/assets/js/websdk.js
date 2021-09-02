@@ -23,16 +23,16 @@ conn = WebIM.conn = new WebIM.connection({
 
 conn.listen({
     onOpened: function ( message ) {
-        console.log("open登录",message)
+        // console.log("open登录",message)
     },         //连接成功回调 
     onClosed: function ( message ) {
-        console.log("close登出")
+        // console.log("close登出")
     },         //连接关闭回调
     onTextMessage: function ( e ) {
-        console.log("收到消息", e)
+        // console.log("收到消息", e)
         let data = JSON.parse(e.data)    
         let from = e.from
-        console.log("收到消息", data)
+        // console.log("收到消息", data)
         // 收到来电
         if (data.type == 'danmu') {
             var obj = {
@@ -97,18 +97,27 @@ conn.listen({
             store.commit("addMsg",{ key: 'message', value: { content: message, user: e.from } })
             localStorage.setItem('new_msg', true)
             store.commit('setUser', { key: 'newMsg_dot', value: true })
+
+            if (e.from.split('a')[1] == 1) {
+                localStorage.setItem('mask_dot', e.from.split('a')[0])
+            } else if (e.from.split('a')[1] == 2) {
+                localStorage.setItem('mask_dot1', e.from.split('a')[0])
+            }
+            store.commit('setUser', { key: 'mask_dot', value: e.from })
+        }
+        if (data.type == 'getPetDetails') {
+            store.dispatch('getPetDetails')
         }
     },    //收到文本消息
 
     onFileMessage: function ( e ) {
-        console.log("Location of Picture is ", e);
         var obj = {
             type: 2,
             value: e.url,
             time: e.ext.time,
             APM: e.ext.APM,
             msg_type: e.ext.fileType,
-            fileName: e.filename,
+            fileName: e.ext.fileName,
             url: e.url
         }
         var D = new Date()
@@ -136,6 +145,10 @@ conn.listen({
         localStorage.setItem('new_msg', true)
         store.commit('setUser', { key: 'newMsg_dot', value: true })
     },    //收到文件消息
+
+    // onCustomMessage: function ( e ) {
+    //     console.log(e,'收到自定义消息')
+    // },  //收到自定义消息
 });
 
 

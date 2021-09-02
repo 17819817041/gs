@@ -1,8 +1,7 @@
 import axios from "axios"
 // window.baseURL = 'https://petavi.top/api'
 window.baseURL = '/api'
-// window.baseURL = 'http://192.168.10.10:9011/api'
-// window.baseURL = 'http://47.52.255.24:9011/api'
+// window.baseURL = 'http://192.168.9.27:9011/api'
 
 const service = axios.create({
     baseURL: window.baseURL

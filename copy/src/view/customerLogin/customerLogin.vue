@@ -4,8 +4,13 @@
         height: 100%;
     }
     .FormL {
-        width: 700px;
+        width: 100%;
+        max-width: 700px;
         padding: 0 25px;
+        @media screen and (max-width: 800px) {
+            width: 95%;
+            padding: 0;
+        }
     }
     .title {
         padding: 40px 0;
@@ -129,7 +134,7 @@
     <div class="login" v-loading="loading">
         <div class="headimg_wrap">
             <div class="logo">
-                <img class="logo_IMG" src="@/assets/img/logo.png" alt=""> <!--  @click="test" -->
+                <img class="logo_IMG" src="@/assets/img/logo.png" alt="">
             </div>
             <!-- <myHeaderL></myHeaderL> -->
             <myHeader></myHeader>
@@ -199,7 +204,7 @@ export default {
             },
             form: {
                 platform:1,
-                email:'15@qq.com',
+                email:'1257354834@qq.com',
                 password:'123'
 
                 // platform: 1,

@@ -49,8 +49,12 @@ export default {
     .vetReset_content {
         width: 100%;
         height: 100%;
+        margin-top: 60px;
         .vetReset_form {
             width: 700px;
+            @media screen and (max-width: 800px) {
+                width: 91%;
+            }
         }
     }
     .vetResetText {

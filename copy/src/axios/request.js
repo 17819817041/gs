@@ -210,9 +210,17 @@ export function bookingUserId (data) {                 //userId获取当前预�
     })
 }
 
-export function allBooking (data) {                     //userId获取所有预约信息
+export function allBooking (data) {                     //userId获取所有预约信息?type=2&pageNum=1&pageSize=100&userId=572&sort=1    1 已结束 2 未开始 3 全部
     return request({
-        url: "/booking/getBookingAll",
+        url: "/booking/getBookingPageByUserId",
+        method: "POST",
+        params: data
+    })
+}
+
+export function allBooking_doc (data) {                     //doctorId获取所有预约信息?type=1&pageNum=1&pageSize=100&doctorId=574&sort=2    1 已结束 2 未开始 3 全部
+    return request({
+        url: "/booking/getBookingPageByDoctorId",
         method: "POST",
         params: data
     })

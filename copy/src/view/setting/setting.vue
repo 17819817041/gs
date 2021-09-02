@@ -887,7 +887,7 @@
 </template>
 
 <script>
-import { pay, updateUserDetails, file, allOrder, paypals, bestDoc, paymentRecord } from "@/axios/request.js"
+import { pay, updateUserDetails, file, bestDoc, paymentRecord } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -939,7 +939,6 @@ export default {
         this.payment = this.payment - check/1000
         this.payment = this.payment.toLocaleString()
         this.getBalance()
-        this.getAllOrder()
         this.paymentRecord()
         this.changeDoc()
     },
@@ -980,16 +979,6 @@ export default {
             bestDoc().then(res => {
                 this.myBestDoc = res.data.data
                 this.userChoiceDoctor(this.user.userChoiceDoctor)
-            })
-        },
-        getAllOrder () {
-            let data = {
-                userId: localStorage.getItem('userId'),
-                pageNum: 0,
-                pageSize: 10
-            }
-            allOrder(data).then(res => {
-                console.log(res)
             })
         },
         getBalance () {

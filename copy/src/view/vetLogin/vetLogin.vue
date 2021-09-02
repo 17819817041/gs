@@ -1,7 +1,11 @@
 <style lang="less" scoped>
 @import "@/less/css.less";
     .FormL {
-        width: 700px;
+        width: 100%;
+        max-width: 700px;
+        @media screen and (max-width: 800px) {
+            width: 95%;
+        }
     }
     .title {
         padding: 40px 0;
@@ -34,6 +38,13 @@
         width: 50px;
         height: 50px;
     }
+    .label {
+        margin-left: 10px;
+        width: 50px;
+        height: 50px;
+        overflow: hidden;
+        border-radius: 50%;
+    }
     label {
         height: 50px;
     }
@@ -48,9 +59,11 @@
         width: 30px;
     }
     .signUp {
-        margin-top: 65px;
+        margin-top: 35px;
+        @media screen and (max-width:564px) {
+            margin-top: 25px;
+        }
     }
-
     .headimg_wrap {
         position: relative;
         .logo {
@@ -80,13 +93,15 @@
             height: 60px;
         }
     }
+    .three_log {
+        @media screen and (max-width: 377px) {
+            flex-direction: column;
+        }
+    }
 </style>
 
 <template>
     <div class="login" v-loading='loading'>
-        <!-- <div>
-            <myHeaderL></myHeaderL>
-        </div> -->
         <div class="headimg_wrap">
             <div class="logo">
                 <img class="logo_IMG" src="@/assets/img/logo.png" alt=""> <!--  @click="test" -->
@@ -119,23 +134,25 @@
                     </el-form-item>
 
                     <el-form-item>
-                        <div class="size12 ju al">
-                            <span class=" size12 cursor" @click="forget">Forgot your password?</span>
-                            <span class="size12">or Login With</span>
-                            <div class="al label cursor">
-                                <label for="vetFacebook al_v">
-                                    <img class="cursor facebookLogo" src="@/assets/img/facebook.png" alt="">
-                                    <div id="vetFacebook" class="al_v cursor" style="opacity:0;border:solid 1px">
-                                        <fb-signin-button
-                                            :params="fbSignInParams"
-                                            @success="onSignInSuccess"
-                                            @error="onSignInError">
-                                            facebook
-                                        </fb-signin-button>
-                                    </div>
-                                </label>
+                        <div class="size12 ju al three_log">
+                            <div style="white-space:nowrap"><span class=" size12 cursor" style="white-space:nowrap" @click="forget">Forgot your password?</span>
+                            <span class="size12" style="padding-left: 3px; white-space:nowrap;">or Login With</span></div>
+                            <div class="al">
+                                <div class="al label cursor">
+                                    <label for="vetFacebook al_v">
+                                        <img class="cursor facebookLogo" src="@/assets/img/facebook.png" alt="">
+                                        <div id="vetFacebook" class="al_v cursor" style="opacity:0;border:solid 1px">
+                                            <fb-signin-button
+                                                :params="fbSignInParams"
+                                                @success="onSignInSuccess"
+                                                @error="onSignInError">
+                                                facebook
+                                            </fb-signin-button>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="al label"><img class="cursor googleLogo" ref="vetGoogle" src="@/assets/img/GoogleImg.png" alt=""></div>
                             </div>
-                            <div class="al label"><img class="cursor googleLogo" ref="vetGoogle" src="@/assets/img/GoogleImg.png" alt=""></div>
                         </div>
                     </el-form-item>
                 </el-form>
@@ -165,7 +182,7 @@ export default {
             },
             form: {
                 platform:2,
-                email:'14@qq.com',
+                email:'972307875@qq.com',
                 password:'123'
 
                  

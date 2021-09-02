@@ -499,8 +499,8 @@
 </template>
 
 <script>
-import { petDetails, PetMedicalRecor, petType } from "@/axios/request.js"
-import { getUserByPetId, getPetMedicalRecord } from "@/axios/request.js"
+import { petType } from "@/axios/request.js"
+import { getPetMedicalRecord } from "@/axios/request.js"
 export default {
     data () {
         return {

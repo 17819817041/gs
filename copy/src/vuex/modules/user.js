@@ -1,5 +1,6 @@
 import { petList, getUserDetails, vetDetails, doctorList, bookingUserId, notice, onlineState, balance, addMetting, s_online, joinRoom } from "@/axios/request.js"
 import router from "@/router/router/router.js"
+import { Message } from 'element-ui';
 import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 import Vue from "vue"
 export default {
@@ -12,7 +13,6 @@ export default {
             remoteStreams: [],
             params: {}
         },
-        remoteStream_mute: {},
         IMuser: {},
         login: false,
         petList:[],
@@ -92,7 +92,7 @@ export default {
                 uid: data.uid,
                 token: data.token,
                 mode: "live",
-                codec: "h264",
+                codec: "vp8",
                 vm:data.vm
             }
             // rtc.client = data.rtc.createClient({mode: option.mode, codec: option.codec})
@@ -136,7 +136,8 @@ export default {
                             caller: store.state.caller,
                             callTo: store.state.userDetail,
                             createdTime: date,
-                            roomNumber: 'petavi_' + localStorage.getItem('sroom')
+                            roomNumber: 'petavi_' + localStorage.getItem('sroom'),
+                            bookingDetail: localStorage.getItem('bookingDoc')? localStorage.getItem('bookingDoc') : 'Temporary call'
                         }
                         let metting = {
                             'jo': [{
@@ -168,10 +169,8 @@ export default {
                     })
                     store.commit('setUser',{ key: 'setTime_S', value: true })
                   }, function (err)  {
-                    console.error("init local stream failed ", err)
-
                     if (localStorage.getItem('platform') == 2) {                       //医生加入频道失败并发送通知至拨号者
-                        const caller = option.vm.$store.state.user.caller
+                        const caller = store.state.caller
                         let fail = {
                             type: "callToJoinFail"
                         }
@@ -183,15 +182,18 @@ export default {
                             chatType: 'singleChat',                  // 设置为单聊   
                         });
                         conn.send(msg.body);
+                        router.replace('/myCustomer')
+                    } else {
+                        router.replace('/myDoctor')
                     }
-
-                    data.vm.$message.error('The browser cannot get the camera or the device does not support!')
-                    router.back()
+                    Message({
+                        type: 'error',
+                        message: 'The browser cannot get the camera or the device does not support!'
+                    })
                   })
                 }, function(err) {
-                    console.error("Client join failed", err)
                     if (localStorage.getItem('platform') == 2) {                       //医生加入频道失败并发送通知至拨号者
-                        const caller = option.vm.$store.state.user.caller
+                        const caller = store.state.caller
                         let fail = {
                             type: "callToJoinFail"
                         }
@@ -203,9 +205,14 @@ export default {
                             chatType: 'singleChat',                  // 设置为单聊   
                         });
                         conn.send(msg.body);
+                        router.replace('/myCustomer')
+                    } else {
+                        router.replace('/myDoctor')
                     }
-                    data.vm.$message.error('Client join failed')
-                    router.back()
+                    Message({
+                        type: 'error',
+                        message: 'The browser cannot get the camera or the device does not support!'
+                    })
                 })
             }, (err) => {
                 data.vm.$message.error('Client join failed')
@@ -222,7 +229,7 @@ export default {
                 rtc.localStream.close()
                 // rtc.localStream = null
                 // rtc.remoteStreams = []
-                console.log("client leaves channel success")
+                // console.log("client leaves channel success")
                 rtc.client.unpublish(rtc.localStream)
                 if (localStorage.getItem('platform') == 2) {
                     let data = {
@@ -248,12 +255,14 @@ export default {
             router.back()
         },
         muteAudio (store) {             //静音
-            // rtc.remoteStreams[0].setAudioVolume(0);
-            console.log(store.state.remoteStream_mute)
-            store.state.remoteStream_mute.setAudioVolume(0);
+            var rtc = store.state.rtc
+            rtc.remoteStreams[0].setAudioVolume(0);
+            // store.state.remoteStream_mute.setAudioVolume(0);
+            // window.remoteStream.setAudioVolume(0)
         },
         unMuteAudio (store) {             //UN静音
-            store.state.remoteStream_mute.setAudioVolume(100);
+            store.state.rtc.remoteStreams[0].setAudioVolume(100);
+            // window.remoteStream.setAudioVolume(100)
         },
         getPetList (store,data) {
             petList(data).then(res => {
@@ -311,7 +320,7 @@ export default {
                         store.dispatch("IMLogin")
                         store.dispatch("joinRoom")
                         store.commit("setUser",{ key: "login", value: true })
-                    } else if (res.data.rtnCode == 500) {
+                    } else {
                         store.commit("setUser",{ key: "login", value: false })
                         localStorage.removeItem("Token")
                         localStorage.removeItem("userId")
@@ -326,7 +335,7 @@ export default {
                         && vm.$route.name !== 'petmessage'
                         && vm.$route.name !== 'signUp') {
                             router.replace('/customerLogin')
-                            vm.$message.error('Login expired, please log in again !');
+                            // vm.$message.error('Login expired, please log in again !');
                         }
 
                         store.commit("setUser",{ key: "login", value: false })
@@ -483,7 +492,7 @@ export default {
                 platform: localStorage.getItem("platform"),
                 userId: localStorage.getItem("userId"),
                 pageNum: num.num,
-                pageSize:20
+                pageSize:30
             }
             store.commit("setUser",{ key: "loading6", value: true })
             if ((store.state.totalRecordsCount == store.state.doctorList.length) &&store.state.totalRecordsCount !=0 ) {
@@ -510,8 +519,8 @@ export default {
                                 key: "mask",
                                 value: res.data.data.pageT[0]
                             })
-                            store.commit("setUser", { key: 'vDetail', value: res.data.data.pageT[0] } )
-                            store.commit("setUser", { key: 'rate', value: res.data.data.pageT[0].baseScore } )
+                            store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
+                            store.commit("setUser", { key: 'rate', value: store.state.doctorList[0].baseScore } )
                         }
                         // if ((store.state.totalRecordsCount == store.state.doctorList.length) &&store.state.totalRecordsCount !=0 ) {
                         //     store.commit("setUser",{ key: "loading6", value: false })
@@ -521,7 +530,7 @@ export default {
                         store.commit("pageAdd", null )
                         num.vm.$message({
                             type: 'error',
-                            message: 'Loading timed out, please check the network!'
+                            message: 'Failed to load!'
                         })
                     }
                 }).catch(e => {

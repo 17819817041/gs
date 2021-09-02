@@ -1,6 +1,6 @@
 <template>
     <div class="reschedule">
-        <div class="reschedule flex">
+        <div class="reschedule flex" v-loading='loading'>
             <div class="reschedule_content">
                 <div class="appointment_content_item_wrap mg">
                     <div class="explan al">
@@ -11,7 +11,7 @@
                         <div>
                             <div class="head_image ju al">
                                 <img class="Appointment_img" v-if="confirmKey.userImage" :src="confirmKey.userImage" alt="">
-                                <i v-else class="el-icon-picture-outline" style="font-size:75px;color:gray"></i>
+                                <img style="height:100%;" v-else :src="default_img" alt="">
                             </div>
                         </div>
                         <div class="calendar_wrap">
@@ -109,16 +109,20 @@ export default {
             },
             change: true,
             value: '',
+            loading: false,
             value1: ''
         }
     },
     created () {
         this.getMsg()
     },
+    computed: {
+        default_img () { return this.$store.state.user.default_img }
+    },
     methods: {
         sureUpdate () {
             let data = {
-                bookingId: this.$route.query.key,
+                bookingId: this.$route.query.id,
                 bookingStartTime:this.value,
                 bookingTime: this.confirmKey.booking.bookingTime,
                 bookingDate: new Date(this.value1).toLocaleDateString()
@@ -145,7 +149,7 @@ export default {
         },
         getMsg () {
             let data = {
-                bookingId: this.$route.query
+                bookingId: this.$route.query.id
             }
             bookingId(data).then(res => {
                 console.log(res,'asd')
@@ -173,25 +177,29 @@ export default {
                 type: 'warning'
             }).then(() => {
                 let data = {
-                    bookingId: this.$route.query.key
+                    bookingId: this.$route.query.id
                 }
+                this.loading = true
                 deleteBooking(data).then(res => {
                     console.log(res)
+                    this.loading = false
                     if (res.data.rtnCode == 200 ) {
                         this.$message({
                             type: "success",
                             message: "Appointment cancelled!"
                         })
-                        this.$router.replace('/myAppointment')
+                        this.$router.replace('/appointment')
                     } else {
                         this.$message({
                             type: "error",
                             message: "Fail cancelled!"
                         })
+                        this.loading = false
                     }
                 })
             }).catch (e => {
                 console.log(e)
+                this.loading = false
                 this.$message({
                     type: "error",
                     message: "Fail cancelled!"
@@ -343,6 +351,9 @@ export default {
         @media screen and (max-width: 800px) {
             width: 60px;
             height: 30px;
+        }
+        img {
+            margin-right: 5px;
         }
     }
     .text_v_btn {

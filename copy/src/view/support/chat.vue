@@ -22,12 +22,13 @@
         }
     }
     .chat_content {
-        height: calc(100% - 120px);
+        height: calc(100% - 93px);
         padding: 5px 15px;
         overflow: auto;
     }
     .msg_item_wrap {
         height: 100%;
+        overflow: auto;
     }
     .inpMessage {
         padding: 5px 10px;
@@ -100,6 +101,73 @@
     .msg_T {
         font-size: 12px;
         color: gray;
+        margin-bottom: 30px;
+    }
+    .chatLogo {
+        width: 35px;
+        height: 35px;
+        overflow: hidden;
+        border-radius: 50%;
+        margin-right: 12px;
+    }
+
+    .file_zip {
+        width: 200px;
+        // display: block;
+        padding-top: 10px;
+        position: relative;
+        margin-bottom: 20px;
+        .file_name {
+            min-width: 125px;
+            text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+            display: -webkit-box;
+            -webkit-line-clamp: 2;/*规定超过两行的部分截断*/
+            -webkit-box-orient: vertical;
+            overflow : hidden; 
+            word-break: break-all;/*在任何地方换行*/
+        }
+        .file_zip_img {
+            width: 45px;
+            height: 45px;
+            margin-left: 10px;
+        }
+        .file_zip_child {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 12px;
+        }
+        .loading_file {
+            position: absolute;
+            top: 50%;
+            left: -60px;
+            width: 40px;
+            height: 40px;
+            transform: translate(0, -50%);
+        }
+    }
+    .file_img {
+        width: 220px;
+        height: 125px;
+        position: relative;
+        padding-bottom: 25px !important;
+        margin-bottom: 20px;
+        .file_img_wrap {
+            width: 200px;
+            height: 95px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .file_img_wrap img {
+            height: 100%;
+            border-radius: 8px;
+        }
+        .file_img_child {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 12px;
+        }
     }
 </style>
 
@@ -109,17 +177,46 @@
             <div class="chat_img"><img src="@/assets/img/chatLogo.png" alt=""></div>
             <div>Chat with Admin</div>
         </div>
-        <div class="chat_content noBar" ref="Cus">
-            <div class="msg_item_wrap">
-                <div v-for="(item,i) in adminList['admin'].messageList" :key="i" :class="[{ 'flexEnd':item.type == 1 }]">
-
-                    <div class="msg_T width100 tc" v-if="item.type == 3">{{item.time.split(' ')[0] == Today? 
+        <div class="chat_content">
+            <div class="msg_item_wrap noBar" ref="Cus">
+                <div v-for="(item,i) in adminList['admin'].messageList" :key="i" :class="[{ 'flexEnd':item.type == 1 }, 'flex' ]">
+                    <div class="chatLogo" v-show="item.type == 2 && item.userId == userId">
+                        <img style="height: 100%;" src="@/assets/img/admin_img.png" alt="">
+                    </div>
+                    <div class="msg_T width100 tc" v-if="item.type == 3 && item.userId == userId">{{item.time.split(' ')[0] == Today? 
                     'Today': item.time.split(' ')[0]}} {{item.time.split(' ')[1]}}</div>
+
+                    <div v-else-if="item.msg_type && item.msg_type != 'jpg' && item.msg_type != 'png'" 
+                        :class="['file_zip flex', { mySend: item.type == 1 }, 
+                        { theySend: item.type == 2 }]">
+                        <div class="file_name">
+                            {{item.fileName}}
+                        </div>
+                        <img v-if="item.type == 1" class="file_zip_img" src="@/assets/img/file-zip.png" alt="">
+                        <img v-else class="file_zip_img" src="@/assets/img/file-zip1.png" alt="">
+                        <div :class="['file_zip_child', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>
+
+                        <div class="loading_file" v-loading='item.location == location && item.type == 1 && file_loading'></div>
+                        <div class="loading_file ju al" v-show="item.fail == 'fail'">
+                            <el-tooltip class="item" effect="dark" content="Upload Failed!" placement="top">
+                                <img class="fail_img_h" src="@/assets/img/fail.png" alt="">
+                            </el-tooltip>
+                        </div> 
+                    </div>
+
+                    <div v-else-if="item.msg_type == 'jpg' || item.msg_type == 'png' " :class="['file_img ju al', { mySend: item.type == 1 }, 
+                        { theySend: item.type == 2 }]">
+                        <div class="file_img_wrap">
+                            <img v-if="item.value" :src="item.value" alt="">
+                            <div v-else v-loading='true'></div>
+                        </div>
+                        <div :class="['file_img_child', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>
+                    </div>
                     
                     <div :class="['msg_child', { mySend: item.type == 1 }, 
-                        { theySend: item.type == 2 },]" v-if="item.userId == userId"
+                        { theySend: item.type == 2 },]" v-if="item.userId == userId && !item.msg_type && item.type !=3"
                         >{{item.value}}
-                        <div :class="['msg_time', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>   
+                        <div :class="['msg_time', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>
                     </div>
                 </div>
             </div>
@@ -149,6 +246,8 @@ export default {
             list: [],
             userId: localStorage.getItem('userId'),
             Today: '',
+            location: 0,
+            file_loading: false
         }
     },
     created () {
@@ -216,68 +315,109 @@ export default {
     methods: {
         getFile (e) {
             this.file_send()
-            // this.dealImg(e.target.files[0],(img) => {
-            //     var formData = new FormData();
-            //     formData.append('file', img);
-            //     this.file_send()
-            // })
         },
         file_send () {
             let D = new Date()
             let T = D.getTime()
+            let that = this
             let hour = D.getHours()
             let minute = D.getMinutes()
             var id = this.$conn.getUniqueId();                   // 生成本地消息id
             var msg = new this.$WebIM.message('file', id);        // 创建文件消息
             var input = document.getElementById('file_img');  // 选择文件的input
             var file = this.$WebIM.utils.getFileUrl(input);      // 将文件转化为二进制文件
-            console.log(file)
-
-            var allowType = {
-                'jpg': true,
-                'gif': true,
-                'png': true,
-                'bmp': true,
-                'zip': true,
-                'txt': true,
-                'doc': true,
-                'pdf': true,
-                'docx': true
-            };
-            if (file.filetype.toLowerCase() in allowType) {
-                var option = {
-                    file: file,
-                    to: 'admin',                       // 接收消息对象
-                    chatType: 'singleChat',               // 设置单聊
-                    onFileUploadError: function () {      // 消息上传失败
-                        console.log('onFileUploadError');
-                    },
-                    onFileUploadProgress: function (e) { // 上传进度的回调
-                        console.log(666666)
-                    },
-                    onFileUploadComplete: function () {   // 消息上传成功
-                        console.log('onFileUploadComplete');
-                    },
-                    success: function () {                // 消息发送成功
-                        console.log('Success');
-                    },
-                    fail: function(e){
-                        console.log("Fail");              //如禁言、拉黑后发送消息会失败
-                    },
-                    flashUpload: this.$WebIM.flashUpload,
-                    ext: {
-                        file_length: file.data.size,
-                        detail: this.userDetail,
-                        platform: localStorage.getItem('platform'),
-                        time: D.getHours() + ':' + D.getMinutes(),
-                        APM: hour >= 12 && minute >= 0? 'PM':'AM',
-                        localTime: T,
-                        fileType: file.filetype
-                    }
-                };
-                msg.set(option);
-                this.$conn.send(msg.body);
+            this.location = T
+            this.file_loading = true
+            if (T - localStorage.getItem('msgTime') >= 180000 && localStorage.getItem('msgTime') !== null) {
+                if (file.data.size <= 10485760) {
+                    this.timeSend()
+                }
+                this.adminList['admin'].messageList.push({
+                    type: 3,
+                    value: '',
+                    userId: localStorage.getItem('userId'),
+                    time:this.Today + ' ' + D.getHours() + ':' + D.getMinutes(),
+                    APM: ''
+                })
+                localStorage.setItem('msgTime', T )
+            } else {
+                if (localStorage.getItem('msgTime') === null) {
+                    this.adminList['admin'].messageList.push({
+                        type: 3,
+                        value: '',
+                        userId: localStorage.getItem('userId'),
+                        time:this.Today + ' ' + D.getHours() + ':' + D.getMinutes(),
+                        APM: ''
+                    })
+                }
+                localStorage.setItem('msgTime', T)
             }
+            var obj = {
+                type: 1,
+                value: file.url,
+                time: D.getHours() + ':' + D.getMinutes(),
+                APM: hour >= 12 && minute >= 0? 'PM':'AM',
+                msg_type: file.filetype,
+                fileName: file.filename,
+                userId: localStorage.getItem('userId'),
+                url: file.url,
+                location: T
+            }
+            var f_obj = {
+                type: 1,
+                value: file.url,
+                time: D.getHours() + ':' + D.getMinutes(),
+                APM: hour >= 12 && minute >= 0? 'PM':'AM',
+                msg_type: file.filetype,
+                fileName: file.filename,
+                userId: localStorage.getItem('userId'),
+                url: file.url,
+                location: T,
+                fail: 'fail'
+            }
+            if (file.data.size > 10485760) {
+                this.adminList['admin'].messageList.push(f_obj)
+                that.file_loading = false
+                this.$nextTick(() => {
+                    this.$refs.Cus.scrollTop = 100000
+                })
+                return false
+            } else {
+                this.adminList['admin'].messageList.push(obj)
+            }
+            //自定义发送消息类型
+            var id = this.$conn.getUniqueId();                 // 生成本地消息id
+            var msg = new this.$WebIM.message('file', id);   // 创建自定义消息
+            var customEvent = "flie";             // 创建自定义事件
+            var customExts = {'file': file.url};                         // 消息内容，key/value 需要 string 类型
+            msg.set({
+                file: file,
+                to: 'admin',                          // 接收消息对象（用户id）
+                customEvent,
+                customExts,
+                ext: {
+                    fileName: file.filename,
+                    file_length: file.data.size,
+                    detail: this.userDetail,
+                    platform: localStorage.getItem('platform'),
+                    time: D.getHours() + ':' + D.getMinutes(),
+                    APM: hour >= 12 && minute >= 0? 'PM':'AM',
+                    localTime: T,
+                    fileType: file.filetype
+                },                                 // 消息扩展
+                roomType: false,
+                flashUpload: this.$WebIM.flashUpload,
+                success: function (id, serverMsgId) {
+                    that.file_loading = false
+                },
+                fail: function(e){
+                    that.file_loading = false
+                }
+            });
+            this.$conn.send(msg.body);
+            this.$nextTick(() => {
+                this.$refs.Cus.scrollTop = 100000
+            })
         },
         kl () {    //须先加入聊天室
             var options = {
@@ -411,7 +551,54 @@ export default {
                 }
             });
             this.$conn.send(msg.body);
-        }
+        },
+        // wenBen (file) {
+        //     var allowType = {          //仅限文件
+        //         'jpg': true,
+        //         'gif': true,
+        //         'png': true,
+        //         'bmp': true,
+        //         'zip': true,
+        //         'txt': true,
+        //         'doc': true,
+        //         'pdf': true,
+        //         'docx': true
+        //     };
+        //     if (file.filetype.toLowerCase() in allowType) {
+        //         var option = {
+        //             file: file,
+        //             to: 'admin',                       // 接收消息对象
+        //             chatType: 'singleChat',               // 设置单聊
+        //             onFileUploadError: function () {      // 消息上传失败
+        //                 console.log('onFileUploadError');
+        //             },
+        //             onFileUploadProgress: function (e) { // 上传进度的回调
+        //                 console.log(666666)
+        //             },
+        //             onFileUploadComplete: function () {   // 消息上传成功
+        //                 console.log('onFileUploadComplete');
+        //             },
+        //             success: function () {                // 消息发送成功
+        //                 console.log('Success');
+        //             },
+        //             fail: function(e){
+        //                 console.log("Fail");              //如禁言、拉黑后发送消息会失败
+        //             },
+        //             flashUpload: this.$WebIM.flashUpload,
+        //             ext: {
+        //                 file_length: file.data.size,
+        //                 detail: this.userDetail,
+        //                 platform: localStorage.getItem('platform'),
+        //                 time: D.getHours() + ':' + D.getMinutes(),
+        //                 APM: hour >= 12 && minute >= 0? 'PM':'AM',
+        //                 localTime: T,
+        //                 fileType: file.filetype
+        //             }
+        //         };
+        //         msg.set(option);
+        //         this.$conn.send(msg.body);
+        //     }
+        // }
     }
 }
 </script>

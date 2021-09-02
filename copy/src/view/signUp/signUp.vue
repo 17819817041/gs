@@ -1,5 +1,12 @@
 <style lang="less" scoped>
 @import "@/less/css.less";
+    .vet {
+        height: 100%;
+    }
+    .CONTENT_S {
+        height: calc(100% - 119px);
+        overflow-x: auto;
+    }
     .vetSign {
         margin-top: 15px;
     }
@@ -31,10 +38,15 @@
             width: 85px;
             height: 85px;
         }
+        @media screen and (max-width: 520px) {
+            width: 75px;
+            height: 75px;
+            margin: 10px auto;
+        }
     }
     .vet_child, .pet_child {
         @media screen and (max-width:564px) {
-            width: 170px !important;
+            margin: 0 25px;
         }
     }
     .opacity {
@@ -44,15 +56,43 @@
         opacity: 1 !important;
     }
     .vet_form {
-        width: 700px;
+        width: 100%;
+        max-width: 700px;
         margin: 30px auto;
+        padding: 0 25px;
         @media screen and (max-width:564px) {
-            width: @phoneMedia;
+            // width: @phoneMedia;
             margin: auto;
         }
         transition: 0.2s;
-        @media screen and (max-width: 700px) {
-            width: 90%;
+    }
+    .headimg_wrap {
+        position: relative;
+        .logo {
+            background: rgb(255, 255, 255);
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 600;
+            padding: 15px 30px 0 62px;
+            @media screen and (max-width: 564px) {
+                height: 70px;
+                padding: 10px 10px 0 10px;
+            }
+        }
+    }
+    .logo .logo_IMG {
+        width: 110px;
+        height: 123px;
+        transition: 0.25s;
+        z-index: 500;
+        @media screen and (max-width: 1300px) {
+            width: 88px;
+            height: 98px;
+        }
+        @media screen and (max-width: 564px) {
+            width: 50px;
+            height: 60px;
         }
     }
     .vet_sign {
@@ -64,60 +104,66 @@
 
 <template>
     <div class="vet" v-loading="Vloading">
-        <div>
-            <myHeaderL></myHeaderL>
+        <div class="headimg_wrap">
+            <!-- <myHeaderL></myHeaderL> -->
+            <div class="logo">
+                <img class="logo_IMG" src="@/assets/img/logo.png" alt="">
+            </div>
+            <myHeader></myHeader>
         </div>
-        <div class="vetSign tc">
-            <div class="size21 vet_item">Sign Up</div>
-            <div class="size7">Add your details to sign up</div>
-        </div>
-        <div class="vet_form tc">
-            <el-form ref="form" :model="data" :rules="rules">
-                <el-form-item prop="platform">
-                    <el-radio label="2" v-model="data.platform">
-                        <div class="vet_child" style="transition:0.2s">
-                            <div class="vet_head">
-                                <img @click="vetIdentity" :class="[ 'opacity', {'opacity1':data.platform == 2}]" src="@/assets/img/vet.png" alt="">
+        <div class="CONTENT_S noBar">
+            <div class="vetSign tc">
+                <div class="size21 vet_item">Sign Up</div>
+                <div class="size7">Add your details to sign up</div>
+            </div>
+            <div class="vet_form tc">
+                <el-form ref="form" :model="data" :rules="rules">
+                    <el-form-item prop="platform">
+                        <el-radio label="2" v-model="data.platform">
+                            <div class="vet_child" style="transition:0.2s">
+                                <div class="vet_head">
+                                    <img @click="vetIdentity" :class="[ 'opacity', {'opacity1':data.platform == 2}]" src="@/assets/img/vet.png" alt="">
+                                </div>
+                                <div class="vet_text">Vet</div>
                             </div>
-                            <div class="vet_text">Vet</div>
-                        </div>
-                    </el-radio>
-                    <el-radio label="1" v-model="data.platform">
-                        <div class="pet_child">
-                            <div class="pet_head">
-                                <img @click="petIdentity" :class="[ 'opacity', {'opacity1':data.platform == 1}]" src="@/assets/img/pet.png" alt="">
+                        </el-radio>
+                        <el-radio label="1" v-model="data.platform">
+                            <div class="pet_child">
+                                <div class="pet_head">
+                                    <img @click="petIdentity" :class="[ 'opacity', {'opacity1':data.platform == 1}]" src="@/assets/img/pet.png" alt="">
+                                </div>
+                                <div class="pet_text">Customer</div>
                             </div>
-                            <div class="pet_text">Customer</div>
+                        </el-radio>
+                    </el-form-item><br>
+                    <el-form-item prop="name">
+                        <el-input placeholder="Name" v-model="data.name"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="email">
+                        <el-input placeholder="Email" v-model="data.email"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="phone">
+                        <el-input placeholder="Moible" v-model="data.phone"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="address">
+                        <el-input placeholder="Address" v-model="data.address"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="password">
+                        <el-input placeholder="Password" show-password v-model="data.password"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="confirmPwd">
+                        <el-input placeholder="Confirm Password" show-password v-model="data.confirmPwd"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <div class="vet_sign cursor">
+                            <el-button class="width100"  type="primary" @click="finishSignUp">Sign Up</el-button>
                         </div>
-                    </el-radio>
-                </el-form-item><br> <br>
-                <el-form-item prop="name">
-                    <el-input placeholder="Name" v-model="data.name"></el-input>
-                </el-form-item>
-                <el-form-item prop="email">
-                    <el-input placeholder="Email" v-model="data.email"></el-input>
-                </el-form-item>
-                <el-form-item prop="phone">
-                    <el-input placeholder="Moible" v-model="data.phone"></el-input>
-                </el-form-item>
-                <el-form-item prop="address">
-                    <el-input placeholder="Address" v-model="data.address"></el-input>
-                </el-form-item>
-                <el-form-item prop="password">
-                    <el-input placeholder="Password" show-password v-model="data.password"></el-input>
-                </el-form-item>
-                <el-form-item prop="confirmPwd">
-                    <el-input placeholder="Confirm Password" show-password v-model="data.confirmPwd"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <div class="vet_sign cursor">
-                        <el-button class="width100"  type="primary" @click="finishSignUp">Sign Up</el-button>
-                    </div>
-                </el-form-item>
-            </el-form>
-        </div>
-        <div class="aleadyToLogin tc size7">
-            Already have an Account? <span class="bold cursor" style="color:#B3519F" @click="toLoginPage">Login</span>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <div class="aleadyToLogin tc size7">
+                Already have an Account? <span class="bold cursor" style="color:#B3519F" @click="toLoginPage">Login</span>
+            </div>
         </div>
     </div>
 </template>

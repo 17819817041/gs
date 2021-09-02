@@ -506,7 +506,7 @@
                                 <div class="flex">
                                     <div class="al">
                                         <div class="al record_active">{{item.petMedicalRecordDtos[0]? item.petMedicalRecordDtos[0].content: 
-                                            'No Medical records'}}66666666666666666666666666666666666666</div>
+                                            'No Medical records'}}</div>
                                         <div class="morePetDetalis cursor" @click="record(item)">More</div>
                                     </div>
                                 </div>
@@ -846,10 +846,8 @@ export default {
                     this.sex = 'Female'
                 }
                 if (item.petJueYu == 1) {
-                    console.log('Sterilization')
                     this.status = 'Sterilization'
                 } else if (item.petJueYu == 2) {
-                    console.log('Unneutered')
                     this.status = 'Unneutered'
                 }
             })
@@ -862,7 +860,6 @@ export default {
                 token: localStorage.getItem('Token')
             }
             petType(data).then(res => {
-                console.log(res)
                 res.data.forEach(item => {
                     item.children.forEach(child => {
                         child.children = []

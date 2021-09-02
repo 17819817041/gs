@@ -1,8 +1,8 @@
 <style lang="less" scoped>
 @import "@/less/css.less";
     .Login_content {
-        @media screen and (max-width:564px) {
-            width: 90%;
+        @media screen and (max-width: 800px) {
+            width: 95%;
             margin: auto;
         }
     }
@@ -28,7 +28,8 @@
         margin-top: 30px;
     }
     .toLogin {
-        width: 700px;
+        max-width: 700px;
+        width: 100%;
         .customerLogin , .vetLogin, .createAccount {
             border-radius: 6px;
             margin-bottom: 20px;

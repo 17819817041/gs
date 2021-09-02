@@ -268,7 +268,7 @@ export default {
             }
         },
         getDoctorList () {
-            this.$store.dispatch('getDoctorList',this.pageNum)
+            this.$store.dispatch('getDoctorList',{num: this.pageNum, vm: this})
         },
         edit () {
             this.change = !this.change

@@ -11,7 +11,7 @@
                 <!-- <div>Confrid: {{item.confrid}}</div> -->
                         <div class="sb">
                             <div class="appointment_details_img_wrap ju al">
-                                <img class="appointment_details_img" v-if="item.password.callTo.userHead" :src="item.password.callTo.userHead" alt="">
+                                <img class="appointment_details_img" v-if="item.password.callTo.userImage" :src="item.password.callTo.userImage" alt="">
                                 <img style="height:100%;" v-else :src="default_img" alt="">
                                 <!-- <i class="el-icon-picture-outline" v-else style="font-size:27px;color:gray"></i> -->
                             </div>
@@ -41,8 +41,6 @@
         <div class="NODATA tc bold" v-else-if="room.length == 0">
             No meeting
         </div>
-        <!-- <iframe src="http://www.google.com/calendar/embed?showTitle=0&amp;height=600&amp;wkst=1&amp;hl=en&amp;bgcolor=%23FFFFFF&amp;src=liangrenwei%40gmail.com&amp;color=%23BE6D00&amp;src=p%23weather%40group.v.calendar.google.com&amp;color=%23A32929&amp;ctz=America%2FToronto" style=" border-width:0 " width="800" height="600" frameborder="0" scrolling="no"></iframe> -->
-        <!-- <iframe src="https://calendar.google.com/calendar/r"></iframe> -->
     </div>
 </template>
 
@@ -69,7 +67,7 @@ export default {
             localStorage.setItem('confr',JSON.stringify(item))
         },
         dele (item) {
-            console.log(item)
+            // console.log(item)
             // let data = {
             //     webId: item.id
             // }

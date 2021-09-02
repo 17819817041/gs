@@ -66,6 +66,9 @@
     .record_image {
         width: 21%;
         min-width: 80px;
+        @media screen and (max-width: 400px){
+            margin: auto;
+        }
     }
     .record_image div {
         padding: 25px 0;
@@ -83,6 +86,7 @@
         @media screen and (max-width: 564px){
             width: 125px;
             height: 125px;
+            padding: 18px 0;
         }
     } 
     .dog_img{
@@ -183,6 +187,7 @@
 
 <template>
     <div class="record" v-loading="loading">
+        <el-backtop target=".medialRecord"></el-backtop>
         <div class="recordContent">
             <div class="recordContent_item">
                 <div class="itemChild mg">
@@ -335,8 +340,13 @@ export default {
             }
             petDetails(data).then(res => {
                 this.loading = false
-                this.userAndPet = res.data.data
-                this.getPetType()
+                if (res.data.rtnCode == 200) {
+                    this.userAndPet = res.data.data
+                    this.getPetType()
+                } else {
+
+                }
+                
             }).catch(e => {
                 console.log(e)
                 this.loading = false
@@ -349,7 +359,6 @@ export default {
                 token: localStorage.getItem('Token')
             }
             petType(data).then(res => {
-                console.log(res)
                 res.data.forEach(item => {
                     item.children.forEach(child => {
                         child.children = []
@@ -376,19 +385,32 @@ export default {
             })
         },
         deleMedical (item) {
-            let data = {
-                petMedicalRecordId: item.petMedicalRecordId
-            }
-            delPetMedicalRecordById (data).then(res => {
-                this.loading = true
-                if (res.data.rtnCode == 200) {
-                    this.getPetDetails()
-                    this.$message({
-                        type: 'success',
-                        message: 'Cancel Successfully'
-                    })
+            this.$confirm('Are you sure to delete this record?', 'Attention', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                let data = {
+                    petMedicalRecordId: item.petMedicalRecordId
                 }
+                this.loading = true
+                delPetMedicalRecordById(data).then(res => {
+                    if (res.data.rtnCode == 200) {
+                        this.getPetDetails()
+                        this.$message({
+                            type: 'success',
+                            message: 'Cancel Successfully'
+                        })
+                    } else {
+                        this.loading = false
+                    }
+                }).catch(e => {
+                    this.loading = false
+                })
+            }).catch (e => {
+                console.log(e)
             })
+            
         }
     }
 }

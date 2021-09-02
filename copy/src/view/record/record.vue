@@ -51,9 +51,9 @@
         width: 21%;
     } 
     .record_image div {
-        padding: 25px 0;
-        width: 230px;
-        height: 230px;
+        margin: 25px 0;
+        width: 210px;
+        height: 210px;
         transition: 0.25s;
         @media screen and (max-width:1300px) {
             width: 190px;
@@ -64,8 +64,11 @@
             height: 150px;
         }
     } 
-    .dog_img{
+    .dog_img {
         height: 100%;
+    }
+    .defautlImg {
+        height: 70%;
     }
     .about {
         padding: 0 0 12px 30px;
@@ -119,6 +122,10 @@
         width: 80%;
         word-wrap: break-word;
     }
+    .img_wrap_pet {
+        border-radius: 50%;
+        overflow: hidden;
+    }
 </style>
 
 <template>
@@ -134,9 +141,9 @@
                         <div class="record_item flex mg">
                             <div class="record_image ju">
                                 <!-- <img class="dog_img" src="@/assets/img/dog.png" alt=""> -->
-                                <div class="ju al">
+                                <div class="ju al img_wrap_pet">
                                     <img class="dog_img" :src="userAndPet.image" v-if="userAndPet.image" alt="">
-                                    <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
+                                    <img class="defautlImg" src="@/assets/img/default.png" alt="" v-else>
                                 </div>
                             </div>
                             <div style="flex:10">

@@ -4,6 +4,7 @@
         flex: 10;
         height: 100%;
         position: relative;
+        background: @content;
         .addRecord {
             position: absolute;
             padding: 20px;
@@ -19,7 +20,6 @@
     }
     .message_item {
         width: calc(100%);
-        background: @content;
         transition: 0.25s;
         margin: auto;
         @media screen and (max-width:1200px) {
@@ -58,6 +58,9 @@
     }
     .detail {
         padding: 70px 0;
+        @media screen and (max-width: 400px) {
+            flex-direction: column;
+        }
     }
     .btnColor {
         background: @logout !important;
@@ -69,13 +72,16 @@
         @media screen and (max-width: 800px) {
             height: 220px;
         }
-        
+        @media screen and (max-width: 400px) {
+            height: 70px;
+        }
     }
     .details_image, .person_image {
         width: 27%;
         min-width: 130px;
         @media screen and (max-width: 400px) {
             min-width: 70px;
+            margin: auto;
         }
     } 
     .person_image div, .details_image div {
@@ -83,9 +89,13 @@
         height: 200px;
         border-radius: 50%;
         overflow: hidden;
-        @media screen and (max-width:1300px) {
+        @media screen and (max-width:1725px) {
             width: 150px;
             height: 150px;
+        }
+        @media screen and (max-width:1300px) {
+            width: 125px;
+            height: 125px;
         }
         @media screen and (max-width:800px) {
             width: 100px;
@@ -95,10 +105,10 @@
             width: 70px;
             height: 70px;
         }
-        @media screen and (max-width:350px) {
-            width: 50px;
-            height: 50px;
-        }
+        // @media screen and (max-width:350px) {
+        //     width: 50px;
+        //     height: 50px;
+        // }
     }
     .dog_img, .felame {
         height: 100%;
@@ -107,7 +117,7 @@
     .message1, .message2 {
         width: 30%;
         transition: 0.25s;
-        @media screen and (max-width:1500px) {
+        @media screen and (max-width:1300px) {
             width: 50%;
         }
         @media screen and (max-width:800px) {
@@ -142,6 +152,9 @@
         padding: 70px 0;
         box-shadow: 0px 3px 3px 0px #D0D0D0;
         position: relative;
+        @media screen and (max-width: 400px) {
+            flex-direction: column;
+        }
         .item_title2 {
             position: absolute;
             left: 50%;
@@ -310,6 +323,15 @@
             padding-right: 20px;
             flex-direction: column;
         }
+        @media screen and (max-width: 400px) {
+            width: 100%;
+        }
+    }
+    .p_media {
+        min-width: 200px;
+        @media screen and (max-width: 1725px) {
+            min-width: 160px;
+        }
     }
 </style>
 
@@ -391,7 +413,8 @@
                                             <div v-else>No data</div>
                                             <div v-if="userAndPet.preferredVetName">{{userAndPet.preferredVetName}}</div>
                                             <div v-else>No data</div>
-                                            <div>None</div>
+                                            <div v-if="userAndPet.extend"> {{userAndPet.extend}} </div>
+                                            <div v-else>No data</div>
                                         </div>
                                     </div>
                                 </div>
@@ -445,7 +468,7 @@
                                     </div>
                                 </div>
                                 <div class="details_message1 flex">
-                                    <div class="children size22">
+                                    <div class="children size22 p_media">
                                         <div class="flex about">
                                             <div>Gender</div>
                                         </div>
@@ -476,7 +499,7 @@
                                             <div class="mobile_msg" v-else>No data</div>
                                         </div>
                                         <div class="flex about mobile_msg">
-                                            <div class="mobile_msg" v-if="userAndPet.remark">{{userAndPet.remark}}</div>
+                                            <div class="mobile_msg" v-if="userAndPet.petContent">{{userAndPet.petContent}}</div>
                                             <div class="mobile_msg" v-else>No data</div>
                                         </div>
                                     </div>
@@ -607,7 +630,6 @@ export default {
                 token: localStorage.getItem('Token')
             }
             petType(data).then(res => {
-                console.log(res)
                 res.data.forEach(item => {
                     item.children.forEach(child => {
                         child.children = []

@@ -66,20 +66,20 @@
                     <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
                 </div> 
                 <div class="toVideo cursor">
-                    <div class="button chatDoc ju al">
+                    <div class="button chatDoc ju al" @click="chat_to_doc(detail)">
                         <img src="@/assets/img/chat1.png" alt="">
                         Chat to Doctor
                     </div>
                 </div>
                 <div class="toVideo cursor">
-                    <div class="button videoBtn ju al">
+                    <div class="button videoBtn ju al" @click="enterRoom(detail)">
                         <img src="@/assets/img/video.png" alt="">
                         Enter the Live Call
                     </div>
                 </div>
                 <div class="toVideo cursor">
-                    <div class="button Schedule ju al">
-                        <img src="@/assets/img/video.png" alt="">
+                    <div class="button Schedule ju al" @click="schedule(detail.doctorId)">
+                        <img src="@/assets/img/Schedule.png" alt="">
                         Check Doctor Schedule
                     </div>
                 </div>
@@ -123,15 +123,15 @@
                     <span  class="cursor">more</span>
                 </div>
                 <div class="aboutUs">
-                    <div class="child al flex">
+                    <div class="child al flex cursor" @click="docInformation">
                         <img style="width:40px" src="@/assets/img/personal1.png" alt="">
                         <div class="size16">Personal Information</div>
                     </div>
-                    <div class="child flex al">
+                    <div class="child flex al cursor" @click="map">
                         <img style="width:40px" src="@/assets/img/addressimg1.png" alt="">
                         <div class="size16">Working Address</div>
                     </div>
-                    <div class="child flex al">
+                    <div class="child flex al cursor" @click="reviewer">
                         <img style="width:40px" src="@/assets/img/reviewer1.png" alt="">
                         <div class="size16">Reviewer (230)</div>
                     </div>
@@ -151,12 +151,14 @@ export default {
             pageNum: 1,
             showMore: false,
             timer: null,
+            player: 0
         }
     },
     created () {
         this.doctorList = []
         // if (!this.doctorList.length ) {
         this.getDoctorList()
+        this.initRecord()
         // }
     },
     mounted () {
@@ -165,6 +167,7 @@ export default {
     watch: {
         detail: {
             handler (val) {
+                this.player = val.doctorId + 'a' + 2
                 this.$nextTick(() => {
                     var sHeight = document.getElementsByClassName('text-overflow')[0].scrollHeight;
                     if (sHeight > 63) {
@@ -185,13 +188,22 @@ export default {
                 }
             }
         },
-        // doctorList: {
-        //     handler (val) {
-        //         if (val) {
-                  
-        //         }
-        //     }
-        // }
+        message: {
+            handler (val) {
+                if (val) {
+                    this.message = val
+                }
+            },
+            deep: true
+        },
+        messageList: {
+            handler (val) {
+                if (val) {
+                    this.messageList = val
+                }
+            },
+            deep: true
+        },
     },
     computed: {
         doctorList: { 
@@ -233,7 +245,24 @@ export default {
                 })
             },
         },
-        default_img () { return this.$store.state.user.default_img }
+        message: {
+            get () { return this.$store.state.user.message },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "message",
+                    value: val
+                })
+            },
+        },
+        messageList: {
+            get () { return this.$store.state.user.messageList },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "messageList",
+                    value: val
+                })
+            },
+        },
     },
     methods: {
         getDetail (item) {
@@ -278,6 +307,67 @@ export default {
             this.$router.push({
                 name:'petmessage'
             })
+        },
+        docInformation () {
+            this.$router.push({
+                name: 'docInformation',
+                query: {
+                    id: this.detail.doctorId
+                }
+            })
+        },
+        map () {
+            this.$router.push('/map')
+        },
+        reviewer () {
+            this.$router.push({
+                name: 'reviewer',
+                query: {
+                    id: this.detail.doctorId
+                }
+            })
+        },
+        chat_to_doc (item) {
+            let from = item.doctorId + 'a' + 2
+            this.$router.push({
+                name: 'chatRoom',
+                params: {
+                    key: from,
+                    id: item.doctorId
+                }
+            })
+            if (this.message[from]) {
+                
+            } else {
+                this.message[from] = {
+                    user: from,
+                    userDetail: item,
+                    messageList: [ ],
+                    msg: 0
+                }
+                this.message = JSON.parse(JSON.stringify(this.message))
+            }
+        },
+        initRecord () {
+            if (localStorage.getItem('message')) {
+                this.message = JSON.parse(localStorage.getItem('message'))
+            }
+        },
+        schedule (item) {
+            this.$router.push({
+                name: 'schedule',
+                query: {
+                    id: item
+                }
+            })
+        },
+        enterRoom (item) {
+            if (item.doctorOnLineState != 2) {
+                this.$message({
+                    type: 'warning',
+                    message: 'The doctor is not in a meeting!'
+                })
+            }
         }
     }
 }

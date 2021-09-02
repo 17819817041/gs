@@ -47,6 +47,32 @@ export function doctorList (data) {      //医生列表
     })
 }
 
+export function HospitalList (data) {                    //兽医院列表
+    return request(
+        {
+            url: "/VeterinaryHospital/getVeterinaryHospitalList",
+            method: "GET"
+        }
+    )
+}
+
+export function address () {                     //获取地址
+    return request({
+        url: "/address/list",
+        method: 'GET'
+    })
+}
+
+export function vetDetails (data) {                            //医生详情
+    return request(
+        {
+            url: "/doctorDetails/getDoctorDetailsByUserId",
+            method: "POST",
+            params: data
+        }
+    )
+}
+
 export function forget (data) {
     return request(
         {
@@ -91,6 +117,48 @@ export function petType (data) {                           //宠物类型列表
 export function getBookings (data) {                 //获取预约信息  String startDay, String endDay, int pageNum, int pageSize  sort   1 按 创建时间排序    2 按 预约时间排序
     return request({
         url: "/booking/getBookings",
+        method: "POST",
+        params: data
+    })
+}
+
+export function bookingId (data) {                      //bookingId获取当前预约信息
+    return request({
+        url: "/booking/getBookingByid",
+        method: "POST",
+        params: data
+    })
+}
+
+export function reset (data) {                        //重置密码
+    return request(
+        {
+            url: '/user/resetPassword',
+            method: "POST",
+            params: data
+        }
+    )
+}
+
+export function allBooking (data) {                     //userId获取所有预约信息
+    return request({
+        url: "/booking/getBookingAll",
+        method: "POST",
+        params: data
+    })
+}
+
+export function updateBooking (data) {                //修改预约
+    return request({
+        url: "/booking/updateBooking",
+        method: "POST",
+        params: data
+    })
+}
+
+export function deleteBooking (data) {                //取消预约
+    return request({
+        url: "/booking/cancalBooking",
         method: "POST",
         params: data
     })
@@ -152,4 +220,46 @@ export function getPetMedicalRecord (data) {            //医生治疗记录
         method: 'POST',
         params: data
     })
+}
+
+export function comment (data) {                        //获取当前医生评论?userId=574&score=5&content=测试&doctorId=573&pageNum=1&pageSize=10
+    return request({                                  
+        url: '/comment/getListByDoctorId',
+        method: "POST",
+        params: data
+    })
+}
+
+export function delPetMedicalRecordById (data) {            //delete pet Medical Record
+    return request({
+        url: "/PetMedicalRecord/delPetMedicalRecordById",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function getBookingPage (data) {            //查询全部，已完成，未完成预约订单 type=2&pageNum=1&pageSize=100
+    return request({                                                            // 1 已结束 2 未开始 3 全部
+        url: "/booking/getBookingPage",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function getPaymentRecordAll (data) {            //查询全部交易记录?userType=2&pageNum=2&pageSize=10      查看所有人的消费记录     userType 1：用户 2：医生
+    return request({                                                          
+        url: "/pet/getPaymentRecordAll",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function petDetails (data) {     //宠物ID获取宠物信息
+    return request(
+        {
+            url: "/pet/getPet",
+            method: "POST",
+            params: data
+        }
+    )
 }

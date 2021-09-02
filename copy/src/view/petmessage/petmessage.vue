@@ -11,8 +11,8 @@
         position: relative;
         background: #EDEDED;
         overflow: hidden;
-        .defaultImg {
-            width: 70%;                           //不完整图片
+        .defautlImg {
+            height: 75%;                           //不完整图片
         }
         .upImg {
             height: 100%;
@@ -233,17 +233,13 @@ export default {
                 token: localStorage.getItem('Token')
             }
             petType(data).then(res => {
-                console.log(res)
-                if (res.data.rtnCode == 200) {
-                    res.data.forEach(item => {
-                        item.children.forEach(child => {
-                            child.children = []
-                        })
+                res.data.forEach(item => {
+                    item.children.forEach(child => {
+                        child.children = []
                     })
-                    this.recursion(res.data)
-                    this.options = res.data
-                }
-                
+                })
+                this.options = res.data
+                this.recursion(res.data)
             })
         },
         recursion (key) {
@@ -251,7 +247,6 @@ export default {
                 item.label = item.petTypeName
                 item.value = item.petTypeId
                 if (item.children.length !== 0) {
-                    console.log(item,0)
                     this.recursion(item.children)
                 } else if (item.children.length == 0) {
                     item.children = null
@@ -260,7 +255,7 @@ export default {
         },
         addPet () {                                                                              //添加宠物
             addPet(this.addPetMessage).then(res => {
-                console.log(res,"添加宠物信息")
+                // console.log(res,"添加宠物信息")
             })  
         },
         getImage (e) {
@@ -268,7 +263,6 @@ export default {
                 var formData = new FormData()
                 formData.append('file',img)
                 file(formData).then(res => {
-                    console.log(res)
                     if (res.data.rtnCode == 200) {
                         this.addPetMessage.image = res.data.data
                     }
@@ -299,12 +293,10 @@ export default {
         chooseMonth (val) {
             this.judge_month = val
             let Day = new Date(2021,this.judge_month,0).getDate()//  获取每月天数
-            console.log(Day,'day')
             this.dayList = []
             for (let i=1;i<=Day;i++) {
                 this.dayList.push(i)
             }
-            console.log(this.dayList.length,this.day)
             if (this.day > this.dayList.length) {
                 this.day = this.dayList.length
             }

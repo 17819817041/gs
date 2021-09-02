@@ -30,18 +30,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="acting ju al" v-if="loading">
-                        <div style="height: 100px;" v-loading="true"></div>
-                    </div>
                 </div>
-
+                <div class="acting ju al" v-if="loading">
+                    <div style="height: 100px;" v-loading="true"></div>
+                </div>
             </div>
             <div v-else>
                 <div class="tc bold"  style="padding-top: 150px;color: gray;font-size: 23px">No treatment record!</div>
             </div>
         </div>
         <div class="personWithAnimal noBar">
-            <div class="information_wrap">
+            <div class="information_wrap" v-loading='p_loading'>
                 <div class="petDetails">
                     <div class="petDetails_item">
                         <div class="Title sb">
@@ -71,7 +70,7 @@
                     <div class="guardianDetails mg size19">Guardian Details</div>
                     <div class="ju al patients_img_wrap mg">
                         <img class="patients_img" v-if="petAndUser.userHead" :src="petAndUser.userHead" alt="">
-                        <img style="height:100%;" v-else :src="default_img" alt="">
+                        <img style="height:75%;" v-else :src="d_img" alt="">
                         <!-- <i class=" el-icon-picture-outline Icon" style="font-size:40px;color:gray;" v-else></i> -->
                     </div>
                     <div class="size19 tc personal_name">{{petAndUser.userName}}</div>
@@ -123,7 +122,7 @@
             :visible.sync="drawer"
             size='80%'>
             <div class="personWithAnimal_mobile noBar">
-                <div class="information_wrap">
+                <div class="information_wrap" v-loading='p_loading'>
                     <div class="petDetails">
                         <div class="petDetails_item">
                             <div class="Title sb">
@@ -204,6 +203,7 @@
 
 <script>
 import { getUserByPetId, getPetMedicalRecord, s_online } from "@/axios/request.js"
+import image from '@/assets/img/default.png'
 export default {
     data () {
         return {
@@ -211,7 +211,9 @@ export default {
             petAndUser: {},
             changePage: {},
             drawer: false,
-            totalRecordsCount: 0
+            totalRecordsCount: 0,
+            p_loading: false,
+            d_img: ''
         }
     },
     mounted () {
@@ -229,6 +231,7 @@ export default {
             value: []
         })
         this.PetMedicalRecord()
+        this.d_img = image
     },
     beforeMount() {
         window.addEventListener('resize', (e) => {
@@ -333,23 +336,52 @@ export default {
                     } else {
                         this.getDoctorMedicalLimitList = null
                     }
+                    this.$nextTick(() => {
+                        if (this.$refs.doctorList !== undefined) {
+                            if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight >= this.$refs.doctorList_height.scrollHeight) {
+                                if (this.getDoctorMedicalLimitList.length < this.totalRecordsCount) {
+                                    this.pageNum +=1
+                                    this.PetMedicalRecord()
+                                } else {
+
+                                }
+                            } else {
+
+                            }
+                        } else {
+
+                        }
+                        
+                    })
                 }).catch(e => {
                     console.log(e)
                     this.loading = false
                 })
             }
-            
         },
         getUserByPetId (id) {
             let data = {
                 petId: id
             }
+            this.p_loading = true
             getUserByPetId(data).then(res => {
+                this.p_loading = false
                 if (res.data.rtnCode == 200) {
                     this.petAndUser = res.data.data
+                } else {
+                    this.p_loading = false
+                    this.$message({
+                        type: 'error',
+                        message: 'Load the timeout!'
+                    })
                 }
             }).catch(e => {
                 console.log(e)
+                this.p_loading = false
+                this.$message({
+                    type: 'error',
+                    message: 'Loading failed. Check whether the network is connected!'
+                })
             })
         },
         toPatients (item,i) {
@@ -456,7 +488,6 @@ export default {
         .information_wrap {
             width: 90%;
             margin: auto;
-            height: 100%;
         }
     }
     .personWithAnimal_mobile {

@@ -11,7 +11,7 @@
                         <div>
                             <div class="head_image ju al">
                                 <img class="Appointment_img" v-if="confirmKey.docImage" :src="confirmKey.docImage" alt="">
-                                <i v-else class="el-icon-picture-outline" style="font-size:75px;color:gray"></i>
+                                <img style="height:100%;" v-else :src="default_img" alt="">
                             </div>
                         </div>
                         <div class="calendar_wrap">
@@ -22,7 +22,11 @@
                                         <span v-else>No Name</span>
                                     </div>
                                     <div class="telephone_or_video_mobile">
-                                        <div class="videoConsultation cursor ju al">
+                                        <div class="video_btn_Cancelled ju al" v-if="confirmKey.booking.bookingState == 3">
+                                            <img style=" height: 57%;" src="@/assets/img/Cancelled.png" alt="">
+                                            <span class="text_v_btn">Cancelled</span>
+                                        </div>
+                                        <div class="videoConsultation cursor ju al" v-else>
                                             <img src="@/assets/img/video1.png" alt="">
                                             <span class="text_v_btn">Video Consultation</span>
                                         </div>
@@ -79,14 +83,18 @@
                                 <div class="size16">Appointment ID</div>
                                 <div class="size17">{{confirmKey.booking.bookingId}}</div>
                             </div>
-                            <div class="flex calendar_item">
+                            <div class="flex calendar_item" v-if="confirmKey.booking.bookingState != 3">
                                 <div class="Reschedule size13 cursor tc" @click="update">Reschedule</div>
                                 <div class="cancel size13 cursor tc" @click="deleteBook">Cancel</div>
                                 <div class="sureUpdate size13 cursor tc" v-show="!change" @click="sureUpdate">Sure</div>
                             </div>
                         </div>
                         <div class="telephone_or_video">
-                            <div class="videoConsultation cursor ju al">
+                            <div class="video_btn_Cancelled ju al" v-if="confirmKey.booking.bookingState == 3">
+                                <img style="height: 57%;" src="@/assets/img/Cancelled.png" alt="">
+                                <span class="text_v_btn">Cancelled</span>
+                            </div>
+                            <div class="videoConsultation cursor ju al" v-else>
                                 <img src="@/assets/img/video1.png" alt="">
                                 <span class="text_v_btn">Video Consultation</span>
                             </div>
@@ -115,6 +123,9 @@ export default {
     },
     created () {
         this.getMsg()
+    },
+    computed: {
+        default_img () { return this.$store.state.user.default_img }
     },
     methods: {
         sureUpdate () {
@@ -256,6 +267,7 @@ export default {
         width: 30%;
         min-width: 250px;
         @media screen and (max-width: 564px) {
+            width: 75%;
             margin: 0 auto;
         }
     }
@@ -332,6 +344,29 @@ export default {
     }
     .videoConsultation {
         background: #15BC83;
+        width: 250px;
+        border-radius: 10px;
+        color: white;
+        height: 40px;
+        transform: rotateY(180deg);
+        margin-bottom: 10px;
+        @media screen and (max-width: 1350px) {
+            font-size: 15px;
+            width: 200px;
+        }
+        @media screen and (max-width: 800px) {
+            width: 60px;
+            height: 30px;
+        }
+    }
+    .videoConsultation img, .video_btn_Cancelled img {
+        padding-right: 7px;
+        @media screen and (max-width: 800px) {
+            padding: 0 !important;
+        }
+    }
+    .video_btn_Cancelled {
+        background: #767676;
         width: 250px;
         border-radius: 10px;
         color: white;

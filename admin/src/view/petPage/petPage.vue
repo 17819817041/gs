@@ -1,22 +1,12 @@
 <template>
     <div class="myCustomer flex" v-loading='loading'>
-        <div class="animal">
-            <div class="wrap clear">
-                <!-- <div class="wrap_item ju float cursor"  @click="toPatients">
-                    <div><img class="personal_img" src="@/assets/img/customerHead.png" alt=""></div>
-                    <div class="name tc">
-                        <div class="size25">Betty Wong</div>
-                        <div class="address flex">
-                            <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
-                            <div class="size17">Chai Wan, Hong Kong</div>
-                        </div>
-                    </div>
-                </div> -->
-                <div class="wrap_item float" v-for="(item,i) in petList" :key="item.id"   @click="toPatients(item,i)">
+        <div class="animal" ref="doctorList" @scroll="docScroll">
+            <div class="wrap clear" ref="doctorList_height">
+                <div class="wrap_item float" v-for="(item,i) in petList" :key="item.id" @click="toPatients(item,i)">
                     <div class="flex al">
                         <div class="ju al Personal">
                             <img class="personal_img" style="height:100%;" v-if="item.petHeadUrl" :src="item.petHeadUrl" alt="">
-                            <img style="height:100%;" v-else :src="default_img" alt="">
+                            <img style="height:75%;" v-else :src="d_img" alt="">
                             <!-- <i class="el-icon-picture-outline Icon" v-else></i> -->
                         </div>
                         <div class="name">
@@ -41,9 +31,12 @@
                     </div>
                 </div>
             </div>
+            <div class="acting float ju al" v-if="loading_1">
+                <div class="loading" v-loading="true"></div>
+            </div>
         </div>
         <div class="personWithAnimal noBar">
-            <div class="information_wrap">
+            <div class="information_wrap" v-loading='loading_p'>
                 <div class="petDetails">
                     <div class="petDetails_item">
                         <div class="Title sb">
@@ -51,7 +44,7 @@
                         </div>
                         <div class="ju mg al PET_IMG">
                             <img class="Img" :src="changePage.petHeadUrl" alt="" v-if="changePage.petHeadUrl">
-                            <img style="height:100%;" v-else :src="default_img" alt="">
+                            <img style="height:75%;" v-else :src="d_img" alt="">
                             <!-- <i class=" el-icon-picture-outline Icon" style="font-size:60px;color:gray;" v-else></i> -->
                         </div>
                         <div class="pet_information">
@@ -84,7 +77,7 @@
                         <div class="size13" v-else>No data</div>
                     </div>
                     <div class="ju">
-                        <div><img class="relationWay cursor" src="@/assets/img/chat.png" alt=""></div>
+                        <div><img class="relationWay cursor" @click="chat_to_cus(changePage)" src="@/assets/img/chat.png" alt=""></div>
                         <div><img class="relationWay cursor" src="@/assets/img/videoWay.png" alt=""></div>
                     </div>
                     <div class="message_list size15bl">
@@ -106,7 +99,7 @@
                         </div>
                         <div style="width:100%" class="flex al ts">
                             <div class="const">Mobile</div>
-                            <div class="event">{{changePage.Mobile}}</div>
+                            <div class="event">{{changePage.moble}}</div>
                         </div>
                     </div>
                     <div class="personMore"><span class="cursor" @click="pet_user_d">More...</span></div>
@@ -118,6 +111,7 @@
 
 <script>
 import { allPet, getUserByPetId } from "@/axios/request.js"
+import image from '@/assets/img/default.png'
 export default {
     data () {
         return {
@@ -135,50 +129,98 @@ export default {
             // },
             // List: {},
             pageNum: 1,
-            pageSize: 100,
             changePage: {},
+            loading_p: false,
+            totalRecordsCount: 0,
+            d_img: ''
         }
     },
     mounted () {
-        // this.createClient()
+        this.getPetLists()
     },
     created () {
-        this.getPetLists()
-        
+        this.d_img = image
     },
     watch: {
-        // petList: {
-        //     handler (val) {
-
-        //     },
-        //     immediate: true
-        // }
+        petList: {
+            handler (val) {
+                if (val) {
+                    this.getDoctorMedicalLimitList = val
+                }
+            },
+        },
+        message: {
+            handler (val) {
+                if (val) {
+                    this.message = val
+                }
+            },
+            deep: true
+        },
+        messageList: {
+            handler (val) {
+                if (val) {
+                    this.messageList = val
+                }
+            },
+            deep: true
+        },
     },
     computed: {
-        petList: {
-            get () {return this.$store.state.user.petList},
-            // set (val) {
-            //     this.$store.commit("setUser", {
-            //         key: "petList",
-            //         value: val
-            //     })
-            // },
-        },
         default_img () { return this.$store.state.user.default_img },
-        loading () { return this.$store.state.user.loading }
+        loading () { return this.$store.state.user.loading },
+        loading_1: {
+            get () { return this.$store.state.user.loading6 },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "loading6",
+                    value: val
+                })
+            }
+        },
+        petList: {
+            get () { return this.$store.state.user.getDoctorMedicalLimitList },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "getDoctorMedicalLimitList",
+                    value: val
+                })
+            },
+        },
+        message: {
+            get () { return this.$store.state.user.message },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "message",
+                    value: val
+                })
+            },
+        },
+        messageList: {
+            get () { return this.$store.state.user.messageList },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "messageList",
+                    value: val
+                })
+            },
+        },
     },
     methods: {
         toPatients (item,i) {
             let data = {
                 petId: item.petId
             }
+            this.loading_p = true
             getUserByPetId(data).then(res => {
-                console.log(res,'petAndUser')
+                this.loading_p = false
                 if (res.data.rtnCode == 200) {
+                    res.data.data.userImage = res.data.data.userHead
                     this.changePage = res.data.data
                 }
             }).catch(e => {
                 console.log(e)
+                this.loading_p = false
                 this.$message({
                     type: 'error',
                     message: "The query failed. The data has been deleted!"
@@ -192,14 +234,75 @@ export default {
                 })
             }
         },
+        docScroll () {
+            if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
+                if (this.petList.length >= this.totalRecordsCount) {
+                    
+                } else {
+                    if (!this.loading) {
+                        this.pageNum += 1
+                        this.getPetLists()
+                    }
+                }
+            }
+        },
         getPetLists () {
             let data = {
-                vm: this,
                 userId: localStorage.getItem("adminUserId"),
-                pageNum: 1,
-                pageSize: 1000
+                pageNum: this.pageNum,
+                pageSize: 15
             }
-            this.$store.dispatch('getPetList',data)
+            this.loading_1 = true
+            allPet(data).then(res => {
+                this.loading_1 = false
+                if (res.data.rtnCode == 200) {
+                    // this.petList = res.data.data.pageT
+                    // this.petList = this.petList.concat(res.data.data.pageT)
+                    this.$store.commit("medicalAdd", res.data.data.pageT)
+                    this.toPatients(res.data.data.pageT[0])
+                    this.totalRecordsCount = res.data.data.totalRecordsCount
+                }
+                this.$nextTick(() => {
+                    if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight <= this.$refs.doctorList_height.scrollHeight) {
+                        if (this.petList.length < this.totalRecordsCount) {
+                            this.pageNum +=1
+                            this.getPetLists()
+                        } else {
+
+                        }
+                    } else {
+
+                    }
+                })
+            }).catch(e => {
+                this.loading_1 = false
+                this.loading = false
+                this.$message({
+                    type: "error",
+                    message: "Fail load!"
+                })
+            })
+        },
+        chat_to_cus (item) {
+            let from = item.userId + 'a' + 1
+            this.$router.push({
+                name: 'chatRoom',
+                params: {
+                    key: from,
+                    id: item.userId
+                }
+            })
+            if (this.message[from]) {
+                
+            } else {
+                this.message[from] = {
+                    user: from,
+                    userDetail: item,
+                    messageList: [ ],
+                    msg: 0
+                }
+                this.message = JSON.parse(JSON.stringify(this.message))
+            }
         },
         
 
@@ -291,8 +394,6 @@ export default {
         .wrap {
             width: 102.5%;
             padding: 1.8% 1.3% 1.8% 1.8%;
-            height: 100%;
-            
         }
     }
     .animal::-webkit-scrollbar {
@@ -343,7 +444,6 @@ export default {
         .information_wrap {
             width: 90%;
             margin: auto;
-            height: 100%;
         }
     }
     .name {
@@ -467,5 +567,14 @@ export default {
         border: solid 1px rgb(218, 210, 210);
         border-radius: 50%;
         overflow: hidden;
+    }
+    .acting {
+        width: 100%;
+        padding: 50px 0;
+        // border: solid 1px;
+        @media screen and (max-width: 564px) {
+            width: 100%;
+            padding: 20px 0;
+        }
     }
 </style>

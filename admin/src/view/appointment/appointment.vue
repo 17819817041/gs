@@ -86,12 +86,6 @@
         color: gray;
         border-bottom: solid 1px #DCDEE1;
     }
-    // .calendarMini {
-    //     width: 30%;
-    // }
-    .calendarX {
-        width: 100%;
-    }
     .calendarList {
         width: 25px;
         height: 25px;
@@ -141,6 +135,23 @@
             padding: 20px 0;
         }
     }
+    .booking_i {
+        width: 100%;
+        color: white;
+        background: green;
+        border-radius: 8px;
+        padding: 3px;
+        img {
+            width: 20px;
+            margin-left: 5px;
+            @media screen and (max-width: 564px) {
+                width: 15px;
+            }
+            @media screen and (max-width: 400px) {
+                margin: auto;
+            }
+        }
+    }
 </style>
 
 <template>
@@ -167,30 +178,7 @@
                     </div>
                     <div class="calendar flex">
                         <div class="calendar_item noBar">
-                            <!-- 'appointment with' + ' ' + booking.find(b => b.booking.calanderDate==data.day).booking.bookingDoctor  -->
-                            <div class="flex">
-                                <div class="calendarX">
-                                    <el-calendar v-model="value">
-                                        <template
-                                            slot="dateCell"
-                                            slot-scope="{date, data}">
-                                            <div >
-                                                <div>{{data.day.slice(8)}}</div>
-                                                <el-tooltip effect="dark" content="Have appointment" placement="top-start">
-                                                    <div class="size12">{{
-                                                        booking.find(b => b.booking.calanderDate==data.day) ? 
-                                                        
-                                                        '✔️'
-                                                        : 
-                                                        ''
-                                                    }}</div>
-                                                </el-tooltip>
-                                            </div>
-                                        </template>
-                                    </el-calendar>
-                                </div>
-                            </div>
-                            
+                            <div id="calendar"></div>
                         </div>
                         <div class="appointment_details" v-loading="loading" v-if="booking">
                             <div class="appointment_details_child noBar">
@@ -242,12 +230,16 @@
 </template>
 
 <script>
-import { getBookings } from "@/axios/request.js"
-// import holiday from "@/assets/js/holiday.js"
+import { getBookingPage } from "@/axios/request.js"
+import { allBooking,deleteBooking } from "@/axios/request.js"
+import { Calendar } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction';
 export default {
     data () {
         return {
-            el_date: new Date(),
             booking: [],
             today: '',
             pageNum: 1,
@@ -264,7 +256,6 @@ export default {
                 label: 'Completed'
             }],
             sort_m: 1,
-            value: new Date(),
             totalRecordsCount: 0,
             l_loading: false,
             totalRecordsCount: 0,
@@ -273,6 +264,8 @@ export default {
     },
     created () {
         this.getDAY()
+    },
+    mounted () {
         this.getBooking()
     },
     computed: {
@@ -316,16 +309,16 @@ export default {
         },
         getBooking () {
             let data = {
-                startDay: '',
-                endDay: '',
+                type: 3,
                 pageNum: this.pageNum,
                 pageSize: 20,
+                sort: 1
             }
             if ((this.totalRecordsCount == this.booking.length) && this.totalRecordsCount !=0 ) {
                 this.l_loading = false
             } else {
                 this.l_loading = true
-                getBookings(data).then(res => {
+                getBookingPage(data).then(res => {
                     this.l_loading = false
                     this.loading = false
                     if (res.data.rtnCode == 200) {
@@ -343,6 +336,7 @@ export default {
                             item.booking.calanderDate = date[0] + "-" + date[1] + "-" + date[2]
                         })
                         this.booking = this.booking.concat(res.data.data.pageT)
+                        this.calendarUI()
                         this.totalRecordsCount = res.data.data.totalRecordsCount
                     } else if (res.data.rtnCode == 201) {
                         this.booking = null
@@ -393,8 +387,7 @@ export default {
         },
         Undone (date) {         
             let data = {
-                startDay: date,
-                endDay: '',
+                type: 2,
                 pageNum: this.pageNum,
                 pageSize: 20,
                 sort: 1
@@ -403,7 +396,7 @@ export default {
                 this.l_loading = false
             } else { 
                 this.l_loading = true
-                getBookings(data).then(res => {
+                getBookingPage(data).then(res => {
                     this.l_loading = false
                     this.loading = false
                     if (res.data.rtnCode == 200) {
@@ -436,8 +429,7 @@ export default {
         },
         Completed (yday) {
             let data = {
-                startDay: '',
-                endDay: yday,
+                type: 1,
                 pageNum: this.pageNum,
                 pageSize: 20,
                 sort: 1
@@ -446,7 +438,7 @@ export default {
                 this.l_loading = false
             } else { 
                 this.l_loading = true
-                getBookings(data).then(res => {
+                getBookingPage(data).then(res => {
                     this.l_loading = false
                     this.loading = false
                     this.$store.commit("setUser",{ key: "n_loading", value: false })
@@ -477,6 +469,45 @@ export default {
                     this.l_loading = false
                 })
             }
+        },
+        calendarUI () {
+            let calendarEl = document.getElementById('calendar')
+            let calendar = new Calendar(calendarEl, {
+                plugins: [ dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin ],
+                dateClick: function(info) {
+                    // info.dayEl.style.backgroundColor = '#F2F8FE';
+                },
+                eventClick: function(info) {
+                    // alert('Event: ' + info);
+                    // info.jsEvent.preventDefault(); // don't let the browser navigate
+
+                    // if (info.event.url) {
+                    //     window.open(info.event.url);
+                    // }
+                },
+                initialView: 'dayGridMonth',
+                dayMaxEvents: true,
+                headerToolbar: {
+                    left: 'prevYear,prev,next,nextYear today',
+                    center: 'title',
+                    right: 'dayGridMonth,dayGridWeek,dayGridDay'
+                },
+                events: [],
+            });
+            calendar.render();
+            // calendar.on('dateClick', function(info) {
+            //     console.log('clicked on ' + info.dateStr);
+            // });
+            this.$nextTick(() => {
+                this.booking.forEach(item => {
+                    calendar.addEvent({
+                        title: '',
+                        // start: '2021-08-04',
+                        // url: 'http://google.com/',
+                        start: item.booking.calanderDate + 'T' + item.booking.bookingStartTime
+                    })
+                })
+            })
         }
     }
 }

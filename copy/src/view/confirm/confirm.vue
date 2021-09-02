@@ -14,7 +14,8 @@
         <div class="confirm_message sa">
             <div class="confirm_item IMAGE_DOC ju">
                 <div class="docHead_wrap ju">
-                    <img class="docHead" :src="bookSuccess.docImage" alt="">
+                    <img class="docHead" v-if="bookSuccess.docImage" :src="bookSuccess.docImage" alt="">
+                    <img style="height:100%;" v-else :src="default_img" alt="">
                 </div>
             </div>
             <div class="DATE confirm_item" style="padding-left:20px">
@@ -62,6 +63,9 @@ export default {
     created () {
         this.getMsg()
     },
+    computed: {
+        default_img () { return this.$store.state.user.default_img }
+    },  
     methods: {
         getMsg () {
             var D = new Date(this.$route.query.date).toDateString()

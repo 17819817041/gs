@@ -12,7 +12,7 @@ function initRtc (Agora) {
         params: {}
     }
 
-    rtc.client = Agora.createClient({mode: "live", codec: "h264"})
+    rtc.client = Agora.createClient({mode: "live", codec: "vp8"})
     store.commit('setUser', { key: 'rtc', value: rtc })
     rtc.client.on("error", (err) => {
         console.log(err)
@@ -48,8 +48,6 @@ function initRtc (Agora) {
             console.log("channel leave failed")
             console.error(err)
         })
-
-
         rtc.remoteStreams = streams
         Message({
             type: 'info',
@@ -77,37 +75,48 @@ function initRtc (Agora) {
     })
     rtc.client.on("stream-subscribed", function (evt) {
         var remoteStream = evt.stream
-        store.commit('setUser', { key: 'remoteStream_mute', value: remoteStream })
+        // window.remoteStream = remoteStream
+        // store.commit('setUser', { key: 'remoteStream_mute', value: remoteStream })
         var id = remoteStream.getId()
         rtc.remoteStreams.push(remoteStream)
         remoteStream.play("player_a1")
         console.log("stream-subscribed remote-uid: ", id)
     })
     rtc.client.on("onTokenPrivilegeWillExpire", function(){
+        var balance = store.state.user.balance
+        // console.log(balance,666666)
         MessageBox.confirm('The call time is about to end. Do you want to renew?', 'Attention', {
             MessageBoxButtonText: 'MessageBox',
             cancelButtonText: 'Cancel',
             type: 'warning'
         }).then(() => {
-            let data = {
-                expirationTime: 1,
-                userId: localStorage.getItem('userId'),
-                roomNumber: 'petavi_' + localStorage.getItem('sroom')
+            if (balance.balance >= 20) {
+                let data = {
+                    expirationTime: 10,                  //
+                    userId: localStorage.getItem('userId'),
+                    roomNumber: 'petavi_' + localStorage.getItem('sroom')
+                }
+                getAgoraToken(data).then(res => {
+                    rtc.client.renewToken(res.data.data);
+                })
+                let order_1 = JSON.parse(localStorage.getItem('order_1'))
+                console.log(order_1)
+                let segmented = {
+                    orderId: order_1.orderId,
+                    goodsId: order_1.goodsId
+                }
+                orderDetail(segmented).then(res => {
+                    // console.log(res,'第二次扣费')
+                })
+            } else {
+                rtc.client.unpublish(rtc.localStream)
+                Message({
+                    type:'error',
+                    message: 'Your balance is insufficient!'
+                })
             }
-            getAgoraToken(data).then(res => {
-                rtc.client.renewToken(res.data.data);
-            })
-            let order_1 = JSON.parse(localStorage.getItem('order_1'))
-            console.log(order_1)
-            let segmented = {
-                orderId: order_1.orderId,
-                goodsId: order_1.goodsId
-            }
-            orderDetail(segmented).then(res => {
-                // console.log(res,'第二次扣费')
-            })
         }).catch(() => {
-
+            
         })
         console.log("onTokenPrivilegeWillExpire")
     })
@@ -134,14 +143,14 @@ function initRtc (Agora) {
             webId: store.state.user.mettingId
         }
         delMetting(data_dele).then(res => {
-            console.log(res,'删除')
+            // console.log(res,'删除')
         })
         router.back()
         console.log("client leaves channel success")
         console.log("onTokenPrivilegeDidExpire")
     })
     rtc.client.on("connection-state-change", function (val) {
-        console.log(val,'connection-state-change+++++++++++++++++++++++++++++++++++++++++++++')
+        // console.log(val,'connection-state-change+++++++++++++++++++++++++++++++++++++++++++++')
     })
 }
 

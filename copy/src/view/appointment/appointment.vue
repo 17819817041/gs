@@ -27,7 +27,7 @@
             overflow: auto;
             margin: 0px 10px;
             background: white;
-            @media screen and (max-width: 750px) {
+            @media screen and (max-width: 1020px) {
                 width: 100%;
             }
         }
@@ -38,10 +38,10 @@
             margin: 0px 10px;
             background: white;
             box-shadow: 0px 1px 2px 1px rgb(187, 184, 184);
-            @media screen and (max-width: 1080px) {
+            @media screen and (max-width: 1150px) {
                 min-width: 300px;
             }
-            @media screen and (max-width: 750px) {
+            @media screen and (max-width: 1020px) {
                 display: none;
             }
         }
@@ -61,7 +61,7 @@
         width: 55px;
         height: 55px;
         overflow: hidden;
-        @media screen and (max-width: 1080px) {
+        @media screen and (max-width: 1150px) {
             display: none;
         }
     }
@@ -92,12 +92,9 @@
         margin-top: 6px;
     }
     .pet_name {
-        @media screen and (max-width: 1080px) {
+        @media screen and (max-width: 1150px) {
             text-align: end;
         }
-    }
-    .calendarX {
-        width: 100%;
     }
     .calendar-day{
         text-align: center;
@@ -134,14 +131,14 @@
         overflow: auto;
     }
     .user_b {
-        @media screen and (max-width: 1080px) {
+        @media screen and (max-width: 1150px) {
             padding-left: 8px;
         }
     }
     .callimg {
         width:15px;
         height:14px;
-        @media screen and (max-width: 1080px) {
+        @media screen and (max-width: 1150px) {
             width: 20px;
             height: 19px;
             padding-right: 5px;
@@ -154,8 +151,39 @@
         background: #15BC83;
         border-radius: 7px;
         display: none;
-        @media screen and (max-width: 750px) {
+        @media screen and (max-width: 1020px) {
             display: block;
+        }
+    }
+    .booking_i {
+        width: 100%;
+        color: white;
+        background: green;
+        border-radius: 8px;
+        padding: 3px;
+        img {
+            width: 20px;
+            margin-left: 5px;
+            @media screen and (max-width: 564px) {
+                width: 15px;
+            }
+            @media screen and (max-width: 400px) {
+                margin: auto;
+            }
+        }
+    }
+    .DateTime {
+        padding: 0 5px;
+    }
+    .sort_booking {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        border: solid 2px rgb(199, 199, 199);
+        margin-left: 7px;
+        width: 150px;
+        @media screen and (max-width: 1020px) {
+            display: none;
         }
     }
 </style>
@@ -172,33 +200,21 @@
                             Appointment
                         </div>
                         <div class="Booking_list bold cursor" @click="mobile_booking">Booking</div>
+
+                        <div class="sort_booking">
+                            <el-select v-model="sort_m" placeholder="Classification" @change="sort_t">
+                                <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </div>
                     </div>
                     <div class="calendar flex">
                         <div class="calendar_item noBar">
-                            <!-- 'appointment with' + ' ' + booking.find(b => b.booking.calanderDate==data.day).booking.bookingDoctor  -->
-                            <div class="flex">
-                                <div class="calendarX">
-                                    <el-calendar v-model="value">
-                                        <template
-                                            slot="dateCell"
-                                            slot-scope="{date, data}">
-                                            <div >
-                                                <div>{{data.day.slice(8)}}</div>
-                                                <el-tooltip effect="dark" content="Have appointment" placement="top-start">
-                                                    <div class="size12">{{
-                                                        booking.find(b => b.booking.calanderDate==data.day) ? 
-                                                        
-                                                        '✔️'
-                                                        : 
-                                                        ''
-                                                    }}</div>
-                                                </el-tooltip>
-                                            </div>
-                                        </template>
-                                    </el-calendar>
-                                </div>
-                            </div>
-                            
+                            <div id="calendar"></div>
                         </div>
                         <div class="appointment_details" v-loading="l_loading" v-if="booking">
                             <div class="appointment_details_child noBar">
@@ -209,7 +225,7 @@
                                         <img style="height:100%;" v-else :src="default_img" alt="">
                                     </div>
                                     <div class="appointment_details_name user_b">
-                                        <div style="padding-bottom:7px;" class="size13 user_b">{{item.booking.userName}}</div>
+                                        <div style="padding-bottom:5px;" class="size13 user_b">{{item.booking.userName}}</div>
                                         <div class="size12 al">
                                             <img class="callimg" src="@/assets/img/callimg.png" alt="">
                                             Phone Counsultation
@@ -246,21 +262,43 @@
 </template>
 
 <script>
-import { bookingUserId, allBooking,deleteBooking } from "@/axios/request.js"
+import { allBooking_doc } from "@/axios/request.js"
+import { Calendar } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction';
 export default {
     data () {
         return {
-            value: new Date(),
             booking: [],
             today: '',
             loading: true,
             pageNum: 1,
             totalRecordsCount: 0,
             small: false,
+
+            options: [{
+                value: 1,
+                label: 'All'
+                }, {
+                value: 2,
+                label: 'Undone'
+                }, {
+                value: 3,
+                label: 'Completed'
+            }],
+            value: 1,
+            undone_totalRecordsCount: 0,
+            completed_totalRecordsCount: 0,
+            small: false,
+            sort_m: 1
         }
     },
     created () {
         this.getDAY()
+    },
+    mounted () {
         this.getBooking()
     },
     computed: {
@@ -301,35 +339,10 @@ export default {
                 }
             })
         },
-        cancelBook (item) {
-            this.$confirm('Are you sure to Cancel?', 'Attention', {
-                confirmButtonText: 'Confirm',
-                cancelButtonText: 'Cancel',
-                type: 'warning'
-            }).then(() => {
-                let data = {
-                    bookingId: item.booking.bookingId
-                }
-                deleteBooking(data).then(res => {
-                    console.log(res)
-                    if (res.data.rtnCode == 200) {
-                        this.$message({
-                            type: 'info',
-                            message: 'Cancel the appointment successfully!'
-                        })
-                    }
-                }).catch(e => {
-                    console.log(e)
-                })
-            }).catch (e => {
-                console.log(e)
-            })
-        },
         getBooking () {
             let data = {
-                userId: localStorage.getItem('userId'),
-                userType: 2,
-                data: this.today,
+                doctorId: localStorage.getItem('userId'),
+                type: 3,
                 pageNum: this.pageNum,
                 pageSize: 10,
                 sort: 1
@@ -339,7 +352,7 @@ export default {
                 
             } else {
                 this.$store.commit("setUser",{ key: "n_loading", value: true })
-                bookingUserId(data).then(res => {
+                allBooking_doc(data).then(res => {
                     this.$store.commit("setUser",{ key: "n_loading", value: false }) 
                     if (res.data.rtnCode == 200) {
                         res.data.data.pageT.forEach(item => {
@@ -358,6 +371,7 @@ export default {
                         })
                         // this.booking = this.booking.concat(res.data.data.pageT)
                         this.booking = res.data.data.pageT
+                        this.calendarUI()
                         this.totalRecordsCount = res.data.data.totalRecordsCount
                         this.loading = false
                     } else if (res.data.rtnCode == 201) {
@@ -393,8 +407,149 @@ export default {
         toConfirm (id) {
             this.$router.push({
                 name: 'vetConfirm',
-                query: id
+                query: {
+                    id: id
+                }
             })
+        },
+        calendarUI () {
+            let calendarEl = document.getElementById('calendar')
+            let calendar = new Calendar(calendarEl, {
+                plugins: [ dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin ],
+                dateClick: function(info) {
+                    // info.dayEl.style.backgroundColor = '#F2F8FE';
+                },
+                eventClick: function(info) {
+                    // alert('Event: ' + info);
+                    // info.jsEvent.preventDefault(); // don't let the browser navigate
+
+                    // if (info.event.url) {
+                    //     window.open(info.event.url);
+                    // }
+                },
+                initialView: 'dayGridMonth',
+                dayMaxEvents: true,
+                headerToolbar: {
+                    left: 'prevYear,prev,next,nextYear today',
+                    center: 'title',
+                    right: 'dayGridMonth,dayGridWeek,dayGridDay'
+                },
+                events: [],
+            });
+            calendar.render();
+            // calendar.on('dateClick', function(info) {
+            //     console.log('clicked on ' + info.dateStr);
+            // });
+            this.$nextTick(() => {
+                this.booking.forEach(item => {
+                    calendar.addEvent({
+                        title: '',
+                        // start: '2021-08-04',
+                        // url: 'http://google.com/',
+                        start: item.booking.calanderDate + 'T' + item.booking.bookingStartTime
+                    })
+                })
+            })
+        },
+        sort_t (val) {
+            this.booking = []
+            this.loading = true
+            this.pageNum = 1
+            // let Y = new Date()
+            // Y.setTime(Y.getTime()-24*60*60*1000);
+            // var yday = Y.getFullYear()+"-" + (Y.getMonth()+1) + "-" + Y.getDate();
+
+            if (val == 1) {
+                this.getBooking()
+            } else if (val == 2) {
+                this.Undone()
+            } else if (val == 3) {
+                this.Completed()
+            }
+        },
+        Undone () {         
+            let data = {
+                doctorId: localStorage.getItem('userId'),
+                type: 2,
+                pageNum: this.pageNum,
+                pageSize: 10,
+                sort: 1
+            }
+            if ((this.totalRecordsCount == this.booking.length) && this.totalRecordsCount !=0 ) {
+                this.$store.commit("setUser",{ key: "n_loading", value: false })
+            } else { 
+                this.$store.commit("setUser",{ key: "n_loading", value: true })
+                allBooking_doc(data).then(res => {
+                    // console.log(res, '未完成')
+                    this.$store.commit("setUser",{ key: "n_loading", value: false })
+                    if (res.data.rtnCode == 200) {
+                        res.data.data.pageT.forEach(item => {
+                            let date = item.booking.bookingDate.split('-')
+                            item.booking.bookingDate = date[2] + '/' + date[1] + '/'+ date[0]
+                            item.booking.APM = ''
+        
+                            var hour = Number(item.booking.bookingStartTime.split(':')[0])
+                            var minute = Number(item.booking.bookingStartTime.split(':')[1])
+                            if ( hour >= 12 && minute >= 0) {
+                                item.booking.APM = 'PM'
+                            } else {
+                                item.booking.APM = 'AM'
+                            }
+                            item.booking.calanderDate = date[0] + "-" + date[1] + "-" + date[2]
+                        })
+                        // this.booking = this.booking.concat(res.data.data.pageT)
+                        this.booking = res.data.data.pageT
+                        this.calendarUI()
+                        this.totalRecordsCount = res.data.data.totalRecordsCount
+                    } else if (res.data.rtnCode == 201 ) {
+                        this.booking = res.data.data
+                    } else {
+                        this.booking = null
+                    }
+                })
+            }
+        },
+        Completed () {
+            let data = {
+                doctorId: localStorage.getItem('userId'),
+                type: 1,
+                pageNum: this.pageNum,
+                pageSize: 10,
+                sort: 1
+            }
+            if ((this.totalRecordsCount == this.booking.length) && this.totalRecordsCount !=0 ) {
+                this.$store.commit("setUser",{ key: "n_loading", value: false })
+            } else { 
+                this.$store.commit("setUser",{ key: "n_loading", value: true })
+                allBooking_doc(data).then(res => {
+                    // console.log(res,'已完成')
+                    this.$store.commit("setUser",{ key: "n_loading", value: false })
+                    if (res.data.rtnCode == 200) {
+                       res.data.data.pageT.forEach(item => {
+                            let date = item.booking.bookingDate.split('-')
+                            item.booking.bookingDate = date[2] + '/' + date[1] + '/'+ date[0]
+                            item.booking.APM = ''
+        
+                            var hour = Number(item.booking.bookingStartTime.split(':')[0])
+                            var minute = Number(item.booking.bookingStartTime.split(':')[1])
+                            if ( hour >= 12 && minute >= 0) {
+                                item.booking.APM = 'PM'
+                            } else {
+                                item.booking.APM = 'AM'
+                            }
+                            item.booking.calanderDate = date[0] + "-" + date[1] + "-" + date[2]
+                        })
+                        // this.booking = this.booking.concat(res.data.data.pageT)
+                        this.booking = res.data.data.pageT
+                        this.calendarUI()
+                        this.totalRecordsCount = res.data.data.totalRecordsCount
+                    } else if (res.data.rtnCode == 201 ) {
+                        this.booking = res.data.data
+                    } else {
+                        this.booking = null
+                    }
+                })
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="reviewer">
         <el-backtop target=".border"></el-backtop>
-        <div class="vetSetting_content mg">
+        <!-- <div class="vetSetting_content mg">
             <div class="vetSetting_content_item">
                 <div class="profile flex">
                     <div class="profile_img">
@@ -134,9 +134,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <el-divider content-position="left">Comment</el-divider>
-        <div class="vetSetting_content border mg">
+        <div class="vetSetting_content border mg" v-if="commentList">
             <div class="comment_item flex" v-for="(item) in commentList" :key="item.id">
                 <div class="customer_img_wrap">
                     <div class="customer_img mg ju al"><img style="height: 100%;" :src="item.userImage" alt=""></div>
@@ -152,6 +152,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="vetSetting_content border bold tc size21" v-else-if="commentList === null">
+            No Comment
         </div>
     </div>
 </template>
@@ -211,7 +214,6 @@ export default {
                 pageSize: 10
             }
             comment(data).then(res => {
-                console.log(res,6666)
                 if (res.data.rtnCode == 200) {
                     this.commentList = res.data.data.pageT
                     this.totalRecordsCount = res.data.data.totalRecordsCount
@@ -249,7 +251,8 @@ export default {
 <style lang='less' scoped>
 @import "@/less/css.less";
 .reviewer {
-    height: 100%;
+    // height: 100%;
+    height: calc(100% - 49px);
 }
     .comment_item {
         padding: 10px 15px;
@@ -308,7 +311,8 @@ export default {
     }
     .border {
         // border: solid 1px;
-        height: calc(100% - 465px);
+        // height: calc(100% - 465px);
+        height: calc(100%);
         overflow: auto;
     }
     .border::-webkit-scrollbar {

@@ -127,8 +127,8 @@
                         </div>
                         <div>Weight : {{pet.weight}} kg</div>
                     </div>
-                    <div class="more_message size12 cursor" @click="petDetails">
-                        More...
+                    <div class="more_message size12 flexEnd">
+                        <span @click="petDetails" class="cursor"> More...</span>
                     </div>
                 </div>
                 <div class="administrator mg">

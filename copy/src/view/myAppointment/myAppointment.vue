@@ -16,7 +16,7 @@
         }
     }
     .myAppointment_wrap_item {
-        height: calc(100% - 69px);
+        height: calc(100% - 78px);
         overflow: auto;
     }
     .myAppointment_wrap_item::-webkit-scrollbar {
@@ -136,6 +136,21 @@
             background: #15BC83;
         }
     }
+    .video_btn_Cancelled {
+        height: 45px;
+        border-radius: 7px;
+        margin-bottom: 55px;
+        transition: 0.1s;
+        background: #707070;
+        padding: 0 30px;
+        @media screen and (max-width: 1200px){
+            padding: 0 10px;
+            height: 34px;
+            border-radius: 7px;
+            margin-bottom: 55px;
+            background: #707070;
+        }
+    }
     .video_text {
         white-space: nowrap;
         @media screen and (max-width: 700px){
@@ -208,7 +223,7 @@
         overflow: hidden;
         border: solid 2px rgb(199, 199, 199);
         margin-left: 7px;
-        padding: 3px 12px;
+        width: 150px;
     }
 </style>
 <template>
@@ -217,29 +232,26 @@
         <div class="myAppointment_wrap">
             <div class="explan bold al sb" style="padding: 17px 20px;">
                 <div class="al"><img src="@/assets/img/appointment.png" alt="">Appointment</div>
-                <div class="sort_booking" v-show="false">
-                    <el-dropdown trigger="click">
-                        <span class="el-dropdown-link">
-                            Classification<i class="el-icon-arrow-down el-icon--right"></i>
-                        </span>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item icon="el-icon-circle-plus" 
-                            v-for="item in options" 
-                            @click.native='sort_t(item.value)'
-                            :key="item.value"> {{item.label}} </el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
+                <div class="sort_booking">
+                    <el-select v-model="sort_m" placeholder="Classification" @change="sort_t">
+                        <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
                 </div>
             </div>
             <div v-if="bookingList" class="myAppointment_wrap_item">
                 <div>
-                    <div class="myAppointment_item mg" @click="appointmentDetalis(item.booking.bookingId,item.docImage)" 
+                    <div class="myAppointment_item mg" @click="appointmentDetalis(item.booking.bookingId,item)" 
                         v-for="(item) in bookingList" :key="item.bookingId">
                         <div class="myAppointment_item_message mg al">
                             <div class="head_image ju al">
                                 <div class="head_image_wrap ju al">
                                     <img v-if="item.docImage" :src="item.docImage" alt="">
-                                    <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
+                                    <img style="height:100%;" v-else :src="default_img" alt="">
                                 </div>
                             </div>
                             <div class="message_wrap">
@@ -262,8 +274,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="Way flexEnd">
-                                <div class="video_btn ju al cursor" @click.stop="starBook(item)">
+                            <div class="Way flexEnd">   
+                                <div class="video_btn_Cancelled ju al" v-if="item.booking.bookingState == 3">
+                                    <img style="padding-right: 7px; height: 57%;" src="@/assets/img/Cancelled.png" alt="">
+                                    <span class="video_text">Cancelled</span>
+                                </div>
+                                <div class="video_btn ju al cursor" v-else @click.stop="starBook(item)">
                                     <img style="padding-right: 7px;" src="@/assets/img/video1.png" alt="">
                                     <span class="video_text">Video Consultation</span>
                                 </div>
@@ -320,7 +336,8 @@ export default {
             value: 1,
             undone_totalRecordsCount: 0,
             completed_totalRecordsCount: 0,
-            small: false
+            small: false,
+            sort_m: 1
         }
     },
     created () {
@@ -362,6 +379,7 @@ export default {
 		IMuser () { return this.$store.state.user.IMuser },
 		mask () {return this.$store.state.user.mask},
 		cut_metting () { return this.$store.state.user.mettingId },
+        default_img () { return this.$store.state.user.default_img },
 		petId: {
 			get () { return this.$store.state.user.petId },
 			set (val) {
@@ -414,7 +432,6 @@ export default {
             }
         },
         sendMsg (item) {
-            console.log(JSON.stringify(item.booking.bookingDoctorId) + 'A2', )
 			let D = new Date().getTime()
             localStorage.setItem('sroom',D)
 			let data = {
@@ -441,7 +458,9 @@ export default {
             });
             this.$conn.send(msg.body);
 		},
-        appointmentDetalis (id,url) {
+        appointmentDetalis (id,item) {
+            console.log(item)
+            return false
             this.$router.push({
                 name: 'cusAppointmentDetalis',
                 query: {
@@ -452,10 +471,10 @@ export default {
         bookingUserId () {
             let data = {
                 userId: localStorage.getItem('userId'),
-                userType: 1,
+                type: 3,
                 pageNum: this.pageNum,
-                pageSize: 10
-                // data: this.today
+                pageSize: 10,
+                sort: 1
             }
             if ((this.totalRecordsCount == this.bookingList.length) && this.totalRecordsCount !=0 ) {
                 this.$store.commit("setUser",{ key: "n_loading", value: false })
@@ -463,26 +482,22 @@ export default {
             } else {
                 this.$store.commit("setUser",{ key: "n_loading", value: true })
                 allBooking(data).then(res => {
-                    console.log(res, 'all')
                     this.$store.commit("setUser",{ key: "n_loading", value: false })    
                     if (res.data.rtnCode == 200) {
                         res.data.data.pageT.forEach(item => {
-                            if (item.booking.bookingState == 1 || item.booking.bookingState == 2 ) {
-                                let date = item.booking.bookingDate
-                                let En = new Date(date).toDateString()
-                                let arr = En.split(' ')
-                                item.booking.bookingDate = arr[2] + ' ' + arr[1] + ','+ arr[3]
-                                item.booking.APM = ''
-                                var hour = Number(item.booking.bookingStartTime.split(':')[0])
-                                var minute = Number(item.booking.bookingStartTime.split(':')[1])
-                                if ( hour >= 12 && minute >= 0) {
-                                    item.booking.APM = 'PM'
-                                } else {
-                                    item.booking.APM = 'AM'
-                                }
+                            let date = item.booking.bookingDate
+                            let En = new Date(date).toDateString()
+                            let arr = En.split(' ')
+                            item.booking.bookingDate = arr[2] + ' ' + arr[1] + ','+ arr[3]
+                            item.booking.APM = ''
+                            var hour = Number(item.booking.bookingStartTime.split(':')[0])
+                            var minute = Number(item.booking.bookingStartTime.split(':')[1])
+                            if ( hour >= 12 && minute >= 0) {
+                                item.booking.APM = 'PM'
+                            } else {
+                                item.booking.APM = 'AM'
                             }
                         })
-                        // this.bookingList = this.bookingList.concat(res.data.data.pageT)
                         this.bookingList = res.data.data.pageT
                         this.totalRecordsCount = res.data.data.totalRecordsCount
                     } else if (res.data.rtnCode == 201 ) {
@@ -518,34 +533,35 @@ export default {
             this.today = currentdate
         },
         sort_t (val) {
+            this.sort_m = val
             this.bookingList = []
-            let date = this.D.toLocaleDateString().split('/').join('-')
-            let Y = new Date()
-            Y.setTime(Y.getTime()-24*60*60*1000);
-            var yday = Y.getFullYear()+"-" + (Y.getMonth()+1) + "-" + Y.getDate();
+            this.loading = true
+            this.pageNum = 1
+            // let Y = new Date()
+            // Y.setTime(Y.getTime()-24*60*60*1000);
+            // var yday = Y.getFullYear()+"-" + (Y.getMonth()+1) + "-" + Y.getDate();
 
             if (val == 1) {
                 this.bookingUserId()
             } else if (val == 2) {
-                this.Undone(date)
+                this.Undone()
             } else if (val == 3) {
-                this.Completed(yday)
+                this.Completed()
             }
         },
-        Undone (date) {         
+        Undone () {         
             let data = {
-                startDay: date,
-                endDay: '',
+                userId: localStorage.getItem('userId'),
+                type: 2,
                 pageNum: this.pageNum,
                 pageSize: 10,
                 sort: 1
             }
-            if ((this.undone_totalRecordsCount == this.bookingList.length) && this.undone_totalRecordsCount !=0 ) {
+            if ((this.totalRecordsCount == this.bookingList.length) && this.totalRecordsCount !=0 ) {
                 this.$store.commit("setUser",{ key: "n_loading", value: false })
             } else { 
                 this.$store.commit("setUser",{ key: "n_loading", value: true })
-                sortBooking(data).then(res => {
-                    console.log(res, '未完成')
+                allBooking(data).then(res => {
                     this.$store.commit("setUser",{ key: "n_loading", value: false })
                     if (res.data.rtnCode == 200) {
                         res.data.data.pageT.forEach(item => {
@@ -565,7 +581,7 @@ export default {
                             }
                         })
                         this.bookingList = this.bookingList.concat(res.data.data.pageT)
-                        this.undone_totalRecordsCount = res.data.data.totalRecordsCount
+                        this.totalRecordsCount = res.data.data.totalRecordsCount
                     } else if (res.data.rtnCode == 201 ) {
                         this.bookingList = res.data.data
                     } else {
@@ -574,20 +590,19 @@ export default {
                 })
             }
         },
-        Completed (yday) {
+        Completed () {
             let data = {
-                startDay: '',
-                endDay: yday,
+                userId: localStorage.getItem('userId'),
+                type: 1,
                 pageNum: this.pageNum,
                 pageSize: 10,
                 sort: 1
             }
-            if ((this.completed_totalRecordsCount == this.bookingList.length) && this.completed_totalRecordsCount !=0 ) {
+            if ((this.totalRecordsCount == this.bookingList.length) && this.totalRecordsCount !=0 ) {
                 this.$store.commit("setUser",{ key: "n_loading", value: false })
             } else { 
                 this.$store.commit("setUser",{ key: "n_loading", value: true })
-                sortBooking(data).then(res => {
-                    console.log(res,'已完成')
+                allBooking(data).then(res => {
                     this.$store.commit("setUser",{ key: "n_loading", value: false })
                     if (res.data.rtnCode == 200) {
                         res.data.data.pageT.forEach(item => {
@@ -607,7 +622,7 @@ export default {
                             }
                         })
                         this.bookingList = this.bookingList.concat(res.data.data.pageT)
-                        this.completed_totalRecordsCount = res.data.data.totalRecordsCount
+                        this.totalRecordsCount = res.data.data.totalRecordsCount
                     } else if (res.data.rtnCode == 201 ) {
                         this.bookingList = res.data.data
                     } else {

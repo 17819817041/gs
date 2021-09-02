@@ -68,9 +68,6 @@
                 bottom: 45px;
             }
             @media screen and (max-width: 1200px) {
-                bottom: 65px;
-            }
-            @media screen and (max-width: 564px) {
                 right: 10px;
                 top: 20px;
             }
@@ -89,9 +86,6 @@
                 bottom: 45px;
             }
             @media screen and (max-width: 1200px) {
-                bottom: 65px;
-            }
-            @media screen and (max-width: 564px) {
                 right: 10px;
                 top: 20px;
             }
@@ -117,10 +111,7 @@
                 bottom: 65px;
             }
             @media screen and (max-width: 1200px) {
-                bottom: 85px;
-            }
-            @media screen and (max-width: 930px) {
-                bottom: 85px;
+                bottom: 60px;
             }
             @media screen and (max-width: 564px) {
                 width: 100%;
@@ -306,7 +297,7 @@
             outline: none;
             width: 100%;
             height: 100%;
-            padding: 12px 5px;
+            padding: 7px 5px;
             font-size: 20px;
             background: #F3F3F3;
         }
@@ -314,8 +305,8 @@
     .send_img {
         width: 15%;
         img {
-            width: 60px;
-            height: 60px;
+            width: 45px;
+            height: 45px;
         }
     }
     .userHead_img {
@@ -341,7 +332,6 @@
         // width: 100%;
         height: 100%;
     }
-
     .atPresentDoctor {
         width: 95%;
         color: #828282;
@@ -388,6 +378,7 @@
         }
         .clipImg {
             padding-left: 15px;
+            height: 100%;
         }
     }
     .submit {
@@ -456,6 +447,9 @@
         img {
             width: 100%;
         }
+        @media screen and (max-width: 930px) {
+            margin: 0 1.5%;
+        }
         @media screen and (max-width: 600px) {
             cursor: none;
         }
@@ -472,7 +466,6 @@
     .v_opacity {
         opacity: 0;
     }
-
     .chatPage {
         position: absolute;
         width: 700px;
@@ -589,8 +582,8 @@
         font-size: 12px;
         color: gray;
     }
-
     .fixed_wrap {
+        height: 100%;
         @media screen and (max-width: 1100px) {
             position: fixed;
             top: 0;
@@ -602,29 +595,127 @@
     .disnone {
         display: none;
     }
+    .chatLogo {
+        width: 35px;
+        height: 35px;
+        overflow: hidden;
+        border-radius: 50%;
+        margin-right: 12px;
+    }
+    .file_zip {
+        width: 200px;
+        // display: block;
+        padding-top: 10px;
+        position: relative;
+        margin-bottom: 20px;
+        .file_name {
+            min-width: 125px;
+            text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+            display: -webkit-box;
+            -webkit-line-clamp: 2;/*规定超过两行的部分截断*/
+            -webkit-box-orient: vertical;
+            overflow : hidden; 
+            word-break: break-all;/*在任何地方换行*/
+        }
+        .file_zip_img {
+            width: 45px;
+            height: 45px;
+            margin-left: 10px;
+        }
+        .file_zip_child {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 12px;
+        }
+        .loading_file {
+            position: absolute;
+            top: 50%;
+            left: -60px;
+            width: 40px;
+            height: 40px;
+            transform: translate(0, -50%);
+        }
+    }
+    .file_img {
+        width: 220px;
+        height: 125px;
+        position: relative;
+        padding-bottom: 25px !important;
+        margin-bottom: 20px;
+        .file_img_wrap {
+            width: 200px;
+            height: 95px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .file_img_wrap img {
+            height: 100%;
+            border-radius: 8px;
+        }
+        .file_img_child {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 12px;
+        }
+    }
+    .delete {
+        position: absolute;
+        top: 50%;
+        transform: translate(0, -50%);
+        right:10px;
+    }
 </style>
 
 <template>
     <div class="agora">
         <div class="chatPage" v-show="admin_mask" id="box" v-drag>
-            <div class="chat_title bold sb al">
-                <div class="flex">
-                    <div class="chat_img"><img draggable="false" src="@/assets/img/chatLogo.png" alt=""></div>
-                    <div>Chat with Admin</div>
-                </div>
-                <div><img class="cursor" @click="cutDown_mask" @mousedown.stop @mousemove.stop  src="@/assets/img/delete.png" alt=""></div>
+            <div class="chat_title bold flex al">
+                <div class="chat_img"><img src="@/assets/img/chatLogo.png" alt=""></div>
+                <div>Chat with Admin</div>
+                <div class="delete al cursor" @click="cutDown_mask"><img src="@/assets/img/delete.png" alt=""></div>
             </div>
-            <div class="chat_content noBar" ref="Cus" @mousedown.stop @mousemove.stop >
+            <div class="chat_content noBar" ref="Cus">
                 <div class="msg_item_wrap">
-                    <div v-for="(item,i) in adminList['admin'].messageList" :key="i" :class="[{ 'flexEnd':item.type == 1 }]">
-
+                    <div v-for="(item,i) in adminList['admin'].messageList" :key="i" :class="[{ 'flexEnd':item.type == 1 }, 'flex' ]">
+                        <div class="chatLogo" v-show="item.type == 2 && item.userId == userId">
+                            <img style="height: 100%;" src="@/assets/img/admin_img.png" alt="">
+                        </div>
                         <div class="msg_T width100 tc" v-if="item.type == 3">{{item.time.split(' ')[0] == Today? 
                         'Today': item.time.split(' ')[0]}} {{item.time.split(' ')[1]}}</div>
+
+                        <div v-else-if="item.msg_type && item.msg_type != 'jpg' && item.msg_type != 'png'" 
+                            :class="['file_zip flex', { mySend: item.type == 1 }, 
+                            { theySend: item.type == 2 }]">
+                            <div class="file_name">
+                                {{item.fileName}}
+                            </div>
+                            <img v-if="item.type == 1" class="file_zip_img" src="@/assets/img/file-zip.png" alt="">
+                            <img v-else class="file_zip_img" src="@/assets/img/file-zip1.png" alt="">
+                            <div :class="['file_zip_child', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>
+
+                            <div class="loading_file" v-loading='item.location == location && item.type == 1 && file_loading'></div>
+                            <div class="loading_file ju al" v-show="item.fail == 'fail'">
+                                <el-tooltip class="item" effect="dark" content="Upload Failed!" placement="top">
+                                    <img class="fail_img_h" src="@/assets/img/fail.png" alt="">
+                                </el-tooltip>
+                            </div> 
+                        </div>
+
+                        <div v-else-if="item.msg_type == 'jpg' || item.msg_type == 'png' " :class="['file_img ju al', { mySend: item.type == 1 }, 
+                            { theySend: item.type == 2 }]">
+                            <div class="file_img_wrap">
+                                <img v-if="item.value" :src="item.value" alt="">
+                                <div v-else v-loading='true'></div>
+                            </div>
+                            <div :class="['file_img_child', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>
+                        </div>
                         
                         <div :class="['msg_child', { mySend: item.type == 1 }, 
-                            { theySend: item.type == 2 },]" v-if="item.userId == userId"
+                            { theySend: item.type == 2 },]" v-if="item.userId == userId && !item.msg_type"
                             >{{item.value}}
-                            <div :class="['msg_time', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>   
+                            <div :class="['msg_time', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>
                         </div>
                     </div>
                 </div>
@@ -634,7 +725,10 @@
                     <input type="text" v-model="customerInp1" class="width100" placeholder="Type a message">
                 </div>
                 <div class="add al">
-                    <img class="cursor" draggable="false" @mousedown.stop @mousemove.stop  src="@/assets/img/clip.png" alt="">
+                    <label for="file_img" class="al">
+                        <input type="file" id="file_img" v-show="false" @change="getFile">
+                        <img class="cursor" draggable="false" @mousedown.stop @mousemove.stop  src="@/assets/img/clip.png" alt="">
+                    </label>
                 </div>
                 <div class="add al">
                     <img class="cursor" draggable="false" @click="send" @mousedown.stop @mousemove.stop src="@/assets/img/msg_send.png" alt="">
@@ -665,14 +759,11 @@
                     <div class="answer flex">
                         <div class="cursor video_fun ju">
                             <img :class="[{'disnone': none}]" @click="unMute" src="@/assets/img/answer_audeo.png" alt="">
-                            <img :class="[{'disnone': !none}]" @click="none = false" src="@/assets/img/mute.png" alt="">
+                            <img :class="[{'disnone': !none}]" @click="mute" src="@/assets/img/mute.png" alt="">
                         </div>
                         <div class="cursor video_fun ju"><img @click="video_active" src="@/assets/img/answer_video.png" alt=""></div>
                         <div class="cursor video_fun ju" @click="removeStream"><img src="@/assets/img/answer_phone.png" alt=""></div>    <!--//结束通话 -->
                     </div>
-                    <!-- <video :class="['video_parent']" autoplay width="400px" height="400px" id="video" ref="video"></video>
-                    <video :class="['video_child']" autoplay id="localVideo"></video> -->
-
                     <div :class="[{'video_parent': type, 'video_child': !type, 'z_index': !type}]" autoplay id="player_a1" ref="video"></div>
                     <div :class="[{'video_parent': !type, 'video_child': type, 'z_index': type, 'v_opacity': videoActive}]" autoplay id="player_a2"></div>
                     <div class="video_child_cut" @click="type = !type" ></div>
@@ -694,15 +785,15 @@
                                     <div class="userHead_img ju al">
                                         <!-- <img class="userHead" src="@/assets/img/john.png" alt=""> -->
                                         <img v-if="userDetailMessage.userImage" class="userHead" :src="userDetailMessage.userImage" alt="">
-                                        <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i>
+                                        <img style="height:100%;" v-else :src="default_img" alt="">
                                     </div>
                                     <div class="tc size14" v-if="userDetailMessage.userName">{{userDetailMessage.userName}}</div>
                                     <div v-else class="tc" style="font-size:12px">No Name</div>
                                 </div>
-                                <div><img style="width:17px;height:22px;margin-left:5px" src="@/assets/img/information.png" alt=""></div>
+                                <div><img @click="notice" style="width:17px;height:22px;margin-left:5px" src="@/assets/img/information.png" alt=""></div>
                             </div>
                             <div class="myOperation sb al">
-                                <div class="outLogo size12 bold cursor al ju">Logout</div>
+                                <div class="outLogo size12 bold cursor al ju" @click="logout">Logout</div>
                                 <div class="helpAbout cursor al ju" @click="show_mask_admin">
                                     <span v-if="newMsg_dot !== null">
                                         <img class="dot_h" v-show="newMsg_dot.boo && newMsg_dot.user == T_userId" src="@/assets/img/dot.png" alt="">
@@ -717,11 +808,8 @@
                             <div class="atPresentDoctor mg sa">
                                 <div class="DOCTOR">
                                     <div class="docHead_img mg ju">
-                                        <el-image class="docHead al" :src="callToDoctor.userHead" alt="" fit="cover">
-                                            <div slot="error" class="image-slot al" style="height: 100%;width:100%">
-                                                <i class="el-icon-picture-outline" style="font-size:40px"></i>
-                                            </div>
-                                        </el-image>
+                                        <img v-if="callToDoctor.userHead" :src="callToDoctor.userHead" alt="">
+                                        <img style="height:100%;" v-else :src="default_img" alt="">
                                     </div>
                                     <div class="tc">{{callToDoctor.doctorName}}</div>
                                     <div class="tc">Hispital Name</div>
@@ -746,7 +834,7 @@
                                     <div class="INP_item al ju">
                                         <input placeholder="Type a message" v-model="customerInp" @keydown.enter="customerSend" />
                                     </div>
-                                    <div class="send_img al ju"><img class="cursor" src="@/assets/img/send.png" @click="customerSend" alt=""></div>
+                                    <div class="send_img al ju"><img class="cursor" src="@/assets/img/msg_send.png" @click="customerSend" alt=""></div>
                                 </div>
                             </div>
                         </div>
@@ -785,7 +873,12 @@
                                         <div class="submit ju cursor al">
                                             <el-button type="warning" @click="addPetMedicalRecord" :disabled="!disabled" class="width100">Submit</el-button>
                                         </div>
-                                        <div><img class="clipImg cursor" src="@/assets/img/clip.png" alt=""></div>
+                                        <div>
+                                            <label for="medicalFile">
+                                                <input type="file" id="medicalFile" @change="updateFile" v-show="false"> 
+                                                <img class="clipImg cursor" src="@/assets/img/clip.png" alt="">
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -807,7 +900,7 @@
                                     <div class="INP_item al ju">
                                         <input placeholder="Type a message" v-model="vetInp" @keydown.enter="vetSend"/>
                                     </div>
-                                    <div class="send_img al ju"><img class="cursor" @click="vetSend" src="@/assets/img/send.png" alt=""></div>
+                                    <div class="send_img al ju"><img class="cursor" @click="vetSend" src="@/assets/img/msg_send.png" alt=""></div>
                                 </div>
                             </div>
                         </div>
@@ -871,7 +964,9 @@ export default {
             admin_mask: false,
             originX: 0,
             originY: 0,
-            isMouseDown: false
+            isMouseDown: false,
+            location: 0,
+            file_loading: false
         }
     },
     mounted () {
@@ -899,6 +994,25 @@ export default {
             value: false
         })
         this.mask_chat()
+        var adminList = {
+            'admin': {
+                messageList: [
+                    // { type: 1, value: "star",userId: '486' },
+                    // { type: 2, value: "12123" },
+                ]
+            },
+        }
+        var newsList = []
+        if (localStorage.getItem('adminList')) {
+
+        } else {
+            localStorage.setItem('adminList',JSON.stringify(adminList))
+        }
+        if (localStorage.getItem('newsList')) {
+            
+        } else {
+            localStorage.setItem('newsList',JSON.stringify(newsList))
+        }
     },
     watch: {
         messageList: {
@@ -932,7 +1046,7 @@ export default {
         newMsg_dot: {
             handler (val) {
                 console.log(val)
-                if (val.boo) {
+                if (val.boo !== null) {
                     if (this.admin_mask) {
                         this.$store.commit('setUser', { key: 'newMsg_dot', value: false })
                     } else {
@@ -1011,7 +1125,8 @@ export default {
             set (val) {
                 this.$store.commit('setUser', { key: 'newMsg_dot', value: val })
             }
-        }
+        },
+        default_img () { return this.$store.state.user.default_img }
     },
     beforeMount() {
         window.addEventListener('resize', (e) => {
@@ -1025,11 +1140,11 @@ export default {
     methods: {
         unMute () {
             this.none = true
-            this.$store.dispatch('unMuteAudio')
+            this.$store.dispatch('muteAudio')
         },
         mute () {
             this.none = false
-            this.$store.dispatch('muteAudio')
+            this.$store.dispatch('unMuteAudio')
         },
         show_mask_admin () {
             this.admin_mask = !this.admin_mask
@@ -1139,7 +1254,7 @@ export default {
                         
                     },                    
                     success: function (id, serverMsgId) {
-                        console.log('send private text Success',id,serverMsgId);  
+                        // console.log('send private text Success',id,serverMsgId);  
                     }, 
                     fail: function(e){
                         console.log(e)
@@ -1148,7 +1263,7 @@ export default {
                 });
                 this.$conn.send(msg.body);
                 this.$nextTick(() => {
-                    this.$refs.Cus.scrollTop = 10000
+                    this.$refs.Cus.scrollTop = 100000
                 })
                 this.customerInp1 = ''
             } else {
@@ -1217,35 +1332,23 @@ export default {
         joinAgora () {
             if (localStorage.getItem('bookingDoc')) {
                 let bookingAgo = JSON.parse(localStorage.getItem('bookingDoc'))
-                let docId = {
-                    userId: bookingAgo.booking.bookingDoctorId
+                let data = {
+                    expirationTime: bookingAgo.booking.bookingTime,
+                    userId: localStorage.getItem('userId'),
+                    roomNumber: 'petavi_' + localStorage.getItem('sroom')
                 }
-                docGoodsId(docId).then(msg => {
-                    let data = {
-                        expirationTime: msg.data.data.min,
-                        userId: localStorage.getItem('userId'),
-                        roomNumber: 'petavi_' + localStorage.getItem('sroom')
+                getAgoraToken(data).then(res => {
+                    // console.log(res,'token111')
+                    if (res.data.rtnCode == 200) {
+                        this.$store.dispatch('initRtc', {
+                            token: res.data.data,
+                            uid: localStorage.getItem('userId') * 1,
+                            channel: data.roomNumber,
+                            appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
+                            rtc: this.$V
+                        })
+                        localStorage.removeItem('bookingDoc')
                     }
-                    getAgoraToken(data).then(res => {
-                        console.log(res,'token111')
-                        if (res.data.rtnCode == 200) {
-                            this.$store.dispatch('initRtc', {
-                                token: res.data.data,
-                                uid: localStorage.getItem('userId') * 1,
-                                channel: data.roomNumber,
-                                appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
-                                rtc: this.$V
-                            })
-                        }
-                    })
-                })
-                let segmented = {
-                    orderId: bookingAgo.booking.orderId,
-                    goodsId: bookingAgo.booking.goodsId
-                }
-                orderDetail(segmented).then(res => {
-                    console.log(res,'第二次扣费')
-                    localStorage.removeItem('bookingDoc')
                 })
             } else {
                 let docId = {
@@ -1259,7 +1362,7 @@ export default {
                         roomNumber: 'petavi_' + localStorage.getItem('sroom')
                     }
                     getAgoraToken(data).then(msg => {
-                        if (res.data.rtnCode == 200) {
+                        if (msg.data.rtnCode == 200) {
                             this.$store.dispatch('initRtc', {
                                 token: msg.data.data,
                                 uid: localStorage.getItem('userId') * 1,
@@ -1276,7 +1379,7 @@ export default {
                         goodsId: res.data.data.id
                     }
                     order(addorder).then(msg => {
-                        console.log(msg,'生成订单')
+                        // console.log(msg,'生成订单')
                         localStorage.setItem('order_1',JSON.stringify({orderId: msg.data.data.id, goodsId: res.data.data.id}))
                     })
                 })
@@ -1334,7 +1437,7 @@ export default {
         addPetMedicalRecord () {
             let D = new Date()
             let time = D.toTimeString().split(' ')[0]
-            this.disabled = false
+            // this.disabled = false
             this.recordDate = this.years + '-' + this.month + '-' + this.day + ' ' + time.split(':')[0] + ':' + time.split(':')[1]
             let data = {
                 userId: this.caller.userId,
@@ -1345,15 +1448,30 @@ export default {
                 medicineIds: 2
             }
             PetMedicalRecord(data).then(res => {
-                console.log(res,'tianjiarecord')
+                // console.log(res,'tianjiarecord')
                 if (res.data.rtnCode == 200) {
                     this.disabled = false
-                } else {
-
-                }
-            }).catch(e =>{
-                console.log(e)
-            })
+                    let data = {
+                        type: "getPetDetails"
+                    }
+                    let id = this.$conn.getUniqueId();                 // 生成本地消息id
+                    let msg = new this.$WebIM.message('txt', id);      // 创建文本消息
+                    msg.set({
+                        msg: JSON.stringify(data),                // 消息内容
+                        to: 'admin',                       // 接收消息对象（用户id）
+                        chatType: 'singleChat',                  // 设置为单聊    
+                        ext: {},                    
+                        success: function (id, serverMsgId) {
+                            // console.log('send private text Success',id,serverMsgId);  
+                        }, 
+                        fail: function(e){
+                            console.log(e)
+                            console.log("Send private text error");  
+                        }
+                    });
+                    this.$conn.send(msg.body);
+                } else {}
+            }).catch(e =>{ console.log(e) })
         },
         editPetMedicalRecord () {
             this.disabled = true
@@ -1367,7 +1485,6 @@ export default {
             }
             this.msgRecord = record
             localStorage.setItem('msgRecord',JSON.stringify(this.msgRecord))
-            console.log(record,localStorage.getItem('msgRecord'))
         },
         initRecord () {
             let msgRecord = localStorage.getItem('msgRecord')
@@ -1505,6 +1622,157 @@ export default {
                 
             }
             
+        },
+        getFile (e) {
+            this.file_send()
+        },
+        file_send () {
+            let D = new Date()
+            let T = D.getTime()
+            let that = this
+            let hour = D.getHours()
+            let minute = D.getMinutes()
+            var id = this.$conn.getUniqueId();                   // 生成本地消息id
+            var msg = new this.$WebIM.message('file', id);        // 创建文件消息
+            var input = document.getElementById('file_img');  // 选择文件的input
+            var file = this.$WebIM.utils.getFileUrl(input);      // 将文件转化为二进制文件
+            this.location = T
+            this.file_loading = true
+            if (T - localStorage.getItem('msgTime') >= 180000 && localStorage.getItem('msgTime') !== null) {
+                if (file.data.size <= 10485760) {
+                    this.timeSend()
+                }
+                this.adminList['admin'].messageList.push({
+                    type: 3,
+                    value: '',
+                    userId: localStorage.getItem('userId'),
+                    time:this.Today + ' ' + D.getHours() + ':' + D.getMinutes(),
+                    APM: ''
+                })
+                localStorage.setItem('msgTime', T )
+            } else {
+                if (localStorage.getItem('msgTime') === null) {
+                    this.adminList['admin'].messageList.push({
+                        type: 3,
+                        value: '',
+                        userId: localStorage.getItem('userId'),
+                        time:this.Today + ' ' + D.getHours() + ':' + D.getMinutes(),
+                        APM: ''
+                    })
+                }
+                localStorage.setItem('msgTime', T)
+            }
+            var obj = {
+                type: 1,
+                value: file.url,
+                time: D.getHours() + ':' + D.getMinutes(),
+                APM: hour >= 12 && minute >= 0? 'PM':'AM',
+                msg_type: file.filetype,
+                fileName: file.filename,
+                userId: localStorage.getItem('userId'),
+                url: file.url,
+                location: T
+            }
+            var f_obj = {
+                type: 1,
+                value: file.url,
+                time: D.getHours() + ':' + D.getMinutes(),
+                APM: hour >= 12 && minute >= 0? 'PM':'AM',
+                msg_type: file.filetype,
+                fileName: file.filename,
+                userId: localStorage.getItem('userId'),
+                url: file.url,
+                location: T,
+                fail: 'fail'
+            }
+            if (file.data.size > 10485760) {
+                this.adminList['admin'].messageList.push(f_obj)
+                that.file_loading = false
+                this.$nextTick(() => {
+                    this.$refs.Cus.scrollTop = 100000
+                })
+                return false
+            } else {
+                this.adminList['admin'].messageList.push(obj)
+            }
+            //自定义发送消息类型
+            var id = this.$conn.getUniqueId();                 // 生成本地消息id
+            var msg = new this.$WebIM.message('file', id);   // 创建自定义消息
+            var customEvent = "flie";             // 创建自定义事件
+            var customExts = {'file': file.url};                         // 消息内容，key/value 需要 string 类型
+            msg.set({
+                file: file,
+                to: 'admin',                          // 接收消息对象（用户id）
+                customEvent,
+                customExts,
+                ext: {
+                    fileName: file.filename,
+                    file_length: file.data.size,
+                    detail: this.userDetail,
+                    platform: localStorage.getItem('platform'),
+                    time: D.getHours() + ':' + D.getMinutes(),
+                    APM: hour >= 12 && minute >= 0? 'PM':'AM',
+                    localTime: T,
+                    fileType: file.filetype
+                },                                 // 消息扩展
+                roomType: false,
+                flashUpload: this.$WebIM.flashUpload,
+                success: function (id, serverMsgId) {
+                    that.file_loading = false
+                },
+                fail: function(e){
+                    that.file_loading = false
+                }
+            });
+            this.$conn.send(msg.body);
+            this.$nextTick(() => {
+                this.$refs.Cus.scrollTop = 100000
+            })
+        },
+        updateFile (e) {
+            let self = this;
+            let files = e.target.files || e.dataTransfer.files;//e.target.files[0]可直接上传，因为我是多个文件，所以files是一个数组
+            console.log(files)
+            if (!files.length) return;
+            for(var i=0;i<files.length;i++){//循环这个数组，创建fomeDate
+                var formData = new FormData();
+                formData.append('file',files[i])//append到数组里，如果有参数可以加参数
+                console.log(formData)
+                return false
+                axios({
+                    method: "POST",
+                    url: "/eastmud/v1/FileManagement/uploadFile",
+                    "content-type": "application/json;charset=UTF-8",
+                    "withCredentials":true,
+                    data:formData
+                }).then(res => {
+                    console.log(res)
+                }).catch(err => {
+                    alert("拉去信息失败，请检查您的网络")
+
+                })
+            }
+            /*如果需要预览，则执行下面,同样是循环，此处略过*/
+        /*let reader = new FileReader();
+            reader.readAsDataURL(files[i]);
+
+            reader.onload = function(e){
+            self.imgsrc = e.target.result;//imgsrc放到img标签即可
+            }*/
+        },
+        logout () {
+            this.$store.dispatch("logout", this)
+            // var auth2 = gapi.auth2.getAuthInstance();
+            // auth2.signOut().then(function(res) {
+            //     console.log(res)
+            // });
+        },
+        notice () {
+            if (localStorage.getItem("platform") == 1) {
+                this.$router.push("/notice")
+            } else if (localStorage.getItem("platform") == 2) {
+                this.$router.push("/vetNotice")
+            }
         },
     }
 }

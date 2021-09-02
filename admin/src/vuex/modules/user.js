@@ -1,4 +1,4 @@
-import { allPet, getAdminDetails, vetDetails, doctorList, login, bookingUserId } from "@/axios/request.js"
+import { allPet, getAdminDetails, vetDetails, doctorList, petDetails, bookingUserId } from "@/axios/request.js"
 import router from "@/router/router.js"
 import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
 export default {
@@ -9,6 +9,7 @@ export default {
         messageList: [],
         fromIM: '',
         agoraPet: {},
+        getDoctorMedicalLimitList: [],
         message: {},
         petList: [],
         doctorList: [],
@@ -19,7 +20,9 @@ export default {
         inp: '',
         totalRecordsCount: 0,
         default_img:'',
-        newMsg_dot: JSON.parse(localStorage.getItem('new_msg'))
+        newMsg_dot: {},
+        mask_dot: 0,
+        petMedical: []
     },
     mutations: {
         setUser (state,data) {
@@ -41,8 +44,31 @@ export default {
         deMsg (state,data) {
             state[data.key][data.value].msg = 0
         },
+        deleteMSG (state,data) {
+            delete state[data.key][data.value]
+            state[data.key] = JSON.parse(JSON.stringify(state[data.key]))
+        },
+        medicalAdd (state,data) {
+            state.getDoctorMedicalLimitList = state.getDoctorMedicalLimitList.concat(data)
+        },
     },
     actions: {
+        getPetDetails (store) {
+            let data = {
+                petId: JSON.parse(localStorage.getItem('confr')).password.petId
+            }
+            petDetails(data).then(res => {
+                res.data.data.petMedicalRecordDtos = res.data.data.petMedicalRecordDtos.reverse()
+                if (res.data.rtnCode == 200) {
+                    store.commit("setUser",{ key: "petMedical", value: res.data.data.petMedicalRecordDtos })
+                } else {
+                    store.commit("setUser",{ key: "petMedical", value: [] })
+                }
+            }).catch(e => {
+                store.commit("setUser",{ key: "petMedical", value: [] })
+                console.log(e)
+            })
+        },
         default (store,data) {
             store.commit("setUser",{ key: "default_img", value: data}) 
         },
@@ -95,7 +121,7 @@ export default {
                     localStorage.removeItem("adminPaltform")
                     localStorage.removeItem("IMtoken")
                     localStorage.removeItem('IM')
-                    if (vm.$route.name !== 'index') {
+                    if (vm.$route.name !== 'index' && vm.$route.name !== 'forget') {
                         router.replace('/index')
                         vm.$message.error('Login expired, please log in again !');
                     }
@@ -107,7 +133,7 @@ export default {
                     localStorage.removeItem("adminPaltform")
                     localStorage.removeItem("IMtoken")
                     localStorage.removeItem('IM')
-                    if (vm.$route.name !== 'index') {
+                    if (vm.$route.name !== 'index' && vm.$route.name !== 'forget') {
                         router.replace('/index')
                         vm.$message.error('Login expired, please log in again !');
                     }
@@ -122,7 +148,7 @@ export default {
                 localStorage.removeItem("adminPaltform")
                 localStorage.removeItem("IMtoken")
                 localStorage.removeItem('IM')
-                if (vm.$route.name !== 'index') {
+                if (vm.$route.name !== 'index' && vm.$route.name !== 'forget') {
                     router.replace('/index')
                     vm.$message.error('Login expired, please log in again !');
                 }
@@ -185,18 +211,30 @@ export default {
                     store.commit("setUser",{ key: "loading6", value: false })
                     if (res.data.rtnCode == 200) {
                         store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
+                        res.data.data.pageT.forEach(item => {
+                            item.userImage = item.userHead
+                            item.userId = item.doctorId
+                            item.userName = item.doctorName
+                        })
                         store.commit("pageAdd", res.data.data.pageT )
+                        var arr = store.state.doctorList
+                        var b = []
+                        var c = []
+                        for (let i = 0;i < arr.length; i++) {{
+                            if (arr[i].doctorOnLineState == 1) {
+                                c.push(arr[i])
+                            }
+                        }}
+                        b = arr.filter(item => item.doctorOnLineState != 1)
+                        store.commit("setUser",{ key: "doctorList", value: c.concat(b) })
                         if (doctor.pageNum <= 1) {
                             store.commit("setUser",{
                                 key: "mask",
                                 value: res.data.data.pageT[0]
                             })
-                            store.commit("setUser", { key: 'vDetail', value: res.data.data.pageT[0] } )
-                            store.commit("setUser", { key: 'rate', value: res.data.data.pageT[0].baseScore } )
+                            store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
+                            store.commit("setUser", { key: 'rate', value: store.state.doctorList[0].baseScore } )
                         }
-                        // if ((store.state.totalRecordsCount == store.state.doctorList.length) &&store.state.totalRecordsCount !=0 ) {
-                        //     store.commit("setUser",{ key: "loading6", value: false })
-                        // }
                     } else {
                         store.commit("setUser",{ key: "loading6", value: false })
                         store.commit("pageAdd", null )

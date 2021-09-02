@@ -144,38 +144,35 @@ conn.listen({
             store.commit("setUser",{ key: 'callLoading', value: false })
             router.push("/agora")
         }
+    },   
+    onFileMessage: function ( e ) {
+        var obj = {
+            type: 2,
+            value: e.url,
+            time: e.ext.time,
+            APM: e.ext.APM,
+            msg_type: e.ext.fileType,
+            fileName: e.ext.fileName,
+            url: e.url
+        }
+        var adminList = JSON.parse(JSON.stringify(store.state.user.adminList))
+        if (adminList[e.from]) {
+            adminList[e.from].messageList.push(obj)
+        } else {
+            adminList[e.from] = {
+                user: e.from,
+                userDetail: e.ext.detail,
+                messageList: [ obj ],
+            }
+        }
+        store.commit("setUser",{ key: 'adminList', value: adminList })
+        localStorage.setItem('new_msg', JSON.stringify({boo: true, user: e.userId}))
+        store.commit('setUser', { key: 'newMsg_dot', value: {boo: true, user: e.userId} })
+    },    //收到文件消息
 
-
-
-        // if (data.type == 'danmu') {
-        //     var obj = {
-        //         type: 2,
-        //         value: data.value
-        //     }
-        //     var chatList = JSON.parse(JSON.stringify(store.state.user.chatList))
-        //     chatList.push(obj)
-        //     store.commit("setUser",{ key: 'chatList', value: chatList })
-        // }
-        // if (data.type == 'needHelp') {
-        //     console.log(111)
-        //     var obj = {
-        //         type: 2,
-        //         value: data.value
-        //     }
-        //     var message = JSON.parse(JSON.stringify(store.state.user.message))
-        //     if (message[from]) {
-        //         console.log(222)
-        //         message[from].messageList.push(obj)
-        //     } else {
-        //         message[from] = {
-        //             user: e.from,
-        //             userDetail: data.key,
-        //             messageList: [ obj ]
-        //         }
-        //     }
-        //     store.commit("setUser",{ key: 'message', value: message })
-        // }
-    },    
+    // onCustomMessage: function ( e ) {
+    //     console.log(e,'收到自定义消息')
+    // },  //收到自定义消息 
     // onPresence: function(msg){
     //     switch(msg.type){
     //     case 'leaveChatRoom':

@@ -117,7 +117,19 @@
             margin-top: 30px;
             padding: 5px 0 10px 0;
             border-bottom: solid 1px rgb(224, 224, 224);
+            position: relative;
         }
+    }
+    .cancel {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .cancel_item {
+        padding: 5px 10px;
+        border-radius: 12px;
+        color: white;
+        background: @denger;
     }
     .medialRecord::-webkit-scrollbar {
             width: 8px;
@@ -131,7 +143,7 @@
         word-wrap: break-word;
     }
     .record_message_wrap {
-        height: calc(100% - 61px);
+        height: calc(100% - 92px);
         overflow: auto;
     }
     .record_message_wrap::-webkit-scrollbar {
@@ -145,6 +157,7 @@
 
 <template>
     <div class="record" v-loading="loading">
+        <el-backtop target=".record_message_wrap"></el-backtop>
         <div class="recordContent">
             <div class="recordContent_item">
                 <div class="itemChild mg">
@@ -152,7 +165,7 @@
                         <img src="@/assets/img/recordImg.png" alt="">
                         Medical Record History
                     </div>
-                    <div class="record_message_wrap" v-if="getDoctorMedicalLimitList[0]">
+                    <div class="record_message_wrap" v-if="getDoctorMedicalLimitList">
                         <div class="record_message" v-for="(item,i) in getDoctorMedicalLimitList" :key="i">
                             <div class="record_item flex mg">
                                 <div class="record_image ju">
@@ -244,6 +257,9 @@
                                     </div>
                                     <div class="medialRecord" v-if="item.petMedicalRecordDtos">
                                         <div class="medialRecord_item" v-for="(child,i) in item.petMedicalRecordDtos" :key="i">
+                                            <div class="cancel cursor">
+                                                <div class="cancel_item width100" type="primary" @click="deleMedical(child)" round>Delete</div>
+                                            </div>
                                             <div class=" size17">Medical Record</div>
                                             <div style="padding: 5px 0 5px 15px"> 
                                                 <span class=" size17">Date: </span>
@@ -268,8 +284,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="record_message_wrap bold tc" v-else style="font-size:23px;color:gray;margin-top:30px">
+                    <div class="record_message_wrap bold tc" v-else-if="getDoctorMedicalLimitList === null" style="font-size:23px;color:gray;margin-top:30px">
                         No Message
+                    </div>
+                    <div class="ju">
+                        <el-pagination
+                            :small="small"
+                            :pager-count='7'
+                            layout="prev, pager, next"
+                            :total="totalRecordsCount"
+                            @current-change='pageCut'>
+                        </el-pagination>
                     </div>
                 </div>
             </div>
@@ -279,7 +304,7 @@
 
 <script>
 import { petType } from "@/axios/request.js"
-import { getPetMedicalRecord } from "@/axios/request.js"
+import { getPetMedicalRecord, delPetMedicalRecordById } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -287,31 +312,47 @@ export default {
             options: [],
             getDoctorMedicalLimitList: [],
             pageNum_m: 1,
-            pageSize_m: 100,
+            pageSize_m: 10,
+            totalRecordsCount: 0,
+            small: false
         }
     },
     created () {
         this.PetMedicalRecord()
         // this.TYPE()
     },
+    beforeMount() {
+        window.addEventListener('resize', (e) => {
+            if (e.target.innerWidth <= 564) {
+                this.small = true
+            } else {
+                this.small = false
+            }
+        })
+    },
     methods: {
+        pageCut (val) {
+            this.pageNum_m = val
+            this.PetMedicalRecord()
+        },
         PetMedicalRecord () {
             let data = {
                 doctorId: -1,
                 pageNum: this.pageNum_m,
                 pageSize: this.pageSize_m
             }
+            this.loading = true
             getPetMedicalRecord(data).then(res => {
-                console.log(res,'medical')
                 if (res.data.rtnCode == 200) {
                     this.getDoctorMedicalLimitList = res.data.data.pageT
-                    this.loading = false
+                    this.totalRecordsCount = res.data.data.totalRecordsCount
                     this.getPetType()
                 } else {
-                    this.loading = false
+                    this.getDoctorMedicalLimitList = null
                 }
             }).catch(e => {
                 this.loading = false
+                this.getDoctorMedicalLimitList = null
                 console.log(e)
             })
         },
@@ -322,6 +363,7 @@ export default {
                 token: localStorage.getItem('Token')
             }
             petType(data).then(res => {
+                this.loading = false
                 res.data.forEach(item => {
                     item.children.forEach(child => {
                         child.children = []
@@ -331,6 +373,8 @@ export default {
                 this.$nextTick(() => {
                     this.TYPE()
                 })
+            }).catch(e => {
+                this.loading = false
             })
         },
         TYPE () {
@@ -364,6 +408,34 @@ export default {
                 })
             })
         },
+        deleMedical (item) {
+            console.log(item)
+            this.$confirm('Are you sure to delete this record?', 'Attention', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                let data = {
+                    petMedicalRecordId: item.petMedicalRecordId
+                }
+                this.loading = true
+                delPetMedicalRecordById(data).then(res => {
+                    if (res.data.rtnCode == 200) {
+                        this.PetMedicalRecord()
+                        this.$message({
+                            type: 'success',
+                            message: 'Cancel Successfully'
+                        })
+                    } else {
+                        this.loading = false
+                    }
+                }).catch(e => {
+                    this.loading = false
+                })
+            }).catch (e => {
+                console.log(e)
+            })
+        }
     }
 }
 </script>

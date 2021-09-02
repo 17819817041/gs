@@ -235,6 +235,24 @@ export default [
                 name: "medical",
                 component: () => import("@/view/medical/medical.vue")
             },
+            {
+                path:'/v_support',
+                name:'v_support',
+                redirect: '/RegistrationAndLogin_v',
+                component: () => import("@/view/support/support.vue"),
+                children:[
+                    {
+                        path:'/chat_v',
+                        name:'chat_v',
+                        component: () => import("@/view/support/chat.vue")
+                    },
+                    {
+                        path: "/RegistrationAndLogin_v",
+                        name: 'RegistrationAndLogin_v',
+                        component: () => import("@/view/support/RegistrationAndLogin.vue")
+                    }
+                ]
+            },
         ]
     },
     {
@@ -245,6 +263,10 @@ export default [
     {
         path:"/agora",
         name:'agora',
+        meta: {
+            keepAlive: true,
+            title: '商品管理'
+        },
         component: () => import("@/view/agora/agora.vue")
     },
     {

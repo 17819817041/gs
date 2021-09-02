@@ -487,13 +487,8 @@ export default {
 <style lang="less" scoped>
 @import "@/less/css.less";
     .booking {
-        width: 45%;
-        @media screen and (max-width: 1300px) {
-            width: 55%;
-        }
-        @media screen and (max-width: 1100px) {
-            width: 65%;
-        }
+        width: 100%;
+        max-width: 700px;
         @media screen and (max-width: 800px) {
             width: 95%;
         }

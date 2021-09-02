@@ -1,5 +1,4 @@
 
-console.log(123123,window.IMkey)
 export default {
     socketServer: '//im-api-v2-31.easemob.com',    // socket Server地址
 

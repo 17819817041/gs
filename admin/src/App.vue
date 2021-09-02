@@ -79,7 +79,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang='less'>
 	body,html {
 		margin: 0;
 		padding: 0;
@@ -94,7 +94,7 @@ export default {
 	}
 	#app {
 		height: 100%;
-		min-width: 1100px;
+		min-width: 1170px;
 	}
 	.white {
 		color: white;
@@ -166,8 +166,12 @@ export default {
 	.el-rate__icon {
 		margin-right: 0 !important;
 	}
-
-
+	.clear:after{
+		content: '';
+		display: block;
+		clear: both;
+		height:0;
+	}
 	.size14 {
 		font-size: 14px;
 		color: #767676;
@@ -187,18 +191,32 @@ export default {
 		color: white;
 	}
 
-	.calendar .calendarMini .el-calendar-day {
-		height: 30px !important;
-		text-align: center;
+
+	.record .el-pagination .btn-prev, .record .el-pagination .btn-next, 
+	.record .el-pagination .el-pager .number, .record .el-pagination .el-pager .el-icon-more {      
+		background: #F2F2F2 !important;
 	}
-	.calendar .calendarMini .el-calendar-table__row .prev, .calendar .calendarMini .el-calendar-table__row .current, 
-	.calendar .calendarMini .el-calendar-table__row .next {
-		border: none !important;
+
+	.appointment .calendar .fc {
+		min-height: 430px !important;
+		height: 100% !important;
 	}
-	.calendar .calendarMini thead {
-		font-size: 14px !important;
+	.appointment .calendar .fc .fc-scroller-liquid-absolute {
+		-ms-overflow-style:none !important;scrollbar-width: none !important;
 	}
-	.calendar .calendarMini tbody {
-		font-size: 12px !important;
+	.appointment .calendar .fc-button {
+		@media screen and (max-width: 1350px) {
+			padding: 2px;
+			height: 32px;
+		}
+	}
+	.appointment .calendar .fc-toolbar-title {
+		@media screen and (max-width: 1350px) {
+			font-size: 1.50em;
+		}
+		@media screen and (max-width: 1350px) {
+			font-size: 1.50em;
+			padding: 5px 0;
+		}
 	}
 </style>

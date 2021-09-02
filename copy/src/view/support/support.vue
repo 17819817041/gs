@@ -49,6 +49,7 @@
         margin-left: 10px;
         color: @support;
         @media screen and (max-width: 800px) {
+            margin-left: 0px;
             width: 100%;
         }
     }
@@ -111,7 +112,7 @@
                     
                         <router-link class="cursor bold link white center" to="" style="color: white;width: 100%;text-decoration: none">Other</router-link>
                 
-                        <router-link class="cursor bold second last" to="/chat" style="color:#686760;text-decoration: none;position:relative">
+                        <router-link class="cursor bold second last" :to="platform == 1? '/chat':'/chat_v' " style="color:#686760;text-decoration: none;position:relative">
                             Chat with Admin
                             <span class="dot" v-if="newMsg_dot !== null">
                                 <img class="dot_h" v-show="newMsg_dot.boo && newMsg_dot.user == T_userId" src="@/assets/img/dot.png" alt="">
@@ -134,7 +135,8 @@ export default {
         return {
             T_userId: localStorage.getItem('userId'),
             nav: [ {name:'Top Questions'}, {name:'Registration and Login', path: '/RegistrationAndLogin'}, {name:'Petavi First Aid'}, {name:'Setting'}, {name:'Payment'}, 
-            {name:'Terms & Conditions'}, {name:'Other'}, {name:'Chat with Admin', path: '/chat'} ]
+            {name:'Terms & Conditions'}, {name:'Other'}, {name:'Chat with Admin', path: '/chat'} ],
+            platform: localStorage.getItem('platform')
         }
     },
     created () {
