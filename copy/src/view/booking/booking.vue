@@ -208,7 +208,9 @@ export default {
         this.getPetSelect()
         this.getDay()
         this.getAddress()
-        this.first_booking(this.$route.query.areaId, this.$route.query.doctorId)
+        if (this.$route.query.doctorId) {
+            this.first_booking(this.$route.query.areaId, this.$route.query.doctorId)
+        }
     },
     watch: {
         petList: {
@@ -263,13 +265,6 @@ export default {
                                 name: 'confirm',
                                 query: res.data.data
                             })
-                            // that.$store.commit('setUser', { key: 'noticeList', value: [] })
-                            // let notice_d = {
-                            //     userId: localStorage.getItem('userId'),
-                            //     pageNum: 1,
-                            //     pageSize: 15
-                            // }
-                            // that.$store.dispatch('getNoticeList',notice_d)
                         } else if (res.data.rtnCode == 201 && res.data.msg !== 'The appointment time you choose needs to be confirmed by your doctor') {
                             
                             that.$message({
@@ -309,7 +304,7 @@ export default {
                 addressId: val
             }
             getDoctorByLocationId(data).then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.data.rtnCode == 200) {
                     this.doctorSelect = res.data.data
                     this.form.doctor = res.data.data[0].doctorName
@@ -326,12 +321,11 @@ export default {
         },
         getAddress () {
             address().then(res => {
-                console.log(res,'address')
+                // console.log(res,'address')
                 this.locationSelect = res.data.data
             })
         },
         information () {
-            console.log()
             let data = {
                 type: "danmu",
                 value: this.bookingMsg.userName
@@ -359,7 +353,7 @@ export default {
             this.form.duration = val
         },
         getDoctorId (val) {
-            console.log(val)
+            // console.log(val)
             this.doctorSelect.forEach(item => {
                 if (item.userId == val) {
                     this.form.doctor = item.doctorName
@@ -384,7 +378,7 @@ export default {
                 pageSize: 1000000
             }
             doctorList(doctor).then(res => {
-                console.log(res,"医生select")
+                // console.log(res,"医生select")
                 // this.doctorSelect = res.data.data.pageT
             })
         },

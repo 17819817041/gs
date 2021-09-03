@@ -106,8 +106,7 @@
                     
                     <div class="pet_img mg ju al">
                         <img :src="pet.image" alt="" v-if="pet.image">
-                        <img style="height:100%;" v-else :src="default_img" alt="">
-                        <!-- <i class="el-icon-picture-outline Icon" style="font-size: 40px;color:gray" v-else></i> -->
+                        <img style="height:75%;" v-else src="@/assets/img/default.png" alt="">
                     </div>
                     <div class="pet_name size21 tc" v-if="pet.name">{{pet.name}}</div>
                     <div class="pet_name size21 tc" v-else>No Name</div>
@@ -243,8 +242,7 @@ export default {
                     value: val
                 })
             },
-        },
-        default_img () { return this.$store.state.user.default_img },
+        }
     },
     methods: {
         scroll (val) {

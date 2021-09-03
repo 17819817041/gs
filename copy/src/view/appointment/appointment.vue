@@ -435,6 +435,7 @@ export default {
                     right: 'dayGridMonth,dayGridWeek,dayGridDay'
                 },
                 events: [],
+                // events: 'http://www.google.com/calendar/feeds/usa__en%40holiday.calendar.google.com/public/basic'
             });
             calendar.render();
             // calendar.on('dateClick', function(info) {

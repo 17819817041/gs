@@ -1,0 +1,79 @@
+@white:white;
+@hdColor:#46D3FA;   //header背景颜色
+@helpBtn:#FDB551;   //帮助按钮颜色
+@logout:#1976D2;    //退出登录按钮颜色
+@content:#F2F2F2;
+@explanTitle:#5E5E5E;  
+@support:#686760;
+@facebookBtn:#367FC0; // facebook 登录按钮
+@googleBtn:#FC6011;   //Google登录按钮
+@phoneMedia: 90%;
+@size:16px;           //首页按钮大小
+@paddingBtn:15px 0;      //首页按钮上下padding
+@callBtn:#2FBBF0;    //call按钮
+@video:#15BC83;      //点击视频通话按钮
+@denger:#FF2D55;      
+@cancel:#F53333;
+.explan {
+    color: @explanTitle;
+    font-size: 19px;
+    width: 98%;
+    margin: auto;
+    padding: 17px 0;
+    @media screen and (max-width: 1300px){
+        font-size: 14px;
+    }
+}
+.bar::-webkit-scrollbar{
+  width:10px;
+  height:10px;
+}
+.bar::-webkit-scrollbar-track{
+  background: rgb(239, 239, 239);
+  border-radius:2px;
+}
+.bar::-webkit-scrollbar-thumb{
+  background: #bfbfbf;
+  border-radius:10px;
+}
+.bar::-webkit-scrollbar-thumb:hover{
+  background: #333;
+}
+.bar::-webkit-scrollbar-corner{
+  background: #179a16;
+}
+.bar {
+  overflow: auto;
+  scrollbar-color: #bfbfbf  rgb(239, 239, 239); 
+  scrollbar-width: none;
+  scrollbar-width: thin;   
+
+  /* IE浏览器 */
+  /*三角箭头的颜色*/
+  scrollbar-arrow-color: #000;
+  /*滚动条滑块按钮的颜色*/
+  scrollbar-face-color: #bfbfbf;
+  /*滚动条整体颜色*/
+  scrollbar-highlight-color: #FFF;
+  /*滚动条阴影*/
+  scrollbar-shadow-color: #FFF;
+  /*滚动条轨道颜色*/
+  /* scrollbar-track-color: #0066ff; */
+  /*滚动条3d亮色阴影边框的外观颜色——左边和上边的阴影色*/
+  scrollbar-3dlight-color:#0099dd;
+  /*滚动条3d暗色阴影边框的外观颜色——右边和下边的阴影色*/
+  scrollbar-darkshadow-color: #0099dd;
+  /*滚动条基准颜色*/
+  scrollbar-base-color: #0099dd;
+}
+.noBar { -ms-overflow-style:none !important;scrollbar-width: none !important; }  
+.noBar::-webkit-scrollbar { display: none !important; }
+
+.ellipsis {
+    text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+    display: -webkit-box;
+    -webkit-line-clamp: 2;/*规定超过两行的部分截断*/
+    -webkit-box-orient: vertical;
+    overflow : hidden; 
+    word-break: break-all;/*在任何地方换行*/
+}

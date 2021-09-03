@@ -73,7 +73,7 @@ export default {
             this.bookSuccess = this.$route.query
         },
         ensure () {
-            this.$router.replace('/booking')
+            this.$router.back()
         }
     }
 }

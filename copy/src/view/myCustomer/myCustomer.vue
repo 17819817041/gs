@@ -8,7 +8,7 @@
                         <div class="flex al">
                             <div class="ju al Personal">
                                 <img class="personal_img" style="height:100%;" v-if="item.image" :src="item.image? item.image: null " alt="">
-                                <i class="el-icon-picture-outline" style="font-size:25px;color:gray" v-else></i>
+                                <img style="height:100%;" v-else :src="default_img" alt="">
                             </div>
                             <div class="name">
                                 <div class="size18 petName flex" v-if="item.name">
@@ -48,7 +48,7 @@
                         </div>
                         <div class="ju mg al PET_IMG">
                             <img class="Img" :src="petAndUser.petHeadUrl" alt="" v-if="petAndUser.petHeadUrl">
-                            <img style="height:100%;" v-else :src="default_img" alt="">
+                            <img style="height:75%;" v-else :src="d_img" alt="">
                             <!-- <i class=" el-icon-picture-outline Icon" style="font-size:60px;color:gray;" v-else></i> -->
                         </div>
                         <div class="pet_information">
@@ -70,7 +70,7 @@
                     <div class="guardianDetails mg size19">Guardian Details</div>
                     <div class="ju al patients_img_wrap mg">
                         <img class="patients_img" v-if="petAndUser.userHead" :src="petAndUser.userHead" alt="">
-                        <img style="height:75%;" v-else :src="d_img" alt="">
+                        <img style="height:100%;" v-else :src="default_img" alt="">
                         <!-- <i class=" el-icon-picture-outline Icon" style="font-size:40px;color:gray;" v-else></i> -->
                     </div>
                     <div class="size19 tc personal_name">{{petAndUser.userName}}</div>
@@ -130,7 +130,7 @@
                             </div>
                             <div class="ju mg al PET_IMG">
                                 <img class="Img" :src="petAndUser.petHeadUrl" alt="" v-if="petAndUser.petHeadUrl">
-                                <img style="height:100%;" v-else :src="default_img" alt="">
+                                <img style="height:75%;" v-else :src="d_img" alt="">
                                 <!-- <i class=" el-icon-picture-outline Icon" style="font-size:60px;color:gray;" v-else></i> -->
                             </div>
                             <div class="pet_information">

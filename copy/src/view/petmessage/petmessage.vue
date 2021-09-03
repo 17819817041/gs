@@ -52,16 +52,6 @@
         <div class="fillIn">  <!-- 填写信息 -->
             <div class="message_title size21 tc">About the pet</div>
             <div class="size12 tc">Add your pet details</div>
-            <!-- <div class="ju">
-                <div class="wrap_img">
-                    <label class="photo cursor al ju" for="avaImg">
-                        <img class="upImg" :src="addPetMessage.image" v-if="addPetMessage.image" alt="">
-                        <img class="defautlImg" src="@/assets/img/default.png" alt="" v-else>
-                        <input type="file" @change="getImage" name="" v-show="false" id="avaImg">
-                    </label>
-                    <img class="addImg" src="@/assets/img/file.png" alt="">
-                </div>
-            </div> -->
             <div class="message_form">
                 <el-form :rules="rules" ref="form" :model="addPetMessage" :label-position="position" label-width="80px">
                     <el-form-item prop="image">
@@ -84,17 +74,17 @@
                         <el-form-item prop="birth">
                             <div class="sb">
                                 <div class="select_item">
-                                    <el-select v-model="day" @change="chooseDay">
+                                    <el-select v-model="day" @change="chooseDay" placeholder="Day">
                                         <el-option v-for="(item,i) in dayList" :key="i" :value="item"></el-option>
                                     </el-select>
                                 </div>
                                 <div class="select_item">
-                                    <el-select v-model="month" @change="chooseMonth">
+                                    <el-select v-model="month" @change="chooseMonth" placeholder="Month">
                                         <el-option v-for="(item,i) in monthList" :key="i" :label="item.label" :value="item.value"></el-option>
                                     </el-select>
                                 </div>
                                 <div class="select_item">
-                                    <el-select v-model="years">
+                                    <el-select v-model="years" placeholder="Year">
                                         <el-option v-for="(item,i) in yearsList" :key="i" :value="item"></el-option>
                                     </el-select>
                                 </div>
