@@ -214,6 +214,14 @@ export function asd (data) {
     })
 }
 
+export function PetMedicalRecord (data) {            //add pet Medical Record
+    return request({
+        url: "/PetMedicalRecord/addPetMedicalRecord",
+        method: 'POST',
+        params: data
+    })
+}
+
 export function getPetMedicalRecord (data) {            //医生治疗记录
     return request({
         url: "/PetMedicalRecord/getPetMedicalRecordPageByDocId",

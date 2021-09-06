@@ -569,3 +569,11 @@ export function addComment (data) {                        //添加医生评论?
         params: data
     })
 }
+
+export function getOnlineDocList (data) {                   //在线状态
+    return request({                                  
+        url: '/doctor/getOnlineDocList',
+        method: "POST",
+        params: data
+    })
+}

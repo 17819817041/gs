@@ -101,7 +101,7 @@ export default {
             let data = {
                 userId: localStorage.getItem('userId'),
                 pageNum: this.pageNum,
-                pageSize: 15
+                pageSize: 10
             }
             this.$store.commit("setUser",{ key: "n_loading", value: true })
             paymentRecord(data).then(res => {

@@ -191,7 +191,12 @@ export default {
 		color: white;
 	}
 
+	.paymentHistory .el-select .el-input--suffix .el-input__inner, .appointment .el-select .el-input--suffix .el-input__inner {
+		background: white !important;
+	}
 
+	.paymentHistory_cus .el-pagination .btn-prev, .paymentHistory_cus .el-pagination .btn-next, 
+	.paymentHistory_cus .el-pagination .el-pager .number, .paymentHistory_cus .el-pagination .el-pager .el-icon-more,
 	.record .el-pagination .btn-prev, .record .el-pagination .btn-next, 
 	.record .el-pagination .el-pager .number, .record .el-pagination .el-pager .el-icon-more {      
 		background: #F2F2F2 !important;

@@ -231,7 +231,7 @@ import { bookingUserId, allBooking_doc,deleteBooking } from "@/axios/request.js"
 export default {
     data () {
         return {
-            value: new Date(),
+            D: new Date(),
             booking: [],
             today: '',
             loading: true,
@@ -249,7 +249,6 @@ export default {
                 value: 3,
                 label: 'Completed'
             }],
-            value: 1,
             small: false,
             sort_m: 1
         }
@@ -282,7 +281,17 @@ export default {
     methods: {
         pageCut (val) {
             this.pageNum = val
-            this.getBooking()
+            if (this.sort_m == 1) {
+                this.getBooking()
+            } else if (this.sort_m == 2) {
+                // let date = this.D.toLocaleDateString().split('/').join('-')
+                this.Undone()
+            } else if (this.sort_m == 3) {
+                // let Y = new Date()
+                // Y.setTime(Y.getTime()-24*60*60*1000);
+                // var yday = Y.getFullYear()+"-" + (Y.getMonth()+1) + "-" + Y.getDate();
+                this.Completed()
+            }
         },
         reschedule (key) {
             console.log(key)
@@ -325,10 +334,6 @@ export default {
                 pageSize: 10,
                 sort: 1
             }
-            if ((this.totalRecordsCount == this.booking.length) && this.totalRecordsCount !=0 ) {
-                this.$store.commit("setUser",{ key: "n_loading", value: false })
-                
-            } else {
                 this.$store.commit("setUser",{ key: "n_loading", value: true })
                 allBooking_doc(data).then(res => {
                     this.$store.commit("setUser",{ key: "n_loading", value: false }) 
@@ -362,8 +367,6 @@ export default {
                         message: 'Loading timed out, please check the network!'
                     })
                 })
-            }
-            
         },
         getDAY () {
             var date = new Date();
@@ -390,6 +393,8 @@ export default {
             this.booking = []
             this.loading = true
             this.pageNum = 1
+            this.totalRecordsCount = 0
+            this.sort_m = val
             // let Y = new Date()
             // Y.setTime(Y.getTime()-24*60*60*1000);
             // var yday = Y.getFullYear()+"-" + (Y.getMonth()+1) + "-" + Y.getDate();
@@ -410,9 +415,6 @@ export default {
                 pageSize: 10,
                 sort: 1
             }
-            if ((this.totalRecordsCount == this.booking.length) && this.totalRecordsCount !=0 ) {
-                this.$store.commit("setUser",{ key: "n_loading", value: false })
-            } else { 
                 this.$store.commit("setUser",{ key: "n_loading", value: true })
                 allBooking_doc(data).then(res => {
                     // console.log(res, '未完成')
@@ -442,7 +444,6 @@ export default {
                         this.booking = null
                     }
                 })
-            }
         },
         Completed () {
             let data = {
@@ -452,9 +453,6 @@ export default {
                 pageSize: 10,
                 sort: 1
             }
-            if ((this.totalRecordsCount == this.booking.length) && this.totalRecordsCount !=0 ) {
-                this.$store.commit("setUser",{ key: "n_loading", value: false })
-            } else { 
                 this.$store.commit("setUser",{ key: "n_loading", value: true })
                 allBooking_doc(data).then(res => {
                     // console.log(res,'已完成')
@@ -484,7 +482,6 @@ export default {
                         this.booking = null
                     }
                 })
-            }
         }
     }
 }

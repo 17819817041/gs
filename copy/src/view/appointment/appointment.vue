@@ -328,7 +328,17 @@ export default {
         },
         pageCut (val) {
             this.pageNum = val
-            this.getBooking()
+            if (this.sort_m == 1) {
+                this.getBooking()
+            } else if (this.sort_m == 2) {
+                // let date = this.D.toLocaleDateString().split('/').join('-')
+                this.Undone()
+            } else if (this.sort_m == 3) {
+                // let Y = new Date()
+                // Y.setTime(Y.getTime()-24*60*60*1000);
+                // var yday = Y.getFullYear()+"-" + (Y.getMonth()+1) + "-" + Y.getDate();
+                this.Completed()
+            }
         },
         reschedule (key) {
             console.log(key)
@@ -456,6 +466,7 @@ export default {
             this.booking = []
             this.loading = true
             this.pageNum = 1
+            this.totalRecordsCount = 0
             // let Y = new Date()
             // Y.setTime(Y.getTime()-24*60*60*1000);
             // var yday = Y.getFullYear()+"-" + (Y.getMonth()+1) + "-" + Y.getDate();

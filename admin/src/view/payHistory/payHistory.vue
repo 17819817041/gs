@@ -19,11 +19,26 @@
         <div class="paymentHistory_content" v-if="orderList">   
             <div>
                 <div class="paymentHistory_content_item sb mg" v-for="(item,i) in orderList" :key="i">
-                    <div class="flex al">
+                    <div class="flex al" v-if="item.orderType == 'Recharge'">
+                        <div class="payment_man_img ju al" >
+                            <img style="height: 60%;" src="@/assets/img/Paypal.png" v-if="item.paymentRecord.paymentTypeId == 5" alt="">
+                            <img style="height: 60%;" src="@/assets/img/stripe.png" v-else-if="item.paymentRecord.paymentTypeId == 2" alt="">
+                            <img style="height: 60%;" src="@/assets/img/alipay.png" v-else-if="item.paymentRecord.paymentTypeId == 3" alt="">
+                            <img style="height: 60%;" src="@/assets/img/chatpay.png" v-else-if="item.paymentRecord.paymentTypeId == 4" alt="">
+                        </div>
+                        <div class="payment_details">
+                            <div class="size17">
+                                <span v-if="item.paymentRecord.paymentTypeId == 5">Paypal</span>
+                                <span v-else-if="item.paymentRecord.paymentTypeId == 4">Wechat_Pay</span>
+                                <span v-else-if="item.paymentRecord.paymentTypeId == 3">Alipay</span>
+                                <span v-else-if="item.paymentRecord.paymentTypeId == 2">stripe</span>
+                            </div>
+                            <div class="size16">{{item.orderType}}</div>
+                        </div>
+                    </div>
+                    <div class="flex al" v-else>
                         <div class="payment_man_img ju al">
                             <img :src="item.userImage" v-if="item.userImage" alt="">
-                            <!-- <i class="el-icon-picture-outline" style="color: gray;font-size: 20px" v-else></i> -->
-                            <img :src="AllDetail.userImage" v-else-if="item.userImage === null" alt="">
                         </div>
                         <div class="payment_details">
                             <div class="size17">
@@ -52,6 +67,7 @@
             <el-pagination
                 :small="small"
                 :pager-count='7'
+                :page-size= '15'
                 layout="prev, pager, next"
                 :total="totalRecordsCount"
                 @current-change='pageCut'>
@@ -96,6 +112,7 @@ export default {
                 })
             },
         },
+        default_img () { return this.$store.state.user.default_img }
     },
     created () {
         this.paymentRecord()
@@ -111,10 +128,9 @@ export default {
     },
     methods: {
         sort_t (val) {
+            this.pageNum = 1
             this.userType = val
             this.orderList = []
-            // this.loading = true
-            this.pageNum = 1
             this.paymentRecord()
         },
         paymentRecord () {
@@ -123,38 +139,37 @@ export default {
                 pageNum: this.pageNum,
                 pageSize: 15
             }
-                this.loading = true
-                getPaymentRecordAll(data).then(res => {
-                    console.log(res)
-                    this.loading = false
-                    if (res.data.rtnCode == 200) {
-                        var D = new Date()
-                        let a = new Date().toLocaleDateString()
-                        var k = new Date(a).getTime()
-                        // var b = new Date(res.data.data.pageT[11].paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime()
-                        res.data.data.pageT.forEach(item => {
-                            if (new Date( item.paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime() == k) {
-                                item.paymentRecord.createAt = 'Today'
-                            } else {
-                                var D = new Date(item.paymentRecord.createAt.split(' ')[0]).toDateString()
+            this.loading = true
+            getPaymentRecordAll(data).then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    var D = new Date()
+                    let a = new Date().toLocaleDateString()
+                    var k = new Date(a).getTime()
+                    // var b = new Date(res.data.data.pageT[11].paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime()
+                    res.data.data.pageT.forEach(item => {
+                        if (new Date( item.paymentRecord.createAt.split(' ')[0].split('-').join('/')).getTime() == k) {
+                            item.paymentRecord.createAt = 'Today'
+                        } else {
+                            var D = new Date(item.paymentRecord.createAt.split(' ')[0]).toDateString()
 
-                                item.paymentRecord.createAt = D.split(' ')[0] + ',' + D.split(' ')[2] + ' ' + D.split(' ')[1] + ' ' + D.split(' ')[3]
-                            }
-                        })
-                        this.totalRecordsCount = res.data.data.totalRecordsCount
-                        // this.orderList = this.orderList.concat(res.data.data.pageT)
-                        this.orderList = res.data.data.pageT
-                        this.loading = false
-                    } else {
-                        this.loading = false
-                        this.orderList = null
-                    }
-                }).catch(e => {
-                    console.log(e)
+                            item.paymentRecord.createAt = D.split(' ')[0] + ',' + D.split(' ')[2] + ' ' + D.split(' ')[1] + ' ' + D.split(' ')[3]
+                        }
+                    })
+                    this.totalRecordsCount = res.data.data.totalRecordsCount
+                    // this.orderList = this.orderList.concat(res.data.data.pageT)
+                    this.orderList = res.data.data.pageT
+                    this.loading = false
+                } else {
                     this.loading = false
                     this.orderList = null
-                })
-            
+                }
+            }).catch(e => {
+                console.log(e)
+                this.loading = false
+                this.orderList = null
+            })
         },
         pageCut (val) {
             this.pageNum = val

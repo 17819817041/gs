@@ -138,8 +138,8 @@
             </div>
             <div class="head ju al">
                 <label for="img" style="height:100%">
-                    <img :class="['set_img ', { cursor: edit == 2 }]" :src="userDetail.image" alt="">
-                    <input type="file" id="img" v-show="false" v-if="edit == 2" @change="getImage" >
+                    <img :class="['set_img ', { cursor66: edit == 2 }]" :src="userDetail.image" alt="">
+                    <!-- <input type="file" id="img" v-show="false" v-if="edit == 2" @change="getImage" > -->
                 </label>
             </div>
             <div class="msg_item flex al">

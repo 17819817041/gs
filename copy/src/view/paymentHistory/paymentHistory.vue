@@ -40,6 +40,7 @@
             <el-pagination
                 :small="small"
                 :pager-count='7'
+                :page-size= '15'
                 layout="prev, pager, next"
                 :total="totalRecordsCount"
                 @current-change='pageCut'>

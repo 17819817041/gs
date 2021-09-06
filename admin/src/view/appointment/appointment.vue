@@ -244,7 +244,7 @@ export default {
             today: '',
             pageNum: 1,
             loading: true,
-
+            el_date: new Date(),
             options: [{
                 value: 1,
                 label: 'All Booking'
@@ -256,7 +256,6 @@ export default {
                 label: 'Completed'
             }],
             sort_m: 1,
-            totalRecordsCount: 0,
             l_loading: false,
             totalRecordsCount: 0,
             small: false,
@@ -292,31 +291,23 @@ export default {
             })
         },
         pageCut (val) {
+            this.loading = true
             this.pageNum = val
             if (this.sort_m == 1) {
                 this.getBooking()
             } else if (this.sort_m == 2) {
-                let date = this.D.toLocaleDateString().split('/').join('-')
-                this.Undone(date)
+                this.Undone()
             } else if (this.sort_m == 3) {
-                // let Y = new Date()   //昨天
-                // Y.setTime(Y.getTime()-24*60*60*1000);
-                // var yday = Y.getFullYear()+"-" + (Y.getMonth()+1) + "-" + Y.getDate();
-
-                let date = this.D.toLocaleDateString().split('/').join('-')
-                this.Completed(date)
+                this.Completed()
             }
         },
         getBooking () {
             let data = {
                 type: 3,
                 pageNum: this.pageNum,
-                pageSize: 20,
+                pageSize: 10,
                 sort: 1
             }
-            if ((this.totalRecordsCount == this.booking.length) && this.totalRecordsCount !=0 ) {
-                this.l_loading = false
-            } else {
                 this.l_loading = true
                 getBookingPage(data).then(res => {
                     this.l_loading = false
@@ -335,7 +326,7 @@ export default {
                             }
                             item.booking.calanderDate = date[0] + "-" + date[1] + "-" + date[2]
                         })
-                        this.booking = this.booking.concat(res.data.data.pageT)
+                        this.booking = res.data.data.pageT
                         this.calendarUI()
                         this.totalRecordsCount = res.data.data.totalRecordsCount
                     } else if (res.data.rtnCode == 201) {
@@ -349,8 +340,6 @@ export default {
                     this.l_loading = false
                     this.loading = false
                 })
-            }
-            
         },
         getDAY () {
             var date = new Date();
@@ -372,7 +361,8 @@ export default {
             this.booking = []
             this.loading = true
             this.pageNum = 1
-            let date = this.el_date.toLocaleDateString().split('/').join('-')
+            this.totalRecordsCount = 0
+            // let date = this.el_date.toLocaleDateString().split('/').join('-')
             // let Y = new Date()
             // Y.setTime(Y.getTime()-24*60*60*1000);
             // var yday = Y.getFullYear()+"-" + (Y.getMonth()+1) + "-" + Y.getDate();
@@ -380,63 +370,55 @@ export default {
             if (val == 1) {
                 this.getBooking()
             } else if (val == 2) {
-                this.Undone(date)
+                this.Undone()
             } else if (val == 3) {
-                this.Completed(date)
+                this.Completed()
             }
         },
         Undone (date) {         
             let data = {
                 type: 2,
                 pageNum: this.pageNum,
-                pageSize: 20,
+                pageSize: 10,
                 sort: 1
             }
-            if ((this.totalRecordsCount == this.booking.length) && this.totalRecordsCount !=0 ) {
+            getBookingPage(data).then(res => {
                 this.l_loading = false
-            } else { 
-                this.l_loading = true
-                getBookingPage(data).then(res => {
-                    this.l_loading = false
-                    this.loading = false
-                    if (res.data.rtnCode == 200) {
-                        res.data.data.pageT.forEach(item => {
-                            let date = item.booking.bookingDate.split('-')
-                            item.booking.bookingDate = date[2] + '/' + date[1] + '/'+ date[0]
-                            item.booking.APM = ''
-                            var hour = Number(item.booking.bookingStartTime.split(':')[0])
-                            var minute = Number(item.booking.bookingStartTime.split(':')[1])
-                            if ( hour >= 12 && minute >= 0) {
-                                item.booking.APM = 'PM'
-                            } else {
-                                item.booking.APM = 'AM'
-                            }
-                            item.booking.calanderDate = date[0] + "-" + date[1] + "-" + date[2]
-                        })
-                        this.booking = this.booking.concat(res.data.data.pageT)
-                        this.totalRecordsCount = res.data.data.totalRecordsCount
-                    } else if (res.data.rtnCode == 201) {
-                        this.booking = null
-                    } else {
-                        this.booking = null
-                    }
-                }).catch(e => {
-                    console.log(e)
-                    this.loading = false
-                    this.l_loading = false
-                })
-            }
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    res.data.data.pageT.forEach(item => {
+                        let date = item.booking.bookingDate.split('-')
+                        item.booking.bookingDate = date[2] + '/' + date[1] + '/'+ date[0]
+                        item.booking.APM = ''
+                        var hour = Number(item.booking.bookingStartTime.split(':')[0])
+                        var minute = Number(item.booking.bookingStartTime.split(':')[1])
+                        if ( hour >= 12 && minute >= 0) {
+                            item.booking.APM = 'PM'
+                        } else {
+                            item.booking.APM = 'AM'
+                        }
+                        item.booking.calanderDate = date[0] + "-" + date[1] + "-" + date[2]
+                    })
+                    this.booking = res.data.data.pageT
+                    this.totalRecordsCount = res.data.data.totalRecordsCount
+                } else if (res.data.rtnCode == 201) {
+                    this.booking = null
+                } else {
+                    this.booking = null
+                }
+            }).catch(e => {
+                console.log(e)
+                this.loading = false
+                this.l_loading = false
+            })
         },
         Completed (yday) {
             let data = {
                 type: 1,
                 pageNum: this.pageNum,
-                pageSize: 20,
+                pageSize: 10,
                 sort: 1
             }
-            if ((this.totalRecordsCount == this.booking.length) && this.totalRecordsCount !=0 ) {
-                this.l_loading = false
-            } else { 
                 this.l_loading = true
                 getBookingPage(data).then(res => {
                     this.l_loading = false
@@ -456,7 +438,7 @@ export default {
                             }
                             item.booking.calanderDate = date[0] + "-" + date[1] + "-" + date[2]
                         })
-                        this.booking = this.booking.concat(res.data.data.pageT)
+                        this.booking = res.data.data.pageT
                         this.totalRecordsCount = res.data.data.totalRecordsCount
                     } else if (res.data.rtnCode == 201) {
                         this.booking = null
@@ -468,7 +450,6 @@ export default {
                     this.loading = false
                     this.l_loading = false
                 })
-            }
         },
         calendarUI () {
             let calendarEl = document.getElementById('calendar')

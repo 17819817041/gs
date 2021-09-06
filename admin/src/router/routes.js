@@ -121,6 +121,11 @@ export default [
                 path:'/payHistory',
                 name:'payHistory',
                 component: () => import("@/view/payHistory/payHistory.vue")
+            }, 
+            {
+                path:'/recordDetail',
+                name:'recordDetail',
+                component: () => import("@/view/recordDetail/recordDetail.vue")
             },
         ]
     },

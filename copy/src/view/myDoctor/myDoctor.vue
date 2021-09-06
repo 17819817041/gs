@@ -1,15 +1,12 @@
 <template>
-    <div class="myDoctor flex">
+    <div class="myDoctor flex" v-loading='loading'>
         <el-backtop target=".scrollUp"></el-backtop>
         <div class="doc_infor" v-show="dialogVisible" @click="dialogVisible = false">
             <div class="doc_infor_wrap noBar">
                 <div style="width: 100%;"> {{detail.doctorContent}}</div>
             </div>
         </div>
-        <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList !==null">
-            <transition name="fade"><div class="online_mask cursor" @click="getDoctorList1" v-show="online_mask">
-                The doctor login status changes, click refresh
-            </div></transition>
+        <div class="doctorList scrollUp" ref="doctorList" v-if="doctorList !==null">
             <div class="width102 clear" ref="doctorList_height">
                 <div class="doctor_item float" v-for="(item,i) in doctorList" :key="i" @click="getDetail(item)">
                     <div class="image flex">
@@ -51,9 +48,6 @@
                             <el-button class="callBtn cursor width100" type="primary">Call</el-button>
                         </div>
                     </div>
-                </div>
-                <div class="acting float ju al" v-if="loading">
-                    <div class="loading" v-loading="true"></div>
                 </div>
             </div>
         </div>
@@ -312,13 +306,21 @@ export default {
                 }
             }
         },
-        online_mask: {
+        doctorList: {
             handler (val) {
                 if (val) {
-                    this.online_mask = val
+                    this.doctorList = val
+                }
+            },
+            deep: true
+        },
+        loading: {
+            handler (val) {
+                if (val) {
+                    this.loading = val
                 }
             }
-        }
+        },
     },
     computed: {
         callModal: {
@@ -351,24 +353,14 @@ export default {
             }
         },
         loading: {
-            get () { return this.$store.state.user.loading6 },
+            get () { return this.$store.state.user.loading_doc },
             set (val) {
                 this.$store.commit("setUser", {
-                    key: "loading6",
+                    key: "loading_doc",
                     value: val
                 })
             }
         },
-        online_mask: {
-            get () { return this.$store.state.user.online_mask },
-            set (val) {
-                this.$store.commit('setUser', {
-                    key: 'online_mask',
-                    value: val
-                })
-            }
-        },
-        totalRecordsCount () { return this.$store.state.user.totalRecordsCount },
         inp: {
             get () {return this.$store.state.user.inp},
             set (val) {
@@ -407,34 +399,8 @@ export default {
                 value: item
             })
         },
-        docScroll () {
-            if (this.inp) {
-                return false
-            }
-            if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
-                if (this.doctorList.length >= this.totalRecordsCount) {
-                    
-                } else {
-                    if (!this.loading) {
-                        this.pageNum += 1
-                        this.getDoctorList()
-                    }
-                }
-            }
-        },
         getDoctorList () {
             this.$store.dispatch('getDoctorList',{num: this.pageNum, vm: this})
-        },
-        getDoctorList1 () {
-            this.$store.commit("setUser", {
-                key: "doctorList",
-                value: []
-            })
-            this.$store.commit('setUser', {
-                key: 'online_mask',
-                value: false
-            })
-            this.getDoctorList()
         },
         edit () {
             this.change = !this.change
@@ -603,20 +569,6 @@ export default {
             div {
                 word-wrap: break-word !important;
             }
-        }
-    }
-    .online_mask {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        padding: 5px 10px;
-        z-index: 1;
-        background: #46D3FA;
-        color: white;
-        border-radius: 10px;
-        transform: translate(-50%, 0);
-        @media screen and (max-width:800px) {
-            font-size: 12px;
         }
     }
     .phone_doc_detail {
@@ -880,15 +832,6 @@ export default {
         -webkit-box-orient: vertical;
         overflow : hidden; 
         word-break: break-all;/*在任何地方换行*/
-    }
-    .acting {
-        width: 100%;
-        padding: 50px 0;
-        // border: solid 1px;
-        @media screen and (max-width: 564px) {
-            width: 100%;
-            padding: 20px 0;
-        }
     }
     .el_drawer_mobile {
         display: none;

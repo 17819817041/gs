@@ -4,6 +4,7 @@
         flex: 10;
         height: 100%;
         position: relative;
+        overflow: auto;
         background: @content;
         .addRecord {
             position: absolute;
@@ -89,6 +90,7 @@
         height: 200px;
         border-radius: 50%;
         overflow: hidden;
+        border: solid 1px rgb(158, 158, 158);
         @media screen and (max-width:1725px) {
             width: 150px;
             height: 150px;
@@ -105,10 +107,6 @@
             width: 70px;
             height: 70px;
         }
-        // @media screen and (max-width:350px) {
-        //     width: 50px;
-        //     height: 50px;
-        // }
     }
     .dog_img, .felame {
         height: 100%;
@@ -336,7 +334,7 @@
 </style>
 
 <template>
-    <div class="patients">
+    <div class="patients noBar">
         <div class="addRecord" v-show="top_up_mask">
             <div class="medialRecord">
                 <div class="medialRecord_item">
@@ -374,7 +372,7 @@
                                 <div class="person_image">
                                     <div class="mg al ju">
                                         <img class="felame" v-if="userAndPet.userHead" :src="userAndPet.userHead" alt="">
-                                        <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
+                                        <img style="height:100%;" v-else :src="default_img" alt="">
                                     </div>
                                 </div>
                             <div class="flex direction">
@@ -425,7 +423,7 @@
                             <div class="details_image ">
                                 <div class="mg ju al">
                                     <img class="dog_img" v-if="userAndPet.petHeadUrl" :src="userAndPet.petHeadUrl" alt="">
-                                    <i class="el-icon-picture-outline" v-else style="font-size:70px;color:gray"></i>
+                                    <img style="height: 75%;" v-else src="@/assets/img/default.png" alt="">
                                 </div>
                             </div>
                             <div class="direction flex">
@@ -546,6 +544,7 @@ export default {
         this.getPet()
     },
     computed: {
+        default_img () { return this.$store.state.user.default_img },
         top_up_mask () { return this.$store.state.user.showback },
     },
     methods: {
@@ -608,7 +607,6 @@ export default {
                 petId: this.$route.query.id
             }
             getUserByPetId(data).then(res => {
-                console.log(res,'petAndUser')
                 if (res.data.rtnCode == 200) {
                     this.userAndPet = res.data.data
                     if (this.userAndPet) {

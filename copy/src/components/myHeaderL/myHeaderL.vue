@@ -235,6 +235,11 @@
         }
     }
     .category {
+        color: black !important;
+        font-size: 12px;
+    }
+    .category1 {
+        color: rgb(255, 255, 255) !important;
         font-size: 12px;
     }
     .rotate {
@@ -484,10 +489,15 @@
                     </div>
                     <div class="top cursor" v-else @click="patient">All Doctors</div>
                     <div class="select top" >
-                        <div class="category">
-                            Category
-                            <img class="dropimg" src="@/assets/img/drop.png" alt="">
-                        </div>
+                        <el-dropdown trigger="click">
+                            <div class="category al cursor">
+                                Category<img class="dropimg" src="@/assets/img/drop.png" alt="">
+                            </div>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item icon="el-icon-plus">SPECIALIST CATEGORY</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-circle-plus">GENERAL VET</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
                     </div>
                     <div class="input" >
                         <div class="search_btn al ju cursor" @click="search">
@@ -552,7 +562,7 @@
                                     <div style="font-size:13px;" v-if="identity" @click="doctor">All Doctors</div>
                                     <div style="font-size:13px;" v-else @click="patient">All Patients</div>
                                     <div class="select" >
-                                        <div class="category al">
+                                        <div class="category1 al">
                                             Category
                                             <img class="dropimg" src="@/assets/img/arrow_white.png" alt="">
                                             <!-- <img class="dropimg" src="@/assets/img/drop.png" alt=""> -->

@@ -36,7 +36,7 @@ conn.listen({
         }
         //上线通知
         if (e.sourceMsg == "PetaviOnlineList") {
-            store.commit("setUser",{ key: 'online_mask', value: true })
+            store.dispatch('getOnlineDocList')
         }
         
         let data = JSON.parse(e.data)    

@@ -1,4 +1,4 @@
-import { petList, getUserDetails, vetDetails, doctorList, bookingUserId, notice, onlineState, balance, addMetting, s_online, joinRoom } from "@/axios/request.js"
+import { petList, getUserDetails, vetDetails, doctorList, bookingUserId, notice, onlineState, balance, addMetting, s_online, joinRoom, getOnlineDocListm, min } from "@/axios/request.js"
 import router from "@/router/router/router.js"
 import { Message } from 'element-ui';
 import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
@@ -22,6 +22,7 @@ export default {
         loading: false,
         loading6: false,
         vloading: true,
+        loading_doc: false,
         n_loading: false,
         callModal: false,
         callModal2: false,
@@ -53,7 +54,6 @@ export default {
         balance: {},
         default_img:'',
         setTime_S: false,
-        online_mask: false,
         adminList: {
             'admin': {
                 messageList: [
@@ -64,7 +64,9 @@ export default {
         },
         message: {},
         chatList: [],
-        newMsg_dot: JSON.parse(JSON.stringify(localStorage.getItem('new_msg')))
+        newMsg_dot: JSON.parse(JSON.stringify(localStorage.getItem('new_msg'))),
+        value: 0,
+        timer: null
     },
     mutations: {
         setUser (state,data) {
@@ -81,6 +83,20 @@ export default {
         },
     },
     actions: {
+        start(store){
+			// this.timer = setInterval(this.valChange, 60000); // 注意: 第一个参数为方法名的时候不要加括号;
+			store.state.timer = setInterval(() => store.dispatch('online'), 60000); // 注意: 第一个参数为方法名的时候不要加括号;
+		},
+        online(store) {
+			store.state.value++;
+			let data = {
+				userId: localStorage.getItem('userId'),
+				platform: localStorage.getItem('platform')
+			}
+			min(data).then(res => {
+				// console.log(res,12321)
+			})
+		},
         default (store,data) {
             store.commit("setUser",{ key: "default_img", value: data}) 
         },
@@ -383,6 +399,7 @@ export default {
                             pageNum: 1
                         }
                         store.dispatch('getNoticeList', page)
+                        store.dispatch("start") 
                     } else if (res.data.rtnCode == 500) {
                         localStorage.removeItem("Token")
                         localStorage.removeItem("userId")
@@ -452,6 +469,17 @@ export default {
                     userId: localStorage.getItem('userId'),
                     type:localStorage.getItem('platform')
                 }
+                onlineState(data).then(res => {
+                    if (res.data.rtnCode == 200) {
+                        
+                    }
+                }).catch(e => {
+                    console.log(e)
+                    vm.$message({
+                        type: 'error',
+                        message: 'Exit failed!'
+                    })
+                })
                 localStorage.removeItem("Token")
                 localStorage.removeItem("userId")
                 localStorage.removeItem("paltform")
@@ -471,18 +499,6 @@ export default {
                     type: 'info',
                     message: 'Account has been signed out!'
                 })
-                onlineState(data).then(res => {
-                    if (res.data.rtnCode == 200) {
-                        
-                    }
-                }).catch(e => {
-                    console.log(e)
-                    vm.$message({
-                        type: 'error',
-                        message: 'Exit failed!'
-                    })
-                })
-                
             }).catch (e => {
                 console.log(e)
             })
@@ -491,59 +507,60 @@ export default {
             const doctor = {
                 platform: localStorage.getItem("platform"),
                 userId: localStorage.getItem("userId"),
-                pageNum: num.num,
-                pageSize:30
+                pageNum: 1,
+                pageSize:30000000
             }
-            store.commit("setUser",{ key: "loading6", value: true })
-            if ((store.state.totalRecordsCount == store.state.doctorList.length) &&store.state.totalRecordsCount !=0 ) {
-                store.commit("setUser",{ key: "loading6", value: false })
-            } else {
-                doctorList(doctor).then(res => {
-                    store.commit("setUser",{ key: "loading6", value: false })
-                    if (res.data.rtnCode == 200) {
-                        store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
-                        store.commit("pageAdd", res.data.data.pageT )
-                        var arr = store.state.doctorList
-                        var b = []
-                        var c = []
-                        for (let i = 0;i < arr.length; i++) {{
-                            if (arr[i].doctorOnLineState == 1) {
-                                c.push(arr[i])
-                            }
-                        }}
-                        b = arr.filter(item => item.doctorOnLineState != 1)
-                        store.commit("setUser",{ key: "doctorList", value: c.concat(b) })
-
-                        if (doctor.pageNum <= 1) {
-                            store.commit("setUser",{
-                                key: "mask",
-                                value: res.data.data.pageT[0]
-                            })
-                            store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
-                            store.commit("setUser", { key: 'rate', value: store.state.doctorList[0].baseScore } )
-                        }
-                        // if ((store.state.totalRecordsCount == store.state.doctorList.length) &&store.state.totalRecordsCount !=0 ) {
-                        //     store.commit("setUser",{ key: "loading6", value: false })
-                        // }
-                    } else {
-                        store.commit("setUser",{ key: "loading6", value: false })
-                        store.commit("pageAdd", null )
-                        num.vm.$message({
-                            type: 'error',
-                            message: 'Failed to load!'
-                        })
-                    }
-                }).catch(e => {
-                    console.log(e)
+            store.commit("setUser",{ key: "loading_doc", value: true })
+            doctorList(doctor).then(res => {
+                store.commit("setUser",{ key: "loading_doc", value: false })
+                if (res.data.rtnCode == 200) {
+                    store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
+                    store.commit("pageAdd", res.data.data.pageT )
+                    store.dispatch('getOnlineDocList')
+                } else {
+                    store.commit("setUser",{ key: "loading_doc", value: false })
+                    store.commit("pageAdd", null )
                     num.vm.$message({
                         type: 'error',
-                        message: 'Loading timed out, please check the network!'
+                        message: 'Failed to load!'
                     })
-                    store.commit("setUser",{ key: "loading6", value: false })
-                    store.commit("setUser",{ key: "doctorList", value: [] })
-                    
+                }
+            }).catch(e => {
+                console.log(e)
+                num.vm.$message({
+                    type: 'error',
+                    message: 'Loading timed out, please check the network!'
                 })
-            }
+                store.commit("setUser",{ key: "loading6", value: false })
+                store.commit("setUser",{ key: "doctorList", value: [] })
+                
+            })
+        },
+        getOnlineDocList (store) {
+            getOnlineDocList().then(res => {
+                // console.log(res,'online')
+                if (res.data.rtnCode == 200) {
+                    let arr =  store.state.doctorList
+                    arr.forEach(item => {
+                        res.data.data.forEach(msg => {
+                            if (item.doctorId == msg.doctorId) {
+                                item.doctorOnLineState = msg.doctorOnLineState
+                            }
+                        })
+                    })
+                    var b = []
+                    var c = []
+                    for (let i = 0;i < arr.length; i++) {{
+                        if (arr[i].doctorOnLineState == 1) {
+                            c.push(arr[i])
+                        }
+                    }}
+                    b = arr.filter(item => item.doctorOnLineState != 1)
+                    store.commit("setUser", { key: "doctorList", value: c.concat(b) })
+                }
+                store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
+                store.commit("setUser", { key: 'rate', value: store.state.doctorList[0].baseScore } )
+            })
         },
         getBalance (store,data) {
             balance(data).then(res => {

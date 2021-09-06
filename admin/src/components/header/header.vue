@@ -8,10 +8,15 @@
                 <div class="top cursor" @click="doctor">All Doctors</div>
                 <div class="top cursor" @click="patient">All Pets</div>
                 <div class="select top" >
-                    <div class="category al">
-                        Category
-                        <img class="dropimg" src="@/assets/img/arrow.png" alt="">
-                    </div>
+                    <el-dropdown trigger="click">
+                        <div class="category al cursor">
+                            Category<img class="dropimg" src="@/assets/img/arrow.png" alt="">
+                        </div>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item icon="el-icon-plus">SPECIALIST CATEGORY</el-dropdown-item>
+                            <el-dropdown-item icon="el-icon-circle-plus">GENERAL VET</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
                 </div>
                 <div class="input" >
                     <div class="search_btn al ju cursor" @click="search">

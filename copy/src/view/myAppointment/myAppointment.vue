@@ -303,6 +303,7 @@
             <el-pagination
                 :small="small"
                 :pager-count='7'
+                :current-page='current_page'
                 layout="prev, pager, next"
                 :total="totalRecordsCount"
                 @current-change='pageCut'>
@@ -322,7 +323,7 @@ export default {
             pageNum: 1,
             totalRecordsCount: 0,
             D: new Date(),
-
+            current_page: 1,
             options: [{
                 value: 1,
                 label: 'All'
@@ -533,10 +534,13 @@ export default {
             this.today = currentdate
         },
         sort_t (val) {
+            this.value = val
+            this.pageNum = 1
             this.sort_m = val
+            this.current_page = 1
             this.bookingList = []
             this.loading = true
-            this.pageNum = 1
+            this.totalRecordsCount = 0
             // let Y = new Date()
             // Y.setTime(Y.getTime()-24*60*60*1000);
             // var yday = Y.getFullYear()+"-" + (Y.getMonth()+1) + "-" + Y.getDate();
@@ -565,7 +569,6 @@ export default {
                     this.$store.commit("setUser",{ key: "n_loading", value: false })
                     if (res.data.rtnCode == 200) {
                         res.data.data.pageT.forEach(item => {
-                            if (item.booking.bookingState == 1 || item.booking.bookingState == 2 ) {
                                 let date = item.booking.bookingDate
                                 let En = new Date(date).toDateString()
                                 let arr = En.split(' ')
@@ -578,9 +581,8 @@ export default {
                                 } else {
                                     item.booking.APM = 'AM'
                                 }
-                            }
                         })
-                        this.bookingList = this.bookingList.concat(res.data.data.pageT)
+                        this.bookingList = res.data.data.pageT
                         this.totalRecordsCount = res.data.data.totalRecordsCount
                     } else if (res.data.rtnCode == 201 ) {
                         this.bookingList = res.data.data
@@ -606,7 +608,6 @@ export default {
                     this.$store.commit("setUser",{ key: "n_loading", value: false })
                     if (res.data.rtnCode == 200) {
                         res.data.data.pageT.forEach(item => {
-                            if (item.booking.bookingState == 1 || item.booking.bookingState == 2 ) {
                                 let date = item.booking.bookingDate
                                 let En = new Date(date).toDateString()
                                 let arr = En.split(' ')
@@ -619,9 +620,8 @@ export default {
                                 } else {
                                     item.booking.APM = 'AM'
                                 }
-                            }
                         })
-                        this.bookingList = this.bookingList.concat(res.data.data.pageT)
+                        this.bookingList = res.data.data.pageT
                         this.totalRecordsCount = res.data.data.totalRecordsCount
                     } else if (res.data.rtnCode == 201 ) {
                         this.bookingList = res.data.data

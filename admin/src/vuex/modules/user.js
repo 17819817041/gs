@@ -22,7 +22,8 @@ export default {
         default_img:'',
         newMsg_dot: {},
         mask_dot: 0,
-        petMedical: []
+        petMedical: [],
+        showback: false,
     },
     mutations: {
         setUser (state,data) {
@@ -200,63 +201,59 @@ export default {
             const doctor = {
                 platform: localStorage.getItem("adminPlatform"),
                 userId: localStorage.getItem("adminUserId"),
-                pageNum: num.num,
-                pageSize:18
+                pageNum: 1,
+                pageSize:9999998
             }
             store.commit("setUser",{ key: "loading6", value: true })
-            if ((store.state.totalRecordsCount == store.state.doctorList.length) &&store.state.totalRecordsCount !=0 ) {
+            doctorList(doctor).then(res => {
                 store.commit("setUser",{ key: "loading6", value: false })
-            } else {
-                doctorList(doctor).then(res => {
-                    store.commit("setUser",{ key: "loading6", value: false })
-                    if (res.data.rtnCode == 200) {
-                        store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
-                        res.data.data.pageT.forEach(item => {
-                            item.userImage = item.userHead
-                            item.userId = item.doctorId
-                            item.userName = item.doctorName
-                        })
-                        store.commit("pageAdd", res.data.data.pageT )
-                        var arr = store.state.doctorList
-                        var b = []
-                        var c = []
-                        for (let i = 0;i < arr.length; i++) {{
-                            if (arr[i].doctorOnLineState == 1) {
-                                c.push(arr[i])
-                            }
-                        }}
-                        b = arr.filter(item => item.doctorOnLineState != 1)
-                        store.commit("setUser",{ key: "doctorList", value: c.concat(b) })
-                        if (doctor.pageNum <= 1) {
-                            store.commit("setUser",{
-                                key: "mask",
-                                value: res.data.data.pageT[0]
-                            })
-                            store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
-                            store.commit("setUser", { key: 'rate', value: store.state.doctorList[0].baseScore } )
+                if (res.data.rtnCode == 200) {
+                    store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
+                    res.data.data.pageT.forEach(item => {
+                        item.userImage = item.userHead
+                        item.userId = item.doctorId
+                        item.userName = item.doctorName
+                    })
+                    store.commit("pageAdd", res.data.data.pageT )
+                    var arr = store.state.doctorList
+                    var b = []
+                    var c = []
+                    for (let i = 0;i < arr.length; i++) {{
+                        if (arr[i].doctorOnLineState == 1) {
+                            c.push(arr[i])
                         }
-                    } else {
-                        store.commit("setUser",{ key: "loading6", value: false })
-                        store.commit("pageAdd", null )
-                        num.vm.$message({
-                            type: 'error',
-                            duration: 0,
-                            showClose: true,
-                            message: 'Loading timed out, please check the network!'
+                    }}
+                    b = arr.filter(item => item.doctorOnLineState != 1)
+                    store.commit("setUser",{ key: "doctorList", value: c.concat(b) })
+                    if (doctor.pageNum <= 1) {
+                        store.commit("setUser",{
+                            key: "mask",
+                            value: res.data.data.pageT[0]
                         })
+                        store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
+                        store.commit("setUser", { key: 'rate', value: store.state.doctorList[0].baseScore } )
                     }
-                }).catch(e => {
-                    console.log(e)
+                } else {
                     store.commit("setUser",{ key: "loading6", value: false })
-                    store.commit("setUser",{ key: "doctorList", value: [] })
+                    store.commit("pageAdd", null )
                     num.vm.$message({
                         type: 'error',
                         duration: 0,
                         showClose: true,
                         message: 'Loading timed out, please check the network!'
                     })
+                }
+            }).catch(e => {
+                console.log(e)
+                store.commit("setUser",{ key: "loading6", value: false })
+                store.commit("setUser",{ key: "doctorList", value: [] })
+                num.vm.$message({
+                    type: 'error',
+                    duration: 0,
+                    showClose: true,
+                    message: 'Loading timed out, please check the network!'
                 })
-            }
+            })
         },
         logout (store,vm) {
             vm.$confirm('Are you sure to log out?', 'Attention', {

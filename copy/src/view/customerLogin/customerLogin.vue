@@ -377,7 +377,7 @@ export default {
                 if (flag) {
                     that.loading = true
                     login(that.form).then(res => {
-                        console.log(res,666)
+                        // console.log(res,666)
                         that.loading = false
                         if (res.data.rtnCode == 200) {
                             localStorage.setItem("Token",res.data.data.token)

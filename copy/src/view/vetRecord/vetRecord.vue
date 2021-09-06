@@ -199,7 +199,8 @@
                         <div class="record_item flex mg">
                             <div class="record_image ju">
                                 <div class="ju">
-                                    <img class="dog_img" src="@/assets/img/dog.png" alt="">
+                                    <img class="dog_img" :src="userAndPet.image" v-if="userAndPet.image" alt="">
+                                    <img style="height:100%;" v-else :src="default_img" alt="">
                                 </div>
                             </div>
                             <div style="flex:10">
@@ -333,6 +334,9 @@ export default {
     created () {
         this.getPetDetails()
     },
+    computed: {
+        default_img () { return this.$store.state.user.default_img }
+    },
     methods: {
         getPetDetails () {
             let data = {
@@ -341,6 +345,9 @@ export default {
             petDetails(data).then(res => {
                 this.loading = false
                 if (res.data.rtnCode == 200) {
+                    if (res.data.data.petMedicalRecordDtos) {
+                        res.data.data.petMedicalRecordDtos = res.data.data.petMedicalRecordDtos.reverse()
+                    }
                     this.userAndPet = res.data.data
                     this.getPetType()
                 } else {
