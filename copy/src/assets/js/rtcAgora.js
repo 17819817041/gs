@@ -3,6 +3,7 @@ import { MessageBox, Message } from 'element-ui';
 import router from "@/router/router/router.js"
 import { PetMedicalRecord, getAgoraToken, orderDetail, delMetting, s_online } from "@/axios/request.js"
 function initRtc (Agora) {
+    console.log(Agora,666)
     var rtc = {
         client: null,
         joined: false,
@@ -11,8 +12,23 @@ function initRtc (Agora) {
         remoteStreams: [],
         params: {}
     }
-
-    rtc.client = Agora.createClient({mode: "live", codec: "vp8"})
+    Agora.getDevices (function(devices) {
+        // console.log(devices)
+        // var devCount = devices.length;
+        var id = devices[0].deviceId;
+        store.commit("setUser", { key: "deviceId", value: id })
+        // Message({
+        //     type: 'success',
+        //     message: id
+        // })
+    }, function(errStr){
+        console.error("Failed to getDevice", errStr);
+        Message({
+            type: 'error',
+            message: 'error camera'
+        })
+    });
+    rtc.client = Agora.createClient({mode: "live", codec: "h264"})
     store.commit('setUser', { key: 'rtc', value: rtc })
     rtc.client.on("error", (err) => {
         console.log(err)

@@ -1,7 +1,7 @@
 <template>
     <div class="myDoctor flex">
         <el-backtop target=".scrollUp"></el-backtop>
-        <div class="doctorList scrollUp" @scroll="docScroll" ref="doctorList" v-if="doctorList">
+        <div class="doctorList scrollUp" ref="doctorList" v-if="doctorList">
             <div class="width102 clear" ref="doctorList_height">
                 <div class="doctor_item float" v-for="(item,i) in doctorList" :key="i" @click="getDetail(item)">
                     <div class="image flex">
@@ -252,21 +252,6 @@ export default {
                 value: item
             })
         },
-        docScroll () {
-            if (this.inp) {
-                return false
-            }
-            if (this.$refs.doctorList.scrollTop + this.$refs.doctorList.clientHeight-150 == this.$refs.doctorList_height.scrollHeight - 150) {
-                if (this.doctorList.length >= this.totalRecordsCount) {
-                    
-                } else {
-                    if (!this.loading) {
-                        this.pageNum += 1
-                        this.getDoctorList()
-                    }
-                }
-            }
-        },
         getDoctorList () {
             this.$store.dispatch('getDoctorList',{num: this.pageNum, vm: this})
         },
@@ -279,7 +264,7 @@ export default {
             })
         },
         toVideo () {
-            console.log(this.detail)
+            return false
             if (this.detail.doctorOnLineState == 0 || this.detail.doctorOnLineState == 2) {
                 this.$message({
                     type: 'info',

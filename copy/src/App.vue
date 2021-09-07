@@ -65,23 +65,15 @@
 
 <script>
 import d_img from "@/assets/img/defaultimg.jpg"
-import { min } from "@/axios/request.js"
 export default {
 	data () {
 		return {
 			loading: false,
-			timer: "",
-      		value: 0,
 			mettingId: 0
 		}
 	},
 	created () {
 		this.$store.dispatch("default", d_img)
-		// let userId = localStorage.getItem("userId")
-		// let platform = localStorage.getItem('platform')
-		// if (userId && platform == 2) {
-		// 	this.start()
-		// }
 	},
 	watch: {
 		callModal: {
@@ -219,20 +211,6 @@ export default {
 		saveRecord (val) {
             localStorage.setItem('adminList',JSON.stringify(this.adminList))
         },
-		start(){
-			// this.timer = setInterval(this.valChange, 60000); // 注意: 第一个参数为方法名的时候不要加括号;
-			this.timer = setInterval(this.valChange, 3000); // 注意: 第一个参数为方法名的时候不要加括号;
-		},
-		valChange() {
-			this.value++;
-			let data = {
-				userId: localStorage.getItem('userId'),
-				platform: localStorage.getItem('platform')
-			}
-			min(data).then(res => {
-				console.log(res,12321)
-			})
-		},
 		sure () {
 			if (this.my_Balance.balance >= 20) {
 				this.callLoading = true
