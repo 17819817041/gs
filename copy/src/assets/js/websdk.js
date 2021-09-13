@@ -146,6 +146,7 @@ conn.listen({
         }
     },   
     onFileMessage: function ( e ) {
+        console.log(e,'FIle')
         var obj = {
             type: 2,
             value: e.url,

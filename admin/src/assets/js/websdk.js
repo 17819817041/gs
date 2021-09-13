@@ -111,6 +111,7 @@ conn.listen({
     },    //收到文本消息
 
     onFileMessage: function ( e ) {
+        console.log(e,'File')
         var obj = {
             type: 2,
             value: e.url,

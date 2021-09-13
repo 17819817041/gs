@@ -31,11 +31,11 @@ Vue.prototype.$WebIM = WebIM
 Vue.prototype.$conn = conn
 
 // import Agora from "@/assets/js/Agora.js"
-import Agora from "agora-rtc-sdk"
-Vue.prototype.$V = Agora
+// // import Agora from "agora-rtc-sdk"
+// Vue.prototype.$V = Agora
 
-import initRtc from './assets/js/rtcAgora'
-initRtc(Agora)
+// import initRtc from './assets/js/rtcAgora'
+// initRtc(Agora)
 
 import { google } from "@/assets/js/google.js"
 

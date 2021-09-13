@@ -6,7 +6,14 @@
 
 <script>
 export default {
-
+    data () {
+        return {
+            lists: []
+        }
+    },
+    mounted () {
+        
+    }
 }
 </script>
 

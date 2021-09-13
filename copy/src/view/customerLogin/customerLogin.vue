@@ -210,10 +210,6 @@ export default {
                 // platform: 1,
                 // email:'',
                 // password:''
-
-                // platform:1,
-                // email:'861864663@qq.com',
-                // password:'66666666'
             },
             rules: {
                 email: [
@@ -226,7 +222,6 @@ export default {
         }
     },
     created () {
-        // this.loginFB()
         this.judge_login()
     },
     mounted () {
@@ -254,11 +249,11 @@ export default {
     },
     methods: {
         onSignInSuccess (response) {       //Facebook登录
-        let that = this
+            let that = this
             FB.api('/me', dude => {
                 console.log(`Good to see you, ${dude.name}.`)
             })
-            console.log(response) //返回第三方的登录信息 token等
+            // console.log(response) //返回第三方的登录信息 token等
             var tokenData = {
                 // accessToken: localStorage.getItem('G_token'),
                 accessToken: response.authResponse.accessToken,

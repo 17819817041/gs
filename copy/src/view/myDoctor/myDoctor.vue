@@ -65,7 +65,7 @@
                 <div class="doctor_name tc" v-else>Name</div>
                 <div class="size15 tc">General Obstetrics </div>
                 <div class="star ju">
-                    <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
+                    <el-rate class="Rate" v-model="detail.baseScore" :disabled="true"></el-rate>
                 </div>
                 <div class="relation ju">
                     <div class="cursor" @click="booking(detail.addressId,detail.doctorId)"><img src="@/assets/img/calendar.png" alt=""></div>
@@ -160,7 +160,7 @@
                             <div class="doctor_name tc" v-else>Name</div>
                             <div class="size15 tc">General Obstetrics </div>
                             <div class="star_mobile ju">
-                                <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
+                                <el-rate class="Rate" v-model="detail.baseScore" :disabled="true"></el-rate>
                             </div>
                         </div>
                     </div>
@@ -217,7 +217,7 @@
                         </div>
                     </div>
                     <div class="introduce text-overflow_mobile">
-                        <span class="text-overflows_mobile" v-if="detail.doctorContent">
+                        <span class="text-overflows_mobile" v-if="detail.doctorContent != ''">
                             {{detail.doctorContent}}
                         </span>
                         <span v-else>No introduction!</span>
@@ -261,6 +261,11 @@ export default {
     created () {
         this.doctorList = []
         this.getDoctorList()
+        // console.log('agora sdk version: ' + Agora.VERSION + ' compatible: ' + Agora.checkSystemRequirements())
+        // this.$message({
+        //     type: 'info',
+        //     message: 'agora sdk version: ' + Agora.VERSION + ' compatible: ' + Agora.checkSystemRequirements()
+        // })
     },
     mounted () {
         
@@ -342,16 +347,6 @@ export default {
             }
         },
         detail () { return this.$store.state.user.vDetail },
-        rate () { return this.$store.state.user.rate },
-        rate: { 
-            get () { return this.$store.state.user.rate },
-            set (val) {
-                this.$store.commit("setUser", {
-                    key: "rate",
-                    value: val
-                })
-            }
-        },
         loading: {
             get () { return this.$store.state.user.loading_doc },
             set (val) {
@@ -391,16 +386,12 @@ export default {
                 value: item
             })
             this.$store.commit("setUser",{
-                key: "rate",
-                value: item.baseScore
-            })
-            this.$store.commit("setUser",{
                 key: "mask",
                 value: item
             })
         },
         getDoctorList () {
-            this.$store.dispatch('getDoctorList',{num: this.pageNum, vm: this})
+            this.$store.dispatch('getDoctorList',{ vm: this})
         },
         edit () {
             this.change = !this.change
@@ -629,7 +620,7 @@ export default {
     .head_image {
         width: 80px;
         height: 80px;
-        border: solid gray 1px;
+        border: solid rgb(209, 209, 209) 1px;
         border-radius: 50%;
         overflow: hidden;
     }

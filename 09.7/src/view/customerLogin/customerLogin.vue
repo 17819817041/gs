@@ -212,8 +212,8 @@ export default {
                 // password:''
 
                 // platform:1,
-                // email:'861864663@qq.com',
-                // password:'66666666'
+                // email:'1@qq.com',
+                // password:'123'
             },
             rules: {
                 email: [

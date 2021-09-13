@@ -1046,13 +1046,15 @@ export default {
         newMsg_dot: {
             handler (val) {
                 console.log(val)
-                if (val.boo !== null) {
-                    if (this.admin_mask) {
-                        this.$store.commit('setUser', { key: 'newMsg_dot', value: false })
-                    } else {
-                        this.$store.commit('setUser', { key: 'newMsg_dot', value: val })
+                if (val !== null) {
+                    if (val.boo !== null) {
+                        if (this.admin_mask) {
+                            this.$store.commit('setUser', { key: 'newMsg_dot', value: false })
+                        } else {
+                            this.$store.commit('setUser', { key: 'newMsg_dot', value: val })
+                        }
+                        localStorage.setItem('new_msg', {boo: false, value: localStorage.getItem('userId')})
                     }
-                    localStorage.setItem('new_msg', {boo: false, value: localStorage.getItem('userId')})
                 }
             },
             immediate: true
@@ -1344,7 +1346,8 @@ export default {
                             token: res.data.data,
                             uid: localStorage.getItem('userId') * 1,
                             channel: data.roomNumber,
-                            appId: 'e65091c05b1b4403b3130bfce4f9e7a1'
+                            appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
+                            rtc: this.$V
                         })
                         localStorage.removeItem('bookingDoc')
                     }
@@ -1366,7 +1369,8 @@ export default {
                                 token: msg.data.data,
                                 uid: localStorage.getItem('userId') * 1,
                                 channel: data.roomNumber,
-                                appId: 'e65091c05b1b4403b3130bfce4f9e7a1'
+                                appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
+                                rtc: this.$V
                             })
                         }
                     })
@@ -1385,19 +1389,33 @@ export default {
         },
         //医生加入视频
         joinAgora2 () {
+            this.$message({
+                type: 'success',
+                message: 'a_111'
+            })
             let data = {
                 expirationTime: 99999999,
                 userId: localStorage.getItem('userId'),
                 roomNumber: 'petavi_' + localStorage.getItem('sroom')
             }
             getAgoraToken(data).then(res => {
+                this.$message({
+                    type: 'success',
+                    message: 'a_222'
+                })
                 console.log(res,'医生加入')
                 if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: 'a_333'
+                    })
                     this.$store.dispatch('initRtc', {
+                    // this.$store.dispatch('asd', {
                         token: res.data.data,
                         uid: localStorage.getItem('userId') * 1,
                         channel: data.roomNumber,
-                        appId: 'e65091c05b1b4403b3130bfce4f9e7a1'
+                        appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
+                        rtc: this.$V
                     })
                 }
             })

@@ -187,8 +187,8 @@ export default {
 
                  
                 platform:2,
-                email:'',
-                password:''
+                email:'6@qq.com',
+                password:'123'
 
             }
         }
@@ -270,7 +270,6 @@ export default {
             })
         },
         onSignInSuccess (response) {       //Facebook登录
-            alert(6666)
             FB.api('/me', dude => {
                 localStorage.setItem('clientType',4)
                 console.log(`Good to see you, ${dude.name}.`)

@@ -16,7 +16,6 @@ import store from "@/vuex/store.js"
 
 
 import element from "element-ui"
-import 'element-ui/lib/theme-chalk/index.css'; 
 // import "@/assets/theme/index.css"
 import 'element-ui/lib/theme-chalk/index.css'; 
 // import locale from 'element-ui/lib/locale/lang/en'         //设置英文

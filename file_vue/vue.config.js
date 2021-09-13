@@ -2,12 +2,12 @@ module.exports = {
     publicPath:"./",
     lintOnSave: false,
     devServer: {
-        // https: true,
+        https: true,
 		hot:true,
         proxy: {
 			"api": {
-				target: "",
 				// target: "https://petavi.top/api",
+				target: "http",
 				ws: true,
 				changeOrigin: true,
 				pathRewrite: {

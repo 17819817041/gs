@@ -106,6 +106,13 @@ export default {
                 }
             }
         },
+		mask: {
+            handler (val) {
+                if (val) {
+                    this.mask = val
+                }
+            }
+        },
 		my_Balance: {
             handler (val) {
                 if (val) {
@@ -157,7 +164,15 @@ export default {
 		joinParams () { return this.$store.state.user.joinParams },
 		userDetail () { return this.$store.state.user.userDetail },
 		IMuser () { return this.$store.state.user.IMuser },
-		mask () {return this.$store.state.user.mask},
+		mask: {
+			get () { return this.$store.state.user.mask },
+			set (val) {
+				this.$store.commit("setUser", {
+                    key: "mask",
+                    value: val
+                })
+			}
+		},
 		cut_metting () { return this.$store.state.user.mettingId },
 		my_Balance: {
 			get () { return this.$store.state.user.balance },
@@ -187,7 +202,7 @@ export default {
 			}
 		},
 		dom () {return this.$store.state.user.dom},
-		rtc () {return this.$store.state.user.rtc},
+		// rtc () {return this.$store.state.user.rtc},
 		sureCall: {
 			get () { return this.$store.state.user.sureCall },
             set (val) {

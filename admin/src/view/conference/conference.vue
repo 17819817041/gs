@@ -78,7 +78,7 @@ export default {
         },
         getMetting () {
             getMetting().then(res => {
-                console.log(res,'getMetting')
+                // console.log(res,'getMetting')
                 res.data.forEach(item => {
                     item.password = JSON.parse(item.password)
                 })

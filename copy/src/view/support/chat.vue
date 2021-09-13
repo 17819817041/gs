@@ -115,6 +115,7 @@
         width: 200px;
         // display: block;
         padding-top: 10px;
+        margin-top: 15px;
         position: relative;
         margin-bottom: 20px;
         .file_name {
@@ -153,7 +154,7 @@
         padding-bottom: 25px !important;
         margin-bottom: 20px;
         .file_img_wrap {
-            width: 200px;
+            width: 220px;
             height: 95px;
             border-radius: 8px;
             overflow: hidden;
@@ -168,6 +169,11 @@
             right: 5px;
             font-size: 12px;
         }
+    }
+    .WHITE {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
 </style>
 
@@ -184,14 +190,11 @@
                         <img style="height: 100%;" src="@/assets/img/admin_img.png" alt="">
                     </div>
                     <div class="msg_T width100 tc" v-if="item.type == 3 && item.userId == userId">{{item.time.split(' ')[0] == Today? 
-                    'Today': item.time.split(' ')[0]}} {{item.time.split(' ')[1]}}</div>
-
+                        'Today': item.time.split(' ')[0]}} {{item.time.split(' ')[1]}}
+                    </div>
                     <div v-else-if="item.msg_type && item.msg_type != 'jpg' && item.msg_type != 'png'" 
-                        :class="['file_zip flex', { mySend: item.type == 1 }, 
-                        { theySend: item.type == 2 }]">
-                        <div class="file_name">
-                            {{item.fileName}}
-                        </div>
+                        :class="['file_zip flex', { mySend: item.type == 1 }, { theySend: item.type == 2 }]">
+                        <div class="file_name">{{item.fileName}}</div>
                         <img v-if="item.type == 1" class="file_zip_img" src="@/assets/img/file-zip.png" alt="">
                         <img v-else class="file_zip_img" src="@/assets/img/file-zip1.png" alt="">
                         <div :class="['file_zip_child', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>
@@ -204,15 +207,20 @@
                         </div> 
                     </div>
 
-                    <div v-else-if="item.msg_type == 'jpg' || item.msg_type == 'png' " :class="['file_img ju al', { mySend: item.type == 1 }, 
-                        { theySend: item.type == 2 }]">
+                    <!-- <div v-else-if="item.msg_type == 'jpg' || item.msg_type == 'png' " :class="['file_img ju al', { mySend: item.type == 1 }, { theySend: item.type == 2 }]">
                         <div class="file_img_wrap">
                             <img v-if="item.value" :src="item.value" alt="">
                             <div v-else v-loading='true'></div>
                         </div>
                         <div :class="['file_img_child', { gray:item.type == 2, white: item.type == 1 }]" v-show="item.type != 3">{{item.time}} {{item.APM}}</div>
+                    </div> -->
+                    <div v-else-if="item.msg_type == 'jpg' || item.msg_type == 'png' " :class="['file_img ju al WHITE', { mySend: item.type == 1 }, { theySend: item.type == 2 }]">
+                        <div class="file_img_wrap flexEnd">
+                            <img v-if="item.value" :src="item.value" alt="">
+                            <div v-else v-loading='true'></div>
+                        </div>
                     </div>
-                    
+
                     <div :class="['msg_child', { mySend: item.type == 1 }, 
                         { theySend: item.type == 2 },]" v-if="item.userId == userId && !item.msg_type && item.type !=3"
                         >{{item.value}}
@@ -239,6 +247,7 @@
 </template>
 
 <script>
+import { file } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -313,10 +322,26 @@ export default {
         }
     },
     methods: {
-        getFile (e) {
-            this.file_send()
+        getFile (e) { 
+            console.log(e)
+            this.dealImg(e.target.files[0],(img) => {
+                var formData = new FormData();
+                formData.append('file', img);
+                file(formData).then(res => {
+                    if (res.data.rtnCode == 200) {
+                        this.file_send(res.data.data) 
+                    } else {
+                        
+                    }
+                }).catch(e => {
+                    this.$message({
+                        type: 'error',
+                        message: 'Picture is too large or formatted incorrectly!'
+                    })
+                })
+            })
         },
-        file_send () {
+        file_send (img_url) {
             let D = new Date()
             let T = D.getTime()
             let that = this
@@ -354,24 +379,28 @@ export default {
             }
             var obj = {
                 type: 1,
-                value: file.url,
+                // value: file.url,
+                value: img_url,
                 time: D.getHours() + ':' + D.getMinutes(),
                 APM: hour >= 12 && minute >= 0? 'PM':'AM',
                 msg_type: file.filetype,
                 fileName: file.filename,
                 userId: localStorage.getItem('userId'),
-                url: file.url,
+                // url: file.url,
+                url: img_url,
                 location: T
             }
             var f_obj = {
                 type: 1,
-                value: file.url,
+                // value: file.url,
+                value: img_url,
                 time: D.getHours() + ':' + D.getMinutes(),
                 APM: hour >= 12 && minute >= 0? 'PM':'AM',
                 msg_type: file.filetype,
                 fileName: file.filename,
                 userId: localStorage.getItem('userId'),
-                url: file.url,
+                // url: file.url,
+                url: img_url,
                 location: T,
                 fail: 'fail'
             }
@@ -448,7 +477,7 @@ export default {
                 
                 this.list = JSON.parse(localStorage.getItem('newsList'))
                 this.$nextTick(() => {
-                    this.$refs.Cus.scrollTop = 10000
+                    this.$refs.Cus.scrollTop = 10000006
                 })
             }
         },
@@ -457,6 +486,7 @@ export default {
                 let D = new Date()
                 let T = D.getTime()
                 if (T - localStorage.getItem('msgTime') >= 180000 && localStorage.getItem('msgTime') !== null) {
+                // if (T - localStorage.getItem('msgTime') >= 3000 && localStorage.getItem('msgTime') !== null) {
                     this.timeSend()
                     this.adminList['admin'].messageList.push({
                         type: 3,
@@ -519,9 +549,7 @@ export default {
                     this.$refs.Cus.scrollTop = 10000
                 })
                 this.customerInp = ''
-            } else {
-
-            }
+            } else {}
         },
         timeSend () {
             var D = new Date()
@@ -539,12 +567,8 @@ export default {
                 msg: JSON.stringify(data),                // 消息内容
                 to: 'admin',                     // 接收消息对象（用户id）
                 chatType: 'singleChat',                  // 设置为单聊    
-                ext: {
-                    
-                },                    
-                success: function (id, serverMsgId) {
-                    console.log('send private text Success',id,serverMsgId);  
-                }, 
+                ext: {},                    
+                success: function (id, serverMsgId) {}, 
                 fail: function(e){
                     console.log(e)
                     console.log("Send private text error");  

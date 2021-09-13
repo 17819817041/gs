@@ -279,7 +279,7 @@ export default {
             this.getBooking()
         },
         reschedule (key) {
-            console.log(key)
+            // console.log(key)
             this.$router.push({
                 name: "reschedule",
                 query: {

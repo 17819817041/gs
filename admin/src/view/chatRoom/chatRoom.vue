@@ -327,7 +327,7 @@ export default {
             var msg = new this.$WebIM.message('file', id);        // 创建文件消息
             var input = document.getElementById('file_img');  // 选择文件的input
             var file = this.$WebIM.utils.getFileUrl(input);      // 将文件转化为二进制文件
-            console.log(file)
+            // console.log(file)
             this.location = T
             this.file_loading = true
             if (T - localStorage.getItem('msgTime') >= 180000 && localStorage.getItem('msgTime') !== null) {

@@ -911,7 +911,9 @@
     </div>
 </template>
 <script>
-import { delMetting, PetMedicalRecord, s_online, getAgoraToken, docGoodsId, order, orderDetail } from "@/axios/request.js"
+import { delMetting, PetMedicalRecord, s_online, getAgoraToken, docGoodsId, order, orderDetail, addMetting } from "@/axios/request.js"
+import Agora from "@/assets/js/Agora.js"
+import initRtc from '@/assets/js/rtcAgora.js'
 export default {
     data () {
         return {
@@ -955,7 +957,6 @@ export default {
             H: 0,
             t_H: 0,
             none: false,
-
             customerInp1: '',
             list: [],
             userId: localStorage.getItem('userId'),
@@ -966,13 +967,18 @@ export default {
             originY: 0,
             isMouseDown: false,
             location: 0,
-            file_loading: false
+            file_loading: false,
+            rtc: {
+                client: null,
+                joined: false,
+                published: false,
+                localStream: null,
+                remoteStreams: [],
+                params: {}
+            }
         }
     },
     mounted () {
-        // if (!this.rtc.client) {
-        //     this.rtc.client = this.$V.createClient({mode: "live", codec: "h264"})
-        // }
         if (localStorage.getItem('platform') == 1) {
             this.joinAgora()
         } else {
@@ -1046,13 +1052,15 @@ export default {
         newMsg_dot: {
             handler (val) {
                 console.log(val)
-                if (val.boo !== null) {
-                    if (this.admin_mask) {
-                        this.$store.commit('setUser', { key: 'newMsg_dot', value: false })
-                    } else {
-                        this.$store.commit('setUser', { key: 'newMsg_dot', value: val })
+                if (val !== null) {
+                    if (val.boo !== null) {
+                        if (this.admin_mask) {
+                            this.$store.commit('setUser', { key: 'newMsg_dot', value: false })
+                        } else {
+                            this.$store.commit('setUser', { key: 'newMsg_dot', value: val })
+                        }
+                        localStorage.setItem('new_msg', {boo: false, value: localStorage.getItem('userId')})
                     }
-                    localStorage.setItem('new_msg', {boo: false, value: localStorage.getItem('userId')})
                 }
             },
             immediate: true
@@ -1093,15 +1101,15 @@ export default {
 			}
 		},
         pet () {return this.$store.state.user.pet},
-        rtc: {
-			get () { return this.$store.state.user.rtc },
-			set (val) {
-				this.$store.commit("setUser", {
-                    key: "rtc",
-                    value: val
-                })
-			}
-		},
+        // rtc: {
+		// 	get () { return this.$store.state.user.rtc },
+		// 	set (val) {
+		// 		this.$store.commit("setUser", {
+        //             key: "rtc",
+        //             value: val
+        //         })
+		// 	}
+		// },
         setTime_S: {
 			get () { return this.$store.state.user.setTime_S },
 			set (val) {
@@ -1140,11 +1148,11 @@ export default {
     methods: {
         unMute () {
             this.none = true
-            this.$store.dispatch('muteAudio')
+            this.rtc.remoteStreams[0].setAudioVolume(100);
         },
         mute () {
             this.none = false
-            this.$store.dispatch('unMuteAudio')
+            this.rtc.remoteStreams[0].setAudioVolume(0);
         },
         show_mask_admin () {
             this.admin_mask = !this.admin_mask
@@ -1340,7 +1348,7 @@ export default {
                 getAgoraToken(data).then(res => {
                     // console.log(res,'token111')
                     if (res.data.rtnCode == 200) {
-                        this.$store.dispatch('initRtc', {
+                        this.initRtc({
                             token: res.data.data,
                             uid: localStorage.getItem('userId') * 1,
                             channel: data.roomNumber,
@@ -1363,12 +1371,11 @@ export default {
                     }
                     getAgoraToken(data).then(msg => {
                         if (msg.data.rtnCode == 200) {
-                            this.$store.dispatch('initRtc', {
+                            this.initRtc({
                                 token: msg.data.data,
                                 uid: localStorage.getItem('userId') * 1,
                                 channel: data.roomNumber,
-                                appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
-                                rtc: this.$V
+                                appId: 'e65091c05b1b4403b3130bfce4f9e7a1'
                             })
                         }
                     })
@@ -1395,27 +1402,17 @@ export default {
             getAgoraToken(data).then(res => {
                 console.log(res,'医生加入')
                 if (res.data.rtnCode == 200) {
-                    this.$store.dispatch('initRtc', {
+                    this.initRtc({
                         token: res.data.data,
                         uid: localStorage.getItem('userId') * 1,
                         channel: data.roomNumber,
                         appId: 'e65091c05b1b4403b3130bfce4f9e7a1',
-                        rtc: this.$V
                     })
                 }
             })
         },
         removeStream () {
-            this.$store.dispatch('removeStream', { rtc: this.$V })
-            if (localStorage.getItem('platform') == 2) {
-                let data = {
-                    userId: localStorage.getItem('userId'),
-                    platform: localStorage.getItem('platform')
-                }
-                s_online(data).then(res => {
-                    // console.log(res,'在线')
-                })
-            }
+            this.removeStream1()
             // this.$router.back()
             if (this.content == '' && localStorage.getItem('platform') == 2) {    //医生挂断添加record
                 this.addPetMedicalRecord()
@@ -1427,12 +1424,8 @@ export default {
             this.dele()
         },
         dele () {
-            let data = {
-                webId: this.mettingId
-            }
-            delMetting(data).then(res => {
-               
-            })
+            let data = { webId: this.mettingId }
+            delMetting(data).then(res => {})
         },
         addPetMedicalRecord () {
             let D = new Date()
@@ -1773,6 +1766,229 @@ export default {
             } else if (localStorage.getItem("platform") == 2) {
                 this.$router.push("/vetNotice")
             }
+        },
+        initRtc (data) {
+            Agora.getDevices(function (items) {
+                // items.filter(function (item) {
+                //     return ["audioinput", "videoinput"].indexOf(item.kind) !== -1
+                // })
+                // .map(function (item) {
+                //     return {
+                //         name: item.label,
+                //         value: item.deviceId,
+                //         kind: item.kind,
+                //     }
+                // })
+                // var videos = []
+                // var audios = []
+                // for (var i = 0; i < items.length; i++) {
+                // var item = items[i]
+                // if ("videoinput" == item.kind) {
+                //     var name = item.label
+                //     var value = item.deviceId
+                //     if (!name) {
+                //         name = "camera-" + videos.length
+                //     }
+                //     videos.push({
+                //         name: name,
+                //         value: value,
+                //         kind: item.kind
+                //     })
+                // }
+                // if ("audioinput" == item.kind) {
+                //     var name = item.label
+                //     var value = item.deviceId
+                //     if (!name) {
+                //         name = "microphone-" + audios.length
+                //     }
+                //     audios.push({
+                //         name: name,
+                //         value: value,
+                //         kind: item.kind
+                //     })
+                // }
+                // }
+                // next({videos: videos, audios: audios})
+            })
+            this.rtc.client = Agora.createClient({mode: "live", codec: "h264"})
+            initRtc(this.rtc)
+            var option = {
+                appID: data.appId,
+                channel: data.channel,
+                uid: data.uid,
+                token: data.token,
+                mode: "live",
+                codec: "h264"
+            }
+            let that = this
+            this.rtc.client.init(option.appID, function () {
+                that.rtc.client.join(option.token ? option.token : null, option.channel, option.uid ? +option.uid : null, function (uid) {
+                    that.rtc.joined = true
+                    that.rtc.params.uid = uid
+                    that.rtc.localStream = Agora.createStream({
+                        streamID: that.rtc.params.uid,
+                        audio: true,
+                        video: true,
+                        screen: false,
+                        // microphoneId: 'default',
+                        // cameraId: store.state.deviceId
+                    })
+                    that.rtc.localStream.init(function () {
+                        console.log("init local stream success")
+                        if (localStorage.getItem('platform') == 2) {                    //医生成功加入频道         !!!!!!!!!!!!
+                            const caller = that.caller
+                            let data0 = {
+                                type: "confirmCall"
+                            }
+                            let id = that.$conn.getUniqueId();                 // 生成本地消息id
+                            let msg = new that.$WebIM.message('txt', id);      // 创建文本消息
+                            msg.set({
+                                msg: JSON.stringify(data0),                  // 消息内容
+                                to: JSON.stringify(caller.userId) + 'A1',     
+                                chatType: 'singleChat',                  // 设置为单聊   
+                            });
+                            that.$conn.send(msg.body);
+                            let D = new Date
+                            var date = D.toLocaleDateString()
+                            let detail = {
+                                petName: that.pet.petName,
+                                petId: that.petId,                 
+                                caller: that.caller,
+                                callTo: that.callTo,
+                                createdTime: date,
+                                roomNumber: 'petavi_' + localStorage.getItem('sroom'),
+                                bookingDetail: localStorage.getItem('bookingDoc')? localStorage.getItem('bookingDoc') : 'Temporary call'
+                            }
+                            let metting = {
+                                'jo': [{
+                                    userId: that.caller.userId + 'A1',
+                                    doctorId: that.callTo.userId + 'A2',
+                                    password: JSON.stringify(detail),
+                                }]
+                            }
+                            addMetting(metting).then(res => {
+                                that.$store.commit('setUser', { key: 'mettingId', value: res.data.data[0].id })
+                                let data0 = {
+                                    type: "mettingId",
+                                    mettingId: res.data.data[0].id
+                                }
+                                let id = that.$conn.getUniqueId();                 // 生成本地消息id
+                                let msg = new that.$WebIM.message('txt', id);      // 创建文本消息
+                                msg.set({
+                                    msg: JSON.stringify(data0),                  // 消息内容
+                                    to: JSON.stringify(caller.userId) + 'A1',     
+                                    chatType: 'singleChat',                  // 设置为单聊   
+                                });
+                                that.$conn.send(msg.body);
+                            })
+                        }
+                        that.rtc.localStream.play("player_a2")
+                        that.$store.commit('setUser',{ key: 'setTime_S', value: true })
+                        that.rtc.client.publish(that.rtc.localStream, function (err) {
+                            alert(JSON.stringify(err))
+                        })
+                    }, function (err)  {
+                        console.log(err)
+                        if (localStorage.getItem('platform') == 2) {                       //医生加入频道失败并发送通知至拨号者
+                            const caller = that.caller
+                            let fail = {
+                                type: "callToJoinFail"
+                            }
+                            let id = that.$conn.getUniqueId();                 // 生成本地消息id
+                            let msg = new that.$WebIM.message('txt', id);      // 创建文本消息
+                            msg.set({
+                                msg: JSON.stringify(fail),                  // 消息内容
+                                to: JSON.stringify(caller.userId) + 'A1',     
+                                chatType: 'singleChat',                  // 设置为单聊   
+                            });
+                            that.$conn.send(msg.body);
+                            router.replace('/myCustomer')
+                        } else {
+                            const caller = that.callTo
+                            let fail = {
+                                type: "callToJoinFail"
+                            }
+                            let id = that.$conn.getUniqueId();                 // 生成本地消息id
+                            let msg = new that.$WebIM.message('txt', id);      // 创建文本消息
+                            msg.set({
+                                msg: JSON.stringify(fail),                  // 消息内容
+                                to: JSON.stringify(caller.userId) + 'A2',     
+                                chatType: 'singleChat',                  // 设置为单聊   
+                            });
+                            that.$conn.send(msg.body);
+                            // that.$router.replace('/myDoctor')
+                        }
+                        that.$message({
+                            type: 'error',
+                            message: 'The browser cannot get the camera or the device does not support!!!'
+                        })
+                    })
+                }, function(err) {
+                    if (localStorage.getItem('platform') == 2) {                       //医生加入频道失败并发送通知至拨号者
+                        const caller = that.caller
+                        let fail = {
+                            type: "callToJoinFail"
+                        }
+                        let id = that.$conn.getUniqueId();                 // 生成本地消息id
+                        let msg = new that.$WebIM.message('txt', id);      // 创建文本消息
+                        msg.set({
+                            msg: JSON.stringify(fail),                  // 消息内容
+                            to: JSON.stringify(caller.userId) + 'A1',     
+                            chatType: 'singleChat',                  // 设置为单聊   
+                        });
+                        that.$conn.send(msg.body);
+                        that.$router.replace('/myCustomer')
+                    } else {
+                        that.$router.replace('/myDoctor')
+                    }
+                    that.$message({
+                        type: 'error',
+                        message: 'The browser cannot get the camera or the device does not support!!'
+                    })
+                })
+            }, (err) => {
+                this.$message.error('Client join failed')
+                this.$router.back()
+                console.error(err,'catchCamera')
+            })
+        },
+        removeStream1 () {   //退出agora
+            let that = this
+            this.rtc.client.leave(function () {
+                if(that.rtc.localStream.isPlaying()) {
+                    that.rtc.localStream.stop()
+                }
+                that.rtc.localStream.close()
+                // rtc.localStream = null
+                // rtc.remoteStreams = []
+                // console.log("client leaves channel success")
+                that.rtc.client.unpublish(that.rtc.localStream)
+                if (localStorage.getItem('platform') == 2) {
+                    let data = {
+                        userId: localStorage.getItem('userId'),
+                        platform: localStorage.getItem('platform')
+                    }
+                    s_online(data).then(res => {
+                        // console.log(res,'在线')
+                    })
+                } else if (localStorage.getItem('platform') == 1) {
+                    let data = {
+                        userId: that.callTo.doctorId,
+                        platform: 2
+                    }
+                    s_online(data).then(res => {
+                        // console.log(res,'在线')
+                    })
+                }
+                this.$router.back()
+            }, function (err) {
+                console.log("channel leave failed")
+                that.$message({
+                    type: 'error',
+                    message: 'Channel leave failed!'
+                })
+                console.error(err)
+            })
         },
     }
 }

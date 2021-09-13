@@ -174,10 +174,10 @@ export default {
             },
             rules: {
                 email: [
-                    { required:true, message:'请输入邮箱', trigger:"blur" }
+                    { required:true, message:'Please enter your email', trigger:"blur" }
                 ],
                 password: [
-                    { required: true, message:'请输入密码', trigger:'blur' }
+                    { required: true, message:'Please enter your password', trigger:'blur' }
                 ]
             },
             form: {
@@ -270,18 +270,16 @@ export default {
             })
         },
         onSignInSuccess (response) {       //Facebook登录
-            alert(6666)
             FB.api('/me', dude => {
                 localStorage.setItem('clientType',4)
                 console.log(`Good to see you, ${dude.name}.`)
             })
-            console.log(response) //返回第三方的登录信息 tolen等
+            // console.log(response) //返回第三方的登录信息 tolen等
         },
         onSignInError (error) {
             console.log(error)
         },
         attachSignin(element,auth2) {        //谷歌登录
-            console.log('google')
             let that = this
             var googleUser = {}
             auth2.attachClickHandler(element, {},
@@ -290,9 +288,6 @@ export default {
                 localStorage.setItem('clientType',6)
                 that.goo = "Signed in: " + googleUser.getBasicProfile().getName();
                 var profile = auth2.currentUser.get().getBasicProfile();
-                // localStorage.setItem("G_token", googleUser.getAuthResponse().id_token )
-                // localStorage.setItem('G_ID', profile.getId() )
-               
                 var tokenData = {
                     accessToken: googleUser.getAuthResponse().id_token,
                     platform: that.form.platform,

@@ -65,7 +65,7 @@
                 <div class="doctor_name tc" v-else>Name</div>
                 <div class="size15 tc">General Obstetrics </div>
                 <div class="star ju">
-                    <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
+                    <el-rate class="Rate" v-model="detail.baseScore" :disabled="true"></el-rate>
                 </div>
                 <div class="relation ju">
                     <div class="cursor" @click="booking(detail.addressId,detail.doctorId)"><img src="@/assets/img/calendar.png" alt=""></div>
@@ -118,7 +118,7 @@
                     </div>
                 </div>
                 <div class="introduce text-overflow">
-                    <span class="text-overflows" v-if="detail.doctorContent">
+                    <span class="text-overflows" v-if="detail.doctorContent != '' ">
                         {{detail.doctorContent}}
                     </span>
                     <span v-else>No introduction!</span>
@@ -160,7 +160,7 @@
                             <div class="doctor_name tc" v-else>Name</div>
                             <div class="size15 tc">General Obstetrics </div>
                             <div class="star_mobile ju">
-                                <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
+                                <el-rate class="Rate" v-model="detail.baseScore" :disabled="true"></el-rate>
                             </div>
                         </div>
                     </div>
@@ -217,7 +217,7 @@
                         </div>
                     </div>
                     <div class="introduce text-overflow_mobile">
-                        <span class="text-overflows_mobile" v-if="detail.doctorContent">
+                        <span class="text-overflows_mobile" v-if="detail.doctorContent != ''">
                             {{detail.doctorContent}}
                         </span>
                         <span v-else>No introduction!</span>
@@ -245,6 +245,7 @@
     </div>
 </template>
 <script>
+import AgoraRTC from 'agora-rtc-sdk'
 export default {
     data () {
         return {
@@ -263,7 +264,32 @@ export default {
         this.getDoctorList()
     },
     mounted () {
-        
+        console.log('agora sdk version: ' + AgoraRTC.VERSION + ' compatible: ' + AgoraRTC.checkSystemRequirements())
+        this.$message({
+            type: 'error',
+            message: 'agora sdk version: ' + AgoraRTC.VERSION + ' compatible: ' + AgoraRTC.checkSystemRequirements()
+        })
+        let that = this
+        AgoraRTC.getDevices (function(devices) {
+            console.log(devices)
+            // var devCount = devices.length;
+            var id = devices[0].deviceId;
+            that.$message({
+                type: 'success',
+                message: 'have camera'
+            })
+            // store.commit("setUser", { key: "deviceId", value: id })
+            // Message({
+            //     type: 'success',
+            //     message: id
+            // })
+        }, function(errStr){
+            console.error("Failed to getDevice", errStr);
+            that.$message({
+                type: 'error',
+                message: 'error camera'
+            })
+        })
     },
     beforeMount() {
         window.addEventListener('resize', (e) => {
@@ -342,16 +368,6 @@ export default {
             }
         },
         detail () { return this.$store.state.user.vDetail },
-        rate () { return this.$store.state.user.rate },
-        rate: { 
-            get () { return this.$store.state.user.rate },
-            set (val) {
-                this.$store.commit("setUser", {
-                    key: "rate",
-                    value: val
-                })
-            }
-        },
         loading: {
             get () { return this.$store.state.user.loading_doc },
             set (val) {
@@ -411,13 +427,6 @@ export default {
             })
         },
         toVideo () {
-            if (this.detail.doctorOnLineState == 0 || this.detail.doctorOnLineState == 2) {
-                this.$message({
-                    type: 'info',
-                    message: "The doctor is temporarily offline!"
-                })
-            } else {
-                if (this.detail.doctorOnLineState == 1) {
                     if (this.detail.doctorId) {
                         this.$store.commit("setUser", {
                             key: "callTo",
@@ -430,8 +439,6 @@ export default {
                             message: "Please choose a doctor"
                         })
                     }
-                }
-            }
         },
         doc_call (item) {
             if (item.doctorName == null) {
@@ -442,33 +449,20 @@ export default {
                 value: item
             })
             this.$store.commit("setUser",{
-                key: "rate",
-                value: item.baseScore
-            })
-            this.$store.commit("setUser",{
                 key: "mask",
                 value: item
             })
-            if (this.detail.doctorOnLineState == 0 || this.detail.doctorOnLineState == 2) {
-                this.$message({
-                    type: 'info',
-                    message: "The doctor is temporarily offline!"
+            if (this.detail.doctorId) {
+                this.$store.commit("setUser", {
+                    key: "callTo",
+                    value: this.detail
                 })
+                this.callModal = true
             } else {
-                if (this.detail.doctorOnLineState == 1) {
-                    if (this.detail.doctorId) {
-                        this.$store.commit("setUser", {
-                            key: "callTo",
-                            value: this.detail
-                        })
-                        this.callModal = true
-                    } else {
-                        this.$message({
-                            type: "error",
-                            message: "Please choose a doctor"
-                        })
-                    }
-                }
+                this.$message({
+                    type: "error",
+                    message: "Please choose a doctor"
+                })
             }
         },
         booking (areaId,doctorId) {

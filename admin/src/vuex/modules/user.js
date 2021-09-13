@@ -1,6 +1,6 @@
-import { allPet, getAdminDetails, vetDetails, doctorList, petDetails, bookingUserId } from "@/axios/request.js"
+import { allPet, getAdminDetails, doctorList, petDetails } from "@/axios/request.js"
 import router from "@/router/router.js"
-import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
+import { conn, WebIM } from "@/assets/js/websdk.js"
 export default {
     state: {
         login: false,
@@ -84,7 +84,7 @@ export default {
                 codec: "h264"
             }
             rtc.client.init(option.appID, function () {
-                console.log("init success",option)
+                // console.log("init success",option)
                     rtc.client.join(option.token ? option.token : null, option.channel, option.uid ? +option.uid : null, function (uid) {
                 })
             }, (err) => {
@@ -112,7 +112,7 @@ export default {
             }
             getAdminDetails(data).then(res => {
                 if (res.data.rtnCode == 200) {
-                    console.log(res,"user详情")
+                    // console.log(res,"user详情")
                     store.commit("setUser",{ key: "userDetail", value: res.data.data }) 
                     store.dispatch("IMLogin")
                     store.commit("setUser",{ key: "login", value: true })
@@ -165,7 +165,7 @@ export default {
                 pwd: 123,
                 appKey: WebIM.config.appkey,
                 success (res) {
-                    console.log(res,'IM登录成功')
+                    // console.log(res,'IM登录成功')
                     store.commit("setUser", { key: 'IMuser', value: res.user })
                     localStorage.setItem("IMtoken",res.access_token)
                     var eMedia = require("@/assets/js/emedia.js").emedia

@@ -100,6 +100,12 @@ export default {
         default (store,data) {
             store.commit("setUser",{ key: "default_img", value: data}) 
         },
+        asd (store, data) {
+            Message({
+                type: 'success',
+                message: '111'
+            })
+        },
         initRtc (store,data) {
             var rtc = store.state.rtc
             var option = {
@@ -110,14 +116,11 @@ export default {
                 mode: "live",
                 codec: "h264"
             }
-            rtc.client = AgoraRTC.createClient({mode: option.mode, codec: option.codec})
-            // store.commit('setUser', { key: 'rtc', value: rtc })
             rtc.client.init(option.appID, function () {
                 rtc.client.join(option.token ? option.token : null, option.channel, option.uid ? +option.uid : null, function (uid) {
-                //   console.log("join channel: " + option.channel + " success, uid: " + uid)
                     rtc.joined = true
                     rtc.params.uid = uid
-                    rtc.localStream = AgoraRTC.createStream({
+                    rtc.localStream = data.rtc.createStream({
                         streamID: rtc.params.uid,
                         audio: true,
                         video: true,
@@ -127,7 +130,7 @@ export default {
                     })
                     rtc.localStream.init(function () {
                         console.log("init local stream success")
-                        if (localStorage.getItem('platform') == 2) {                    //医生成功加入频道         !!!!!!!!!!!!
+                        if (localStorage.getItem('platform') == 2) {                 //医生成功加入频道         !!!!!!!!!!!!
                             const caller = store.state.caller
                             let data0 = {
                                 type: "confirmCall"
@@ -553,7 +556,7 @@ export default {
                     store.commit("setUser", { key: "doctorList", value: c.concat(b) })
                 }
                 store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
-                store.commit("setUser", { key: 'rate', value: store.state.doctorList[0].baseScore } )
+                store.commit("setUser", { key: 'mask', value: store.state.doctorList[0] } )
             })
         },
         getBalance (store,data) {

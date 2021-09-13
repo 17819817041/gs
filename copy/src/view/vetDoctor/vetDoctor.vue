@@ -63,7 +63,7 @@
                 <div class="doctor_name tc" v-else>Name</div>
                 <div class="size15 tc">General Obstetrics </div>
                 <div class="star ju">
-                    <el-rate class="Rate" v-model="rate" :disabled="true"></el-rate>
+                    <el-rate class="Rate" v-model="detail.baseScore" :disabled="true"></el-rate>
                 </div>
                 <div class="relation ju">
                     <div class="cursor" @click="booking"><img src="@/assets/img/calendar.png" alt=""></div>
@@ -104,7 +104,7 @@
                     </div>
                 </div>
                 <div class="introduce text-overflow">
-                    <span class="text-overflows" v-if="detail.doctorContent">
+                    <span class="text-overflows" v-if="detail.doctorContent != ''">
                         {{detail.doctorContent}}
                     </span>
                     <span v-else>No introduction!</span>
@@ -136,8 +136,6 @@ export default {
         return {
             active:true,
             change:true,
-            // rate:0,
-            // detail: {},
             pageNum: 1,
             showMore: false,
             timer: null,
@@ -145,13 +143,9 @@ export default {
     },
     created () {
         this.doctorList = []
-        // if (!this.doctorList.length ) {
         this.getDoctorList()
-        // }
     },
-    mounted () {
-        
-    },
+    mounted () {},
     watch: {
         detail: {
             handler (val) {
@@ -175,13 +169,6 @@ export default {
                 }
             }
         },
-        // doctorList: {
-        //     handler (val) {
-        //         if (val) {
-                  
-        //         }
-        //     }
-        // }
     },
     computed: {
         callModal: {
@@ -203,16 +190,6 @@ export default {
             }
         },
         detail () { return this.$store.state.user.vDetail },
-        rate () { return this.$store.state.user.rate },
-        rate: { 
-            get () { return this.$store.state.user.rate },
-            set (val) {
-                this.$store.commit("setUser", {
-                    key: "rate",
-                    value: val
-                })
-            }
-        },
         loading: {
             get () { return this.$store.state.user.loading6 },
             set (val) {
@@ -242,10 +219,6 @@ export default {
             this.$store.commit("setUser",{
                 key: "vDetail",
                 value: item
-            })
-            this.$store.commit("setUser",{
-                key: "rate",
-                value: item.baseScore
             })
             this.$store.commit("setUser",{
                 key: "mask",
@@ -288,6 +261,7 @@ export default {
             }
         },
         booking () {
+            return false
             this.$router.push("/booking")
         },
     }

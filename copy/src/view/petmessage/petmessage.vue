@@ -1,7 +1,14 @@
 <style lang="less" scoped>
 @import "@/less/css.less";
+.petMessage {
+    height: 100%;
+}
     .message_title {
         padding: 20px 0;
+    }
+    .fillIn {
+        height: calc(100% - 119px);
+        overflow: auto;
     }
     .photo {
         margin: 7px;
@@ -22,10 +29,14 @@
         position: relative;
         .addImg {
             width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
             position: absolute;
             bottom: 0;
             left: 50%;
             transform: translate(-50%,50%);
+            background: white;
         }
     }
     .message_form {
@@ -49,7 +60,7 @@
         <div>
             <myHeaderL></myHeaderL>
         </div>
-        <div class="fillIn">  <!-- 填写信息 -->
+        <div class="fillIn noBar">  <!-- 填写信息 -->
             <div class="message_title size21 tc">About the pet</div>
             <div class="size12 tc">Add your pet details</div>
             <div class="message_form">
@@ -62,7 +73,14 @@
                                     <img class="defautlImg" src="@/assets/img/default.png" alt="" v-else>
                                     <input type="file" @change="getImage" name="" v-show="false" id="avaImg">
                                 </label>
-                                <img class="addImg" src="@/assets/img/file.png" alt="">
+                                <!-- <img class="addImg" src="@/assets/img/file.png" alt=""> -->
+                                <div class="addImg">
+                                    <label class="cursor al ju" for="avaImg1" style="height: 100%">
+                                        <img style="height: 100%" src="@/assets/img/file.png" alt="">
+                                        <input type="file" @change="getImage" name="" v-show="false" id="avaImg1">
+                                    </label>
+                                </div>
+                                
                             </div>
                         </div>
                     </el-form-item>

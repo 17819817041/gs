@@ -128,8 +128,6 @@
                 </div>
             </div>
         </div>
-        
-        
     </div>
 </template>
 
@@ -140,12 +138,8 @@ export default {
             active: false,
         }
     },
-    mounted () {
-
-    },
-    created () {
-        
-    },
+    mounted () {},
+    created () {},
     watch: {
         agoraPet: {
             handler (val) {
