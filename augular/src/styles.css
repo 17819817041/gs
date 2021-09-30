@@ -1,0 +1,31 @@
+/* You can add global styles to this file, and also import other style files */
+body, html {
+    padding: 0;
+    margin: 0;
+    
+}
+.tc {
+    text-align: center;
+}
+.sb {
+    display: flex;
+    justify-content: space-between;
+}
+.sa {
+    display: flex;
+    justify-content: space-around;
+}
+.flex {
+    display: flex;
+}
+.al {
+    display: flex;
+    align-items: center;
+}
+.flexEnd {
+    display: flex;
+    justify-content: end;
+}
+.bold {
+    font-weight: bold;
+}

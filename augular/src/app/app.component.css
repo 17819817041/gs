@@ -1,0 +1,35 @@
+.App {
+    height: 100% !important;
+}
+.menu_wrap {
+    width: 230px;
+    height: 100%;
+    overflow: auto;
+    border-right: gray solid 1px;
+}
+.content {
+    width: 100%;
+    height: 100%;
+    border: solid 1px;
+}
+
+.menu {
+    width: 100%;
+}
+
+.option {
+    line-height: 20px;
+    vertical-align: middle;
+    margin-top: 20px;
+}
+
+.option > d-toggle {
+    display: inline-block;
+    transform: translateY(3px);
+}
+
+@media (max-width: 250px) {
+    .menu {
+        width: 80%;
+    }
+}

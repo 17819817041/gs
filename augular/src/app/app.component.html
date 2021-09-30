@@ -1,0 +1,20 @@
+<div class="App flex">
+	<div class="head"><app-header></app-header></div>
+	<div class="content">
+		<div class="menu_wrap">
+			<d-accordion
+				[data]="menu"
+				class="menu"
+				[restrictOneOpen]="restrictOneOpen"
+				(itemClick)="itemClick($event)"
+				(menuToggle)="menuToggle($event)"
+				(activeItemChange)="log($event)"
+				[accordionType]="accordionTypeEmbed ? 'embed' : 'normal'"
+			></d-accordion>
+			
+		</div>
+		<div class="message">
+
+		</div>
+	</div>
+</div>
