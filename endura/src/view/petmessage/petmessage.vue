@@ -53,6 +53,15 @@
     .select_item {
         width: 30%;
     }
+    button {
+        padding: 13px;
+        background: #FF0000;
+        color: white;
+        font-size: 14px;
+        border: solid 1px #FF0000;
+        border-radius: 4px;
+        margin-bottom: 1px;
+    }
 </style>
 
 <template>
@@ -148,7 +157,7 @@
                         <el-button class="width100" type="warning">Other Pet</el-button>
                     </el-form-item> -->
                     <el-form-item>
-                        <el-button class="width100" type="primary" @click="submit">Submit</el-button>
+                        <button class="width100 cursor" @click="submit">Submit</button>
                     </el-form-item>
                 </el-form>
             </div>

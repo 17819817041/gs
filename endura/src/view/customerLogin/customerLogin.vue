@@ -155,8 +155,8 @@
                             <el-input class="input" placeholder="Password" show-password @keyup.enter.native="toLogin" v-model="form.password"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <div class="google cursor" @click="toLogin" @keydown.enter="enter">
-                                <el-button class="faceBook width100" type="primary">
+                            <div class="google" @click="toLogin" @keydown.enter="enter">
+                                <el-button class="faceBook cursor width100" type="primary">
                                     <span class="span">Login</span>
                                 </el-button>
                             </div>
@@ -202,13 +202,13 @@ export default {
                 return_scopes: true
             },
             form: {
-                platform:1,
-                email:'1257354834@qq.com',
-                password:'123'
+                // platform:1,
+                // email:'1257354834@qq.com',
+                // password:'123'
 
-                // platform: 1,
-                // email:'',
-                // password:''
+                platform: 1,
+                email:'',
+                password:''
             },
             rules: {
                 email: [
@@ -221,7 +221,7 @@ export default {
         }
     },
     created () {
-        this.judge_login()
+        // this.judge_login()
     },
     mounted () {
         let that = this
@@ -379,6 +379,7 @@ export default {
                             localStorage.setItem("platform",res.data.data.platform)
                             localStorage.setItem("IM",that.form.password)
                             // this.$store.dispatch("IMSignUp")
+                            
                             var par = {
                                 userId: localStorage.getItem('userId'),
                                 pageNum: 0,
@@ -387,7 +388,7 @@ export default {
                             this.$store.dispatch('getPetList',par)
                             this.$store.dispatch("getUser")
                             that.login = true
-                            that.$router.replace('/customerhomepage')
+                            that.$router.replace('/myDoctor')
                         } else if (res.data.rtnCode == 202) {
                             this.$message({
                                 type: 'warning',

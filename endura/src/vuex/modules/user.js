@@ -1,7 +1,6 @@
 import { petList, getUserDetails, vetDetails, doctorList, bookingUserId, notice, onlineState, balance, addMetting, s_online, joinRoom, getOnlineDocList, min } from "@/axios/request.js"
 import router from "@/router/router/router.js"
-import { Message } from 'element-ui';
-import {conn, WebIM, rtcCall} from "@/assets/js/websdk.js"
+import {conn, WebIM} from "@/assets/js/websdk.js"
 export default {
     state: {
         rtc: {
@@ -141,6 +140,7 @@ export default {
                     userId: localStorage.getItem("userId")
                 }
                 getUserDetails(data).then(res => {
+                    // console.log(res,777)
                     if (res.data.rtnCode == 200) {
                         res.data.data.headUr = res.data.data.userImage
                         var ban = {
@@ -162,7 +162,7 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
-                        return false
+                        // return false
                         if (vm.$route.name !== 'customerLogin' 
                         && vm.$route.name !== 'relevance' 
                         && vm.$route.name !== 'forgetPwd' 
@@ -184,7 +184,7 @@ export default {
                     localStorage.removeItem("paltform")
                     localStorage.removeItem("IMtoken")
                     localStorage.removeItem('IM')
-                    return false
+                    // return false
                     if (vm.$route.name !== 'customerLogin' 
                     && vm.$route.name !== 'relevance' 
                     && vm.$route.name !== 'forgetPwd' 
@@ -225,7 +225,7 @@ export default {
                         localStorage.removeItem("paltform")
                         localStorage.removeItem("IMtoken")
                         localStorage.removeItem('IM')
-                        return false
+                        // return false
                         if (vm.$route.name !== 'vetLogin' 
                         && vm.$route.name !== 'relevance' 
                         && vm.$route.name !== 'forgetPwd' 
@@ -245,7 +245,7 @@ export default {
                     localStorage.removeItem("paltform")
                     localStorage.removeItem("IMtoken")
                     localStorage.removeItem('IM')
-                    return false
+                    // return false
                     if (vm.$route.name !== 'vetLogin' 
                     && vm.$route.name !== 'relevance' 
                     && vm.$route.name !== 'forgetPwd' 

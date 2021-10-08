@@ -15,8 +15,11 @@
                         <el-input placeholder="Confirm Password"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button class="color-1 cursor width100" type="primary" :loading="loading" @click="submit">Submit</el-button>
-                        <div class="forgetPass size12 tc color cursor">Forgot your password? Chick here </div>
+                        <button class="color-1 cursor width100" @click="submit">Submit</button>
+                        <div class="forgetPass size12 tc color">
+                            <span style="padding-right: 5px">Forgot your password?</span>
+                            <span class="cursor" @click="forget">Chick here</span>
+                            </div>
                     </el-form-item>
                 </el-form>
             </div>
@@ -35,8 +38,10 @@ export default {
     methods: {
         submit () {
             this.loading = true
+        },
+        forget () {
+            this.$router.push("/forgetPwd")
         }
-        
     }
 }
 </script>
@@ -67,9 +72,18 @@ export default {
         transform: translate(0,-20%);
     }
     .color {
-        color: @hdColor;
+        color: rgb(7, 186, 218);
     }
     .padding1 {
         padding: 10px 0 35px 0;
+    }
+    button {
+        padding: 13px;
+        background: #FF0000;
+        color: white;
+        font-size: 14px;
+        border: solid 1px #FF0000;
+        border-radius: 4px;
+        margin-bottom: 1px;
     }
 </style>

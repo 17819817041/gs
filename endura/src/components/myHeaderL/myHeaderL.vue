@@ -60,17 +60,25 @@
                 }
             }
         }
+        .h_support {
+            background: #f1cf9f;
+            border-radius: 30px;
+        }
         .logout {
             width: 120px;
             height: 40px;
             border-radius: 30px;
             margin: 0 10px;
-            background: @logout;
+            overflow: hidden;
+            background: #67b0f8;
         }
         .userName {
             // width: 250px;
             height: 40px;
         }
+    }
+    .i_logout {
+        background: @logout;
     }
     .mobile_logo {
         @media screen and (max-width:950px) {
@@ -89,6 +97,10 @@
     }
     .homeImg {
         padding-left: 17px;
+        img {
+            width: 25px;
+            height: 25px;
+        }
     }
     .myMessage {
         flex: 10;
@@ -166,7 +178,8 @@
             overflow: hidden;
             position: absolute;
             top: 0;
-            right: -2px;
+            right: -1px;
+            background: turquoise;
         }
     }
     .mobile_s {
@@ -234,7 +247,7 @@
         }
     }
     .category {
-        color: black !important;
+        color: rgb(255, 255, 255) !important;
         font-size: 12px;
     }
     .category1 {
@@ -399,6 +412,17 @@
             right: 10px;
         }
     }
+    .i_notice {
+        width: 25px;
+        height: 25px;
+    }
+    .cursor1 {
+		cursor: pointer;
+		user-select: none;
+		@media screen and (max-width: 800px) {
+			cursor: none;
+		}
+	}
 </style>
 
 <template>
@@ -482,15 +506,15 @@
             </div>
             <div class="div sb al">
                 <div class="search al sa" v-if="login">
-                    <div class="top cursor" v-if="identity" @click="doctor">
+                    <div class="top cursor1 white" v-if="identity" @click="doctor">
                         <span v-if="platform == 1">All Doctors</span>
                         <span v-else-if="platform == 2">All Patients</span>
                     </div>
-                    <div class="top cursor" v-else @click="patient">All Doctors</div>
+                    <div class="top cursor white" v-else @click="patient">All Doctors</div>
                     <div class="select top" >
                         <el-dropdown trigger="click">
-                            <div class="category al cursor">
-                                Category<img class="dropimg" src="@/assets/img/drop.png" alt="">
+                            <div class="category al cursor1">
+                                Category<img class="dropimg" src="@/assets/img/arrow_white.png" alt="">
                             </div>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item icon="el-icon-plus">SPECIALIST CATEGORY</el-dropdown-item>
@@ -519,31 +543,34 @@
                                         <!-- <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i> -->
                                     </div>
                                 </label>
-                                <div class="name al">{{userDetails.userName}}</div>
+                                <div class="name al white">{{userDetails.userName}}</div>
                             </div>
                             <div class="sa" style="padding-left:20px;">
                                 <div class="informationImg cursor top al" @click="notice">
-                                    <img class="noticeDot" v-show="noticeState" src="@/assets/img/dot.png" alt="">
-                                    <img src="@/assets/img/information.png" alt="">
+                                    <div class="noticeDot" v-show="noticeState" style="width: 10px;height: 10px; border-radius: 50%;;" alt=""></div>
+                                    <!-- <img class="noticeDot" v-show="noticeState" src="@/assets/img/dot.png" alt=""> -->
+                                    <img class="i_notice" src="@/assets/img/notice.png" alt="">
                                 </div>
                                 <div class="homeImg al cursor" @click="home">
                                     <img src="@/assets/img/home.png" alt="">
                                 </div>
                             </div>
                         </div>
-                        <div class="logout cursor bold tc white al ju" @click="logout">
-                            <div >Logout</div>     
+                        <div class="logout bold tc white al ju" @click="logout">
+                            <div class="cursor i_logout ju al" style="width: 100%; height: 100%">Logout</div>     
                         </div>
                     </div>
-                    <div class="helpBtn cursor al ju" @click="support">
-                        <span v-if="newMsg_dot !== null">
-                            <img class="dot_h" v-show="newMsg_dot.boo && newMsg_dot.user == T_userId" src="@/assets/img/dot.png" alt="">
-                        </span>
-                        <span v-else><img class="dot_h" v-show="false" src="@/assets/img/dot.png" alt=""></span>
-                        <div class="al">
-                            <img src="@/assets/img/what.png" alt="">
+                    <div class="h_support">
+                        <div class="helpBtn cursor al ju" @click="support">
+                            <span v-if="newMsg_dot !== null">
+                                <img class="dot_h" v-show="newMsg_dot.boo && newMsg_dot.user == T_userId" src="@/assets/img/dot.png" alt="">
+                            </span>
+                            <span v-else><img class="dot_h" v-show="false" src="@/assets/img/dot.png" alt=""></span>
+                            <div class="al">
+                                <img src="@/assets/img/what.png" alt="">
+                            </div>
+                            <div class="suppot size12"> Help & Support </div>
                         </div>
-                        <div class="suppot size12"> Help & Support </div>
                     </div>
                 </div>
             </div>

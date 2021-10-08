@@ -14,10 +14,10 @@
     }
     .LOGO {
         position: absolute;
-        left: 62px;
-        top: 15px;
-        width: 110px;
-        height: 123px;
+        left: 12px;
+        top: 5px;
+        width: 170px;
+        // height: 153px;
         z-index: 500;
         background: white;
         @media screen and (max-width: 1300px) {
@@ -739,7 +739,7 @@
         <div class="flex" style="height:100%">
             <div class="MESSAGE">
                 <div class="logo_wrap">
-                    <img class="LOGO" src="@/assets/img/logo.png" alt="">
+                    <img class="LOGO" src="@/assets/img/topimg.png" alt="">
                 </div>
                 <div v-if="platform == 1"  class="cus_message noBar">
                     <message></message>

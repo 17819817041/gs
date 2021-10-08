@@ -7,7 +7,8 @@ module.exports = {
 		hot:true,
         proxy: {
 			"api": {
-				target: "https://petavi.top/api",
+				// target: "https://petavi.top/api",
+				target: 'https://endura.fun/api',
 				ws: true,
 				changeOrigin: true,
 				pathRewrite: {

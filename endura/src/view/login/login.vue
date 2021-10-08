@@ -27,7 +27,7 @@
             margin-bottom: 20px;
         }
         .customerLogin {
-            background: @hdColor;
+            background: @hdColor !important;
             position: relative;
         }
         .createAccount {
@@ -47,7 +47,7 @@
             </div>
             <div class="loginBtn ju">
                 <div class="toLogin tc">
-                    <div class="customerLogin cursor white" @click="customerLogin">
+                    <div class="customerLogin white  cursor" @click="customerLogin">
                         <el-button class="width100" type="primary">Customer Login</el-button>
                     </div>
                     <div class="vetLogin cursor white" @click="vetLogin">
@@ -75,7 +75,10 @@ export default {
     methods: {
         customerLogin () {
             localStorage.setItem("platform",1)
-            this.$router.push("/customerLogin") 
+            // this.$router.push("/customerLogin") 
+            this.$router.push({
+                name: "customerLogin"
+            }) 
         },
         vetLogin () {
             localStorage.setItem("platform",2)

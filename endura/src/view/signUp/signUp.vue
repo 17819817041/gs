@@ -97,8 +97,6 @@
         }
     }
     .vet_sign {
-        border-radius: 8px;
-        color: white;
         background: @hdColor;
     }
 </style>
@@ -223,6 +221,7 @@ export default {
             localStorage.setItem("platform",1)
         },
         toLoginPage () {
+            // this.$router.push('/login')
             if (this.data.platform == 1) {
                 this.$router.push({
                     name: "customerLogin"
@@ -231,6 +230,8 @@ export default {
                 this.$router.push({
                     name: "vetLogin"
                 })
+            } else {
+                this.$router.push('/login')
             }
         },
         finishSignUp () {

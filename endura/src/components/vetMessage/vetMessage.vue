@@ -15,7 +15,8 @@
         }
     }
     .present_item {
-        height: calc(100% - 421.88px);
+        // height: calc(100% - 470.88px);
+        height: calc(100% - 425.88px);
     }
     .administrator {
         width: 167px;
@@ -63,10 +64,10 @@
                         <div><img src="@/assets/img/wallet.png" alt=""></div>
                         <div>My Payments History</div>
                     </div>
-                    <div class="administrator_item cursor flex al" @click="Training">
+                    <!-- <div class="administrator_item cursor flex al" @click="Training">
                         <div><img src="@/assets/img/train.png" alt=""></div>
                         <div>Training</div>
-                    </div>
+                    </div> -->
                     <div class="administrator_item cursor flex al" @click="setting">
                         <div><img src="@/assets/img/profile.png" alt=""></div>
                         <div>Setting</div>

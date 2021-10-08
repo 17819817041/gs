@@ -646,13 +646,13 @@ export default {
 		}
 	}
 	.cursor:hover {
-		opacity: 0.8;
+		opacity: 0.6;
 		@media screen and (max-width: 800px) {
 			cursor: none;
 		}
 	}
 	.cursor:active {
-		opacity: 0.6;
+		opacity: 0.4;
 		user-select: none;
 		@media screen and (max-width: 800px) {
 			cursor: none;

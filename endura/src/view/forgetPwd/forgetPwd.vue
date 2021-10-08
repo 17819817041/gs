@@ -16,13 +16,11 @@
                     </el-form-item>
                     <el-form-item>
                         <div>
-                            <el-button class="width100" type="primary" @click="send">Send</el-button>
+                            <el-button class="width100 cursor" type="primary" @click="send">Send</el-button>
                         </div>
                     </el-form-item>
                 </el-form>
             </div>
-            
-            
         </div>
     </div>
 </template>

@@ -186,7 +186,7 @@ export default {
         text-decoration: none;
         color: white;
         border-radius: 12px;
-        background: #46D3FA;
+        background: #FF0000;
     }
     .logo {
             background: rgb(255, 255, 255);

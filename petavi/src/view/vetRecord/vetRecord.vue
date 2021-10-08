@@ -71,7 +71,7 @@
         }
     }
     .record_image div {
-        padding: 25px 0;
+        margin: 25px 0;
         width: 230px;
         height: 230px;
         transition: 0.25s;
@@ -183,6 +183,12 @@
     .mobile_msg {
         min-width: 135px;
     }
+    .wrap_header {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        overflow: hidden;
+    }
 </style>
 
 <template>
@@ -198,9 +204,9 @@
                     <div class="record_message">
                         <div class="record_item flex mg">
                             <div class="record_image ju">
-                                <div class="ju">
+                                <div class="ju wrap_header">
                                     <img class="dog_img" :src="userAndPet.image" v-if="userAndPet.image" alt="">
-                                    <img style="height:100%;" v-else :src="default_img" alt="">
+                                    <img style="height:75%;" v-else src="@/assets/img/default.png" alt="">
                                 </div>
                             </div>
                             <div style="flex:10">
