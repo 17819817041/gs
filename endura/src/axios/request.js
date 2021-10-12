@@ -49,16 +49,6 @@ export function updateUserDetails (data) {            //更新用户信息
     )
 }
 
-export function deletePet (data) {           //删除宠物
-    return request(
-        {
-            url: "/pet/deletePet",
-            method: "POST",
-            params: data
-        }
-    )
-}
-
 export function file (data) {          //上传头像
     return request(
         {
@@ -576,6 +566,16 @@ export function updatePet (data) {    //更新成员信息
         method: "POST",
         params: data
     })
+}
+
+export function deletePet (data) {           //删除成员
+    return request(
+        {
+            url: "/familyMember/delete",
+            method: "POST",
+            params: data
+        }
+    )
 }
 
 export function addPet (data) {           //添加成员

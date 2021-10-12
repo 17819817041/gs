@@ -928,19 +928,19 @@ export default {
             this.T_pet.change = true
         },
         Delete (item) {
-            let data = {
-                petId: item.id
-            }
-            deletePet(data).then(res => {
-                if (res.data.rtnCode == 200) {
-                    this.$confirm('Delete current information?', 'Attention', {
-                        confirmButtonText: 'Confirm',
-                        cancelButtonText: 'Cancel',
-                        type: 'warning'
-                    }).then(() => {
+            this.$confirm('Delete current information?', 'Attention', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                let data = {
+                    petId: item.id
+                }
+                deletePet(data).then(res => {
+                    if (res.data.rtnCode == 200) {
                         this.$message({
                             type: "success",
-                            message: "success delee !"
+                            message: "Success delete !"
                         })
                         var data = {
                             userId: localStorage.getItem("userId"),
@@ -948,8 +948,18 @@ export default {
                             pageSize: this.pageSize
                         }
                         this.$store.dispatch("getPetList",data)
-                    })
-                }
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: "Failed delete !"
+                        })
+                    }
+                }).catch(e => {
+                    this.$message({
+                            type: "error",
+                            message: "Failed delete !"
+                        })
+                })
             })
         },
         updatePet () {    

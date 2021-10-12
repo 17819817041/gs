@@ -86,8 +86,8 @@
     }
     .record_image div {
         margin: 25px 0;
-        width: 230px;
-        height: 230px;
+        width: 200px;
+        height: 200px;
         transition: 0.25s;
         border-radius: 50%;
         overflow: hidden;
@@ -186,7 +186,7 @@
         word-wrap: break-word;
     }
     .mobile_tit {
-        width: 45%;
+        width: 11%;
         min-width: 134px;
     }
     .collapse_img {

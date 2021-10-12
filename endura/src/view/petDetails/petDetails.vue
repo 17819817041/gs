@@ -13,13 +13,6 @@
             background: @content;
             padding-bottom: 30px;
             overflow: auto;
-            // @media screen and (max-width:1350px) {
-            //     width: 82%;
-            // }
-            // @media screen and (max-width:1200px) {
-            //     width: 98%;
-            //     margin: auto;
-            // }
         }
     }
     .details_item {
@@ -410,10 +403,10 @@
                                         <el-option value="Mather" label="Mather"></el-option>
                                         <el-option value="Grandfather" label="Grandfather"></el-option>
                                         <el-option value="Grandmather" label="Grandmather"></el-option>
-                                        <el-option value="ElderBrother" label="Elder Brother"></el-option>
-                                        <el-option value="ElderSister" label="Elder Sister"></el-option>
-                                        <el-option value="YoungerBrother" label="Younger Brother"></el-option>
-                                        <el-option value="YoungerSister" label="Younger Sister"></el-option>
+                                        <!-- <el-option value="ElderBrother" label="Elder Brother"></el-option> -->
+                                        <el-option value="Sister" label="Sister"></el-option>
+                                        <el-option value="Brother" label="Brother"></el-option>
+                                        <!-- <el-option value="YoungerSister" label="Younger Sister"></el-option> -->
                                     </el-select>
                                 </div>
                             </div>
@@ -825,19 +818,19 @@ export default {
             this.T_pet.change = true
         },
         Delete (item) {
-            let data = {
-                petId: item.id
-            }
-            deletePet(data).then(res => {
-                if (res.data.rtnCode == 200) {
-                    this.$confirm('Delete current information?', 'Attention', {
-                        confirmButtonText: 'Confirm',
-                        cancelButtonText: 'Cancel',
-                        type: 'warning'
-                    }).then(() => {
+            this.$confirm('Delete current information?', 'Attention', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                let data = {
+                    familyMemberId: item.familyMember.id
+                }
+                deletePet(data).then(res => {
+                    if (res.data.rtnCode == 200) {
                         this.$message({
                             type: "success",
-                            message: "success delee !"
+                            message: "success delete !"
                         })
                         var data = {
                             userId: localStorage.getItem("userId"),
@@ -845,9 +838,20 @@ export default {
                             pageSize: this.pageSize
                         }
                         this.$store.dispatch("getPetList",data)
-                    })
-                }
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: "Failed delete !"
+                        })
+                    }
+                }).catch(e => {
+                    this.$message({
+                            type: "error",
+                            message: "Failed delete !"
+                        })
+                })
             })
+            
         },
         updatePet () {    
             let obj = JSON.parse(JSON.stringify(this.petLists[this.i].familyMember))   
@@ -902,16 +906,15 @@ export default {
                 })
             })
         },
-        petImage (e) {    
-            console.log(e)                                                                      //上传宠物图片
+        petImage (e) {                                                                     //上传宠物图片
             var formData = new FormData
             formData.append("file",e.target.files[0])
             file(formData).then(res => {
-                console.log(res,"宠物图片")
                 if (res.data.rtnCode == 200) {
                     this.src = res.data.data
-                    this.petList[this.i].image = res.data.data
-                    this.updatePet()
+                    this.petList[this.i].familyMember.headImg = res.data.data
+                    this.petLists[this.i].familyMember.headImg = res.data.data
+                    // this.updatePet()
                 }
             }).catch(e => {
                 console.log(e)
