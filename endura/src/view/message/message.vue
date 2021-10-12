@@ -105,26 +105,19 @@
                 <div class="present_item">
                     
                     <div class="pet_img mg ju al">
-                        <img :src="pet.image" alt="" v-if="pet.image">
-                        <img style="height:75%;" v-else src="@/assets/img/default.png" alt="">
+                        <img v-if="pet.familyMember.headImg" :src="pet.familyMember.headImg" alt="">
+                        <img style="height:100%;" v-else :src="default_img" alt="">
+                        
                     </div>
-                    <div class="pet_name size21 tc" v-if="pet.name">{{pet.name}}</div>
+                    <div class="pet_name size21 tc" v-if="pet.familyMember.name">{{pet.familyMember.name}}</div>
                     <div class="pet_name size21 tc" v-else>No Name</div>
                     <div class="details size12 tc">
-                        <div>Pet ID : {{pet.id}}</div>
-                        <div>Age : {{pet.age}}</div>
-                        <div>Breed : {{breed}}</div>
-                        <!-- <div>Breed : {{
-                            options.find(op => op.petTypeId == pet.petTypeId)? 
-                            options.find(op => op.petTypeId == pet.petTypeId).petTypeName
-                            : ''
-                        }}</div> -->
-                        <div>Sex :  <span v-if="pet.gender == 1">Male</span> <span v-else-if="pet.gender == 2">Female</span> </div>
-                        <div>Neutered status : 
-                            <span v-if="pet.petJueYue == 1">Sterilization</span> 
-                            <span v-else-if="pet.petJueYu == 2">Unneutered</span> 
-                        </div>
-                        <div>Weight : {{pet.weight}} kg</div>
+                        <div>User ID : {{pet.familyMember.id}}</div>
+                        <div>Age : {{pet.familyMember.age}}</div>
+                        <div>Relation : {{pet.familyMember.familyRelations}}</div>
+                        <div>Sex :  <span v-if="pet.familyMember.sex == 1">Male</span> <span v-else-if="pet.familyMember.sex == 2">Female</span> </div>
+                        <div>Height : {{pet.familyMember.height}} cm</div>
+                        <div>Weight : {{pet.familyMember.weight}} kg</div>
                     </div>
                     <div class="more_message size12 flexEnd">
                         <span @click="petDetails" class="cursor"> More...</span>
@@ -161,17 +154,9 @@
 </template>
 
 <script>
-import { getUserPetForOne, petType } from "@/axios/request.js"
 export default {
     data () {
         return {
-            petId:'0000001',
-            age:"2 yrs S mo",
-            breed:'',
-            sex:"M",
-            neuteredStatus:'None',
-            weight: "33.5kg",
-        
             show: false,
             change:true,
             rotate: false,
@@ -183,11 +168,13 @@ export default {
     },
     created () {
         this.getPetList()
-        this.getPetType()
         if (this.pet) {
             this.$store.commit("setUser",{ key: "petId", value: this.pet.id })
             this.$store.commit("setUser",{ key: "pet", value: this.pet })
         }
+    },
+    mounted () {
+       
     },
     watch: {
         petList: {
@@ -242,7 +229,8 @@ export default {
                     value: val
                 })
             },
-        }
+        },
+        default_img () { return this.$store.state.user.default_img }
     },
     methods: {
         scroll (val) {
@@ -263,41 +251,6 @@ export default {
                 pageSize: this.pageSize
             }
             this.$store.dispatch("getPetList",data)
-        },
-        getPetType () {
-            let data = {
-                userId: localStorage.getItem('userId'),
-                platform: localStorage.getItem('platform'),
-                token: localStorage.getItem('Token')
-            }
-            petType(data).then(res => {
-                res.data.forEach(item => {
-                    item.children.forEach(child => {
-                        child.children = []
-                    })
-                })
-                this.options = res.data
-                this.TYPE()
-            })
-        },
-        TYPE () {
-            this.options.forEach(op => {
-                if (this.pet.petType == op.petTypeId) {
-                    this.breed = child.petTypeName
-                }
-                if (op.children) {
-                    op.children.forEach(child => {
-                        if (this.pet.petType == child.petTypeId) {
-                            this.breed = child.petTypeName
-                        }
-                    })
-                }
-                // if (op.children.length == 0) {
-                //     if (this.pet.petType == op.petTypeId) {
-                //         item.pet_name = op.petTypeName
-                //     }
-                // }
-            })
         },
         edit () {
             this.change = !this.change

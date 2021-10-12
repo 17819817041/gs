@@ -30,6 +30,9 @@ import {conn, WebIM} from "@/assets/js/websdk.js"
 Vue.prototype.$WebIM = WebIM
 Vue.prototype.$conn = conn
 
+import Video from 'video.js'
+import 'video.js/dist/video-js.css'
+
 // import Agora from "@/assets/js/Agora.js"
 // // import Agora from "agora-rtc-sdk"
 // Vue.prototype.$V = Agora

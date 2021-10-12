@@ -14,7 +14,21 @@ export default {
         IMuser: {},
         login: false,
         petList:[],
-        pet: {},
+        pet: {
+            familyMember: {
+                age:0,
+                content:"",
+                familyRelations:1,
+                headImg:"",
+                height:0,
+                id:4,
+                name:"",
+                sex:'',
+                state:1,
+                userId:0,
+                weight:0,
+            }
+        },
         petId: null,
         doctorList: [],
         loading: false,
@@ -64,7 +78,10 @@ export default {
         newMsg_dot: JSON.parse(JSON.stringify(localStorage.getItem('new_msg'))),
         value: 0,
         timer: null,
-        deviceId: null
+        deviceId: null,
+        editsop: false,
+        show_edit: false,
+        ids: ''
     },
     mutations: {
         setUser (state,data) {
@@ -100,28 +117,18 @@ export default {
         },
         getPetList (store,data) {
             petList(data).then(res => {
+                console.log(res)
                 if (res.data.rtnCode == 200) {
+                    res.data.data.pageT.forEach(item => {
+                        // if (item.familyMember.headImg == '') {
+                        //     item.familyMember.headImg = store.state.default_img
+                        // }
+                        item.change = true
+                    })
                     store.commit("setUser",{ key: "pet", value: res.data.data.pageT[store.state.firstPet] })
                     store.commit("setUser",{ key: "petId", value: res.data.data.pageT[0].id })
                     store.commit("setUser",{ key: "loading", value: true })
-                    res.data.data.pageT.forEach(item => {
-                            if (item.petMedicalRecordDtos) {
-                                item.petMedicalRecordDtos.forEach(child => {
-                                    child.createdAt = child.createdAt.split(' ')[0]
-                                })
-                            }
-                        item.change = true
-                        if (item.age) {
-                            let date = item.age.split('yrs')
-                            item.yrs = date.join(',').split('mo').join('').split(',')[0]
-                            item.mo = date.join(',').split('mo').join('').split(',')[1]
-                        } else {
-
-                        }
-                        if (item.petTypeList) {
-                            store.commit("setUser",{ key: "petType", value: res.data.data.pageT.splice(-1,1)[0].petTypeList })
-                        }
-                    })
+                    
                     store.commit("setUser",{ key: "petList", value: res.data.data.pageT })
                 } else if (res.data.rtnCode == 201) {
                     if (localStorage.getItem('platform') == 1) {
@@ -261,7 +268,7 @@ export default {
             }
         },
         IMLogin (store) {
-            var options = { 
+            var options = {
                 user: localStorage.getItem("userId") + 'A' + localStorage.getItem("platform"),
                 pwd: 123,
                 appKey: WebIM.config.appkey,
@@ -358,7 +365,7 @@ export default {
         },
         getOnlineDocList (store) {
             getOnlineDocList().then(res => {
-                // console.log(res,'online')
+                console.log(res,'online')
                 if (res.data.rtnCode == 200) {
                     let arr =  store.state.doctorList
                     arr.forEach(item => {
@@ -378,15 +385,18 @@ export default {
                     }}
                     b = arr.filter(item => item.doctorOnLineState != 1)
                     store.commit("setUser", { key: "doctorList", value: c.concat(b) })
+                    store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
+                    store.commit("setUser", { key: 'mask', value: store.state.doctorList[0] } )
                 } else {
+                    store.commit("setUser", { key: 'vDetail', value: '' } )
+                    store.commit("setUser", { key: 'mask', value: '' } )
                     let arr =  store.state.doctorList
                     arr.forEach(item => {
                         item.doctorOnLineState = 0
                     })
                     store.commit("setUser", { key: "doctorList", value: arr })
                 }
-                store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
-                store.commit("setUser", { key: 'mask', value: store.state.doctorList[0] } )
+                
             })
         },
         getBalance (store,data) {

@@ -49,16 +49,6 @@ export function updateUserDetails (data) {            //更新用户信息
     )
 }
 
-export function addPet (data) {           //添加宠物
-    return request(
-        {
-            url: "/pet/addPet",
-            method: "POST",
-            params: data
-        }
-    )
-}
-
 export function deletePet (data) {           //删除宠物
     return request(
         {
@@ -77,7 +67,7 @@ export function file (data) {          //上传头像
             data: data, // 上传formdata封装的数据
         }
     )
-}
+}  
 
 export function petDetails (data) {     //宠物ID获取宠物信息
     return request(
@@ -87,24 +77,6 @@ export function petDetails (data) {     //宠物ID获取宠物信息
             params: data
         }
     )
-}
-
-export function petList (data) {     //宠物列表
-    return request(
-        {
-            url: "/pet/getPetDetailList",
-            metjod: "POST",
-            params: data
-        }
-    )
-}
-
-export function updatePet (data) {    //更新宠物信息
-    return request({
-        url: "/pet/updatePet",
-        method: "POST",
-        params: data
-    })
 }
 
 export function doctorList (data) {      //医生列表          0 离线   1在线    2忙碌
@@ -577,3 +549,92 @@ export function getOnlineDocList (data) {                   //在线状态
         params: data
     })
 }
+
+
+
+
+export function sopList (data) {
+    return request({
+        url: '/sop/listByPage',
+        method: 'POST',
+        params: data
+    })
+}
+
+export function deleteByBatch (data) {
+    return request({
+        url: "/sop/deleteByBatch",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function updatePet (data) {    //更新成员信息
+    return request({
+        // url: "/pet/updatePet",
+        url: '/familyMember/update',
+        method: "POST",
+        params: data
+    })
+}
+
+export function addPet (data) {           //添加成员
+    return request(
+        {
+            // url: "/pet/addPet",
+            url: '/familyMember/add',
+            method: "POST",
+            params: data
+        }
+    )
+}
+
+export function petList (data) {     //成员列表
+    return request(
+        {
+            url: '/familyMember/getList',
+            metjod: "POST",
+            params: data
+        }
+    )
+}
+
+export function sopAdd (data) {           //添加SOP
+    return request(
+        {
+            url: '/sop/add',
+            method: "POST",
+            params: data
+        }
+    )
+} 
+
+export function webFileRecord (data) {           //上传视频或图片
+    return request(
+        {
+            url: '/webFileRecord/add',
+            method: "POST",
+            data: data
+        }
+    )
+} 
+
+export function uploadFile (data) {          //上传视频或图片
+    return request(
+        {
+            url: '/file/uploadFile',
+            method: 'POST',
+            data: data, // 上传formdata封装的数据
+        }
+    )
+}   
+
+export function getListByPage (data) {           // 获取视频列表
+    return request(
+        {
+            url: '/sopDetails/getListByPage',
+            method: "POST",
+            params: data
+        }
+    )
+} 

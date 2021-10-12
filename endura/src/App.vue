@@ -489,6 +489,9 @@ export default {
 		border-radius: 10px;
 		overflow: hidden;
 	}
+	.message_form .el-form-item__content {
+		line-height: 0 !important;
+	}
 	.message_form .el-select .el-input .el-input__inner {
 		background: white !important;
 	}
@@ -541,6 +544,7 @@ export default {
 	.person .el-input--suffix {
 		height: 100% !important;
 	}
+
 
 
 	.day_time .el-input__inner {
@@ -782,12 +786,12 @@ export default {
 			width: 293px;
 		}
 	}
-	.v-modal {
-		display: none;
-		@media screen and (max-width: 800px) {
-			display: block;
-		}
-	}
+	// .v-modal {
+	// 	display: none;
+	// 	@media screen and (max-width: 800px) {
+	// 		display: block;
+	// 	}
+	// }
 	.record .el-collapse .el-collapse-item .el-collapse-item__header {
 		height: 60px !important;
 	}

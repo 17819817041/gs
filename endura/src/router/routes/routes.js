@@ -256,6 +256,7 @@ export default [
             {
                 path: '/Training',
                 name: 'Training',
+                redirect: '/glass',
                 component: () => import('@/view/Training/Training.vue'),
                 children: [
                     {
@@ -267,7 +268,27 @@ export default [
                         path: '/glass',
                         name: 'glass',
                         component: () => import('@/view/Training/glass.vue')
-                    }
+                    }, 
+                    {
+                        path: '/uploadFiles',
+                        name: 'uploadFiles',
+                        component: () => import('@/view/Training/uploadFiles.vue')
+                    }, 
+                    {
+                        path: '/imageList',
+                        name: 'imageList',
+                        component: () => import('@/view/Training/imageList.vue')
+                    },
+                    {
+                        path: '/sop',
+                        name: 'sop',
+                        component: () => import('@/view/Training/sop.vue')
+                    }, 
+                    {
+                        path: '/editstep',
+                        name: 'editstep',
+                        component: () => import('@/view/Training/editstep.vue')
+                    },
                 ]
             }
         ]

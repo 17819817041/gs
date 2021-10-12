@@ -11,6 +11,17 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+    if ( to.name  == 'sop') {
+        store.commit("setUser", {
+            key: "show_edit",
+            value: true
+        })
+    } else {
+        store.commit("setUser", {
+            key: "show_edit",
+            value: false
+        })
+    }
     store.commit("setUser", {
         key: "scrollTop",
         value: false

@@ -168,7 +168,7 @@
                 <img class="img1" @click="showPetList" :class="[ 'cursor', {rotate: rotate} ]" src="@/assets/img/arrow.png" alt="">
                 <!-- <img class="img2" @click="showPetList" v-show="showList" :class="[ 'cursor', {rotate1: rotate} ]" src="@/assets/img/arrow.png" alt=""> -->
                 <div :class="['pet_list noBar', {height:show}]">
-                    <div class="list_item mg cursor"  @click="cutPet(item,i)" v-for="(item,i) in petList" :key="i">{{item.name}}</div>
+                    <div class="list_item mg cursor"  @click="cutPet(item,i)" v-for="(item,i) in petList" :key="i">{{item.familyMember.name}}</div>
                 </div>
             </div>
             <div :class="['present_message noBar',{ drawer_width: drawer }]" @scroll="scroll">

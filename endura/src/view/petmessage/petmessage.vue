@@ -51,7 +51,7 @@
         color: #BCBCBC;
     }
     .select_item {
-        width: 30%;
+        width: 100%;
     }
     button {
         padding: 13px;
@@ -78,7 +78,7 @@
                         <div class="ju">
                             <div class="wrap_img">
                                 <label class="photo cursor al ju" for="avaImg">
-                                    <img class="upImg" :src="addPetMessage.image" v-if="addPetMessage.image" alt="">
+                                    <img class="upImg" :src="addPetMessage.headImg" v-if="addPetMessage.headImg" alt="">
                                     <img class="defautlImg" src="@/assets/img/default.png" alt="" v-else>
                                     <input type="file" @change="getImage" name="" v-show="false" id="avaImg">
                                 </label>
@@ -96,66 +96,57 @@
                     <el-form-item prop="name">
                         <el-input placeholder="Pet Name" v-model="addPetMessage.name"></el-input>
                     </el-form-item>
-                    <div class="textcolor">Date of birth</div>
-                    <div>
-                        <el-form-item prop="birth">
+                    <div class="sb textcolor">
+                        <div style="width:50%">Age</div>
+                        <div style="margin-right: 10px;margin-left: 10px;"></div>
+                        <div style="width:50%">Gender</div>
+                        <!-- <div style="width:30%">Weight (kg)</div> -->
+                    </div>
+                    <div class="sb">
+                        <el-form-item prop="age" style="width: 50%;">
                             <div class="sb">
                                 <div class="select_item">
-                                    <el-select v-model="day" @change="chooseDay" placeholder="Day">
+                                    <el-select v-model="addPetMessage.age" placeholder="Age">
                                         <el-option v-for="(item,i) in dayList" :key="i" :value="item"></el-option>
-                                    </el-select>
-                                </div>
-                                <div class="select_item">
-                                    <el-select v-model="month" @change="chooseMonth" placeholder="Month">
-                                        <el-option v-for="(item,i) in monthList" :key="i" :label="item.label" :value="item.value"></el-option>
-                                    </el-select>
-                                </div>
-                                <div class="select_item">
-                                    <el-select v-model="years" placeholder="Year">
-                                        <el-option v-for="(item,i) in yearsList" :key="i" :value="item"></el-option>
                                     </el-select>
                                 </div>
                             </div>
                         </el-form-item>
-                    </div>
-                    <div class="sb textcolor">
-                        <div style="width:30%">Gender</div>
-                        <div style="width:30%">Neutered status</div>
-                        <div style="width:30%">Weight (kg)</div>
-                    </div>
-                    <div>
-                        <el-form-item prop="weight">
-                            <div class="sb">
+                        <div style="margin-right: 10px;margin-left: 10px;"></div>
+                        <el-form-item prop="sex" style="width: 50%;" >
                                 <div class="select_item">
-                                    <el-select v-model="addPetMessage.gender">
+                                    <el-select v-model="addPetMessage.sex">
                                         <el-option v-for="(item,i) in sexList" :key="i" :label="item.label" :value="item.value"></el-option>
                                     </el-select>
                                 </div>
+                        </el-form-item>
+                    </div>
+                    <div class="sb textcolor">
+                        <div style="width:50%">Height</div>
+                        <div style="margin-right: 10px;margin-left: 10px;"></div>
+                        <div style="width:50%">Weight (kg)</div>
+                    </div>
+                    <div class="sb">
+                        <el-form-item prop="height" style="width: 50%;" >
+                            <div class="sb">
                                 <div class="select_item">
-                                    <!-- <el-select v-model="value">
-                                        <el-option value=""></el-option>
-                                    </el-select> -->
-                                    <el-select v-model="addPetMessage.petJueYu">
-                                        <el-option value="1" label="Sterilization"></el-option>
-                                        <el-option value="2" label="Unneutered"></el-option>
-                                    </el-select>
+                                    <el-input v-model="addPetMessage.height"></el-input>
                                 </div>
-                                <div class="select_item">
-                                    <el-input v-model="addPetMessage.weight"></el-input>
-                                </div>
+                            </div>
+                        </el-form-item>
+                        <div style="margin-right: 10px;margin-left: 10px;"></div>
+                        <el-form-item prop="weight" style="width: 50%;">
+                            <div class="select_item">
+                                <el-input v-model="addPetMessage.weight"></el-input>
                             </div>
                         </el-form-item>
                     </div>
                     <el-form-item prop="petType">
-                        <!-- <el-input placeholder="Pet Type" v-model="addPetMessage.petType"></el-input> -->
-                        <el-cascader class="width100" :options="options" @change="cascader" placeholder="pet Type"></el-cascader>
+                        <el-cascader class="width100" :options="options" @change="cascader" placeholder="Relations"></el-cascader>
                     </el-form-item>
                     <el-form-item>
-                        <el-input placeholder="Remark" v-model="addPetMessage.remark"></el-input>
+                        <el-input placeholder="Remark" v-model="addPetMessage.content"></el-input>
                     </el-form-item>
-                    <!-- <el-form-item>
-                        <el-button class="width100" type="warning">Other Pet</el-button>
-                    </el-form-item> -->
                     <el-form-item>
                         <button class="width100 cursor" @click="submit">Submit</button>
                     </el-form-item>
@@ -172,48 +163,24 @@ export default {
         return {
             loading: false,
             position:'top',
-            formList: {
-                one:'123',
-                two:'456'
-            },
+            formList: { one:'123', two:'456' },
             value:[],
             value1:'',
-            day:'',
             dayList:[],
-            month:'',
-            // monthList:[],
-            judge_month: null,
-            monthList: [ 
-                { label: 'Jan', value: '1' }, 
-                { label: 'Feb', value: '2' }, 
-                { label: 'Mar', value: '3' }, 
-                { label: 'Apr', value: '4' }, 
-                { label: 'May', value: '5' }, 
-                { label: 'Jun', value: '6' }, 
-                { label: 'Jul', value: '7' }, 
-                { label: 'Aug', value: '8' }, 
-                { label: 'Sep', value: '9' }, 
-                { label: 'Oct', value: '10' }, 
-                { label: 'Nov', value: '11' }, 
-                { label: 'Dec', value: '12' }, 
-            ],
-            years:'',
-            yearsList:[],
             sex:'',
-            sexList: [
-                {label: 'Male', value: 1},
-                {label: 'Female', value: 2},
-            ],
+            sexList: [{label: 'Male', value: 1},{label: 'Female', value: 2}],
             addPetMessage: {
-                id: localStorage.getItem("userId"),
-                name: "",
-                gender: null,
-                image: '',
-                petType: null,
-                birth: "",
-                weight: "",
-                petType: null,
-                remark: ''
+                userId: localStorage.getItem("userId"),
+                name: '',
+                age: '',
+                headImg: '',
+                sex: null,
+                height: '',
+                weight: '',
+                content: '',
+                familyRelations: 1,
+
+                petType: ''
             },
             rules: {
                 name: [
@@ -222,11 +189,17 @@ export default {
                 petType: [
                     { required: true, message: "Please enter petType!", trigger: 'blur' }
                 ],
-                birth: [
-                    { required: true, message: "Please enter birth!", trigger: 'blur' }
+                age: [
+                    { required: true, message: "Please enter age!", trigger: 'blur' }
                 ],
                 weight: [
                     { required: true, message: "Please enter weight!", trigger: 'blur' }
+                ],
+                sex: [
+                    { required: true, message: "Please enter sex!", trigger: 'blur' }
+                ],
+                height: [
+                    { required: true, message: "Please enter height!", trigger: 'blur' }
                 ]
             },
             options: []
@@ -270,10 +243,32 @@ export default {
                 }
             })
         },
-        addPet () {                                                                              //添加宠物
+        addPet () {                            
+            this.loading = true                                      //添加宠物
             addPet(this.addPetMessage).then(res => {
                 // console.log(res,"添加宠物信息")
-            })  
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: "Successfully added !"
+                    })
+                    setTimeout(() => {
+                    this.$router.replace('/myDoctor')
+                    },500)
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: "Failed added !"
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: "Failed added !"
+                })
+            })
         },
         getImage (e) {
             this.dealImg(e.target.files[0],(img) => {
@@ -281,7 +276,7 @@ export default {
                 formData.append('file',img)
                 file(formData).then(res => {
                     if (res.data.rtnCode == 200) {
-                        this.addPetMessage.image = res.data.data
+                        this.addPetMessage.headImg = res.data.data
                     }
                 }).catch(e => {
                     console.log(e)
@@ -296,44 +291,15 @@ export default {
         getDay () {
             // let month = new Date().getMonth() + 1      //获取月份
             // let Day = new Date(2021,2,0).getDate()//  获取每月天数
-            for (let i=1;i<=31;i++) {
+            for (let i=1;i<=100;i++) {
                 this.dayList.push(i)
-            }
-            let year = new Date().getFullYear()
-            for ( let i=0; i<=21; i++ ) {
-                this.yearsList.push(year - i)
-            }
-        },
-        chooseDay (val) {
-            this.day = val
-        },
-        chooseMonth (val) {
-            this.judge_month = val
-            let Day = new Date(2021,this.judge_month,0).getDate()//  获取每月天数
-            this.dayList = []
-            for (let i=1;i<=Day;i++) {
-                this.dayList.push(i)
-            }
-            if (this.day > this.dayList.length) {
-                this.day = this.dayList.length
             }
         },
         submit () {
-            this.loading = true
-            this.addPetMessage.birth = String(this.years) + '-' + String(this.month) + '-' + String(this.day)
             this.$refs.form.validate((flag) => {
                 if (flag) {
                     this.addPet()
-                    this.loading = false
-                    this.$message({
-                        type: 'success',
-                        message: "Successfully added !"
-                    })
-                        setTimeout(() => {
-                        this.$router.replace('/myDoctor')
-                        },500)
                 } else {
-                    this.loading = false
                     this.$message({
                         type: "error",
                         message: "Please fill in the information completely!"

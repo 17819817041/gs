@@ -45,7 +45,7 @@
     .last {background: #B45E58;}
     .support_introduce {
         width: calc(100% - 320px);
-        background:rgb(255, 255, 255);
+        // background:rgb(255, 255, 255);
         margin-left: 10px;
         color: @support;
         height: 100%;
@@ -85,18 +85,102 @@
         background: @helpBtn !important;
         color: black !important;
     }
+    .edit1 {
+        padding: 0px 10px;
+        width: 100px;
+        height: 35px;
+        border: solid 2px gray;
+        border-radius: 18px;
+        img {
+            padding-right: 1px;
+            width: 25px;
+        }
+    }
+    .wrap {
+        width: 70%;
+    }
+    .add_title {
+        width: 100%;
+        border-radius: 10px;
+        padding: 7px;
+        font-size: 20px;
+        margin-bottom: 30px;
+        color: black !important;
+        background: #CDA09D;
+    }
+    .add_name {
+        box-shadow: 2px 1px 5px rgb(172, 172, 172);
+        width: 150px;
+        padding: 5px 0;
+        border-radius: 10px;
+        height: 30px;
+    }
+    .add_content {
+        width: calc(100% - 200px);
+        box-shadow: 2px 1px 5px rgb(172, 172, 172);
+        border-radius: 10px;
+        overflow: hidden;
+        input {
+            border: none;
+            outline: none;
+            width: 100%;
+            height: 100%;
+            font-size: 14px;
+        }
+        textarea {
+            width: 100% !important;
+            height: 100% !important;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            resize: none;
+        }
+    }
+    .attachment {
+        padding: 9px 0px;
+        width: 200px;
+        margin-top: 20px;
+        margin-left: 30px;
+        border: solid 2px rgb(192, 192, 192);
+        border-radius: 3px;
+        font-size: 17px;
+        img {
+            padding-right: 3px;
+            width: 20px;
+        }
+    }
 </style>
 
 <template>
-    <div class="support">
+    <div class="support" v-loading='loading'>
         <div class="support_content flex noBar">
             <div class="showMessage">
-                <div class="support_title">
+                <div class="support_title sb al">
                     <div class="al">
-                        <div class="al">
+                        <!-- <div class="al">
                             <img src="@/assets/img/what.png" alt="">
-                        </div>
+                        </div> -->
                         <div class="explan bold"> Training </div>
+                    </div>
+                    <div  v-show="show_edit">
+                        <div class="cursor edit1 ju al" v-show="!editsop" @click="edit">
+                            <div class="al"><img src="@/assets/img/edit.png" alt=""></div>
+                            <div class="size14 bold">Edit</div>
+                        </div>
+                        <div class="flex" v-show='editsop'> 
+                            <div class="cursor edit1 ju al" @click="add">
+                                <div class="al"><img src="@/assets/img/add1.png" alt=""></div>
+                                <div class="size14 bold">Add</div>
+                            </div>
+                            <div class="cursor edit1 ju al" style="margin: 0 7px;" @click="deletesop">
+                                <div class="al"><img src="@/assets/img/delete1.png" alt=""></div>
+                                <div class="size14 bold">Del</div>
+                            </div>
+                            <div class="cursor edit1 ju al" @click="save">
+                                <div class="al"><img src="@/assets/img/save.png" alt=""></div>
+                                <div class="size14 bold">Save</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="mg navMenu" style="padding: 0 20px">
@@ -104,7 +188,7 @@
                 </div>
                 <div class="support_type noBar flex">
                     <div class="support_item noBar tc">
-                        <router-link :class="['cursor bold second center', { active: router == 'glass' }]" @click.native="router = 'glass' " to="/glass" 
+                        <router-link :class="['cursor bold second center', { active: router == 'glass' }]" @click.native="router = 'glass'" to="/glass" 
                         style="color:white;text-decoration: none">Glasses state</router-link>
 
                         <router-link :class="['cursor bold link white center', { active: router == 'videoList' }]" @click.native="router = 'videoList'" to="/videoList" 
@@ -120,16 +204,40 @@
                         style="color:black;text-decoration: none;position:relative">SOP</router-link>
                     </div>
                     <div class="support_introduce bar">
-                        <router-view></router-view>
+                        <router-view ref="sop"></router-view>
                     </div>
                 </div>
             </div>
         </div>
+        <el-dialog
+            title=""
+            :visible.sync="dialogVisible"
+            width="1100px">
+            <div class="wrap mg">
+                <div class="add_title mg">SOP Addition</div>
+                <div class="sb">
+                    <div class="add_name tc">SOP Title</div>
+                    <div class="add_content"><input type="text" v-model="sop_Title"></div>
+                </div>
+                <div class="sb " style="margin-top: 30px;">
+                    <div class="add_name tc">Explanation</div>
+                    <div class="add_content">
+                        <textarea name="" id="" rows="10" v-model="sopContent"></textarea>
+                    </div>
+                </div>
+                <div class="ju">
+                    <div class="attachment ju al cursor">
+                        <div class="al"><img src="@/assets/img/icon-add.png" alt=""></div>
+                        <div class="bold " @click="sopAdd">Add Attachment</div>
+                    </div>
+                </div>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-
+import { deleteByBatch, sopAdd } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -138,6 +246,10 @@ export default {
             {name:'Terms & Conditions'}, {name:'Other'}, {name:'Chat with Admin', path: '/chat'} ],
             platform: localStorage.getItem('platform'),
             router: 'glass',
+            dialogVisible: false,
+            loading: false,
+            sop_Title: '',
+            sopContent: ''
         }
     },
     created () {
@@ -146,18 +258,33 @@ export default {
     mounted () {
         this.$nextTick(() => {
             let name = this.$route.name
-            console.log(name)
             this.router = name
         })
     },
     watch: {
-       newMsg_dot: {
+        newMsg_dot: {
             handler (val) {
                 if (val) {
                     this.newMsg_dot = val
                 }
             }
-        }
+        },
+        ids: {
+            handler (val) {
+                if (val) {
+                    this.ids = val
+                }
+            }
+        },
+        show_edit: {
+            handler (val) {
+                if (val) {
+                    this.show_edit = val
+                } else {
+                    this.show_edit = val
+                }
+            }
+        },
     },
     computed: {
         newMsg_dot: {
@@ -165,10 +292,85 @@ export default {
             set (val) {
                 this.$store.commit('setUser', { key: 'newMsg_dot', value: val })
             }
-        }
+        },
+        ids: {
+            get () { return this.$store.state.user.ids },
+            set (val) {
+                this.$store.commit('setUser', { key: 'ids', value: val })
+            }
+        },
+        editsop: {
+            get () { return this.$store.state.user.editsop },
+            set (val) {
+                this.$store.commit('setUser', {
+                    key: 'editsop',
+                    value: val
+                })
+            }
+        },
+        show_edit: {
+            get () { return this.$store.state.user.show_edit },
+            set (val) {
+                this.$store.commit('setUser', { key: 'show_edit', value: val })
+            }
+        },
     },
     methods: {
-        
+        edit () {
+            this.$store.commit('setUser', {
+                key: 'editsop',
+                value: true
+            })
+        },
+        save () {
+            this.$store.commit('setUser', {
+                key: 'editsop',
+                value: false
+            })
+        },
+        add () {
+            this.dialogVisible = true
+        },
+        deletesop () {
+            let data = {ids: this.ids}
+            deleteByBatch(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$refs.sop.getsopList()
+                }
+            })
+        },
+        sopAdd () {
+            this.loading = true
+            let data = {
+                sopTitle: this.sop_Title,
+                userId: localStorage.getItem('userId'),
+                sopContent: this.sopContent,
+                sopImage: ''
+            }
+            sopAdd(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: 'Successfully add'
+                    })
+                    this.dialogVisible = false
+                    this.$refs.sop.getsopList()
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: 'Failed add!'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: 'Failed add!'
+                })
+            })
+        }
     }
 }
 </script>

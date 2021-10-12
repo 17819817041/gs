@@ -1,7 +1,7 @@
 export default {
     state: {
         remoteStream: {},
-        localStream: {}
+        localStream: {},
     },
     mutations: {
         setApp (state,data) {
