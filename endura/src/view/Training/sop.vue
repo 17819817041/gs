@@ -51,7 +51,6 @@ import { sopList } from "@/axios/request.js"
 export default {
     data () {
         return {
-            loading: false,
             pageNum: 1,
             ids: ''
         }
@@ -68,7 +67,12 @@ export default {
                     this.sopList = val
                 }
             }
-        }
+        },
+        loading: {
+            handler (val) {
+                    this.loading = val
+            }
+        },
     },
     created () {
         this.getsopList()
@@ -101,7 +105,16 @@ export default {
                 })
             }
         },
-        default_img () { return this.$store.state.user.default_img }
+        default_img () { return this.$store.state.user.default_img },
+        loading: {
+            get () { return this.$store.state.user.loading_doc },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "loading_doc",
+                    value: val
+                })
+            }
+        },
     },
     methods: {
         stepDetail (item) {

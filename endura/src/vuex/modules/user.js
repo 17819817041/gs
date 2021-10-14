@@ -527,7 +527,6 @@ export default {
             })
         },
         getsopList (store,data) {
-            this.loading = true
             store.commit("setUser",{ key: "loading_doc", value: true })
             sopList(data).then(res => {
                 console.log(res)

@@ -188,7 +188,7 @@
                             <div class="search_btn al ju cursor" @click="search">
                                 Search
                             </div>
-                            <el-input style="transform:scale(1);border:none;" v-model="inp" @keyup.enter.native="search" @change="search1"
+                            <el-input style="transform:scale(1);border:none;" v-model="inp" @keyup.enter.native="search" @input="search1"
                             prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
                         </div>
                         <div class="cursor edit1 ju al" v-show="!editsop" @click="edit">
@@ -421,10 +421,19 @@ export default {
         },
         search () {
             let data = {
-                search: this.inp
+                search: this.inp,
+                doctorId: localStorage.getItem('userId')
             }
+            this.$store.commit("setUser", {
+                key: "loading_doc",
+                value: true
+            })
             sopsearch(data).then(res => {
                 console.log(res)
+                this.$store.commit("setUser", {
+                    key: "loading_doc",
+                    value: false
+                })
                 if (res.data.rtnCode == 200) {
                     this.$store.commit("setUser",{ key: "sopList", value: [] })
                     this.$store.commit("setUser",{ key: "sopList", value: res.data.data })
@@ -432,7 +441,10 @@ export default {
                     this.$store.commit("setUser",{ key: "sopList", value: [] })
                 }
             }).catch(e => {
-
+                this.$store.commit("setUser", {
+                    key: "loading_doc",
+                    value: false
+                })
             })
         },
         search1 () {

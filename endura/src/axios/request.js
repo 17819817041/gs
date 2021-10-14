@@ -700,4 +700,12 @@ export function glassUser (data) {            //判断眼镜绑定状态
         method: "POST",
         params: data
     })
+}   
+
+export function stepSearch (data) {            //视屏或图片搜索
+    return request({
+        url: '/sopDetails/search',
+        method: "POST",
+        params: data
+    })
 } 

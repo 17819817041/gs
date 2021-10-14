@@ -234,6 +234,10 @@
     .el_checkvue {
         padding: 0 5px;
     }
+    .nodata {
+        padding-top: 50px;
+        font-size: 23px;
+    }
 </style>
 <template>
     <div class="editstep sb bar" v-loading='loading'>
@@ -284,7 +288,8 @@
                 </div>
             </div>
             <div class="step_item">
-                <div :class="['item flex', {background: B == index.number}]" v-for="(index,i) in sopDetail.sopStepList" :key="i" @click="cut(index)" v-show="editShow">
+                <div :class="['item flex', {background: B == index.number}]" 
+                v-for="(index,i) in sopDetail.sopStepList" :key="i" @click="cut(index)" v-show="editShow">
                     <div class="showImg ju al"> Step{{index.number}} </div>
                     <div class="title_c">
                         <div>{{index.title}}</div>
@@ -310,15 +315,15 @@
             width="1100px">
             <div slot='title' class="flex al">
                 <h2>Selected {{step}} Step</h2>
-                <!-- <div class="input" >
+                <div class="input" style="margin-left: 30px">
                     <div class="search_btn al ju cursor" @click="search">
                         Search
                     </div>
-                    <el-input style="transform:scale(1);border:none;" v-model="inp" @keyup.enter.native="search"
+                    <el-input style="transform:scale(1);border:none;" v-model="inp" @keyup.enter.native="search" @input="search1"
                     prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
-                </div> -->
+                </div>
             </div>
-            <div class="wrap_step mg clear">
+            <div class="wrap_step mg clear" v-loading='dialoading' v-if="videoList[0]">
                 <div class="videoList_item_wrap float" v-for="(item,i) in videoList" :key="i">
                     <div class="t_message flex al mg">
                         <div class="t_header ju al">
@@ -332,7 +337,7 @@
                         </div>
                     </div>
                     <div class="t_content">
-                        <div class="TITLE tc bold">{{item.title}}</div>
+                        <div class="TITLE tc bold">{{item.title}} <span style="color:white;">-</span> </div>
                         <div class="content_item bar">
                             {{item.content}}
                         </div>
@@ -349,6 +354,9 @@
                     </div>
                 </div>
             </div>
+            <div class="wrap_step mg nodata bold tc" v-else  v-loading='dialoading'>
+                No data!
+            </div>
             <span slot="footer" class="dialog-footer flexEnd">
                 <div class="cursor edit1 ju al" style="margin: 0 25px;" @click="sopStepUpdate">
                     <div class="al"><img src="@/assets/img/add1.png" alt=""></div>
@@ -360,7 +368,7 @@
 </template>
 
 <script>
-import { getSopStep, getListByPage, sopStepUpdate } from "@/axios/request.js"
+import { getSopStep, getListByPage, sopStepUpdate, stepSearch } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -369,6 +377,7 @@ export default {
             show: false,
             inp: '',
             loading: false,
+            dialoading: false,
             editShow: true,
             pageNum: 1,
             B: 1,
@@ -402,6 +411,14 @@ export default {
     },
     methods: {
         add () {
+            if (this.inp != '') {
+                this.inp = ''
+                this.getVideo()
+            } else {
+                this.videoList.forEach(item => {
+                    item.change = false
+                })
+            }
             this.dialogVisible = true
         },
         check (item) {
@@ -422,10 +439,43 @@ export default {
             }
         },
         search () {
-
+            let data = {
+                doctorId: localStorage.getItem('userId'),
+                glassUserId: localStorage.getItem('glassId'),
+                search: this.inp
+            }
+            this.dialoading = true
+            stepSearch(data).then(res => {
+                console.log(res)
+                this.dialoading = false
+                if (res.data.rtnCode == 200) {
+                    this.videoList = res.data.data
+                } else if (res.data.rtnCode == 201) {
+                    this.videoList = []
+                    this.$message({
+                        type: 'warning',
+                        message: 'No data!'
+                    })
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: 'No data!'
+                    })
+                    this.videoList = []
+                }
+            }).catch(e => {
+                this.dialoading = false
+                this.$message({
+                    type: 'error',
+                    message: 'Failed load!'
+                })
+            })
         },
         edit () {
             this.copyList = JSON.parse(JSON.stringify(this.sopDetail))
+            this.checkList.sopStepList.forEach(item => {
+                item.checked = false
+            })
             // this.copyList = [...this.copyList]
             this.editShow = false
         },
@@ -483,12 +533,20 @@ export default {
             item.checked = !item.checked
             if (item.checked) {
                 this.copyList.sopStepList.splice(i,1)
+                this.copyList.sopStepList.forEach(item => {
+                    item.number -=1
+                })
             } else {
                 this.copyList.sopStepList.splice(i,0,item)
+                this.copyList.sopStepList[i].number -= 1
+                this.copyList.sopStepList.forEach(item => {
+                    item.number +=1
+                })
             }
         },
         delitem () {
             this.copyList.sopStepList.forEach(item => {
+                // item.number -=1
                 delete item.checked
             })
             this.dialogVisible = false
@@ -522,7 +580,7 @@ export default {
             })
         },
         getVideo () {
-            this.loading = true
+            this.dialoading = true
             let data = {
                 doctorId: localStorage.getItem('userId') *1,
                 pageNum: this.pageNum,
@@ -531,24 +589,29 @@ export default {
                 glassUserId: localStorage.getItem('glassId')
             }
             getListByPage(data).then(res => {
-                this.loading = false
-                res.data.data.forEach(item => {
-                    item.change = false
-                    let D = new Date(item.createTime)
-                    item.createTime = D.toLocaleDateString()
-                })
+                this.dialoading = false
                 if (res.data.rtnCode == 200) {
+                    res.data.data.forEach(item => {
+                        item.change = false
+                        let D = new Date(item.createTime)
+                        item.createTime = D.toLocaleDateString()
+                    })
                     this.videoList = res.data.data
                 } else {
                     this.videoList = []
                 }
             }).catch(e => {
-                this.loading = false
+                this.dialoading = false
                 this.$message({
                     type: 'error',
                     message: 'Fail to load!'
                 })
             })
+        },
+        search1 () {
+            if (this.inp == '') {
+                this.search()
+            }
         },
         sopStepUpdate () {
             this.sopDetail.sopStepList.forEach(item => {
@@ -565,6 +628,7 @@ export default {
             sopStepUpdate(data).then(res => {
                 this.loading = false
                 if (res.data.rtnCode == 200) {
+                    this.editShow = true
                     this.getSopStep()
                     this.$message({
                         type: 'success',
