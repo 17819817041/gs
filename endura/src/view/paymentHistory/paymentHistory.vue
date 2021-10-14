@@ -1,6 +1,6 @@
 <template>
     <div class="paymentHistory paymentHistory_cus" v-loading="l_loading">
-        <div class="explan al">
+        <div class="explan al" style="padding: 17px 0;">
             <img src="@/assets/img/account.png" alt="">
             My Payment History
         </div>

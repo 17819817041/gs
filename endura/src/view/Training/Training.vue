@@ -21,14 +21,14 @@
     .support_type {
         width: 100%;
         overflow: auto;
-        height: 80%;
+        height: 90%;
     }
     .support_item {
         width: 277px;
         background: white;
         overflow: auto;
         padding: 0 15px;
-        @media screen and (max-width: 800px) {
+        @media screen and (max-width: 1510px) {
             display: none;
         }
     }
@@ -44,13 +44,13 @@
     }
     .last {background: #B45E58;}
     .support_introduce {
-        width: calc(100% - 320px);
+        width: calc(100% - 280px);
         // background:rgb(255, 255, 255);
         margin-left: 10px;
         color: @support;
         height: 100%;
         overflow: auto;
-        @media screen and (max-width: 800px) {
+        @media screen and (max-width: 1510px) {
             margin-left: 0px;
             width: 100%;
         }
@@ -73,7 +73,7 @@
     }
     .navMenu {
         display: none;
-        @media screen and (max-width: 800px) {
+        @media screen and (max-width: 1510px) {
             display: block;
         }
     }
@@ -136,6 +136,26 @@
             resize: none;
         }
     }
+    .input {
+        border: solid 1px rgb(182, 182, 182);
+        background: white;
+        border-radius: 30px;
+        overflow: hidden;
+        width: 307px;
+        position: relative;
+        .search_btn {
+            position: absolute;
+            right: 0px;
+            top: 0;
+            height: 100%;
+            color: white;
+            font-size: 13px;
+            padding: 0 5px;
+            border-radius: 0 30px 30px 0;
+            background: gray;
+            z-index: 400;
+        }
+    }
     .attachment {
         padding: 9px 0px;
         width: 200px;
@@ -162,7 +182,15 @@
                         </div> -->
                         <div class="explan bold"> Training </div>
                     </div>
-                    <div  v-show="show_edit">
+                    <div  v-show="show_edit" style="width: 100%" class="sb">
+                        <div></div>
+                        <div class="input" >
+                            <div class="search_btn al ju cursor" @click="search">
+                                Search
+                            </div>
+                            <el-input style="transform:scale(1);border:none;" v-model="inp" @keyup.enter.native="search" @change="search1"
+                            prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
+                        </div>
                         <div class="cursor edit1 ju al" v-show="!editsop" @click="edit">
                             <div class="al"><img src="@/assets/img/edit.png" alt=""></div>
                             <div class="size14 bold">Edit</div>
@@ -237,29 +265,32 @@
 </template>
 
 <script>
-import { deleteByBatch, sopAdd } from "@/axios/request.js"
+import { deleteByBatch, sopAdd , sopsearch} from "@/axios/request.js"
 export default {
     data () {
         return {
             T_userId: localStorage.getItem('userId'),
-            nav: [ {name:'Top Questions'}, {name:'Registration and Login', path: '/RegistrationAndLogin'}, {name:'Petavi First Aid'}, {name:'Setting'}, {name:'Payment'}, 
-            {name:'Terms & Conditions'}, {name:'Other'}, {name:'Chat with Admin', path: '/chat'} ],
+            nav: [ {name:'Glasses state', path: '/glass'}, {name:'Uploaded video', path: '/videoList'}, {name:'Uploaded image'}, {name:'imageList',path: 'imageList'}, {name:'Upload files', path: 'uploadFiles'}, 
+            {name:'SOP', path: '/sop'}],
             platform: localStorage.getItem('platform'),
             router: 'glass',
             dialogVisible: false,
             loading: false,
             sop_Title: '',
-            sopContent: ''
+            sopContent: '',
+            inp: ''
         }
     },
     created () {
-        
+        // let name = this.$route.name
+        // this.router = name
     },
     mounted () {
-        this.$nextTick(() => {
-            let name = this.$route.name
-            this.router = name
-        })
+            
+    },
+    updated () {
+        let name = this.$route.name
+        this.router = name
     },
     watch: {
         newMsg_dot: {
@@ -332,12 +363,29 @@ export default {
             this.dialogVisible = true
         },
         deletesop () {
+            this.loading = true
             let data = {ids: this.ids}
             deleteByBatch(data).then(res => {
                 console.log(res)
+                this.loading = false
                 if (res.data.rtnCode == 200) {
                     this.$refs.sop.getsopList()
+                    this.$message({
+                        type: 'success',
+                        message: 'Sucessfully Delete!'
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: 'Failed Delete!'
+                    })
                 }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: 'Failed Delete!'
+                })
             })
         },
         sopAdd () {
@@ -370,6 +418,27 @@ export default {
                     message: 'Failed add!'
                 })
             })
+        },
+        search () {
+            let data = {
+                search: this.inp
+            }
+            sopsearch(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$store.commit("setUser",{ key: "sopList", value: [] })
+                    this.$store.commit("setUser",{ key: "sopList", value: res.data.data })
+                } else {
+                    this.$store.commit("setUser",{ key: "sopList", value: [] })
+                }
+            }).catch(e => {
+
+            })
+        },
+        search1 () {
+            if (this.inp == '') {
+                this.search()
+            }
         }
     }
 }

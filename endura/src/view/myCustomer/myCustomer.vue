@@ -7,13 +7,14 @@
                     <div class="wrap_item float" v-for="(item,i) in getDoctorMedicalLimitList" :key="i" @click="toPatients(item)">
                         <div class="flex al">
                             <div class="ju al Personal">
-                                <img class="personal_img" style="height:100%;" v-if="item.image" :src="item.image? item.image: null " alt="">
+                                <img class="personal_img" style="height:100%;" 
+                                v-if="item.familyMember.headImg" :src="item.familyMember.headImg? item.familyMember.headImg: null " alt="">
                                 <img style="height:100%;" v-else :src="default_img" alt="">
                             </div>
                             <div class="name">
-                                <div class="size18 petName flex" v-if="item.name">
+                                <div class="size18 petName flex" v-if="item.familyMember.name">
                                     <div class="address_img"></div>
-                                    <div>{{item.name? item.name: "No Name"}}</div>
+                                    <div>{{item.familyMember.name? item.familyMember.name: "No Name"}}</div>
                                 </div>
                                 <div class="size18 flex" v-else>
                                     <div class="address_img"></div>
@@ -21,7 +22,7 @@
                                 </div>
                                 <div class="size_14 flex">
                                     <div class="address_img"></div>
-                                    <div>{{item.petId? item.petId: 'No Id'}}</div>
+                                    <div>{{item.familyMember.userId? item.familyMember.userId: 'No Id'}}</div>
                                 </div>
                                 <div class="address flex">
                                     <div><img class="address_img" src="@/assets/img/location.png" alt=""></div>
@@ -44,24 +45,20 @@
                 <div class="petDetails">
                     <div class="petDetails_item">
                         <div class="Title sb">
-                            <div class="size19">Pet Details</div>
+                            <div class="size19">Family Member Details</div>
                         </div>
                         <div class="ju mg al PET_IMG">
-                            <img class="Img" :src="petAndUser.petHeadUrl" alt="" v-if="petAndUser.petHeadUrl">
+                            <img class="Img" :src="petAndUser.familyMemberHeadUrl" alt="" v-if="petAndUser.familyMemberHeadUrl">
                             <img style="height:75%;" v-else :src="d_img" alt="">
                             <!-- <i class=" el-icon-picture-outline Icon" style="font-size:60px;color:gray;" v-else></i> -->
                         </div>
                         <div class="pet_information">
-                            <div class="pet_name size19" v-if="petAndUser.petName">{{petAndUser.petName}}</div>
+                            <div class="pet_name size19" v-if="petAndUser.familyMemberName">{{petAndUser.familyMemberName}}</div>
                             <div class="pet_name size19" v-else>No Name</div>
-                            <div class="size15bl">Pet ID : {{petAndUser.petId}}</div>
-                            <div class="size15bl">Age : {{petAndUser.petAge}}</div>
-                            <div class="size15bl">Sex : {{petAndUser.petGenderName}}</div>
-                            <div class="size15bl">neutered status : 
-                                <span v-if="petAndUser.neuteredState == 1">Sterilization</span> 
-                                <span v-else-if="petAndUser.neuteredState == 2">Unneutered</span> 
-                            </div>
-                            <div class="size15bl">Weight : {{petAndUser.petWeight}}kg</div>
+                            <div class="size15bl">User ID : {{petAndUser.familyMemberId}}</div>
+                            <div class="size15bl">Age : {{petAndUser.familyMemberAge}}</div>
+                            <div class="size15bl">Sex : {{petAndUser.familyMemberGenderName}}</div>
+                            <div class="size15bl">Weight : {{petAndUser.familyMemberWeight}}kg</div>
                         </div>
                         <!-- <div class="petMore te cursor"><span>More...</span></div> -->
                     </div>
@@ -202,7 +199,7 @@
 </template>
 
 <script>
-import { getUserByPetId, getPetMedicalRecord, s_online } from "@/axios/request.js"
+import { getUserByPetId, getPetMedicalRecord, s_online, getUserDetailsAndFamilyListByUserId } from "@/axios/request.js"
 import image from '@/assets/img/default.png'
 export default {
     data () {
@@ -326,12 +323,13 @@ export default {
             } else {
                 this.loading = true
                 getPetMedicalRecord(data).then(res => {
+                    console.log(res)
                     this.loading = false
                     if (res.data.rtnCode == 200) {
                         // this.getDoctorMedicalLimitList = res.data.data.pageT
                         this.totalRecordsCount = res.data.data.totalRecordsCount
                         this.$store.commit("medicalAdd", res.data.data.pageT)
-                        let id = res.data.data.pageT[0].petId
+                        let id = res.data.data.pageT[0].familyMember.id
                         this.getUserByPetId(id)
                     } else {
                         this.getDoctorMedicalLimitList = null
@@ -361,7 +359,7 @@ export default {
         },
         getUserByPetId (id) {
             let data = {
-                petId: id
+                familyMemberId: id
             }
             this.p_loading = true
             getUserByPetId(data).then(res => {
@@ -384,13 +382,13 @@ export default {
                 })
             })
         },
-        toPatients (item,i) {
-            this.getUserByPetId(item.petId)
-            this.drawer = !this.drawer
+        toPatients (item) {
+            this.getUserByPetId(item.familyMember.id)
+            // this.drawer = !this.drawer
         },
         moreDetail () {
             if (this.changePage) {
-                this.$router.push("/patients?id=" + this.petAndUser.petId)
+                this.$router.push("/patients?id=" + this.petAndUser.familyMemberId)
             } else {
 
             }

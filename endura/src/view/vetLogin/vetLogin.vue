@@ -184,14 +184,14 @@ export default {
                 // email:'972307875@qq.com',
                 // password:'123'
 
-                 platform:2,
-                email:'2@qq.com',
-                password:'123'
+                //  platform:2,
+                // email:'2@qq.com',
+                // password:'123'
 
 
-                // platform:2,
-                // email:'',
-                // password:''
+                platform:2,
+                email:'',
+                password:''
 
             }
         }

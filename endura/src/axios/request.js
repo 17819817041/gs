@@ -293,7 +293,7 @@ export function getDoctorByLocationId (data) {    //根据地区id获取所在�
 
 export function getUserByPetId (data) {            //宠物id获取客户?petId=45
     return request({
-        url: "/userDetailsAndPetList/getUserAndPet",
+        url: "/userDetailsAndFamilyList/getUserAndFamily",
         method: "POST",
         params: data
     })
@@ -429,14 +429,6 @@ export function paymentRecord (data) {            //付款记录
 export function getDoctorMedicalLimit (data) {            //医生治疗记录
     return request({
         url: "/pet/getDoctorMedicalLimit",
-        method: 'POST',
-        params: data
-    })
-}
-
-export function getPetMedicalRecord (data) {            //医生治疗记录
-    return request({
-        url: "/PetMedicalRecord/getPetMedicalRecordPageByDocId",
         method: 'POST',
         params: data
     })
@@ -637,4 +629,75 @@ export function getListByPage (data) {           // 获取视频列表
             params: data
         }
     )
+} 
+
+export function getSopStep (data) {           // 根据sopId 获取 sop步骤列表
+    return request(
+        {
+            url: '/sopStep/getSopStep',
+            method: "POST",
+            params: data
+        }
+    )
+}
+
+export function sopStepUpdate (data) {           // 更新步骤
+    return request(
+        {
+            url: '/sopStep/update',
+            method: "POST",
+            data: data
+        }
+    )
+}
+
+export function unBinding (data) {           // 眼镜解绑
+    return request(
+        {
+            url: '/binding/unBindingByUserId',
+            method: "POST",
+            params: data
+        }
+    )
+}
+
+export function getPetMedicalRecord (data) {            //医生治疗记录
+    return request({
+        url: "/FamilyMedicalRecord/getFamilyMedicalRecordPageByDocId",
+        method: 'POST',
+        params: data
+    })
+}
+
+export function getUserDetailsAndFamilyListByUserId (data) {            //id获取客户?petId=45
+    return request({
+        // url: "/userDetailsAndPetList/getUserAndPet",
+        url: '/userDetailsAndFamilyList/getUserDetailsAndFamilyListByUserId',
+        method: "POST",
+        params: data
+    })
+}  
+
+export function sopsearch (data) {            //sop搜索
+    return request({
+        url: '/sop/search',
+        method: "POST",
+        params: data
+    })
+}  
+
+export function sopupdate (data) {            //sop更新
+    return request({
+        url: '/sopDetails/update',
+        method: "POST",
+        params: data
+    })
+}    
+
+export function glassUser (data) {            //判断眼镜绑定状态
+    return request({
+        url: '/glassUser/getGlassUserByUserId',
+        method: "POST",
+        params: data
+    })
 } 

@@ -1,7 +1,7 @@
 import axios from "axios"
-window.baseURL = 'http://47.52.255.24:9015/api'
+// window.baseURL = 'http://47.52.255.24:9015/api'
 // window.baseURL = 'https://petavi.top/api'
-// window.baseURL = 'https://endura.fun/api'
+window.baseURL = 'https://endura.fun/api'
 // window.baseURL = '/api'
 // window.baseURL = 'http://192.168.9.27:9015/api'
 

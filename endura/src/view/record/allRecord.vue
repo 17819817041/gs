@@ -219,7 +219,7 @@
         <div class="recordContent">
             <div class="recordContent_item noBar">
                 <div class="itemChild mg">
-                    <div class="explan bold al">
+                    <div class="explan bold al" style="padding: 17px 0;">
                         <img src="@/assets/img/recordImg.png" alt="">
                         Medical Record History
                     </div>

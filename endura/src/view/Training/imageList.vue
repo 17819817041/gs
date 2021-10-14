@@ -1,17 +1,21 @@
 <template>
-    <div class="videoList clear">
-        <div class="videoList_item_wrap float" v-for="item in 6" :key="item">
+    <div class="videoList clear bar" v-loading='loading'>
+        <div class="videoList_item_wrap float" v-for="(item,i) in videoList" :key="i" v-show="item.fileType == 1 && item.fileFrom == 1 && active2">
             <div class="t_message flex al mg">
-                <div class="t_header ju al"><img src="@/assets/img/smile.png" alt=""></div>
+                <div class="t_header ju al">
+                    <img src="@/assets/img/john.png" alt="">
+                    <!-- <img style="height:100%;" v-else :src="default_img" alt=""> -->
+                </div>
+                
                 <div class="t_title mg">
-                    <div class="t_file">https://baidu.be/alkshfw2684kjhkju</div>
-                    <div class="t_date">2021/6/16 22:51</div>
+                    <div class="t_file">{{item.fileUrl}}</div>
+                    <div class="t_date">{{item.createdAt}}</div>
                 </div>
             </div>
             <div class="t_content">
-                <div class="TITLE tc bold">TITLE</div>
+                <div class="TITLE tc bold">{{item.title}}</div>
                 <div class="content_item">
-                    College of Internet of Things (IOT) Engineering, Hohai University, is formerly known as Department of Electronic Engineering in College of Mechanical Engineering, Hohai University,founded in 1986. The college’s name was changed to College of Computer Science and Information Engineering (Changzhou) in 2009 and its name was changed to College of Computer Science and Information (Changzhou) in 2009 respectively, finally the college name was changed to College of Internet of Things Engineering in November 2012.
+                     {{item.content}}
                 </div>
                 <div class="flexEnd">
                     <span class="edit cursor ju al" @click="edit(item)">
@@ -21,28 +25,31 @@
                 </div>
             </div>
         </div>
+        <div class="nomessage tc bold" v-show="!active2">
+            {{vdata}}
+        </div>
         <el-dialog
             :visible.sync="dialogVisible"
             width="1100px">
             <div class="sb edit_wrap">
                 <div class="i_menu">
                     <div class="menu_child">
-                        <input type="text" class="tc bold" :value="input">
+                        <input type="text" class="tc bold" v-model="obj.title">
                     </div>
                     <div class="menu_child">
-                        <textarea name="" id="" class="bold" cols="19" rows="10">
-                            College of Internet of Things (IOT) Engineering, Hohai University, is formerly known as Department of Electronic Engineering in College of Mechanical Engineering, Hohai University,founded in 1986. The college’s name was changed to College of Computer Science and Information Engineering (Changzhou) in 2009 and its name was changed to College of Computer Science and Information (Changzhou) in 2009 respectively, finally the college name was changed to College of Internet of Things Engineering in November 2012.
-                        </textarea>
+                        <textarea name="" id="" class="bold" cols="19" rows="10" v-model="obj.content"></textarea>
                     </div>
                     <div class="save_wrap flexEnd">
-                        <span class="save cursor ju al">
+                        <span class="save cursor ju al" @click="itemsave">
                             <div class="al"><img src="@/assets/img/save.png" alt=""></div>
                             <div class="size14 bold">Save</div>
                         </span>
                     </div>
                 </div>
                 <div class="i_video">
-
+                    <div class="mp4 ju al">
+                        <img style="height: 100%;" :src="obj.fileUrl" alt="">
+                    </div>
                 </div>
             </div>
         </el-dialog>
@@ -50,23 +57,103 @@
 </template>
 
 <script>
+import { getListByPage, sopupdate } from "@/axios/request.js"
 export default {
     data () {
         return {
+            active: false,
             dialogVisible: false,
-            input: 'TITLE'
+            input: 'TITLE',
+            pageNum: 1,
+            loading: false,
+            videoList: [],
+            obj: {},
+            active2: true,
+            vdata: 'No data!',
+            id: 0,
         }  
+    },
+    computed: {
+        default_img () { return this.$store.state.user.default_img }
+    },
+    created () {
+        this.getVideo()
     },
     methods: {
         edit (item) {
+            this.videoSrc = ''
+            this.id = item.id
+            this.active = false
             console.log(item)
+            this.obj = item
+            this.videoSrc = item.fileUrl
             this.dialogVisible = true
+            this.$nextTick(() => {
+                this.active = true
+            })
         },
+        itemsave () {
+            let data = {
+                id: this.id,
+                title: this.obj.title,
+                content: this.obj.content
+            }
+            sopupdate(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.dialogVisible =false
+                }
+            })
+        },
+        getVideo () {
+            this.loading = true
+            let data = {
+                doctorId: localStorage.getItem('userId') *1,
+                pageNum: this.pageNum,
+                pageSize: 15,
+                glassUserId: localStorage.getItem('glassId'),
+                fileType: 2            //1 video    2 image    3 all file
+            }
+            getListByPage(data).then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    res.data.data.forEach(item => {
+                        let D = new Date(item.createTime)
+                        item.createTime = D.toLocaleDateString()
+                    })
+                    this.videoList = res.data.data
+                } else if (res.data.rtnCode == 201) {
+                    this.active2 = false
+                    this.vdata = 'Please bind glasses!'
+                    this.videoList = []
+                    this.$message({
+                        type: 'warning',
+                        message: 'No data!'
+                    })
+                } else {
+                    this.active2 = false
+                    this.videoList = []
+                }
+            }).catch(e => {
+                this.loading = false
+                this.active2 = false
+                this.$message({
+                    type: 'error',
+                    // message: 'Fail to load!'
+                    message: 'No Data!'
+                })
+            })
+        }
     }
 }
 </script>
 
 <style lang='less' scoped>
+    .videoList {
+        height: 100%;
+        overflow: auto;
+    }
     .videoList_item_wrap {
         width: 46%;
         margin: 0px 2% 20px 2%;
@@ -155,6 +242,8 @@ export default {
         margin-top: 20px;
         text-decoration: underline;
         line-height: 30px;
+        min-height: 200px;
+        max-height: 200px;
     }
     .edit {
         padding: 0px 10px;
@@ -173,5 +262,16 @@ export default {
             padding-right: 3px;
             width: 20px;
         }
+    }
+    .mp4 {
+        width: 100%;
+        height: 100%;
+    }
+    .nomessage {
+        font-size: 30px;
+        width: 100%;
+        height: 100%;
+        padding-top: 60px;
+        background: white;
     }
 </style>

@@ -30,7 +30,7 @@ conn.listen({
         // console.log("close登出")
     },         //连接关闭回调
     onTextMessage: function ( e ) {
-        // console.log("收到消息", e)
+        console.log("收到消息", e)
         if (e.sourceMsg == 'PetaviNotice') {
             store.commit("setUser",{ key: 'noticeState', value: true })
         }
@@ -171,9 +171,10 @@ conn.listen({
         store.commit('setUser', { key: 'newMsg_dot', value: {boo: true, user: e.userId} })
     },    //收到文件消息
 
-    // onCustomMessage: function ( e ) {
-    //     console.log(e,'收到自定义消息')
-    // },  //收到自定义消息 
+    onCustomMessage: function ( e ) {
+        console.log(e,'收到自定义消息')
+        store.commit("setUser",{ key: 'glassState', value: true })
+    },  //收到自定义消息 
     // onPresence: function(msg){
     //     switch(msg.type){
     //     case 'leaveChatRoom':

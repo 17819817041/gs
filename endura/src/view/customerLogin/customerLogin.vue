@@ -202,13 +202,13 @@ export default {
                 return_scopes: true
             },
             form: {
-                platform:1,
-                email:'1257354834@qq.com',
-                password:'123'
+                // platform:1,
+                // email:'1257354834@qq.com',
+                // password:'123'
 
-                // platform: 1,
-                // email:'',
-                // password:''
+                platform: 1,
+                email:'',
+                password:''
             },
             rules: {
                 email: [

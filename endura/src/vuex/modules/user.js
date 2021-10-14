@@ -1,4 +1,4 @@
-import { petList, getUserDetails, vetDetails, doctorList, bookingUserId, notice, onlineState, balance, addMetting, s_online, joinRoom, getOnlineDocList, min } from "@/axios/request.js"
+import { petList, getUserDetails, vetDetails, doctorList, bookingUserId, notice, onlineState, balance, glassUser, joinRoom, sopList, getOnlineDocList, min } from "@/axios/request.js"
 import router from "@/router/router/router.js"
 import {conn, WebIM} from "@/assets/js/websdk.js"
 export default {
@@ -65,6 +65,7 @@ export default {
         balance: {},
         default_img:'',
         setTime_S: false,
+        glassState: {},
         adminList: {
             'admin': {
                 messageList: [
@@ -81,7 +82,8 @@ export default {
         deviceId: null,
         editsop: false,
         show_edit: false,
-        ids: ''
+        ids: '',
+        sopList: []
     },
     mutations: {
         setUser (state,data) {
@@ -154,6 +156,7 @@ export default {
                             userId: localStorage.getItem('userId')
                         }
                         store.dispatch('getBalance', ban)
+                        store.dispatch('glassUser')
                         let page = {
                             pageNum: 1
                         }
@@ -219,6 +222,7 @@ export default {
                         }
                         store.commit("setUser",{ key: "userDetail", value: res.data.data }) 
                         store.commit("setUser",{ key: "login", value: true }) 
+                        store.dispatch('glassUser')
                         store.dispatch("IMLogin")
                         store.dispatch("joinRoom")
                         let page = {
@@ -339,6 +343,7 @@ export default {
             }
             store.commit("setUser",{ key: "loading_doc", value: true })
             doctorList(doctor).then(res => {
+                console.log(res)
                 store.commit("setUser",{ key: "loading_doc", value: false })
                 if (res.data.rtnCode == 200) {
                     store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
@@ -387,6 +392,8 @@ export default {
                     store.commit("setUser", { key: "doctorList", value: c.concat(b) })
                     store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
                     store.commit("setUser", { key: 'mask', value: store.state.doctorList[0] } )
+                } else if (res.data.rtnCode == 202) {
+                    store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
                 } else {
                     store.commit("setUser", { key: 'vDetail', value: '' } )
                     store.commit("setUser", { key: 'mask', value: '' } )
@@ -477,6 +484,66 @@ export default {
             }
             joinRoom(data_j).then(res => {
             })
-        }
+        },
+        glassUser (store) {
+            let data = {
+                userId: localStorage.getItem('userId')
+            }
+            glassUser(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    store.commit('setUser', { key: 'glassState', value: {
+                        id: res.data.data.id,
+                        power: res.data.data.quantityOfElectricity *1,
+                        model: res.data.data.phoneModelId,
+                        state: true
+                    } })
+                    localStorage.setItem('glassId', res.data.data.id)
+                } else if (res.data.rtnCode == 201) {
+                    store.commit('setUser', { key: 'glassState', value: {
+                        id: 0,
+                        power: '',
+                        state:false,
+                        model: ''
+                    } })
+                    localStorage.setItem('glassId', 0)
+                } else {
+                    store.commit('setUser', { key: 'glassState', value: {
+                        id: 0,
+                        power: '',
+                        state: false,
+                        model: ''
+                    } })
+                    localStorage.setItem('glassId', 0)
+                }
+            }).catch(e => {
+                store.commit('setUser', { key: 'glassState', value: {
+                    id: 0,
+                    power: '',
+                    model: '',
+                    state: false
+                } })
+                localStorage.setItem('glassId', 0)
+            })
+        },
+        getsopList (store,data) {
+            this.loading = true
+            store.commit("setUser",{ key: "loading_doc", value: true })
+            sopList(data).then(res => {
+                console.log(res)
+                store.commit("setUser",{ key: "loading_doc", value: false })
+                if (res.data.rtnCode == 200) {
+                    res.data.data.pageT.forEach(child => {
+                        child.checked = false
+                    })
+                    store.commit("setUser",{ key: "sopList", value: res.data.data.pageT })
+                } else {
+                    store.commit("setUser",{ key: "sopList", value: [] })
+                }
+            }).catch(e => {
+                store.commit("setUser",{ key: "loading_doc", value: false })
+                store.commit("setUser",{ key: "sopList", value: [] })
+            })
+        },
     }
 }

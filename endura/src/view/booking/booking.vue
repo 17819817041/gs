@@ -30,7 +30,7 @@
                         </div>
                     </el-form-item>
                     <el-form-item prop="pet">
-                        <el-select v-model="form.pet" placeholder="Select pet" @change="getPetId">
+                        <el-select v-model="form.pet" placeholder="Select member" @change="getPetId">
                             <el-option v-for="(item,i) in petSelect" :key="i" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                     </el-form-item>

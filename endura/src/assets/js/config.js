@@ -3,8 +3,7 @@ export default {
 
     restServer: '//a31.easemob.com',               // rest Server地址
         
-    // appkey: '1130201110157617#security',// App key
-    appkey: '1130201110157617#petavi',// App key
+    appkey: '1130201110157617#security',// App key
 
     https : true,                            // 是否使用https
 

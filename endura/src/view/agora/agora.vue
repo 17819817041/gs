@@ -1400,7 +1400,6 @@ export default {
                 roomNumber: 'petavi_' + localStorage.getItem('sroom')
             }
             getAgoraToken(data).then(res => {
-                console.log(res,'医生加入')
                 if (res.data.rtnCode == 200) {
                     this.initRtc({
                         token: res.data.data,
@@ -1755,10 +1754,6 @@ export default {
         },
         logout () {
             this.$store.dispatch("logout", this)
-            // var auth2 = gapi.auth2.getAuthInstance();
-            // auth2.signOut().then(function(res) {
-            //     console.log(res)
-            // });
         },
         notice () {
             if (localStorage.getItem("platform") == 1) {
@@ -1769,46 +1764,6 @@ export default {
         },
         initRtc (data) {
             Agora.getDevices(function (items) {
-                // items.filter(function (item) {
-                //     return ["audioinput", "videoinput"].indexOf(item.kind) !== -1
-                // })
-                // .map(function (item) {
-                //     return {
-                //         name: item.label,
-                //         value: item.deviceId,
-                //         kind: item.kind,
-                //     }
-                // })
-                // var videos = []
-                // var audios = []
-                // for (var i = 0; i < items.length; i++) {
-                // var item = items[i]
-                // if ("videoinput" == item.kind) {
-                //     var name = item.label
-                //     var value = item.deviceId
-                //     if (!name) {
-                //         name = "camera-" + videos.length
-                //     }
-                //     videos.push({
-                //         name: name,
-                //         value: value,
-                //         kind: item.kind
-                //     })
-                // }
-                // if ("audioinput" == item.kind) {
-                //     var name = item.label
-                //     var value = item.deviceId
-                //     if (!name) {
-                //         name = "microphone-" + audios.length
-                //     }
-                //     audios.push({
-                //         name: name,
-                //         value: value,
-                //         kind: item.kind
-                //     })
-                // }
-                // }
-                // next({videos: videos, audios: audios})
             })
             this.rtc.client = Agora.createClient({mode: "live", codec: "h264"})
             initRtc(this.rtc)

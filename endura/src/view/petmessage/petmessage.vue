@@ -70,8 +70,8 @@
             <myHeaderL></myHeaderL>
         </div>
         <div class="fillIn noBar">  <!-- 填写信息 -->
-            <div class="message_title size21 tc">About the pet</div>
-            <div class="size12 tc">Add your pet details</div>
+            <div class="message_title size21 tc">About the family member</div>
+            <div class="size12 tc">Add your family member details</div>
             <div class="message_form">
                 <el-form :rules="rules" ref="form" :model="addPetMessage" :label-position="position" label-width="80px">
                     <el-form-item prop="image">
@@ -94,7 +94,7 @@
                         </div>
                     </el-form-item>
                     <el-form-item prop="name">
-                        <el-input placeholder="Pet Name" v-model="addPetMessage.name"></el-input>
+                        <el-input placeholder="Name" v-model="addPetMessage.name"></el-input>
                     </el-form-item>
                     <div class="sb textcolor">
                         <div style="width:50%">Age</div>
@@ -142,7 +142,16 @@
                         </el-form-item>
                     </div>
                     <el-form-item prop="petType">
-                        <el-cascader class="width100" :options="options" @change="cascader" placeholder="Relations"></el-cascader>
+                        <el-select v-model="addPetMessage.familyRelations">
+                            <el-option value="Father" label="Father"></el-option>
+                            <el-option value="Mather" label="Mather"></el-option>
+                            <el-option value="Grandfather" label="Grandfather"></el-option>
+                            <el-option value="Grandmather" label="Grandmather"></el-option>
+                            <!-- <el-option value="ElderBrother" label="Elder Brother"></el-option> -->
+                            <el-option value="Sister" label="Sister"></el-option>
+                            <el-option value="Brother" label="Brother"></el-option>
+                            <!-- <el-option value="YoungerSister" label="Younger Sister"></el-option> -->
+                        </el-select>
                     </el-form-item>
                     <el-form-item>
                         <el-input placeholder="Remark" v-model="addPetMessage.content"></el-input>
@@ -178,16 +187,14 @@ export default {
                 height: '',
                 weight: '',
                 content: '',
-                familyRelations: 1,
-
-                petType: ''
+                familyRelations: '',
             },
             rules: {
                 name: [
                     { required: true, message: "Please enter name!", trigger: 'blur' }
                 ],
-                petType: [
-                    { required: true, message: "Please enter petType!", trigger: 'blur' }
+                familyRelations: [
+                    { required: true, message: "Please enter relation!", trigger: 'blur' }
                 ],
                 age: [
                     { required: true, message: "Please enter age!", trigger: 'blur' }
@@ -207,46 +214,14 @@ export default {
     },
     created () {
         this.getDay()
-        this.getPetType()
     },
     computed: {
         // petStatus () { return this.$store.state.user.petList }
     },
     methods: {
-        cascader (val) {
-            this.addPetMessage.petType = val.slice(-1)[0]
-        },
-        getPetType () {
-            let data = {
-                userId: localStorage.getItem('userId'),
-                platform: localStorage.getItem('platform'),
-                token: localStorage.getItem('Token')
-            }
-            petType(data).then(res => {
-                res.data.forEach(item => {
-                    item.children.forEach(child => {
-                        child.children = []
-                    })
-                })
-                this.options = res.data
-                this.recursion(res.data)
-            })
-        },
-        recursion (key) {
-            key.forEach(item => {
-                item.label = item.petTypeName
-                item.value = item.petTypeId
-                if (item.children.length !== 0) {
-                    this.recursion(item.children)
-                } else if (item.children.length == 0) {
-                    item.children = null
-                }
-            })
-        },
         addPet () {                            
             this.loading = true                                      //添加宠物
             addPet(this.addPetMessage).then(res => {
-                // console.log(res,"添加宠物信息")
                 this.loading = false
                 if (res.data.rtnCode == 200) {
                     this.$message({
@@ -254,7 +229,8 @@ export default {
                         message: "Successfully added !"
                     })
                     setTimeout(() => {
-                    this.$router.replace('/myDoctor')
+                        // this.$router.replace('/myDoctor')
+                        this.$router.back()
                     },500)
                 } else {
                     this.$message({

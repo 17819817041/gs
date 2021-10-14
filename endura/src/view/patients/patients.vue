@@ -390,8 +390,7 @@
                                             <div v-else> --</div>
                                             <div v-if="userAndPet.userName">{{userAndPet.userName}}</div>
                                             <div v-else>No Name</div>
-                                            <div v-if="userAndPet.age">{{userAndPet.age}}</div>
-                                            <div v-else>No data</div>
+                                            <div>{{userAndPet.age}}</div>
                                             <div v-if="userAndPet.address">{{userAndPet.address}}</div>
                                             <div v-else>No address</div>
                                             <div v-if="userAndPet.moble">{{userAndPet.moble}}</div>
@@ -403,11 +402,11 @@
                                     <div class="message2_item flex ts size22 al">
                                         <div class="name2">
                                             <div>Gender</div>
-                                            <div>Preferred Vet</div>
+                                            <div>Preferred Doctor</div>
                                             <div>Remarks</div>
                                         </div>
                                         <div class="name2 mobile_msg">
-                                            <div v-if="userAndPet.petGenderName">{{userAndPet.petGenderName}}</div>
+                                            <div v-if="userAndPet.familyMemberGenderName">{{userAndPet.familyMemberGenderName}}</div>
                                             <div v-else>No data</div>
                                             <div v-if="userAndPet.preferredVetName">{{userAndPet.preferredVetName}}</div>
                                             <div v-else>No data</div>
@@ -419,10 +418,10 @@
                             </div>
                         </div>
                         <div class="details_item flex">
-                            <div class="size25 bold tc item_title2">Pet Details</div>
+                            <div class="size25 bold tc item_title2">Family Member Details</div>
                             <div class="details_image ">
                                 <div class="mg ju al">
-                                    <img class="dog_img" v-if="userAndPet.petHeadUrl" :src="userAndPet.petHeadUrl" alt="">
+                                    <img class="dog_img" v-if="userAndPet.familyMemberHeadUrl" :src="userAndPet.familyMemberHeadUrl" alt="">
                                     <img style="height: 75%;" v-else src="@/assets/img/default.png" alt="">
                                 </div>
                             </div>
@@ -430,7 +429,7 @@
                                 <div class="details_message flex size22">
                                     <div class="pet_msg_mobile">
                                         <div class="flex about">
-                                            <div>Pet ID</div>
+                                            <div>User ID</div>
                                         </div>
                                         <div class="flex about">
                                             <div>Name</div>
@@ -439,29 +438,23 @@
                                             <div>Age</div>
                                         </div>
                                         <div class="flex about">
-                                            <div>Pet Type</div>
-                                        </div>
-                                        <div class="flex about">
-                                            <div>Breed</div>
+                                            <div>Relation</div>
                                         </div>
                                     </div>
                                     <div class="mobile_msg">
                                         <div class="flex about mobile_msg">
-                                            <div class="mobile_msg" v-if="userAndPet.petId">{{userAndPet.petId}}</div>
+                                            <div class="mobile_msg" v-if="userAndPet.familyMemberId">{{userAndPet.familyMemberId}}</div>
                                         </div>
                                         <div class="flex about mobile_msg">
-                                            <div class="mobile_msg" v-if="userAndPet.petName">{{userAndPet.petName}}</div>
+                                            <div class="mobile_msg" v-if="userAndPet.familyMemberName">{{userAndPet.familyMemberName}}</div>
                                             <div class="mobile_msg" v-else>No name</div>
                                         </div>
                                         <div class="flex about mobile_msg">
-                                            <div class="mobile_msg" v-if="userAndPet.petAge">{{userAndPet.petAge}}</div>
+                                            <div class="mobile_msg" v-if="userAndPet.familyMemberAge">{{userAndPet.familyMemberAge}}</div>
                                             <div class="mobile_msg" v-else>No data</div>
                                         </div>
                                         <div class="flex about mobile_msg">
-                                            <div class="mobile_msg">{{petType}}</div>
-                                        </div>
-                                        <div class="flex about mobile_msg">
-                                            <div class="mobile_msg">{{breed}}</div>
+                                            <div class="mobile_msg">{{userAndPet.familyMemberTypeName}}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -469,9 +462,6 @@
                                     <div class="children size22 p_media">
                                         <div class="flex about">
                                             <div>Gender</div>
-                                        </div>
-                                        <div class="flex about">
-                                            <div>Neutered status</div>
                                         </div>
                                         <div class="flex about">
                                             <div>Weight</div>
@@ -482,18 +472,11 @@
                                     </div>
                                     <div class="children size22">
                                         <div class="flex about mobile_msg">
-                                            <div class="mobile_msg" v-if="userAndPet.petGenderName">{{userAndPet.petGenderName}}</div>
+                                            <div class="mobile_msg" v-if="userAndPet.familyMemberGenderName">{{userAndPet.familyMemberGenderName}}</div>
                                             <div class="mobile_msg" v-else>No data</div>
                                         </div>
                                         <div class="flex about mobile_msg">
-                                            <div class="mobile_msg">
-                                                <span v-if="userAndPet.neuteredState == 1">Sterilization</span>
-                                                <span v-else-if="userAndPet.neuteredState == 2">Unneutered</span>
-                                                <span v-else-if="userAndPet.neuteredState === null">No data</span>
-                                            </div>
-                                        </div>
-                                        <div class="flex about mobile_msg">
-                                            <div class="mobile_msg" v-if="userAndPet.petWeight">{{userAndPet.petWeight}}kg</div>
+                                            <div class="mobile_msg" v-if="userAndPet.familyMemberWeight">{{userAndPet.familyMemberWeight}}kg</div>
                                             <div class="mobile_msg" v-else>No data</div>
                                         </div>
                                         <div class="flex about mobile_msg">
@@ -604,14 +587,11 @@ export default {
             let D = new Date()
             this.today = D.toLocaleDateString()
             let data = {
-                petId: this.$route.query.id
+                familyMemberId: this.$route.query.id
             }
             getUserByPetId(data).then(res => {
                 if (res.data.rtnCode == 200) {
                     this.userAndPet = res.data.data
-                    if (this.userAndPet) {
-                        this.getPetType()
-                    }
                 }
             }).catch(e => {
                 console.log(e)
@@ -621,43 +601,12 @@ export default {
                 })
             })
         },
-        getPetType () {
-            let data = {
-                userId: localStorage.getItem('userId'),
-                platform: localStorage.getItem('platform'),
-                token: localStorage.getItem('Token')
-            }
-            petType(data).then(res => {
-                res.data.forEach(item => {
-                    item.children.forEach(child => {
-                        child.children = []
-                    })
-                })
-                this.options = res.data
-                this.TYPE()
-            })
-        },
-        TYPE () {
-            this.options.forEach(op => {
-                if (this.userAndPet.petTypeId == op.petTypeId) {
-                    this.breed = op.petTypeName
-                    this.petType = op.petTypeName
-                }
-                if (op.children) {
-                    op.children.forEach(child => {
-                        if (this.userAndPet.petTypeId == child.petTypeId) {
-                            this.breed = child.petTypeName
-                            this.petType = op.petTypeName
-                        }
-                    })
-                }
-            })
-        },
+        
         toRecord () {
             this.$router.push({
                 name: 'vetRecord',
                 query: {
-                    id: this.userAndPet.petId
+                    id: this.userAndPet.familyMemberId
                 }
             })
         },

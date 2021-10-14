@@ -1,21 +1,21 @@
 <template>
-    <div class="videoList clear" v-loading='loading'>
-        <div class="videoList_item_wrap float" v-for="item in videoList" :key="item">
+    <div class="videoList clear bar" v-loading='loading'>
+        <div class="videoList_item_wrap float" v-for="(item,i) in videoList" :key="i" v-show="item.fileType == 2 && item.fileFrom == 1 && active3">
             <div class="t_message flex al mg">
                 <div class="t_header ju al">
-                    <img src="@/assets/img/john.png" alt="">
-                    <!-- <img style="height:100%;" v-else :src="default_img" alt=""> -->
+                    <img v-if="item.doctorHead" :src="item.doctorHead" alt="">
+                    <img style="height:100%;" v-else :src="default_img" alt="">
                 </div>
                 
                 <div class="t_title mg">
                     <div class="t_file">{{item.fileUrl}}</div>
-                    <div class="t_date">2021/5/12 12:41</div>
+                    <div class="t_date"> {{item.createdAt}} </div>
                 </div>
             </div>
             <div class="t_content">
-                <div class="TITLE tc bold">TITLE</div>
+                <div class="TITLE tc bold">-{{item.title}}</div>
                 <div class="content_item">
-                    Hey guys, my name is Baba and I’m from the United States. I am ahumorous and outgoing person, you guys can also call me baba.
+                    {{item.content}}
                 </div>
                 <div class="flexEnd">
                     <span class="edit cursor ju al" @click="edit(item)">
@@ -25,28 +25,33 @@
                 </div>
             </div>
         </div>
+        <div class="nomessage tc bold" v-show="!active3">
+            {{vdata}}
+        </div>
         <el-dialog
             :visible.sync="dialogVisible"
-            width="1100px">
+            width="1125px">
             <div class="sb edit_wrap">
                 <div class="i_menu">
                     <div class="menu_child">
-                        <input type="text" class="tc bold" :value="input">
+                        <input type="text" class="tc bold" v-model="obj.title">
                     </div>
                     <div class="menu_child">
-                        <textarea name="" id="" class="bold" cols="19" rows="10">
-                            Hey guys, my name is Baba and I’m from the United States. I am ahumorous and outgoing person, you guys can also call me baba.
-                        </textarea>
+                        <textarea name="" id="" class="bold" cols="19" rows="12" v-model="obj.content"></textarea>
                     </div>
                     <div class="save_wrap flexEnd">
-                        <span class="save cursor ju al">
+                        <span class="save cursor ju al" @click="itemsave">
                             <div class="al"><img src="@/assets/img/save.png" alt=""></div>
                             <div class="size14 bold">Save</div>
                         </span>
                     </div>
                 </div>
                 <div class="i_video">
-
+                    <div class="mp4" v-if="active">
+                        <video class="video_p" :preload="preload" :poster="videoImg" :height="height" :width="width" align="center" :controls="controls" :autoplay="autoplay">
+                            <source :src="videoSrc" type="video/mp4">
+                        </video>
+                    </div>
                 </div>
             </div>
         </el-dialog>
@@ -54,7 +59,7 @@
 </template>
 
 <script>
-import { getListByPage } from "@/axios/request.js"
+import { getListByPage, sopupdate } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -62,47 +67,99 @@ export default {
             input: 'TITLE',
             pageNum: 1,
             loading: false,
-            videoList: []
+            videoList: [],
+            obj: {},
+            active3: true,
+            vdata: 'No Video!',
+            active: false,
+            id: 0,
+
+            videoSrc: '',
+            videoImg: '',
+            playStatus: '',
+            muteStatus: '',
+            isMute: true,
+            isPlay: false,
+            width: '820', // 设置视频播放器的显示宽度（以像素为单位）
+            height: '500',  // 设置视频播放器的显示高度（以像素为单位）
+            preload: 'auto',  //  建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
+            controls: true,  // 确定播放器是否具有用户可以与之交互的控件。没有控件，启动视频播放的唯一方法是使用autoplay属性或通过Player API。
+            autoplay: ''
         }  
+    },
+    watch: {
+        
     },
     computed: {
         default_img () { return this.$store.state.user.default_img }
     },
     created () {
         this.getVideo()
-        let D = new Date(1634031479000)
-        console.log(D)
     },
     methods: {
         edit (item) {
+            this.id = item.id
+            this.videoSrc = ''
+            this.active = false
             console.log(item)
+            this.obj = item
+            this.videoSrc = item.fileUrl
             this.dialogVisible = true
+            this.$nextTick(() => {
+                this.active = true
+            })
+        },
+        itemsave () {
+            let data = {
+                id: this.id,
+                title: this.obj.title,
+                content: this.obj.content
+            }
+            sopupdate(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.dialogVisible =false
+                }
+            })
         },
         getVideo () {
             this.loading = true
             let data = {
                 doctorId: localStorage.getItem('userId') *1,
                 pageNum: this.pageNum,
+                glassUserId: localStorage.getItem('glassId'),
                 pageSize: 15,
-                fileType: 2            //1 image   2 video    3 all file
+                fileType: 1            //1 image    2 video    3 all file
             }
             getListByPage(data).then(res => {
                 console.log(res)
                 this.loading = false
-                // res.data.data.forEach(item => {
-                //     let D = new Date(item.createTime)
-                //     item.createTime = D
-                // })
+                
                 if (res.data.rtnCode == 200) {
+                    res.data.data.forEach(item => {
+                    let D = new Date(item.createTime)
+                        item.createTime = D.toLocaleDateString()
+                    })
                     this.videoList = res.data.data
+                } else if (res.data.rtnCode == 201) {
+                    this.active3 = false
+                    this.vdata = 'Please bind glasses!'
+                    this.videoList = []
+                    this.$message({
+                        type: 'warning',
+                        message: 'No data!'
+                    })
                 } else {
+                    this.active3 = false
                     this.videoList = []
                 }
             }).catch(e => {
                 this.loading = false
+                this.active3 = false
                 this.$message({
                     type: 'error',
-                    message: 'Fail to load!'
+                    // message: 'Fail to load!'
+                    message: 'No Data!'
                 })
             })
         }
@@ -111,6 +168,10 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.videoList {
+        height: 100%;
+        overflow: auto;
+    }
     .videoList_item_wrap {
         width: 46%;
         margin: 0px 2% 20px 2%;
@@ -119,7 +180,7 @@ export default {
         background: white;
     }
     .edit_wrap {
-        height: 450px;
+        min-height: 450px;
     }
     .i_menu {
         width: 250px;
@@ -134,6 +195,7 @@ export default {
         height: 100%;
         border: solid 1px;
         border-radius: 18px;
+        overflow: hidden;
     }
     input {
         border: none;
@@ -199,6 +261,8 @@ export default {
         margin-top: 20px;
         text-decoration: underline;
         line-height: 30px;
+        min-height: 200px;
+        max-height: 200px;
     }
     .edit {
         padding: 0px 10px;
@@ -217,5 +281,12 @@ export default {
             padding-right: 3px;
             width: 20px;
         }
+    }
+    .nomessage {
+        font-size: 30px;
+        width: 100%;
+        height: 100%;
+        background: white;
+        padding-top: 60px;
     }
 </style>
