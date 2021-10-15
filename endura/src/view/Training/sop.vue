@@ -1,5 +1,5 @@
 <template>
-    <div class="sop">
+    <div class="sop bar">
         <div class="sopList" v-loading='loading' v-if='sopList[0]'>
             <div class="sopItem cursor1 sb mg" v-for="(item,i) in sopList" :key="i" @click="stepDetail(item)" v-show="!editsop1">
                 <div class="al">
@@ -35,24 +35,55 @@
                         {{item.sopContent}}
                     </div>
                 </div>
-                <div class="al">
-                    Total {{item.sopSteps}} Step
+
+                <div class="flex al">
+                    <div class="sopEdit cursor ju al" @click.stop='sopEdit(item)'> Edit </div>
+                    <div class="al">
+                        Total {{item.sopSteps}} Step
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="sopList nosop tc" v-else>
+        <div class="sopList nosop tc" v-else v-loading='loading'>
             No SOP !
         </div>
+
+        <el-dialog
+            title=""
+            :visible.sync="dialogVisible"
+            width="1100px">
+            <div class="wrap mg">
+                <div class="add_title mg">SOP Modification</div>
+                <div class="sb">
+                    <div class="add_name tc">SOP Title</div>
+                    <div class="add_content"><input type="text" v-model="sopmsg.sopTitle"></div>
+                </div>
+                <div class="sb " style="margin-top: 30px;">
+                    <div class="add_name tc">Explanation</div>
+                    <div class="add_content">
+                        <textarea name="" id="" rows="10" v-model="sopmsg.sopContent"></textarea>
+                    </div>
+                </div>
+                <div class="ju">
+                    <div class="attachment ju al cursor">
+                        <div class="al"><img src="@/assets/img/icon-add.png" alt=""></div>
+                        <div class="bold " @click="sopAdd">Save</div>
+                    </div>
+                </div>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import { sopList } from "@/axios/request.js"
+import { updateSop } from '@/axios/request.js'
 export default {
     data () {
         return {
             pageNum: 1,
-            ids: ''
+            ids: '',
+            dialogVisible: false,
+            sopmsg: {}
         }
     },
     watch: {
@@ -146,16 +177,55 @@ export default {
                 value: this.ids
             })
         },
+        sopEdit (item) {
+            this.dialogVisible = true
+            this.sopmsg = item
+        },
+        sopAdd () {
+            this.loading = true
+            let data = {
+                id: this.sopmsg.id,
+                sopContent: this.sopmsg.content,
+                sopTitle: this.sopmsg.sopTitle
+            }
+            updateSop(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: 'Successfully add'
+                    })
+                    this.dialogVisible = false
+                    this.$store.commit('setUser', {
+                        key: 'editsop',
+                        value: false
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: 'Failed add!'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: 'Failed add!'
+                })
+            })
+        },
         
     }
 }
 </script>
 
 <style lang='less' scoped>
+    @import "@/less/css.less";
     .sop {
         width: 100%;
         height: 100%;
         background: white;
+        overflow: auto;
     }
     .edit {
         padding: 0px 10px;
@@ -209,5 +279,66 @@ export default {
     .nosop {
         padding-top: 50px;
         font-size: 30px;
+    }
+    .sopEdit {
+        padding: 0px 15px;
+        height: 25px;
+        border-radius: 8px;
+        background: @hdColor;
+        color: white;
+        margin-right: 30px;
+    }
+    .wrap {
+        width: 70%;
+    }
+    .add_title {
+        width: 100%;
+        border-radius: 10px;
+        padding: 7px;
+        font-size: 20px;
+        margin-bottom: 30px;
+        color: black !important;
+        background: #CDA09D;
+    }
+    .add_name {
+        box-shadow: 2px 1px 5px rgb(172, 172, 172);
+        width: 150px;
+        padding: 5px 0;
+        border-radius: 10px;
+        height: 30px;
+    }
+    .add_content {
+        width: calc(100% - 200px);
+        box-shadow: 2px 1px 5px rgb(172, 172, 172);
+        border-radius: 10px;
+        overflow: hidden;
+        input {
+            border: none;
+            outline: none;
+            width: 100%;
+            height: 100%;
+            font-size: 14px;
+        }
+        textarea {
+            width: 100% !important;
+            height: 100% !important;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            resize: none;
+        }
+    }
+    .attachment {
+        padding: 9px 0px;
+        width: 200px;
+        margin-top: 20px;
+        margin-left: 30px;
+        border: solid 2px rgb(192, 192, 192);
+        border-radius: 3px;
+        font-size: 17px;
+        img {
+            padding-right: 3px;
+            width: 20px;
+        }
     }
 </style>

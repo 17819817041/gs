@@ -326,6 +326,8 @@ export default {
 		padding: 0;
 		margin: 0;
 		height: 100%;
+		// min-width: 1050px;
+		// overflow: auto;
 	}
 	#app {
 		height: 100%;

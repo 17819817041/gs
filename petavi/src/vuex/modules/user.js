@@ -65,7 +65,8 @@ export default {
         newMsg_dot: JSON.parse(JSON.stringify(localStorage.getItem('new_msg'))),
         value: 0,
         timer: null,
-        deviceId: null
+        deviceId: null,
+        copyDoc: []
     },
     mutations: {
         setUser (state,data) {
@@ -334,6 +335,7 @@ export default {
             doctorList(doctor).then(res => {
                 store.commit("setUser",{ key: "loading_doc", value: false })
                 if (res.data.rtnCode == 200) {
+                    store.commit('setUser', { key: "copyDoc", value: res.data.data.pageT })
                     store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
                     store.commit("pageAdd", res.data.data.pageT )
                     store.dispatch('getOnlineDocList')
@@ -378,15 +380,28 @@ export default {
                     }}
                     b = arr.filter(item => item.doctorOnLineState != 1)
                     store.commit("setUser", { key: "doctorList", value: c.concat(b) })
+                    store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
+                    store.commit("setUser", { key: 'mask', value: store.state.doctorList[0] } )
+                } if (res.data.rtnCode == 202) {
+                    store.commit("setUser", { key: 'doctorList', value: store.state.copyDoc } )
+                    store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
                 } else {
+                    // let arr =  store.state.doctorList
+                    // arr.forEach(item => {
+                    //     item.doctorOnLineState = 0
+                    // })
+                    // store.commit("setUser", { key: "doctorList", value: arr })
+
+                    store.commit("setUser", { key: 'vDetail', value: '' } )
+                    store.commit("setUser", { key: 'mask', value: '' } )
                     let arr =  store.state.doctorList
                     arr.forEach(item => {
                         item.doctorOnLineState = 0
                     })
                     store.commit("setUser", { key: "doctorList", value: arr })
                 }
-                store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
-                store.commit("setUser", { key: 'mask', value: store.state.doctorList[0] } )
+                // store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
+                // store.commit("setUser", { key: 'mask', value: store.state.doctorList[0] } )
             })
         },
         getBalance (store,data) {

@@ -189,7 +189,7 @@
                                 Search
                             </div>
                             <el-input style="transform:scale(1);border:none;" v-model="inp" @keyup.enter.native="search" @input="search1"
-                            prefix-icon="el-icon-search" size="small" placeholder="Search Doctors, Clinics, Hospitals etc."></el-input>
+                            prefix-icon="el-icon-search" size="small" placeholder="Search Sop"></el-input>
                         </div>
                         <div class="cursor edit1 ju al" v-show="!editsop" @click="edit">
                             <div class="al"><img src="@/assets/img/edit.png" alt=""></div>
@@ -270,7 +270,7 @@ export default {
     data () {
         return {
             T_userId: localStorage.getItem('userId'),
-            nav: [ {name:'Glasses state', path: '/glass'}, {name:'Uploaded video', path: '/videoList'}, {name:'Uploaded image'}, {name:'imageList',path: 'imageList'}, {name:'Upload files', path: 'uploadFiles'}, 
+            nav: [ {name:'Glasses state', path: '/glass'}, {name:'Uploaded video', path: '/videoList'}, {name:'Uploaded image',path: '/imageList'}, {name:'Upload files', path: 'uploadFiles'}, 
             {name:'SOP', path: '/sop'}],
             platform: localStorage.getItem('platform'),
             router: 'glass',
@@ -370,6 +370,10 @@ export default {
                 this.loading = false
                 if (res.data.rtnCode == 200) {
                     this.$refs.sop.getsopList()
+                    this.$store.commit('setUser', {
+                        key: 'editsop',
+                        value: false
+                    })
                     this.$message({
                         type: 'success',
                         message: 'Sucessfully Delete!'

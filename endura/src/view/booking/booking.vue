@@ -31,7 +31,7 @@
                     </el-form-item>
                     <el-form-item prop="pet">
                         <el-select v-model="form.pet" placeholder="Select member" @change="getPetId">
-                            <el-option v-for="(item,i) in petSelect" :key="i" :label="item.name" :value="item.id"></el-option>
+                            <el-option v-for="(item,i) in petSelect" :key="i" :label="item.familyMember.name" :value="item.familyMember.id"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="location">
@@ -179,7 +179,7 @@ export default {
                     { required:true, message:'Please choose a doctor', trigger:"blur" }
                 ],
                 pet: [
-                    { required:true, message:'Please choose a pet', trigger:"blur" }
+                    { required:true, message:'Please choose a member', trigger:"blur" }
                 ],
                 location: [
                     { required:true, message:'Please select location', trigger:"blur" }
@@ -364,9 +364,9 @@ export default {
         },
         getPetId (val) {
             this.petSelect.forEach(item => {
-                if (item.id == val) {
-                    this.form.pet = item.name
-                    this.petId = item.id
+                if (item.familyMember.id == val) {
+                    this.form.pet = item.familyMember.name
+                    this.petId = item.familyMember.id
                 }
             })
         },

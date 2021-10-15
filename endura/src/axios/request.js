@@ -621,7 +621,7 @@ export function uploadFile (data) {          //上传视频或图片
     )
 }   
 
-export function getListByPage (data) {           // 获取视频列表
+export function getListByPage (data) {           // 获取视频列表//////////////////
     return request(
         {
             url: '/sopDetails/getListByPage',
@@ -629,7 +629,27 @@ export function getListByPage (data) {           // 获取视频列表
             params: data
         }
     )
-} 
+}   
+
+export function getVideoListByPage (data) {           // 获取视频列表
+    return request(
+        {
+            url: '/sopDetails/getVideoListByPage',
+            method: "POST",
+            params: data
+        }
+    )
+}
+
+export function getImgListByPage (data) {           // 获取视频列表
+    return request(
+        {
+            url: '/sopDetails/getImgListByPage',
+            method: "POST",
+            params: data
+        }
+    )
+}
 
 export function getSopStep (data) {           // 根据sopId 获取 sop步骤列表
     return request(
@@ -709,3 +729,11 @@ export function stepSearch (data) {            //视屏或图片搜索
         params: data
     })
 } 
+
+export function updateSop (data) {            //修改sop标题
+    return request({
+        url: '/sop/update',
+        method: "POST",
+        params: data
+    })
+}

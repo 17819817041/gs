@@ -26,10 +26,6 @@ router.beforeEach((to, from, next) => {
         key: "scrollTop",
         value: false
     })
-    store.commit("setUser", {
-        key: "mobile_b",
-        value: false
-    })
     next()
 })
 // router.beforeEach((to,from,next) => {

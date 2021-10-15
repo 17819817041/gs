@@ -1,6 +1,6 @@
 <template>
     <div class="videoList clear bar" v-loading='loading'>
-        <div class="videoList_item_wrap float" v-for="(item,i) in videoList" :key="i" v-show="item.fileType == 1 && item.fileFrom == 1 && active2">
+        <div class="videoList_item_wrap float" v-for="(item,i) in videoList" :key="i">
             <div class="t_message flex al mg">
                 <div class="t_header ju al">
                     <img src="@/assets/img/john.png" alt="">
@@ -47,7 +47,7 @@
                     </div>
                 </div>
                 <div class="i_video">
-                    <div class="mp4 ju al">
+                    <div class="mp4 image_wrap_p ju al">
                         <img style="height: 100%;" :src="obj.fileUrl" alt="">
                     </div>
                 </div>
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { getListByPage, sopupdate } from "@/axios/request.js"
+import { getImgListByPage, sopupdate } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -111,18 +111,17 @@ export default {
                 doctorId: localStorage.getItem('userId') *1,
                 pageNum: this.pageNum,
                 pageSize: 15,
-                glassUserId: localStorage.getItem('glassId'),
-                fileType: 2            //1 video    2 image    3 all file
+                glassUserId: localStorage.getItem('glassId')
             }
-            getListByPage(data).then(res => {
+            getImgListByPage(data).then(res => {
                 console.log(res)
                 this.loading = false
                 if (res.data.rtnCode == 200) {
-                    res.data.data.forEach(item => {
+                    res.data.data.pageT.forEach(item => {
                         let D = new Date(item.createTime)
                         item.createTime = D.toLocaleDateString()
                     })
-                    this.videoList = res.data.data
+                    this.videoList = res.data.data.pageT
                 } else if (res.data.rtnCode == 201) {
                     this.active2 = false
                     this.vdata = 'Please bind glasses!'
@@ -177,6 +176,7 @@ export default {
         height: 100%;
         border: solid 1px;
         border-radius: 18px;
+        overflow: hidden;
     }
     input {
         border: none;
@@ -273,5 +273,8 @@ export default {
         height: 100%;
         padding-top: 60px;
         background: white;
+    }
+    .image_wrap_p {
+        overflow: hidden;
     }
 </style>

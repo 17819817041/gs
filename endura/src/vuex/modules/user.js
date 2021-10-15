@@ -1,6 +1,7 @@
 import { petList, getUserDetails, vetDetails, doctorList, bookingUserId, notice, onlineState, balance, glassUser, joinRoom, sopList, getOnlineDocList, min } from "@/axios/request.js"
 import router from "@/router/router/router.js"
 import {conn, WebIM} from "@/assets/js/websdk.js"
+import { Message } from "element-ui"
 export default {
     state: {
         rtc: {
@@ -83,7 +84,8 @@ export default {
         editsop: false,
         show_edit: false,
         ids: '',
-        sopList: []
+        sopList: [],
+        copyDoc: []
     },
     mutations: {
         setUser (state,data) {
@@ -285,6 +287,23 @@ export default {
                 },
                 fail (e) {
                     console.log(e,'e')
+                    localStorage.removeItem("Token")
+                    localStorage.removeItem("userId")
+                    localStorage.removeItem("paltform")
+                    localStorage.removeItem("IMtoken")
+                    localStorage.removeItem('IM')
+                    // return false
+                    if (vm.$route.name !== 'vetLogin' 
+                    && vm.$route.name !== 'relevance' 
+                    && vm.$route.name !== 'forgetPwd' 
+                    && vm.$route.name !== 'changePwd'
+                    && vm.$route.name !== 'signUp') {
+                        router.replace('/vetLogin')
+                        vm.$message.error('Login expired, please log in again !');
+                    }
+
+                    store.commit("setUser",{ key: "login", value: false })
+                    store.commit("setUser",{ key: "userDetail", value: {} }) 
                 }
             };
             conn.open(options);
@@ -343,9 +362,9 @@ export default {
             }
             store.commit("setUser",{ key: "loading_doc", value: true })
             doctorList(doctor).then(res => {
-                console.log(res)
                 store.commit("setUser",{ key: "loading_doc", value: false })
                 if (res.data.rtnCode == 200) {
+                    store.commit('setUser', { key: "copyDoc", value: res.data.data.pageT })
                     store.commit("setUser",{ key: "totalRecordsCount", value: res.data.data.totalRecordsCount })
                     store.commit("pageAdd", res.data.data.pageT )
                     store.dispatch('getOnlineDocList')
@@ -393,6 +412,7 @@ export default {
                     store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
                     store.commit("setUser", { key: 'mask', value: store.state.doctorList[0] } )
                 } else if (res.data.rtnCode == 202) {
+                    store.commit("setUser", { key: 'doctorList', value: store.state.copyDoc } )
                     store.commit("setUser", { key: 'vDetail', value: store.state.doctorList[0] } )
                 } else {
                     store.commit("setUser", { key: 'vDetail', value: '' } )
@@ -494,7 +514,7 @@ export default {
                 if (res.data.rtnCode == 200) {
                     store.commit('setUser', { key: 'glassState', value: {
                         id: res.data.data.id,
-                        power: res.data.data.quantityOfElectricity *1,
+                        power: Number(res.data.data.quantityOfElectricity),
                         model: res.data.data.phoneModelId,
                         state: true
                     } })
@@ -528,8 +548,8 @@ export default {
         },
         getsopList (store,data) {
             store.commit("setUser",{ key: "loading_doc", value: true })
+
             sopList(data).then(res => {
-                console.log(res)
                 store.commit("setUser",{ key: "loading_doc", value: false })
                 if (res.data.rtnCode == 200) {
                     res.data.data.pageT.forEach(child => {
@@ -538,10 +558,18 @@ export default {
                     store.commit("setUser",{ key: "sopList", value: res.data.data.pageT })
                 } else {
                     store.commit("setUser",{ key: "sopList", value: [] })
+                    Message({
+                        type: 'error',
+                        message: 'Failed load!'
+                    })
                 }
             }).catch(e => {
                 store.commit("setUser",{ key: "loading_doc", value: false })
                 store.commit("setUser",{ key: "sopList", value: [] })
+                Message({
+                    type: 'error',
+                    message: 'Failed load!'
+                })
             })
         },
     }

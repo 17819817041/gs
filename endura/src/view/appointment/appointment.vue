@@ -41,9 +41,6 @@
             @media screen and (max-width: 1150px) {
                 min-width: 300px;
             }
-            @media screen and (max-width: 1020px) {
-                display: none;
-            }
         }
     }
     .appointment_details_item {
@@ -144,17 +141,6 @@
             padding-right: 5px;
         }
     }
-    .Booking_list {
-        padding: 3px 10px;
-        color: white;
-        font-size: 15px;
-        background: #15BC83;
-        border-radius: 7px;
-        display: none;
-        @media screen and (max-width: 1020px) {
-            display: block;
-        }
-    }
     .booking_i {
         width: 100%;
         color: white;
@@ -182,9 +168,6 @@
         border: solid 2px rgb(199, 199, 199);
         margin-left: 7px;
         width: 150px;
-        @media screen and (max-width: 1020px) {
-            display: none;
-        }
     }
 </style>
 
@@ -199,7 +182,6 @@
                             <img src="@/assets/img/appointment.png" alt="">
                             Appointment
                         </div>
-                        <div class="Booking_list bold cursor" @click="mobile_booking">Booking</div>
 
                         <div class="sort_booking">
                             <el-select v-model="sort_m" placeholder="Classification" @change="sort_t">
@@ -323,9 +305,6 @@ export default {
         })
     },
     methods: {
-        mobile_booking () {
-            this.$router.push('/mobileBooking')  
-        },
         pageCut (val) {
             this.pageNum = val
             if (this.sort_m == 1) {

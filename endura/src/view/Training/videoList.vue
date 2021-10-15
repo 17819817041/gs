@@ -1,6 +1,6 @@
 <template>
     <div class="videoList clear bar" v-loading='loading'>
-        <div class="videoList_item_wrap float" v-for="(item,i) in videoList" :key="i" v-show="item.fileType == 2 && item.fileFrom == 1 && active3">
+        <div class="videoList_item_wrap float" v-for="(item,i) in videoList" :key="i">
             <div class="t_message flex al mg">
                 <div class="t_header ju al">
                     <img v-if="item.doctorHead" :src="item.doctorHead" alt="">
@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { getListByPage, sopupdate } from "@/axios/request.js"
+import { getVideoListByPage, sopupdate } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -94,6 +94,9 @@ export default {
         default_img () { return this.$store.state.user.default_img }
     },
     created () {
+        
+    },
+    mounted () {
         this.getVideo()
     },
     methods: {
@@ -119,7 +122,21 @@ export default {
                 console.log(res)
                 if (res.data.rtnCode == 200) {
                     this.dialogVisible =false
+                    this.$message({
+                        type: 'success',
+                        message: 'Successfully modified!'
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: 'Fail to edit!'
+                    })
                 }
+            }).catch(e => {
+                this.$message({
+                    type: 'error',
+                    message: 'Fail to edit!'
+                })
             })
         },
         getVideo () {
@@ -129,18 +146,16 @@ export default {
                 pageNum: this.pageNum,
                 glassUserId: localStorage.getItem('glassId'),
                 pageSize: 15,
-                fileType: 1            //1 image    2 video    3 all file
             }
-            getListByPage(data).then(res => {
+            getVideoListByPage(data).then(res => {
                 console.log(res)
                 this.loading = false
-                
                 if (res.data.rtnCode == 200) {
-                    res.data.data.forEach(item => {
+                    res.data.data.pageT.forEach(item => {
                     let D = new Date(item.createTime)
                         item.createTime = D.toLocaleDateString()
                     })
-                    this.videoList = res.data.data
+                    this.videoList = res.data.data.pageT
                 } else if (res.data.rtnCode == 201) {
                     this.active3 = false
                     this.vdata = 'Please bind glasses!'

@@ -58,22 +58,29 @@ export default {
     },
     methods: {
         uploadfile (e) {
-            this.fileName = e.target.files[0].name
-            this.nameList.push(e.target.files[0].name)
-            var formData = new FormData();
-            formData.append('file', e.target.files[0]);
-            let type = e.target.files[0].type.split('/')[0]
-            if (type == 'video') {
-                this.type = 1
-                this.FILE(formData)
-            } else if (type == 'image') {
-                this.type = 2
-                this.FILE(formData)
-            } else {
+            if (e.target.files[0].size > 20971520) {
                 this.$message({
-                    type: 'success',
-                    message: 'Please upload video or picture'
+                    type: 'error',
+                    message: 'File size cannot exceed 20M!'
                 })
+            } else {
+                this.fileName = e.target.files[0].name
+                this.nameList.push(e.target.files[0].name)
+                var formData = new FormData();
+                formData.append('file', e.target.files[0]);
+                let type = e.target.files[0].type.split('/')[0]
+                if (type == 'video') {
+                    this.type = 2
+                    this.FILE(formData)
+                } else if (type == 'image') {
+                    this.type = 1
+                    this.FILE(formData)
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: 'Please upload video or picture'
+                    })
+                }
             }
         },
         FILE (formData) {

@@ -1,5 +1,5 @@
 <template>
-    <div class="glass noBar">
+    <div class="glass noBar" v-loading='loading'>
         <div v-if="!glassState.state">
             <div class="binding mg tc">Binding Glasses</div>
             <div class="ju">
@@ -18,10 +18,10 @@
                 </div>
             </div>
             <div class="ju al" style="margin: 20px 0;">
-                <img v-if="70<=glassState.power<=100" src="@/assets/img/power1.png" alt="">
-                <img v-else-if="20<=glassState.power<=70" src="@/assets/img/power2.png" alt="">
-                <img v-else-if="10<=glassState.power<=20" src="@/assets/img/power3.png" alt="">
-                <img v-else-if="0<=glassState.power<=10" src="@/assets/img/power4.png" alt="">
+                <img v-if="(70 < glassState.power) && (glassState.power < 100)" src="@/assets/img/power1.png" alt="">
+                <img v-else-if="(20 < glassState.power) && (glassState.power < 70)" src="@/assets/img/power2.png" alt="">
+                <img v-else-if="(10 < glassState.power) && (glassState.power < 20)" src="@/assets/img/power3.png" alt="">
+                <img v-else-if="(0 <= glassState.power) && (glassState.power <= 10)" src="@/assets/img/power4.png" alt="">
             </div>
             <div class="xuhang tc">
                 Estimated remaining usage time: {{glassState.power}}%
@@ -38,9 +38,10 @@ export default {
     data () {
         return {
             imgUrl:'',
-                userId: localStorage.getItem('userId') *1,
-                userName: localStorage.getItem('userId'),
-                platform: localStorage.getItem('platform') *1
+            userId: localStorage.getItem('userId') *1,
+            userName: localStorage.getItem('userId'),
+            platform: localStorage.getItem('platform') *1,
+            loading:false
         }
     },
     created () {
@@ -52,8 +53,10 @@ export default {
     watch: {
         glassState: {
             handler (val) {
+                console.log(val)
                 this.glassState = val
-            }
+            },
+            deep: true
         }
     },
     computed: {
@@ -75,11 +78,31 @@ export default {
             })
         },
         unBinding () {
+            this.loading = true
             let data = {
                 userId: localStorage.getItem('userId')
             }
             unBinding(data).then(res => {
-                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.glassState.state = false
+                    this.$message({
+                        type: 'success',
+                        message: 'Unbind successfully!'
+                    })
+                    localStorage.setItem('glassId', 0)
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: 'Unbinding failed!'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                        type: 'error',
+                        message: 'Unbinding failed!'
+                    })
             })
         }
     }

@@ -402,7 +402,7 @@ export default {
             height: '500',  // 设置视频播放器的显示高度（以像素为单位）
             preload: 'auto',  //  建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
             controls: true,  // 确定播放器是否具有用户可以与之交互的控件。没有控件，启动视频播放的唯一方法是使用autoplay属性或通过Player API。
-            autoplay: ''
+            autoplay: '',
         }
     },
     created () {
@@ -528,32 +528,38 @@ export default {
             })
         },
         delchecked (item,i) {
-            console.log(item,i)
             this.B = item.number
             item.checked = !item.checked
+            this.copyList.sopStepList[i].checked = true
             if (item.checked) {
-                this.copyList.sopStepList.splice(i,1)
-                this.copyList.sopStepList.forEach(item => {
-                    item.number -=1
-                })
+                for (let k=0;k<this.sopDetail.sopStepList.length;k++) {
+                    if (k == i) {
+                        this.copyList.sopStepList[k].number --
+                    }
+                }
             } else {
-                this.copyList.sopStepList.splice(i,0,item)
-                this.copyList.sopStepList[i].number -= 1
-                this.copyList.sopStepList.forEach(item => {
-                    item.number +=1
-                })
+                this.copyList.sopStepList[i].checked = false
+                this.copyList.sopStepList[i].number = i
+                for (let k=0;k<this.sopDetail.sopStepList.length;k++) {
+                    if (k==i) {
+                        this.copyList.sopStepList[k].number +=1
+                    }
+                }
             }
         },
         delitem () {
+            let arr = []
             this.copyList.sopStepList.forEach(item => {
-                // item.number -=1
+                if (!item.checked) {
+                    arr.push(item)
+                }
                 delete item.checked
             })
             this.dialogVisible = false
             this.loading = true
             let data = {
                 "jo":{
-                    "sopStepList": this.copyList.sopStepList,
+                    "sopStepList": arr,
                     "sopId": this.$route.query.id *1
                 }
             }
@@ -563,19 +569,19 @@ export default {
                     this.getSopStep()
                     this.$message({
                         type: 'success',
-                        message: 'Successfully added!'
+                        message: 'Successfully deleted!'
                     })
                 } else {
                     this.$message({
                         type: 'error',
-                        message: 'Failed added!'
+                        message: 'Failed deleted!'
                     })
                 }
             }).catch(e => {
                 this.loading = false
                 this.$message({
                     type: 'error',
-                    message: 'Failed added!'
+                    message: 'Failed deleted!'
                 })
             })
         },
@@ -585,18 +591,19 @@ export default {
                 doctorId: localStorage.getItem('userId') *1,
                 pageNum: this.pageNum,
                 pageSize: 105,
-                fileType: 3,            //1 video    2 image    3 all file
+                fileType: 3,            //1 image    2 video    3 all file
                 glassUserId: localStorage.getItem('glassId')
             }
             getListByPage(data).then(res => {
+                console.log(res)
                 this.dialoading = false
                 if (res.data.rtnCode == 200) {
-                    res.data.data.forEach(item => {
+                    res.data.data.pageT.forEach(item => {
                         item.change = false
                         let D = new Date(item.createTime)
                         item.createTime = D.toLocaleDateString()
                     })
-                    this.videoList = res.data.data
+                    this.videoList = res.data.data.pageT
                 } else {
                     this.videoList = []
                 }
@@ -604,7 +611,7 @@ export default {
                 this.dialoading = false
                 this.$message({
                     type: 'error',
-                    message: 'Fail to load!'
+                    message: 'Fail to load!!!'
                 })
             })
         },

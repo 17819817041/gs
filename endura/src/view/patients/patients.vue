@@ -252,6 +252,7 @@
     }
     .medial_item {
         background: @logout !important;
+        border: @logout solid 1px !important;
     }
     .medial_item1 {
         background: @logout !important;

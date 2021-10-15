@@ -30,12 +30,12 @@
             transition: 0.2s;
             z-index: 500;
             @media screen and (max-width: 1300px) {
-                width: 88px;
-                height: 98px;
+                width: 160px;
+                height: auto;
             }
             @media screen and (max-width: 564px) {
-                width: 50px;
-                height: 62px;
+                width: 70px;
+                height: auto;
             }
         }
         .helpBtn {
@@ -498,7 +498,7 @@
             </transition>
             <div :class="['logo',{ logo_width: rotate, 'mobile_logo': login }]">
                 <div class="drawer_list_wrap">
-                    <img class="logo_IMG" @click="home" src="@/assets/img/ENDURA.png" alt="">
+                    <img class="logo_IMG al" @click="home" src="@/assets/img/ENDURA.png" alt="">
                     <div :class="['drawer_list',{rotate: rotate}]" v-show="login">
                         <img style="height:100%;transition:0.2s." src="@/assets/img/list.png" alt="" @click="showDetails">
                     </div>  <!-- //抽屉 -->

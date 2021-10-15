@@ -114,12 +114,11 @@
         transition: 0.25s;
         z-index: 500;
         @media screen and (max-width: 1300px) {
-            width: 88px;
-            height: 98px;
+            width: 160px;
         }
         @media screen and (max-width: 564px) {
-            width: 50px;
-            height: 60px;
+            width: 70px;
+            height: auto;
         }
     }
     .three_log {
@@ -132,7 +131,7 @@
 <template>
     <div class="login" v-loading="loading">
         <div class="headimg_wrap">
-            <div class="logo">
+            <div class="logo al">
                 <img class="logo_IMG" src="@/assets/img/ENDURA.png" alt="">
             </div>
             <!-- <myHeaderL></myHeaderL> -->
