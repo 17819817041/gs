@@ -785,7 +785,7 @@
                                     <div class="userHead_img ju al">
                                         <!-- <img class="userHead" src="@/assets/img/john.png" alt=""> -->
                                         <img v-if="userDetailMessage.userImage" class="userHead" :src="userDetailMessage.userImage" alt="">
-                                        <img style="height:100%;" v-else :src="default_img" alt="">
+                                        <img style="height: 100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                                     </div>
                                     <div class="tc size14" v-if="userDetailMessage.userName">{{userDetailMessage.userName}}</div>
                                     <div v-else class="tc" style="font-size:12px">No Name</div>
@@ -809,7 +809,7 @@
                                 <div class="DOCTOR">
                                     <div class="docHead_img mg ju">
                                         <img v-if="callToDoctor.userHead" :src="callToDoctor.userHead" alt="">
-                                        <img style="height:100%;" v-else :src="default_img" alt="">
+                                        <img style="height: 100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                                     </div>
                                     <div class="tc">{{callToDoctor.doctorName}}</div>
                                     <div class="tc">Hispital Name</div>
@@ -1134,7 +1134,6 @@ export default {
                 this.$store.commit('setUser', { key: 'newMsg_dot', value: val })
             }
         },
-        default_img () { return this.$store.state.user.default_img }
     },
     beforeMount() {
         window.addEventListener('resize', (e) => {
@@ -1857,7 +1856,7 @@ export default {
                                 chatType: 'singleChat',                  // 设置为单聊   
                             });
                             that.$conn.send(msg.body);
-                            router.replace('/myCustomer')
+                            that.$router.replace('/myCustomer')
                         } else {
                             const caller = that.callTo
                             let fail = {

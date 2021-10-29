@@ -186,7 +186,7 @@
                                     <div class="wrap_img_b">
                                         <div class="appointment_details_img_wrap ju al">
                                             <img class="appointment_details_img" v-if="item.userImage" :src="item.userImage" alt="">
-                                            <img style="height:100%;" v-else :src="default_img" alt="">
+                                            <img style="height: 100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                                         </div>
                                         <div class="size13 user_b tc">{{item.booking.userName}}</div>
                                     </div>
@@ -258,7 +258,6 @@ export default {
         this.getBooking()
     },
     computed: {
-        default_img () { return this.$store.state.user.default_img },
         l_loading: {
             get () { return this.$store.state.user.n_loading },
             set (val) {

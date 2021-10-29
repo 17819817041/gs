@@ -1,0 +1,77 @@
+@theme: #435EBE;
+.bar::-webkit-scrollbar{
+  width:10px;
+  height:10px;
+}
+.bar::-webkit-scrollbar-track{
+  background: rgb(239, 239, 239);
+  border-radius:2px;
+}
+.bar::-webkit-scrollbar-thumb{
+  background: #bfbfbf;
+  border-radius:10px;
+}
+.bar::-webkit-scrollbar-thumb:hover{
+  background: #333;
+}
+.bar::-webkit-scrollbar-corner{
+  background: #179a16;
+}
+.bar {
+  overflow: auto;
+  scrollbar-color: #bfbfbf  rgb(239, 239, 239); 
+  scrollbar-width: none;
+  scrollbar-width: thin;   
+
+  /* IE浏览器 */
+  /*三角箭头的颜色*/
+  scrollbar-arrow-color: #000;
+  /*滚动条滑块按钮的颜色*/
+  scrollbar-face-color: #bfbfbf;
+  /*滚动条整体颜色*/
+  scrollbar-highlight-color: #FFF;
+  /*滚动条阴影*/
+  scrollbar-shadow-color: #FFF;
+  /*滚动条轨道颜色*/
+  /* scrollbar-track-color: #0066ff; */
+  /*滚动条3d亮色阴影边框的外观颜色——左边和上边的阴影色*/
+  scrollbar-3dlight-color:#0099dd;
+  /*滚动条3d暗色阴影边框的外观颜色——右边和下边的阴影色*/
+  scrollbar-darkshadow-color: #0099dd;
+  /*滚动条基准颜色*/
+  scrollbar-base-color: #0099dd;
+}
+.noBar { -ms-overflow-style:none !important;scrollbar-width: none !important; }  
+.noBar::-webkit-scrollbar { display: none !important; }
+
+.ellipsis {
+    text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+    display: -webkit-box;
+    -webkit-line-clamp: 2;/*规定超过两行的部分截断*/
+    -webkit-box-orient: vertical;
+    overflow : hidden; 
+    word-break: break-all;/*在任何地方换行*/
+}
+
+.title {
+    font-size: 27px;
+    font-weight: 700;
+    color: #25396F;
+    padding-bottom: 12px;
+    @media screen and (max-width: 1300px) {
+        font-size: 23px;
+    }
+    @media screen and (max-width: 800px) {
+        font-size: 20px;
+    }
+}
+.c_title {
+  // font-size: ;
+  color: #7C8DB5;
+  @media screen and (max-width: 1300px) {
+      font-size: 14px;
+  }
+  @media screen and (max-width: 800px) {
+      font-size: 12px;
+  }
+}

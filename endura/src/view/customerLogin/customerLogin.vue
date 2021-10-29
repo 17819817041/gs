@@ -162,7 +162,7 @@
                         </el-form-item>
                         <el-form-item>
                             <div class="size12 al ju three_log">
-                                <span style="white-space:nowrap"><span class="cursor" @click="forget">Forgot your password?</span> <span class="cursor">or Login With</span></span>
+                                <span style="white-space:nowrap"><span class="cursor" @click="forget">Forgot your password?</span> <span>or Login With</span></span>
                                 <div class="al">
                                     <div class="al label cursor">
                                         <label for="facebook al">

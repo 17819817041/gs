@@ -50,6 +50,7 @@ export default {
         nameList: true,
         petType: [],
         firstPet: 0,
+        sop_totalRecordsCount: 0,
         inp: '',
         getDoctorMedicalLimitList: [],
         userBooking: [],
@@ -64,7 +65,6 @@ export default {
         mobile_b: false,
         noticeList: [],
         balance: {},
-        default_img:'',
         setTime_S: false,
         glassState: {},
         adminList: {
@@ -85,7 +85,8 @@ export default {
         show_edit: false,
         ids: '',
         sopList: [],
-        copyDoc: []
+        copyDoc: [],
+        tinp: ''
     },
     mutations: {
         setUser (state,data) {
@@ -116,9 +117,6 @@ export default {
 				// console.log(res,12321)
 			})
 		},
-        default (store,data) {
-            store.commit("setUser",{ key: "default_img", value: data}) 
-        },
         getPetList (store,data) {
             petList(data).then(res => {
                 console.log(res)
@@ -550,12 +548,14 @@ export default {
             store.commit("setUser",{ key: "loading_doc", value: true })
 
             sopList(data).then(res => {
+                console.log(res)
                 store.commit("setUser",{ key: "loading_doc", value: false })
                 if (res.data.rtnCode == 200) {
                     res.data.data.pageT.forEach(child => {
                         child.checked = false
                     })
-                    store.commit("setUser",{ key: "sopList", value: res.data.data.pageT })
+                    store.commit("setUser",{ key: "sopList", value: res.data.data.pageT})
+                    store.commit("setUser",{ key: "sop_totalRecordsCount", value: res.data.data.totalRecordsCount})
                 } else {
                     store.commit("setUser",{ key: "sopList", value: [] })
                     Message({

@@ -378,7 +378,7 @@ export default {
             })
         },
         getDetail (item) {
-            // this.drawer = !this.drawer
+            this.drawer = !this.drawer
             if (item.doctorName == null) {
                 item.doctorName = 'No name'
             }

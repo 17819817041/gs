@@ -11,7 +11,7 @@
                         <div>
                             <div class="head_image ju al">
                                 <img class="Appointment_img" v-if="confirmKey.docImage" :src="confirmKey.docImage" alt="">
-                                <img style="height:100%;" v-else :src="default_img" alt="">
+                                <img style="height: 100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                             </div>
                         </div>
                         <div class="calendar_wrap">
@@ -123,9 +123,6 @@ export default {
     },
     created () {
         this.getMsg()
-    },
-    computed: {
-        default_img () { return this.$store.state.user.default_img }
     },
     methods: {
         sureUpdate () {

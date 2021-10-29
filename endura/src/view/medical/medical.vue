@@ -225,13 +225,13 @@
                         <img src="@/assets/img/recordImg.png" alt="">
                         Medical Record History
                     </div>
-                    <div class="record_message_wrap" v-if="getDoctorMedicalLimitList">
+                    <div class="record_message_wrap" v-if="getDoctorMedicalLimitList[0]">
                         <div class="record_message" v-for="(item,i) in getDoctorMedicalLimitList" :key="i">
                             <div class="record_item flex mg">
                                 <div class="record_image ju">
                                     <div class="ju al">
                                         <img class="dog_img" :src="item.familyMember.headImg" v-if="item.familyMember.headImg" alt="">
-                                        <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
+                                        <img style="height:100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                                     </div>
                                 </div>
                                 <div style="flex:10">

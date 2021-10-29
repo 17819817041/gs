@@ -79,7 +79,7 @@
                             <div class="wrap_img">
                                 <label class="photo cursor al ju" for="avaImg">
                                     <img class="upImg" :src="addPetMessage.headImg" v-if="addPetMessage.headImg" alt="">
-                                    <img class="defautlImg" src="@/assets/img/default.png" alt="" v-else>
+                                    <img style="height: 100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                                     <input type="file" @change="getImage" name="" v-show="false" id="avaImg">
                                 </label>
                                 <!-- <img class="addImg" src="@/assets/img/file.png" alt=""> -->

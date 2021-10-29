@@ -3,12 +3,12 @@
         <div class="videoList_item_wrap float" v-for="(item,i) in videoList" :key="i">
             <div class="t_message flex al mg">
                 <div class="t_header ju al">
-                    <img src="@/assets/img/john.png" alt="">
-                    <!-- <img style="height:100%;" v-else :src="default_img" alt=""> -->
+                    <img v-if="item.doctorHead" :src="item.doctorHead" alt="">
+                        <img style="height:100%;" v-else :src="default_img" alt="">
                 </div>
                 
                 <div class="t_title mg">
-                    <div class="t_file">{{item.fileUrl}}</div>
+                    <div class="t_file tag-read cursor" :data-clipboard-text="item.fileUrl" @click="copyMsg">{{item.fileUrl}}</div>
                     <div class="t_date">{{item.createdAt}}</div>
                 </div>
             </div>
@@ -30,14 +30,14 @@
         </div>
         <el-dialog
             :visible.sync="dialogVisible"
-            width="1100px">
+            width="900px">
             <div class="sb edit_wrap">
                 <div class="i_menu">
                     <div class="menu_child">
                         <input type="text" class="tc bold" v-model="obj.title">
                     </div>
                     <div class="menu_child">
-                        <textarea name="" id="" class="bold" cols="19" rows="10" v-model="obj.content"></textarea>
+                        <textarea name="" id="" class="bold" cols="14" rows="7" v-model="obj.content"></textarea>
                     </div>
                     <div class="save_wrap flexEnd">
                         <span class="save cursor ju al" @click="itemsave">
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import Clipboard from 'clipboard'
 import { getImgListByPage, sopupdate } from "@/axios/request.js"
 export default {
     data () {
@@ -71,6 +72,9 @@ export default {
             active2: true,
             vdata: 'No data!',
             id: 0,
+
+            current_page: 1,
+            small: false,
         }  
     },
     computed: {
@@ -78,6 +82,15 @@ export default {
     },
     created () {
         this.getVideo()
+    },
+    beforeMount() {
+        window.addEventListener('resize', (e) => {
+            if (e.target.innerWidth <= 564) {
+                this.small = true
+            } else {
+                this.small = false
+            }
+        })
     },
     methods: {
         edit (item) {
@@ -105,9 +118,14 @@ export default {
                 }
             })
         },
+        pageCut (val) {
+            this.pageNum = val
+            this.getVideo()
+        },
         getVideo () {
             this.loading = true
             let data = {
+                search: '',
                 doctorId: localStorage.getItem('userId') *1,
                 pageNum: this.pageNum,
                 pageSize: 15,
@@ -143,6 +161,27 @@ export default {
                     message: 'No Data!'
                 })
             })
+        },
+        copyMsg () {
+            var clipboard = new Clipboard('.tag-read')
+            let that = this
+            clipboard.on('success', e => {
+                that.$message({
+                    type: 'success',
+                    message: 'Copy successfully'
+                })
+                // 释放内存
+                clipboard.destroy()
+            })
+            clipboard.on('error', e => {
+                // 不支持复制
+                that.$message({
+                    type: 'error',
+                    message: 'The browser does not support the copy function, it is recommended to use Google!'
+                })
+                // 释放内存
+                clipboard.destroy()
+            })
         }
     }
 }
@@ -161,10 +200,10 @@ export default {
         background: white;
     }
     .edit_wrap {
-        height: 450px;
+        height: 350px;
     }
     .i_menu {
-        width: 250px;
+        width: 200px;
         height: 100%;
         border: solid 1px;
         border-radius: 18px;
@@ -172,7 +211,7 @@ export default {
         padding: 5px 10px;
     }
     .i_video {
-        width: 850px;
+        width: 620px;
         height: 100%;
         border: solid 1px;
         border-radius: 18px;

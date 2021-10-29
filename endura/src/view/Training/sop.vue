@@ -1,6 +1,6 @@
 <template>
-    <div class="sop bar">
-        <div class="sopList" v-loading='loading' v-if='sopList[0]'>
+    <div class="sop">
+        <div class="sopList bar" v-loading='loading' v-if='sopList[0]'>
             <div class="sopItem cursor1 sb mg" v-for="(item,i) in sopList" :key="i" @click="stepDetail(item)" v-show="!editsop1">
                 <div class="al">
                     <div v-show="editsop1" @click.stop=''><el-checkbox v-model="item.checked" @change="getIds(item.id)"></el-checkbox></div>
@@ -42,10 +42,23 @@
                         Total {{item.sopSteps}} Step
                     </div>
                 </div>
+                <div class="al">
+                    Total {{item.sopSteps}} Step
+                </div>
             </div>
         </div>
         <div class="sopList nosop tc" v-else v-loading='loading'>
             No SOP !
+        </div>
+        <div class="ju">
+            <el-pagination
+                :small="small"
+                :pager-count='7'
+                :current-page='current_page'
+                layout="prev, pager, next"
+                :total="sop_totalRecordsCount"
+                @current-change='pageCut'>
+            </el-pagination>
         </div>
 
         <el-dialog
@@ -65,9 +78,9 @@
                     </div>
                 </div>
                 <div class="ju">
-                    <div class="attachment ju al cursor">
+                    <div class="attachment ju al cursor" @click="sopAdd">
                         <div class="al"><img src="@/assets/img/icon-add.png" alt=""></div>
-                        <div class="bold " @click="sopAdd">Save</div>
+                        <div class="bold ">Save</div>
                     </div>
                 </div>
             </div>
@@ -83,7 +96,10 @@ export default {
             pageNum: 1,
             ids: '',
             dialogVisible: false,
-            sopmsg: {}
+            sopmsg: {},
+
+            current_page: 1,
+            small: false,
         }
     },
     watch: {
@@ -101,9 +117,28 @@ export default {
         },
         loading: {
             handler (val) {
-                    this.loading = val
+                this.loading = val
             }
         },
+        tinp: {
+            handler (val) {
+                this.tinp = val
+            }
+        },
+        sop_totalRecordsCount: {
+            handler (val) {
+                this.sop_totalRecordsCount = val
+            }
+        },
+    },
+    beforeMount() {
+        window.addEventListener('resize', (e) => {
+            if (e.target.innerWidth <= 564) {
+                this.small = true
+            } else {
+                this.small = false
+            }
+        })
     },
     created () {
         this.getsopList()
@@ -136,12 +171,30 @@ export default {
                 })
             }
         },
+        sop_totalRecordsCount: {
+            get () { return this.$store.state.user.sop_totalRecordsCount },
+            set (val) {
+                this.$store.commit('setUser', {
+                    key: 'sop_totalRecordsCount',
+                    value: val
+                })
+            }
+        },
         default_img () { return this.$store.state.user.default_img },
         loading: {
             get () { return this.$store.state.user.loading_doc },
             set (val) {
                 this.$store.commit("setUser", {
                     key: "loading_doc",
+                    value: val
+                })
+            }
+        },
+        tinp: {
+            get () { return this.$store.state.user.tinp },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "tinp",
                     value: val
                 })
             }
@@ -157,11 +210,16 @@ export default {
                 }
             })
         },
+        pageCut (val) {
+            this.pageNum = val
+            this.getsopList()
+        },
         getsopList () {
             let data = {
                 userId: localStorage.getItem("userId"),
                 pageNumber: this.pageNum,
-                pageSize: 15
+                pageSize: 10,
+                search: this.tinp
             }
             this.$store.dispatch('getsopList', data)
         },
@@ -185,15 +243,16 @@ export default {
             this.loading = true
             let data = {
                 id: this.sopmsg.id,
-                sopContent: this.sopmsg.content,
+                sopContent: this.sopmsg.sopContent,
                 sopTitle: this.sopmsg.sopTitle
             }
             updateSop(data).then(res => {
+                console.log(res)
                 this.loading = false
                 if (res.data.rtnCode == 200) {
                     this.$message({
                         type: 'success',
-                        message: 'Successfully add'
+                        message: 'Successfully update'
                     })
                     this.dialogVisible = false
                     this.$store.commit('setUser', {
@@ -203,14 +262,14 @@ export default {
                 } else {
                     this.$message({
                         type: 'error',
-                        message: 'Failed add!'
+                        message: 'Failed update!'
                     })
                 }
             }).catch(e => {
                 this.loading = false
                 this.$message({
                     type: 'error',
-                    message: 'Failed add!'
+                    message: 'Failed update!'
                 })
             })
         },
@@ -225,7 +284,6 @@ export default {
         width: 100%;
         height: 100%;
         background: white;
-        overflow: auto;
     }
     .edit {
         padding: 0px 10px;
@@ -238,6 +296,8 @@ export default {
     }
     .sopList {
         padding-top: 20px;
+        overflow: auto;
+        height: calc(100% - 35px);
     }
     .sopItem {
         width: 95%;

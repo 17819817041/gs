@@ -339,7 +339,7 @@
                 <div class="bold petMessage_title sb al">
                     <div class="al explan">Relatives Details</div>
                     <div class="al toPetMessage cursor" @click="toPetMessage">
-                        <img src="@/assets/img/pug.svg" alt=""><span>Add Pet</span>
+                        <span>Add Member</span>
                     </div>
                 </div>
                 <div class="details_item size19 flex" v-for="(item,i) in petLists" :key="item.id">
@@ -352,7 +352,7 @@
                         <label for="ava1">
                             <div class="wrap_IMG ju al">
                                 <img :class="['pet_IMG', { cursor: !item.change }]" v-if="item.familyMember.headImg" :src="item.familyMember.headImg" alt="">
-                                <img style="height:100%;" v-else :src="default_img" alt="">
+                                <img style="height: 100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                             </div>
                             <input id="ava1" type="file" v-if="!item.change" v-show="false" @change="petImage">
                         </label>
@@ -492,7 +492,7 @@
                     <div class="flex">
                         <div class="mobile_details_img ju al">
                             <img style="height: 100%;" v-if="item.familyMember.headImg" :src="item.familyMember.headImg" alt="">
-                            <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
+                            <img style="height: 100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                         </div>
                         <div class="al">
                             <div style="height: 50px">
@@ -762,7 +762,6 @@ export default {
             // },
         },
         firstPet () { return this.$store.state.user.firstPet },
-        default_img () { return this.$store.state.user.default_img }
     },
     methods: {
         cutBreed (e,item) {
@@ -933,19 +932,26 @@ export default {
             }
         },  
         getSex (e) {
-            this.petLists[this.i].sex = e
+            // this.petLists[this.i].sex = e
+            this.petLists[this.i].familyMember.sex = e
         },
         edit (item,i) {
             // item.change = false
-            this.petLists[i].change = false
-            // console.log(item.change,i)
-            this.i = i
-            if (this.petLists[i].gender == 1) {
-                this.sex = 'Male'
-            } else if (this.petLists[i].gender == 2) {
-                this.sex = "Female"
-            }
-            this.petLists = [...this.petLists]
+            this.petLists.forEach(msg => {
+                msg.change = true
+            })
+            let that = this
+            this.$nextTick(() => {
+                that.petLists[i].change = false
+                // console.log(item.change,i)
+                that.i = i
+                if (that.petLists[i].gender == 1) {
+                    that.sex = 'Male'
+                } else if (that.petLists[i].gender == 2) {
+                    that.sex = "Female"
+                }
+                that.petLists = [...that.petLists]
+            })
         },
         mobile_edit (item) {
             item.change = false

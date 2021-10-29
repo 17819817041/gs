@@ -14,6 +14,9 @@
         margin-top: 150px;
         img {
             height: 163px;
+            @media screen and (max-width: 564px) {
+                height: 125px
+            }
         }
     }
     .loginBtn {

@@ -14,21 +14,23 @@
         width: 100%;
         height: 100%;
         .support_type, .support_title {
-            margin: 10px 0;
             padding: 0 20px;
         }
     }
     .support_type {
         width: 100%;
         overflow: auto;
-        height: 90%;
+        height: calc(100% - 55px);
+        @media screen and (max-width: 1200px) {
+            height: calc(100% - 89px);
+        }
     }
     .support_item {
         width: 277px;
         background: white;
         overflow: auto;
         padding: 0 15px;
-        @media screen and (max-width: 1510px) {
+        @media screen and (max-width: 1200px) {
             display: none;
         }
     }
@@ -50,7 +52,8 @@
         color: @support;
         height: 100%;
         overflow: auto;
-        @media screen and (max-width: 1510px) {
+        z-index: 10;
+        @media screen and (max-width: 1200px) {
             margin-left: 0px;
             width: 100%;
         }
@@ -73,7 +76,7 @@
     }
     .navMenu {
         display: none;
-        @media screen and (max-width: 1510px) {
+        @media screen and (max-width: 1200px) {
             display: block;
         }
     }
@@ -153,7 +156,7 @@
             padding: 0 5px;
             border-radius: 0 30px 30px 0;
             background: gray;
-            z-index: 400;
+            z-index: 10;
         }
     }
     .attachment {
@@ -278,7 +281,8 @@ export default {
             loading: false,
             sop_Title: '',
             sopContent: '',
-            inp: ''
+            inp: '',
+            pageNum: 1
         }
     },
     created () {
@@ -316,6 +320,11 @@ export default {
                 }
             }
         },
+        tinp: {
+            handler (val) {
+                this.ting = val
+            }
+        },
     },
     computed: {
         newMsg_dot: {
@@ -343,6 +352,15 @@ export default {
             get () { return this.$store.state.user.show_edit },
             set (val) {
                 this.$store.commit('setUser', { key: 'show_edit', value: val })
+            }
+        },
+        tinp: {
+            get () { return this.$store.state.user.tinp },
+            set (val) {
+                this.$store.commit("setUser", {
+                    key: "tinp",
+                    value: val
+                })
             }
         },
     },
@@ -402,6 +420,10 @@ export default {
             }
             sopAdd(data).then(res => {
                 this.loading = false
+                this.$store.commit('setUser', {
+                    key: 'editsop',
+                    value: false
+                })
                 if (res.data.rtnCode == 200) {
                     this.$message({
                         type: 'success',
@@ -425,35 +447,26 @@ export default {
         },
         search () {
             let data = {
-                search: this.inp,
-                doctorId: localStorage.getItem('userId')
+                userId: localStorage.getItem("userId"),
+                pageNumber: this.pageNum,
+                pageSize: 15,
+                search: this.tinp
             }
             this.$store.commit("setUser", {
                 key: "loading_doc",
                 value: true
             })
-            sopsearch(data).then(res => {
-                console.log(res)
-                this.$store.commit("setUser", {
-                    key: "loading_doc",
-                    value: false
-                })
-                if (res.data.rtnCode == 200) {
-                    this.$store.commit("setUser",{ key: "sopList", value: [] })
-                    this.$store.commit("setUser",{ key: "sopList", value: res.data.data })
-                } else {
-                    this.$store.commit("setUser",{ key: "sopList", value: [] })
-                }
-            }).catch(e => {
-                this.$store.commit("setUser", {
-                    key: "loading_doc",
-                    value: false
-                })
-            })
+            this.$store.dispatch('getsopList', data)
         },
         search1 () {
+            this.$store.commit("setUser", {
+                key: "tinp",
+                value: this.inp
+            })
             if (this.inp == '') {
                 this.search()
+            } else {
+                
             }
         }
     }

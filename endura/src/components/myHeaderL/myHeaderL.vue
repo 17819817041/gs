@@ -122,7 +122,7 @@
             padding: 0 5px;
             border-radius: 0 30px 30px 0;
             background: @hdColor;
-            z-index: 400;
+            z-index: 10;
         }
     }
     .oicq_inp {
@@ -142,7 +142,7 @@
             padding: 0 5px;
             border-radius: 0 30px 30px 0;
             background: @hdColor;
-            z-index: 400;
+            z-index: 10;
         }
     }
     .select {
@@ -157,6 +157,7 @@
         border-radius: 50%;
         border: solid gray 1px;
         margin-right:5px;
+        cursor: pointer;
         overflow: hidden;
         transition: 0.2s;
         @media screen and (max-width: 1220px) {
@@ -264,7 +265,7 @@
             width: 22.5px;
             height: 22.5px;
             top: 30px;
-            left: 125px;
+            left: 175px;
             visibility: hidden;
             transition: 0.2s;
             @media screen and (min-width:800px) and (max-width:950px) {
@@ -345,6 +346,7 @@
         width: 90%;
         margin: auto;
         margin-top: 20px;
+        min-height: 300px;
     }
     .pet_img {
         margin-top: 30px;
@@ -397,7 +399,7 @@
         .physical_H {
             position: absolute;
             left: 50%;
-            bottom: 5px;
+            top: 425px;
             transform: translate(-50%, 0);
         }
     }
@@ -426,54 +428,56 @@
 </style>
 
 <template>
-    <div>
+    <div class="MOBILE_HEAD">
         <el-drawer
+        style="height: 100%"
             title="Pet"
             :visible.sync="drawer"
             :direction="direction"
             size='70%'>
             <div class="drawer_wrap noBar">
-                <el-carousel type="card" height="100px" arrow='never' 
-                indicator-position='none' :autoplay='false' @change="cutPet">
-                    <el-carousel-item v-for="item in petList" :key="item.id">
-                        <div class="car_petImage ju al mg">
-                            <img style="height: 100%;" v-if="item.image" :src="item.image" alt="">
-                            <img style="height:100%;" v-else :src="default_img" alt="">
+                <div style="min-height: 550px">
+                    <el-carousel type="card" height="100px" arrow='never' 
+                    indicator-position='none' :autoplay='false' @change="cutPet">
+                        <el-carousel-item v-for="item in petList" :key="item.id">
+                            <div class="car_petImage ju al mg">
+                                <img style="height: 100%;" v-if="item.familyMember.headImg" :src="item.familyMember.headImg" alt="">
+                                <img style="height: 100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
+                            </div>
+                        </el-carousel-item>
+                    </el-carousel>
+                    <div class="present_item">
+                        <div class="pet_name size21 bold" v-if="pet.familyMember.name">{{pet.familyMember.name}}</div>
+                        <div class="pet_name size21 bold" v-else>No Name</div>
+                        <div class="details size16_P">
+                            <div class="sb d_pet">
+                                <div>User ID : </div>
+                                <div>{{pet.familyMember.id}}</div>
+                            </div>
+                            <div class="sb d_pet">
+                                <div>Age : </div>
+                                <div>{{pet.familyMember.age}}</div>
+                            </div>
+                            <div class="sb d_pet">
+                                <div>Relation : </div>
+                                <div>{{pet.familyMember.familyRelations}}</div>
+                            </div>
+                            <div class="sb d_pet">
+                                <div>Sex :</div>   
+                                <div><span v-if="pet.familyMember.sex == 1">Male</span> <span v-else-if="pet.familyMember.sex == 2">Female</span></div>
+                            </div>
+                            <div class="sb d_pet">
+                                <div>Height : </div>
+                                <div>{{pet.familyMember.height}} kg</div>
+                            </div>
+                            <div class="sb d_pet">
+                                <div>Weight : </div>
+                                <div>{{pet.familyMember.weight}} kg</div>
+                            </div>
                         </div>
-                    </el-carousel-item>
-                </el-carousel>
-                <div class="present_item">
-                    <div class="pet_name size21 bold" v-if="pet.name">{{pet.name}}</div>
-                    <div class="pet_name size21 bold" v-else>No Name</div>
-                    <div class="details size16_P">
-                        <div class="sb d_pet">
-                            <div>Pet ID : </div>
-                            <div>{{pet.id}}</div>
+                        <div class="more_message size12 cursor" @click="petDetails">
+                            More...
                         </div>
-                        <div class="sb d_pet">
-                            <div>Age : </div>
-                            <div>{{pet.age}}</div>
-                        </div>
-                        <div class="sb d_pet">
-                            <div>Breed : </div>
-                            <div>{{breed}}</div>
-                        </div>
-                        <div class="sb d_pet">
-                            <div>Sex :</div>   
-                            <div><span v-if="pet.gender == 1">Male</span> <span v-else-if="pet.gender == 2">Female</span></div>
-                        </div>
-                        <div class="sb d_pet">
-                            <div>Neutered status : </div>
-                            <div><span v-if="pet.petJueYue == 1">Sterilization</span> 
-                            <span v-else-if="pet.petJueYu == 2">Unneutered</span> </div>
-                        </div>
-                        <div class="sb d_pet">
-                            <div>Weight : </div>
-                            <div>{{pet.weight}} kg</div>
-                        </div>
-                    </div>
-                    <div class="more_message size12 cursor" @click="petDetails">
-                        More...
                     </div>
                 </div>
                 <div class="physical_H">
@@ -492,6 +496,7 @@
                         <div class="expand_content_item" @click="paymentHistory" >Payments History</div>
                         <div class="expand_content_item" @click="setting">Setting</div>
                         <div class="expand_content_item" @click="support">Support</div>
+                        <div class="expand_content_item" @click="Training">Training</div>
                         <div  class="expand_content_item" @click="logout">Logout</div>
                     </div>
                 </div>
@@ -506,7 +511,7 @@
             </div>
             <div class="div sb al">
                 <div class="search al sa" v-if="login">
-                    <div class="top cursor1 white" v-if="identity" @click="doctor">
+                    <div :class="['top white',{ cursor1: platform != 1 }]" v-if="identity" @click="doctor">
                         <span v-if="platform == 1">All Doctors</span>
                         <span v-else-if="platform == 2">All Patients</span>
                     </div>
@@ -535,12 +540,11 @@
                     <div class="al sb function_item" v-if="login">
                         <div class="userName al sb">
                             <div class="myMessage al">
-                                <label for="ava" class="cursor label_img ju al">
+                                <label for="ava" class="label_img ju al">
                                     <!-- <input id="ava" v-show="false" type="file" @change="getImage" />   -->
                                     <div class="ju al" style="height:55px;overflow:hidden;border-radius:50%;transform:scale(1)">
                                         <img style="height:100%;" v-if="userDetails.userImage" :src="userDetails.userImage" alt="" @click="getImage">
-                                        <img style="height:100%;" v-else :src="default_img" alt="" @click="getImage">
-                                        <!-- <i class="el-icon-picture-outline" v-else style="font-size:30px;color:gray"></i> -->
+                                        <img style="height: 100%;" v-else @click="getImage" src="@/assets/img/defaultimg.jpg" alt="">
                                     </div>
                                 </label>
                                 <div class="name al white">{{userDetails.userName}}</div>
@@ -548,7 +552,6 @@
                             <div class="sa" style="padding-left:20px;">
                                 <div class="informationImg cursor top al" @click="notice">
                                     <div class="noticeDot" v-show="noticeState" style="width: 10px;height: 10px; border-radius: 50%;;" alt=""></div>
-                                    <!-- <img class="noticeDot" v-show="noticeState" src="@/assets/img/dot.png" alt=""> -->
                                     <img class="i_notice" src="@/assets/img/notice.png" alt="">
                                 </div>
                                 <div class="homeImg al cursor" @click="home">
@@ -579,7 +582,7 @@
                     <div class="oicq flex white">
                         <div class="oicq_img ju al">
                             <img style="height:100%;" v-if="userDetails.userImage" :src="userDetails.userImage" alt="" @click="drawer_s">
-                            <img style="height:100%;" v-else :src="default_img" alt="">
+                            <img style="height: 100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                         </div>
                         <div>
                             <div class="oicq_name" >{{userDetails.userName}}</div>
@@ -604,7 +607,7 @@
                         </div>
                         <div>
                             <div class="informationImg cursor top al" @click="notice">
-                                <img class="noticeDot" v-show="noticeState" src="@/assets/img/dot.png" alt="">
+                                <div class="noticeDot" v-show="noticeState" style="width: 10px;height: 10px; border-radius: 50%;;" alt=""></div>
                                 <img style="width: 22px;height:22px" src="@/assets/img/notice.png" alt="">
                             </div>
                         </div>
@@ -632,7 +635,7 @@
     </div>
 </template>
 <script>
-import { searchDoc, updateUserDetails, file, petType, updateVetDetails } from "@/axios/request.js"
+import { searchDoc } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -645,14 +648,11 @@ export default {
             T_userId: localStorage.getItem('userId'),
             drawer: false,
             direction: 'rtl',
-            breed: '',
-            options: [],
             platform: localStorage.getItem('platform')
         }
     },
     created () {
         this.getUser()
-        this.getPetType()
         if (localStorage.getItem('platform') == 2) {
             if (this.$route.name == 'vetDoctor') {
                 this.identity = false
@@ -753,7 +753,6 @@ export default {
                 })
             },
         },
-        default_img () { return this.$store.state.user.default_img },
         top_up_mask: {
             get () { return this.$store.state.user.mobile_b },
             set (val) {
@@ -922,6 +921,9 @@ export default {
             this.drawer = false
             this.$router.push("/petDetails")
         },
+        Training () {
+            this.$router.push('/Training')
+        },
         getImage (e) {
             if (localStorage.getItem("platform") == 1) {
                 this.$router.push('/setting')
@@ -1073,36 +1075,6 @@ export default {
                 this.drawer = !this.drawer
             }
             
-        },
-        getPetType () {
-            let data = {
-                userId: localStorage.getItem('userId'),
-                platform: localStorage.getItem('platform'),
-                token: localStorage.getItem('Token')
-            }
-            petType(data).then(res => {
-                res.data.forEach(item => {
-                    item.children.forEach(child => {
-                        child.children = []
-                    })
-                })
-                this.options = res.data
-                this.TYPE()
-            })
-        },
-        TYPE () {
-            this.options.forEach(op => {
-                if (this.pet.petType == op.petTypeId) {
-                    this.breed = child.petTypeName
-                }
-                if (op.children) {
-                    op.children.forEach(child => {
-                        if (this.pet.petType == child.petTypeId) {
-                            this.breed = child.petTypeName
-                        }
-                    })
-                }
-            })
         },
         cutPet(val) {
             this.firstPet = val

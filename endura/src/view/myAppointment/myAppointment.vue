@@ -460,8 +460,6 @@ export default {
             this.$conn.send(msg.body);
 		},
         appointmentDetalis (id,item) {
-            console.log(item)
-            return false
             this.$router.push({
                 name: 'cusAppointmentDetalis',
                 query: {

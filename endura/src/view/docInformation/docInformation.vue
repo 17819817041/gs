@@ -16,7 +16,7 @@
                                     element-loading-background="rgba(0, 0, 0, 0.8)">
                                     <img :class="['profileimg mg']" v-if="userDetail.headUr" 
                                     :src="userDetail.headUr" alt="" mode="widthFix">
-                                    <img style="height:100%;" v-else :src="default_img" alt="">
+                                    <img style="height: 100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                                 </div>
                             </label>
                         </div>
@@ -153,9 +153,6 @@ export default {
             default_address: '',
             userDetail: {}
         }
-    },
-    computed: {
-        default_img () { return this.$store.state.user.default_img },
     },
     created () {
         this.getHospitalList()

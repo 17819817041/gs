@@ -373,7 +373,7 @@
                                 <div class="person_image">
                                     <div class="mg al ju">
                                         <img class="felame" v-if="userAndPet.userHead" :src="userAndPet.userHead" alt="">
-                                        <img style="height:100%;" v-else :src="default_img" alt="">
+                                        <img style="height:100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                                     </div>
                                 </div>
                             <div class="flex direction">
@@ -423,7 +423,7 @@
                             <div class="details_image ">
                                 <div class="mg ju al">
                                     <img class="dog_img" v-if="userAndPet.familyMemberHeadUrl" :src="userAndPet.familyMemberHeadUrl" alt="">
-                                    <img style="height: 75%;" v-else src="@/assets/img/default.png" alt="">
+                                    <img style="height: 100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                                 </div>
                             </div>
                             <div class="direction flex">
@@ -528,7 +528,6 @@ export default {
         this.getPet()
     },
     computed: {
-        default_img () { return this.$store.state.user.default_img },
         top_up_mask () { return this.$store.state.user.showback },
     },
     methods: {

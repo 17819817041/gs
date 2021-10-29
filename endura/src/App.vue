@@ -64,16 +64,12 @@
 </template>
 
 <script>
-import d_img from "@/assets/img/defaultimg.jpg"
 export default {
 	data () {
 		return {
 			loading: false,
 			mettingId: 0
 		}
-	},
-	created () {
-		this.$store.dispatch("default", d_img)
 	},
 	mounted () {
 		// document.documentElement.addEventListener('touchstart', function (event) {
@@ -648,21 +644,19 @@ export default {
 		cursor: pointer;
 		user-select: none;
 		@media screen and (max-width: 800px) {
-			cursor: none;
+			
 		}
 	}
 	.cursor:hover {
 		opacity: 0.6;
 		@media screen and (max-width: 800px) {
-			cursor: none;
+			
 		}
 	}
 	.cursor:active {
 		opacity: 0.4;
-		user-select: none;
 		@media screen and (max-width: 800px) {
-			cursor: none;
-			user-select: auto;
+			
 		}
 	}
 	.mg {
@@ -788,12 +782,12 @@ export default {
 			width: 293px;
 		}
 	}
-	// .v-modal {
-	// 	display: none;
-	// 	@media screen and (max-width: 800px) {
-	// 		display: block;
-	// 	}
-	// }
+	.v-modal {
+		display: none;
+		@media screen and (max-width: 800px) {
+			display: block;
+		}
+	}
 	.record .el-collapse .el-collapse-item .el-collapse-item__header {
 		height: 60px !important;
 	}
@@ -868,5 +862,9 @@ export default {
 
 	.vet .el-form-item__content {
 		white-space: nowrap !important;
+	}
+
+	.MOBILE_HEAD .el-drawer__body {
+		height: 100% !important;
 	}
 </style>

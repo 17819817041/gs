@@ -9,7 +9,7 @@
                             <div class="ju al Personal">
                                 <img class="personal_img" style="height:100%;" 
                                 v-if="item.familyMember.headImg" :src="item.familyMember.headImg? item.familyMember.headImg: null " alt="">
-                                <img style="height:100%;" v-else :src="default_img" alt="">
+                                <img style="height:100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                             </div>
                             <div class="name">
                                 <div class="size18 petName flex" v-if="item.familyMember.name">
@@ -49,7 +49,7 @@
                         </div>
                         <div class="ju mg al PET_IMG">
                             <img class="Img" :src="petAndUser.familyMemberHeadUrl" alt="" v-if="petAndUser.familyMemberHeadUrl">
-                            <img style="height:75%;" v-else :src="d_img" alt="">
+                            <img style="height:100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                             <!-- <i class=" el-icon-picture-outline Icon" style="font-size:60px;color:gray;" v-else></i> -->
                         </div>
                         <div class="pet_information">
@@ -58,6 +58,7 @@
                             <div class="size15bl">User ID : {{petAndUser.familyMemberId}}</div>
                             <div class="size15bl">Age : {{petAndUser.familyMemberAge}}</div>
                             <div class="size15bl">Sex : {{petAndUser.familyMemberGenderName}}</div>
+                            <div class="size15bl">Height : {{petAndUser.familyMemberHeight}}cm</div>
                             <div class="size15bl">Weight : {{petAndUser.familyMemberWeight}}kg</div>
                         </div>
                         <!-- <div class="petMore te cursor"><span>More...</span></div> -->
@@ -85,7 +86,7 @@
                     </div>
                     <div class="message_list size15bl">
                         <div style="width:100%" class="flex al ts">
-                            <div class="const">User ID</div>
+                            <div class="const">User ID :</div>
                             <div class="event">{{petAndUser.userId}}</div>
                         </div>
                         <div style="width:100%" class="flex al ts">
@@ -93,18 +94,17 @@
                             <div class="event">{{petAndUser.userName}}</div>
                         </div>
                         <div style="width:100%" class="flex al ts">
-                            <div class="const">Age</div>
+                            <div class="const">Age :</div>
                             <div class="event">{{petAndUser.age}}</div>
                         </div>
                         <div style="width:100%" class="flex al ts">
-                            <div class="const">Location</div>
+                            <div class="const">Location :</div>
                             <div class="event">
                                 <span v-if="petAndUser.address">{{petAndUser.address}}</span>
-                                <span v-else>No Address</span>
                             </div>
                         </div>
                         <div style="width:100%" class="flex al ts">
-                            <div class="const">Mobile</div>
+                            <div class="const">Mobile :</div>
                             <div class="event">{{petAndUser.moble}}</div>
                         </div>
                     </div>
@@ -123,24 +123,21 @@
                     <div class="petDetails">
                         <div class="petDetails_item">
                             <div class="Title sb">
-                                <div class="size19">Pet Details</div>
+                                <div class="size19">Family Member Details</div>
                             </div>
                             <div class="ju mg al PET_IMG">
-                                <img class="Img" :src="petAndUser.petHeadUrl" alt="" v-if="petAndUser.petHeadUrl">
-                                <img style="height:75%;" v-else :src="d_img" alt="">
+                                <img class="Img" :src="petAndUser.familyMemberHeadUrl" alt="" v-if="petAndUser.familyMemberHeadUrl">
+                                <img style="height: 100%;" v-else src="@/assets/img/defaultimg.jpg" alt="">
                                 <!-- <i class=" el-icon-picture-outline Icon" style="font-size:60px;color:gray;" v-else></i> -->
                             </div>
                             <div class="pet_information">
-                                <div class="pet_name size19" v-if="petAndUser.petName">{{petAndUser.petName}}</div>
+                                <div class="pet_name size19" v-if="petAndUser.familyMemberName">{{petAndUser.familyMemberName}}</div>
                                 <div class="pet_name size19" v-else>No Name</div>
-                                <div class="size15bl">Pet ID : {{petAndUser.petId}}</div>
-                                <div class="size15bl">Age : {{petAndUser.petAge}}</div>
-                                <div class="size15bl">Sex : {{petAndUser.petGenderName}}</div>
-                                <div class="size15bl">neutered status : 
-                                    <span v-if="petAndUser.neuteredState == 1">Sterilization</span> 
-                                    <span v-else-if="petAndUser.neuteredState == 2">Unneutered</span> 
-                                </div>
-                                <div class="size15bl">Weight : {{petAndUser.petWeight}}kg</div>
+                                <div class="size15bl">Pet ID : {{petAndUser.familyMemberId}}</div>
+                                <div class="size15bl">Age : {{petAndUser.familyMemberAge}}</div>
+                                <div class="size15bl">Sex : {{petAndUser.familyMemberGenderName}}</div>
+                                <div class="size15bl">Height : {{petAndUser.familyMemberHeight}}cm</div>
+                                <div class="size15bl">Weight : {{petAndUser.familyMemberWeight}}kg</div>
                             </div>
                             <!-- <div class="petMore te cursor"><span>More...</span></div> -->
                         </div>
@@ -200,7 +197,6 @@
 
 <script>
 import { getUserByPetId, getPetMedicalRecord, s_online, getUserDetailsAndFamilyListByUserId } from "@/axios/request.js"
-import image from '@/assets/img/default.png'
 export default {
     data () {
         return {
@@ -210,7 +206,6 @@ export default {
             drawer: false,
             totalRecordsCount: 0,
             p_loading: false,
-            d_img: ''
         }
     },
     mounted () {
@@ -228,7 +223,6 @@ export default {
             value: []
         })
         this.PetMedicalRecord()
-        this.d_img = image
     },
     beforeMount() {
         window.addEventListener('resize', (e) => {
@@ -384,7 +378,7 @@ export default {
         },
         toPatients (item) {
             this.getUserByPetId(item.familyMember.id)
-            // this.drawer = !this.drawer
+            this.drawer = !this.drawer
         },
         moreDetail () {
             if (this.changePage) {

@@ -7,13 +7,13 @@
                 <div class="first_pet_item sb">
                     <div class="ju al first_pet_item_i">
                         <div class="ju al img_ia">
-                            <img class="cursor" :src="petList[0]? petList[0].image:''" v-if="petList[0]" alt="" @click="first_pet(petList[0])">
+                            <img class="cursor" :src="petList[0]? petList[0].familyMember.headImg:''" v-if="petList[0]" alt="" @click="first_pet(petList[0])">
                             <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
                         </div>
                     </div>
                     <div class="ju al first_pet_item_i">
                         <div class="ju al img_ia">
-                            <img class="cursor" :src="petList[1]? petList[1].image:''" v-if="petList[1]" alt="" @click="first_pet(petList[1])">
+                            <img class="cursor" :src="petList[1]? petList[1].familyMember.headImg:''" v-if="petList[1]" alt="" @click="first_pet(petList[1])">
                             <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
                         </div>
                     </div>
@@ -29,7 +29,7 @@
                     <el-carousel indicator-position="false" :autoplay='false' class="sb" arrow='always'>
                         <el-carousel-item v-for="(item,i) in length1" :key="i" style="height: 100%">
                             <div class="ju al img_i float" v-for="(item,i) in petList.slice((i+1)*3-3,(i+1)*3)" :key="i">
-                                <img class="cursor" :src="item.image" v-if="item.image" alt="" @click="first_pet(item)">
+                                <img class="cursor" :src="item.familyMember.headImg" v-if="item.familyMember.headImg" alt="" @click="first_pet(item)">
                                 <i class="el-icon-picture-outline" v-else style="font-size:60px;color:gray"></i>
                             </div>
                         </el-carousel-item>
@@ -78,7 +78,6 @@ export default {
             this.more = false
         },
         first_pet (item) {
-            console.log(item)
             this.$store.commit('setUser', {
                 key: 'pet',
                 value: item

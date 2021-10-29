@@ -9,6 +9,7 @@
         width: 65%;
         min-width: 600px;
         height: 100%;
+        overflow: auto;
     }
     .stepDatail {
         width: 30%;
@@ -25,7 +26,6 @@
         width: 60%;
         height: 60px;
         font-size: 15px;
-        border: solid 1px;
         text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
         display: -webkit-box;
         -webkit-line-clamp: 3;/*规定超过两行的部分截断*/
@@ -58,7 +58,6 @@
             border: none;
             outline: none;
         }
-        border: solid 1px;
     }
     .edit1 {
         padding: 0px 10px;
@@ -138,7 +137,6 @@
     .title_child {
         width: 200px;
         height: 60px;
-        border: solid 1px;
         overflow: hidden;
         margin-top: 20px;
         input {
@@ -153,7 +151,6 @@
         height: 100px;
         margin-top: 15px;
         overflow: hidden;
-        border: solid 1px;
         textarea {
             width: 100% !important;
             height: 100% !important;
@@ -169,6 +166,8 @@
     }
     .step_item {
         margin-top: 15px;
+        height: calc(100% - 72px);
+        overflow: auto;
         .item {
             margin-bottom: 10px;
             cursor: pointer;
@@ -227,6 +226,7 @@
     .image_show {
         // width: 820px;
         height: 500px;
+        overflow: hidden;
         img {
             height: 100%;
         }
@@ -241,11 +241,10 @@
 </style>
 <template>
     <div class="editstep sb bar" v-loading='loading'>
-        <div class="videoDetail">
+        <div class="videoDetail noBar">
             <div class="sb" style="margin-bottom: 10px">
-                <div class="soptitle bold ju al"> {{sopDetail.sopTitle}} </div>
-                <div class="Explanation bold ju al">
-                    <!-- <textarea name="" id="" cols="30" rows="10" v-model="sopDetail.sopContent"></textarea> -->
+                <div class="soptitle bold ju"> {{sopDetail.sopTitle}} </div>
+                <div class="Explanation bold ju al cursor" @click="dialogVisibles = true">
                     {{sopDetail.sopContent}}
                 </div>
             </div>
@@ -287,7 +286,7 @@
                     <div class="size14 bold">Cancel</div>
                 </div>
             </div>
-            <div class="step_item">
+            <div class="step_item bar">
                 <div :class="['item flex', {background: B == index.number}]" 
                 v-for="(index,i) in sopDetail.sopStepList" :key="i" @click="cut(index)" v-show="editShow">
                     <div class="showImg ju al"> Step{{index.number}} </div>
@@ -308,6 +307,16 @@
                     </div>
                 </div>
             </div>
+            <!-- <div class="ju">
+                <el-pagination
+                    :small="small"
+                    :pager-count='7'
+                    :current-page='current_page'
+                    layout="prev, pager, next"
+                    :total="length"
+                    @current-change='pageCut'>
+                </el-pagination>
+            </div> -->
         </div>
         <el-dialog
             :title=" 'Selected' + step + 'Step' "
@@ -364,6 +373,13 @@
                 </div>
             </span>
         </el-dialog>
+        <el-dialog
+            :visible.sync="dialogVisibles"
+            width="900px">
+            <div>
+                {{sopDetail.sopContent}}
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -373,6 +389,7 @@ export default {
     data () {
         return {
             dialogVisible: false,
+            dialogVisibles: false,
             step: 1,
             show: false,
             inp: '',
@@ -388,6 +405,7 @@ export default {
             sopStepList: [],
             active: false,
             checkList: [],
+            length: 1,
             copyList: [],
 
             item_title: '',
@@ -403,12 +421,25 @@ export default {
             preload: 'auto',  //  建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
             controls: true,  // 确定播放器是否具有用户可以与之交互的控件。没有控件，启动视频播放的唯一方法是使用autoplay属性或通过Player API。
             autoplay: '',
+
+
+            // current_page: 1,
+            // small: false,
         }
     },
     created () {
         this.getSopStep()
         this.getVideo()
     },
+    // beforeMount() {
+    //     window.addEventListener('resize', (e) => {
+    //         if (e.target.innerWidth <= 564) {
+    //             this.small = true
+    //         } else {
+    //             this.small = false
+    //         }
+    //     })
+    // },
     methods: {
         add () {
             if (this.inp != '') {
@@ -502,6 +533,7 @@ export default {
                     res.data.data.sopStepList.forEach(msg => {
                         msg.checked = false
                     })
+                    this.length = res.data.data.sopStepList.length
                     this.checkList = JSON.parse(JSON.stringify(res.data.data))
                     this.sopDetail = JSON.parse(JSON.stringify(res.data.data))
                     this.copyList = JSON.parse(JSON.stringify(res.data.data))
@@ -533,7 +565,7 @@ export default {
             this.copyList.sopStepList[i].checked = true
             if (item.checked) {
                 for (let k=0;k<this.sopDetail.sopStepList.length;k++) {
-                    if (k == i) {
+                    if (k >= i) {
                         this.copyList.sopStepList[k].number --
                     }
                 }
@@ -541,7 +573,7 @@ export default {
                 this.copyList.sopStepList[i].checked = false
                 this.copyList.sopStepList[i].number = i
                 for (let k=0;k<this.sopDetail.sopStepList.length;k++) {
-                    if (k==i) {
+                    if (k>=i) {
                         this.copyList.sopStepList[k].number +=1
                     }
                 }
@@ -590,12 +622,11 @@ export default {
             let data = {
                 doctorId: localStorage.getItem('userId') *1,
                 pageNum: this.pageNum,
-                pageSize: 105,
+                pageSize: 15,
                 fileType: 3,            //1 image    2 video    3 all file
                 glassUserId: localStorage.getItem('glassId')
             }
             getListByPage(data).then(res => {
-                console.log(res)
                 this.dialoading = false
                 if (res.data.rtnCode == 200) {
                     res.data.data.pageT.forEach(item => {
@@ -609,12 +640,17 @@ export default {
                 }
             }).catch(e => {
                 this.dialoading = false
+                this.videoList = []
                 this.$message({
                     type: 'error',
                     message: 'Fail to load!!!'
                 })
             })
         },
+        // pageCut (val) {
+        //     this.pageNum = val
+        //     this.getSopStep()
+        // },
         search1 () {
             if (this.inp == '') {
                 this.search()

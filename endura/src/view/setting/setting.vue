@@ -830,7 +830,7 @@
                                     </div>
                                     <div class="active_current mg">is your current balance</div>
                                     <div class="drawal sb mg">
-                                        <div class="drawal_btn tc cursor">Withdrawal</div>
+                                        <div class="drawal_btn tc cursor">Withdraw</div>
                                         <div class="top_up tc cursor" @click="top_up">Top Up</div>
                                     </div>
                                 </div>

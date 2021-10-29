@@ -31,7 +31,7 @@
             </label>
         </div>
 
-        <div class="ju">
+        <!-- <div class="ju">
             
             <label for="Attachment">
                 <input type="file" id="Attachment" @change="uploadfile" v-show="false">
@@ -40,7 +40,7 @@
                     <div class="bold ">Add Attachment</div>
                 </div>
             </label>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -174,6 +174,13 @@ export default {
         border-radius: 7px 0 0 7px;
         padding-left: 7px;
         background: #EEEEEE;
+        max-width: 300px;
+        text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+        display: -webkit-box;
+        -webkit-line-clamp: 2;/*规定超过两行的部分截断*/
+        -webkit-box-orient: vertical;
+        overflow : hidden; 
+        word-break: break-all;/*在任何地方换行*/
     }
     .browse {
         background: #347AB6;

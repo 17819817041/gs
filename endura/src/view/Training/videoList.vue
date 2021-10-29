@@ -1,43 +1,59 @@
 <template>
-    <div class="videoList clear bar" v-loading='loading'>
-        <div class="videoList_item_wrap float" v-for="(item,i) in videoList" :key="i">
-            <div class="t_message flex al mg">
-                <div class="t_header ju al">
-                    <img v-if="item.doctorHead" :src="item.doctorHead" alt="">
-                    <img style="height:100%;" v-else :src="default_img" alt="">
+    <div class="videoList bar" v-loading='loading'>
+        <div class="clear">
+            <div class="videoList_item_wrap float" v-for="(item,i) in videoList.pageT" :key="i">
+                <div class="t_message flex al mg">
+                    <div class="t_header ju al">
+                        <img v-if="item.doctorHead" :src="item.doctorHead" alt="">
+                        <img style="height:100%;" v-else :src="default_img" alt="">
+                    </div>
+                    
+                    <div class="t_title mg">
+                        <div class="t_file tag-read cursor" :data-clipboard-text="item.fileUrl" @click="copyMsg">{{item.fileUrl}}</div>
+                        <div class="t_date"> {{item.createdAt}} </div>
+                    </div>
                 </div>
-                
-                <div class="t_title mg">
-                    <div class="t_file">{{item.fileUrl}}</div>
-                    <div class="t_date"> {{item.createdAt}} </div>
-                </div>
-            </div>
-            <div class="t_content">
-                <div class="TITLE tc bold">-{{item.title}}</div>
-                <div class="content_item">
-                    {{item.content}}
-                </div>
-                <div class="flexEnd">
-                    <span class="edit cursor ju al" @click="edit(item)">
-                        <div class="al"><img src="@/assets/img/edit.png" alt=""></div>
-                        <div class="size14 bold">Edit</div>
-                    </span>
+                <div class="t_content">
+                    <div class="TITLE tc bold">{{item.title}}</div>
+                    <div class="content_item">
+                        {{item.content}}
+                    </div>
+                    <div class="flexEnd">
+                        <span class="edit cursor ju al" @click="edit(item)">
+                            <div class="al"><img src="@/assets/img/edit.png" alt=""></div>
+                            <div class="size14 bold">Edit</div>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="nomessage tc bold" v-show="!active3">
             {{vdata}}
         </div>
+
+        <div class="ju">
+            <el-pagination
+                :small="small"
+                :pager-count='7'
+                :current-page='current_page'
+                layout="prev, pager, next"
+                :total="videoList.totalRecordsCount"
+                @current-change='pageCut'>
+            </el-pagination>
+        </div>
+
+
+
         <el-dialog
             :visible.sync="dialogVisible"
-            width="1125px">
+            width="900px">
             <div class="sb edit_wrap">
                 <div class="i_menu">
                     <div class="menu_child">
                         <input type="text" class="tc bold" v-model="obj.title">
                     </div>
                     <div class="menu_child">
-                        <textarea name="" id="" class="bold" cols="19" rows="12" v-model="obj.content"></textarea>
+                        <textarea name="" id="" class="bold" cols="14" rows="6" v-model="obj.content"></textarea>
                     </div>
                     <div class="save_wrap flexEnd">
                         <span class="save cursor ju al" @click="itemsave">
@@ -59,6 +75,7 @@
 </template>
 
 <script>
+import Clipboard from 'clipboard'
 import { getVideoListByPage, sopupdate } from "@/axios/request.js"
 export default {
     data () {
@@ -80,11 +97,14 @@ export default {
             muteStatus: '',
             isMute: true,
             isPlay: false,
-            width: '820', // 设置视频播放器的显示宽度（以像素为单位）
-            height: '500',  // 设置视频播放器的显示高度（以像素为单位）
+            width: '620', // 设置视频播放器的显示宽度（以像素为单位）
+            height: '310',  // 设置视频播放器的显示高度（以像素为单位）
             preload: 'auto',  //  建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
             controls: true,  // 确定播放器是否具有用户可以与之交互的控件。没有控件，启动视频播放的唯一方法是使用autoplay属性或通过Player API。
-            autoplay: ''
+            autoplay: '',
+
+            current_page: 1,
+            small: false,
         }  
     },
     watch: {
@@ -95,6 +115,15 @@ export default {
     },
     created () {
         
+    },
+    beforeMount() {
+        window.addEventListener('resize', (e) => {
+            if (e.target.innerWidth <= 564) {
+                this.small = true
+            } else {
+                this.small = false
+            }
+        })
     },
     mounted () {
         this.getVideo()
@@ -139,9 +168,14 @@ export default {
                 })
             })
         },
+        pageCut (val) {
+            this.pageNum = val
+            this.getVideo()
+        },
         getVideo () {
             this.loading = true
             let data = {
+                search: '',
                 doctorId: localStorage.getItem('userId') *1,
                 pageNum: this.pageNum,
                 glassUserId: localStorage.getItem('glassId'),
@@ -155,7 +189,7 @@ export default {
                     let D = new Date(item.createTime)
                         item.createTime = D.toLocaleDateString()
                     })
-                    this.videoList = res.data.data.pageT
+                    this.videoList = res.data.data
                 } else if (res.data.rtnCode == 201) {
                     this.active3 = false
                     this.vdata = 'Please bind glasses!'
@@ -177,6 +211,27 @@ export default {
                     message: 'No Data!'
                 })
             })
+        },
+        copyMsg () {
+            var clipboard = new Clipboard('.tag-read')
+            let that = this
+            clipboard.on('success', e => {
+                that.$message({
+                    type: 'success',
+                    message: 'Copy successfully'
+                })
+                // 释放内存
+                clipboard.destroy()
+            })
+            clipboard.on('error', e => {
+                // 不支持复制
+                that.$message({
+                    type: 'error',
+                    message: 'The browser does not support the copy function, it is recommended to use Google!'
+                })
+                // 释放内存
+                clipboard.destroy()
+            })
         }
     }
 }
@@ -194,11 +249,8 @@ export default {
         border-radius: 12px;
         background: white;
     }
-    .edit_wrap {
-        min-height: 450px;
-    }
     .i_menu {
-        width: 250px;
+        width: 200px;
         height: 100%;
         border: solid 1px;
         border-radius: 18px;
@@ -206,7 +258,7 @@ export default {
         padding: 5px 10px;
     }
     .i_video {
-        width: 850px;
+        width: 620px;
         height: 100%;
         border: solid 1px;
         border-radius: 18px;
