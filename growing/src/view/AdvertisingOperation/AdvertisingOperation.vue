@@ -1,45 +1,107 @@
 <template>
     <div class="AdvertisingOperation">
-        <div class="back mg al">
+        <div class="AdvertisingOperation_back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="back">廣告管理
         </div>
         <div class="table mg">
-            <Module :columns="columns" :arr="arr" ref="child">
-                <template slot="state" slot-scope="{data}">
-                    <div :class="['cursor toufang', {'sure_state': data == 1, 'no_state': data == 2}]">
-                        <span v-if="data == 1" >已投放</span>
-                        <span v-else-if="data == 2">未投放</span>
+            <el-table :row-class-name="tableRowClassName" 
+            :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
+                :data="tableData"
+                style="width: 100%"
+                >
+                <el-table-column
+                    fixed
+                    prop="name"
+                    label="廣告計劃名稱"
+                    min-width="120"
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop="category"
+                    label="廣告類型"
+                    min-width="170"
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop="area"
+                    label="廣告區域"
+                    min-width="120"
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop="time"
+                    label="廣告投放時段"
+                    min-width="300"
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop="outTime"
+                    label="廣告投放過期"
+                    min-width="220"
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop="price"
+                    label="廣告投放總價"
+                    min-width="110"
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop="state"
+                    label="廣告計劃狀態"
+                    min-width="120"
+                    >
+                    <template slot-scope="scope">
+                    <div :class="['cursor toufang ju', {'sure_state': scope.row.state == 1, 'no_state': scope.row.state == 2}]">
+                        <span v-if="scope.row.state == 1" >已投放</span>
+                        <span v-else-if="scope.row.state == 2">未投放(未付款)</span>
+                        <span :class="[{ 'no_state': scope.row.state == 3}]" v-else-if="scope.row.state == 3">未投放(已付款)</span>
                     </div>
                 </template>
-                <template slot="content">
-                    <div class="preview cursor">
-                        <img src="@/assets/img/eye.png" alt="">
-                        <div>查看預覽</div>
-                    </div>
-                </template>
-                <template slot="edit" slot-scope="{ data }">
-                    <div class="putaway sb">
-                        <div class="putaway_logo" v-if="data == 2">
-                            <img src="@/assets/img/edit.png" alt="">
-                            <div>編輯計劃</div>
+                </el-table-column>
+                <el-table-column
+                    prop="content"
+                    label="廣告媒體內容"
+                    min-width="120"
+                    >
+                    <template>
+                        <div class="preview cursor">
+                            <div class="ju"><img src="@/assets/img/eye.png" alt=""></div>
+                            <div class="tc">查看預覽</div>
                         </div>
-                        <div v-else></div>
-                        <div class="putaway_logo centerL" v-if="data == 2">
-                            <img src="@/assets/img/up.png" alt="">
-                            <div>上架計劃</div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                    prop="edit"
+                    label="操作"
+                    min-width="250"
+                    >
+                    <template slot-scope="scope">
+                        <div class="putaway sa">
+                            <div class="putaway_logo" v-if="scope.row.edit == 2 || scope.row.edit == 3">
+                                <div class="ju"><img src="@/assets/img/edit.png" alt=""></div>
+                                <div class="tc">編輯計劃</div>
+                            </div>
+                            <!-- <div v-else></div> -->
+                            <div class="putaway_logo centerL" v-if="scope.row.edit == 3">
+                                <div class="ju "><img src="@/assets/img/up.png" alt=""></div>
+                                <div class="tc">上架計劃</div>
+                            </div>
+                            <!-- <div v-else></div> -->
+                            <div class="putaway_logo centerL" v-if="scope.row.edit == 1">
+                                <div class="ju"><img src="@/assets/img/down.png" alt=""></div>
+                                <div class="tc">下架計劃</div>
+                            </div>
+                            <!-- <div v-else></div> -->
+                            <div class="putaway_logo" v-if="scope.row.edit == 2">
+                                <div class="ju"><img src="@/assets/img/delete.png" alt=""></div>
+                                <div class="tc">刪除計劃</div>
+                            </div>
+                            <!-- <div v-else></div> -->
                         </div>
-                        <div class="putaway_logo centerL" v-else-if="data == 1">
-                            <img src="@/assets/img/down.png" alt="">
-                            <div>下架計劃</div>
-                        </div>
-                        <div class="putaway_logo" v-if="data == 2">
-                            <img src="@/assets/img/delete.png" alt="">
-                            <div>刪除計劃</div>
-                        </div>
-                        <div v-else></div>
-                    </div>
-                </template>
-            </Module>
+                    </template>
+                </el-table-column>
+            </el-table>
         </div>
     </div>
 </template>
@@ -48,26 +110,23 @@
 export default {
     data () {
         return {
-            columns: [
-                {title:'廣告計劃名稱',key:'name'},
-                {title:'廣告類型',key:'category'},
-                {title:'廣告區域',key:'area'},
-                {title:'廣告投放時段',key:'time'},
-                {title:'廣告投放過期', key: 'outTime'},
-                {title:'廣告投放總價',key:'price'},
-                {title:'廣告計劃狀態',slot:'state'},
-                {title:'廣告媒體內容',slot:'content'},
-                {title:'操作',slot:'edit'},
-            ],
-            arr:[
+            tableData: [
                 {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
-                outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 1, content: '查看預覽', edit: '操作',  active:true},
+                outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 1, content: '查看預覽', edit: 1},
                 {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
-                outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 2, content: '查看預覽', edit: '操作',  active:true},
-            ],
+                outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 2, content: '查看預覽', edit: 2},
+                {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
+                outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 3, content: '查看預覽', edit: 3}
+            ]
         }
     },
     methods: {
+        tableRowClassName ({ row,rowIndex }) {
+            if (rowIndex%2 == 1) {
+                return 'el_color'
+            }
+            return ''
+        },
         back () {
              this.$router.back()
         }
@@ -76,11 +135,21 @@ export default {
 </script>
 
 <style lang='less' scoped>
+    .table {
+        /deep/.el-table th > .cell {
+            text-align: center;
+        }
+        
+        /deep/.el-table .cell {
+            text-align: center;
+        }
+    }
+    
     .AdvertisingOperation {
         margin-top: 20px;
         height: calc(100% - 30px);
     }
-    .back {
+    .AdvertisingOperation_back {
         width: 98%;
         font-size: 20px;
         img {
@@ -162,13 +231,16 @@ export default {
         @media screen and (max-width: 1300px) {
             font-size: 12px;
         }
-        img {
+        div img {
             width: 40px;
+            height: 40px;
             @media screen and (max-width: 1500px) {
                 width: 35px;
+                height: 35px;
             }
             @media screen and (max-width: 1300px) {
                 width: 30px;
+                height: 30px;
             }
         }
     }

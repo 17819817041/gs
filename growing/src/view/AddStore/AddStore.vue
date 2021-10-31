@@ -3,6 +3,7 @@
 		<img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt="">
         <div class="content mg bar">
             <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增店鋪</div>
+            <div class="noBar" style="height: calc(100% - 109px); overflow:auto">
             <div class="basicsMsg boxs theme" v-show="submit">
                 <div class="flex divider_message_title">
                     <div class="divider"></div>
@@ -129,20 +130,26 @@
                     <el-form-item label="廣告媒體時長" prop="long">
                         <div class="al block">
                             <div class="al inp_time ju boxs">
-                                <input type="text">
+									<!-- <input type="text" class="tc"> -->
+									<el-input class="width100"
+									oninput ="value=value.replace(/[^0-9.]/g,'')" :disabled="video" v-model="inp"></el-input>
                             </div>
-                            <div class=" al">分鐘 <span style="color: gray;margin-left: 5px;">(請輸入整數)</span></div>
+                            <div class="al">分鐘 <span style="color: gray;margin-left: 5px;">(請輸入整數)</span></div>
                         </div>
                     </el-form-item>
                     <el-form-item label="廣告媒體內容" prop="content" class="bcolor">
-                        <label for="img">
-							<div class="textarea_wrap">
-								<div class="addImg ju al cursor">
+                        <div class="textarea_wrap clear">
+							<label for="img">
+								<div class="addImg ju al cursor float">
 									<img src="@/assets/img/add.png" alt="">
 								</div>
+								<input type="file" id="img" v-show="false" @change="cahngeFile">
+							</label>
+							<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
+								<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
+								<div class="textarea_wrap_item_child ju al"><img style="height: 100%;" :src="item.url" alt=""></div>
 							</div>
-							<input type="file" id="img" v-show="false">
-						</label>
+						</div>
 						<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
 							圖片格式限制PNG \JPG \JPEG \GIF，数量限制10張，大小限制3M。視頻格式限制 MP4，大小限制10OM(媒體建議尺寸1920*1080)。
 						</div>
@@ -165,6 +172,7 @@
                     <div class="cursor" @click="submit = true">確定</div>
                 </div>
 			</div>
+            </div>
 
 			<div class="footer_w"></div>
         </div>
@@ -175,6 +183,8 @@
 export default {
     data() {
         return {
+            video: null,
+			inp: '',
 			submit: true,
             ruleForm: {
                 name: '',
@@ -228,19 +238,25 @@ export default {
             },
 			typeList: [],
 			areaList: [],
-			timeList: []
+			timeList: [],
+            imageList: []
         };
     },
 	beforeMount() {
+        let that = this
         window.addEventListener('resize', (e) => {
-            if (e.target.innerWidth <= 564) {
+            that.fun()
+        })
+		this.fun()
+    },
+    methods: {
+        fun () {
+			if (window.innerWidth <= 564) {
                 this.labelPosition = 'top'
             } else {
                 this.labelPosition = 'left'
             }
-        })
-    },
-    methods: {
+		},
 		submitForm(formName) {
 			this.$refs[formName].validate((valid) => {
 			if (valid) {
@@ -290,6 +306,13 @@ export default {
 		deleTime (i) {
 			this.timeList.splice(i,1)
 		},
+        cahngeFile (e) {
+			let url = URL.createObjectURL(e.target.files[0])
+			this.imageList.push({ url: url })
+		},
+		deleImg (i) {
+			this.imageList.splice(i,1)
+		}
     }
 }
 </script>
@@ -360,12 +383,6 @@ export default {
       height: 37px;
       margin-right: 5px;
       padding: 3px;
-
-      input {
-        border: none;
-        outline: none;
-        width: 100%;
-      }
     }
     .textarea_wrap {
       width: 90%;
@@ -374,6 +391,31 @@ export default {
       box-shadow: 0 0 8px rgb(112, 112, 112) inset;
 	  padding: 20px 27px;
     }
+    .textarea_wrap_item {
+		border: solid 1px rgb(230, 230, 230);
+		width: 100px;
+		height: 100px;
+		margin: 5px;
+		position: relative;
+		.textarea_wrap_item_child {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+		.deleImg {
+			background: rgb(224, 224, 224);
+			position: absolute;
+			top: -5px;
+			right: -5px;
+			width: 20px;
+			height: 20px;
+			// opacity: 0.9;
+		}
+		@media screen and (max-width: 564px) {
+			width: 50px;
+			height: 50px;
+		}
+	}
 	.addImg {
 		border: dashed 2px rgb(201, 201, 201);
 		width: 100px;
@@ -432,6 +474,7 @@ export default {
     .divider {
         width: 0;
         margin-right: 5px;
+        background: @themeColor;
         border: solid 2px @themeColor;
     }
     .divider_text {

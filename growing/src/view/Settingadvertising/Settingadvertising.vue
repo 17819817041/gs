@@ -73,13 +73,13 @@ export default {
                 {title:'操作',slot:'set'},
             ],
             arr:[
-                {name:'接收外来魔告比例:80%',set: 'set',active: true},
+                {name:'接收外来廣告比例:80%',set: 'set',active: true},
             ],
             arr1:[
-                {name:'接收外来魔告比例:80%',set: 'set',active: true},
+                {name:'接收外来廣告比例:80%',set: 'set',active: true},
             ],
             arr2:[
-                {name:'接收外来魔告比例:80%',set: 'set',active: true},
+                {name:'接收外来廣告比例:80%',set: 'set',active: true},
             ],
         }
     },
@@ -130,6 +130,7 @@ export default {
     .divider {
         width: 0;
         margin-right: 5px;
+        background: @themeColor;
         border: solid 2px @themeColor;
     }
     .divider_text {

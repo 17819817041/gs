@@ -6,7 +6,7 @@
     }
     .Table {
         width: 100%;
-        min-width: 270px;
+        min-width: 700px;
         margin:0px auto;
     }
     .top {
@@ -122,11 +122,11 @@
                     <div v-for="(item,i) in columns" :key="i" :class="['menu_item tc',{width40:item.type == 'checkbox'},{padding:item.type == 'checkbox'}]">
                         <div v-if="item.type == 'checkbox'"> <input type="checkbox" class="check_box" v-model="all" @change="chooseAll"> </div>
                         <div v-else class="al sa">
-                            <div class="addUser ju al" style="opacity: 0" v-if="item.key == 'name'">新增賬戶</div>
-                            <div v-else></div>
+                            <!-- <div class="addUser ju al" style="opacity: 0" v-if="item.key == 'name'">新增賬戶</div>
+                            <div v-else></div> -->
                             <div>{{item.title}}</div>
-                            <div class="addUser cursor ju al" v-if="item.key == 'name'">新增賬戶</div>
-                            <div v-else></div>
+                            <!-- <div class="addUser cursor ju al" v-if="item.key == 'name'">新增賬戶</div>
+                            <div v-else></div> -->
                         </div>
                     </div>
                 </div>

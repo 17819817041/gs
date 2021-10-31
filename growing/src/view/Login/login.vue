@@ -96,11 +96,12 @@ export default {
             }
             @media screen and (max-width: 564px) {
                 left: 50%;
-                top: 50%;
+                top: 45%;
                 transform: translate(-50%, -50%);
                 width: 50%;
                 min-width: 290px;
-                height: 400px;
+                min-height: 425px;
+                height: 425px;
             }
         }
     }
@@ -130,6 +131,14 @@ export default {
             padding: 30px;
             height: 90%;
         }
+        @media screen and (max-width: 800px) {
+            padding: 25px;
+            height: 392px;
+        }
+        @media screen and (max-height: 360px) {
+            height: 90%;
+            padding: 10px 30px;
+        }
         .login_text {
             font-size: 60px;
             padding-bottom: 65px;
@@ -150,6 +159,9 @@ export default {
                 font-size: 25px;
                 padding: 3px 0;
             }
+            @media screen and (max-height: 360px) {
+                font-size: 20px;
+            }
         }
     }
     .user_title, .pwd {
@@ -167,6 +179,9 @@ export default {
         @media screen and (max-width: 1200px) {
             font-size: 14px;
             margin-bottom: 10px;
+        }
+        @media screen and (max-height: 360px) {
+            margin-bottom: 5px;
         }
     }
     .pwd_inp {
@@ -191,6 +206,9 @@ export default {
             color: white;
             @media screen and (max-width: 800px) {
                 font-size: 15px;
+            }
+            @media screen and (max-height: 360px) {
+                font-size: 13px;
             }
         }
     }
@@ -271,6 +289,10 @@ export default {
         @media screen and (max-width: 564px) {
             font-size: 19px;
             padding: 5px 0;
+        }
+        @media screen and (max-height: 360px) {
+            margin-top: 20px !important;
+            margin-bottom: 10px;
         }
     }
 

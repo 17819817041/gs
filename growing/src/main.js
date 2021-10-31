@@ -5,9 +5,6 @@ Vue.config.productionTip = false
 import router from "@/router/router/router.js"
 import store from "@/vuex/store.js"
 
-
-import Module from "@/components/module/module.vue"
-Vue.component("Module",Module)
 import ModuleMin from "@/components/moduleMin/moduleMin.vue"
 Vue.component("ModuleMin",ModuleMin)
 import ModuleMin1 from "@/components/moduleMin/moduleMin1.vue"

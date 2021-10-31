@@ -1,9 +1,9 @@
 <template>
     <div class="Statistics">
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告管理
+            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告統計
         </div>
-        <div class="Statistics_content bar">
+        <div class="Statistics_content">
             <div class="clear echarts_wrap mg">
                 <div class="float echarts" id="main"></div>
                 <div class="float echarts" id="main1"></div>
@@ -205,27 +205,35 @@ export default {
     }
     .Statistics_content {
         background: #F6F6F6;
-        // overflow: auto;
-        // height: calc(100% - 20px);
+        height: calc(100% - 70px);
+        overflow: auto;
     }
     .echarts_wrap {
         width: 70%;
         background: #EDF1F7;
+        overflow-x: hidden;
         padding: 20px;
-        @media screen and (max-width: 564px) {
+        @media screen and (max-width: 1300px) {
             width: 100%;
+        }
+        @media screen and (max-width: 564px) {
+            padding: 20px 0;
         }
     }
     .echarts {
         margin: 20px 5%;
         background: white;
         width: 40%;
-        min-width: 250px;
+        min-width: 345px;
         padding: 0 20px;
         height: 400px;
         @media screen and (max-width: 960px) {
             width: 80%;
             margin: 20px 10%;
+        }
+        @media screen and (max-width: 564px) {
+            width: 100%;
+            margin: 20px 0%;
         }
     }
 </style>

@@ -29,58 +29,85 @@
                 </div>
             </div>
             <div class="Income_table">
-                <Module :columns="columns" :arr="arr" ref="child">
-                    <template slot="income">
-                        <div class="timeIncome ju">
-                            <div>
-                                <div class="flex timeIncome_item">
-                                    <div class="type_n">食品</div>
-                                    <div class="busyTime">
-                                        <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
-                                        <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
+                <el-table :row-class-name="tableRowClassName" 
+                    :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
+                    :data="tableData"
+                    style="width: 100%"
+                    height="95%"
+                    >
+                    <el-table-column
+                        fixed
+                        prop="name"
+                        label="店鋪"
+                        min-width="120"
+                        >
+                    </el-table-column>
+                    <el-table-column
+                        prop="busy"
+                        label="繁忙時段(9am - 9pm)收入"
+                        min-width="190"
+                        >
+                    </el-table-column>
+                    <el-table-column
+                        prop="unbusy"
+                        label="非繁忙時段(9pm - 9am)收入"
+                        min-width="200"
+                        >
+                    </el-table-column>
+                    <el-table-column
+                        prop="income"
+                        label="廣告類型和投放分鐘收入"
+                        min-width="270"
+                        >
+                        <template>
+                            <div class="timeIncome ju">
+                                <div>
+                                    <div class="flex timeIncome_item">
+                                        <div class="type_n">食品</div>
+                                        <div class="busyTime">
+                                            <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
+                                            <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="flex timeIncome_item">
-                                    <div class="type_n">運動</div>
-                                    <div class="busyTime">
-                                        <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
-                                        <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
+                                    <div class="flex timeIncome_item">
+                                        <div class="type_n">運動</div>
+                                        <div class="busyTime">
+                                            <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
+                                            <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="flex timeIncome_item">
-                                    <div class="type_n">醫療</div>
-                                    <div class="busyTime">
-                                        <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
-                                        <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
+                                    <div class="flex timeIncome_item">
+                                        <div class="type_n">醫療</div>
+                                        <div class="busyTime">
+                                            <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
+                                            <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="flex timeIncome_item">
-                                    <div class="type_n">服裝</div>
-                                    <div class="busyTime">
-                                        <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
-                                        <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
+                                    <div class="flex timeIncome_item">
+                                        <div class="type_n">服裝</div>
+                                        <div class="busyTime">
+                                            <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
+                                            <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="flex timeIncome_item">
-                                    <div class="type_n">設計</div>
-                                    <div class="busyTime">
-                                        <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
-                                        <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
+                                    <div class="flex timeIncome_item">
+                                        <div class="type_n">設計</div>
+                                        <div class="busyTime">
+                                            <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
+                                            <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </template>
-                    <template slot="busy" slot-scope="{ data }">
-                        <div class="th_color cursor">{{data}}</div>
-                    </template>
-                    <template slot="unbusy" slot-scope="{ data }">
-                        <div class="th_color cursor">{{data}}</div>
-                    </template>
-                    <template slot="totalIncome" slot-scope="{ data }">
-                        <div class="th_color cursor">{{data}}</div>
-                    </template>
-                </Module>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                        prop="totalIncome"
+                        label="收入總數"
+                        min-width="120"
+                        >
+                    </el-table-column>
+                </el-table>
             </div>
             <div class="totalIncome_price flexEnd">
                 <div class="padding_foot">
@@ -103,7 +130,7 @@
                         </div>
                     </div>
                     <div class="selectBtn">
-                        <el-select v-model="value1" class="width100">
+                        <el-select v-model="value1" class="width100" placeholder="選擇時間">
                             <el-option label="店鋪" value="1"></el-option>
                             <el-option label="廣告商" value="2"></el-option>
                             <el-option label="廣告後台" value="3"></el-option>
@@ -112,43 +139,46 @@
                 </div>
             </div>
 
-            <div class="income_detail clear">
-                <div class="al float" style="margin-right: 25px;margin-top: 5px">
+            <div class="income_detail flex">
+                <div class="al" style="margin-right: 25px;margin-top: 5px">
                     <div class="income_detail_title">選擇店鋪</div>
                     <div class="select_store">
                         <el-select v-model="value2" class="width100">
                             <el-option label="店鋪1" value="1"></el-option>
                             <el-option label="店鋪2" value="2"></el-option>
                             <el-option label="店鋪3" value="3"></el-option>
+                            <el-option label="所有店鋪" value="4"></el-option>
                         </el-select>
                     </div>
                 </div>
-                <div class="flex float statistics_msg" style="margin-right: 25px;">
-                    <div class="busy_divider"></div>
-                    <div>
-                        <div class="income_detail_title">繁忙時段(9am - 9pm)收入</div>
-                        <div class="showMsg">$15000HKD</div>
+                <div class="clear">
+                    <div class="flex float statistics_msg" style="margin-right: 25px;">
+                        <div class="busy_divider"></div>
+                        <div>
+                            <div class="income_detail_title">繁忙時段(9am - 9pm)收入</div>
+                            <div class="showMsg">$15000HKD</div>
+                        </div>
                     </div>
-                </div>
-                <div class="flex float statistics_msg" style="margin-right: 25px;">
-                    <div class="unbusy_divider"></div>
-                    <div>
-                        <div class="income_detail_title">非繁忙時段(9pm - 9am)收入</div>
-                        <div class="showMsg">$12000HKD</div>
+                    <div class="flex float statistics_msg" style="margin-right: 25px;">
+                        <div class="unbusy_divider"></div>
+                        <div>
+                            <div class="income_detail_title">非繁忙時段(9pm - 9am)收入</div>
+                            <div class="showMsg">$12000HKD</div>
+                        </div>
                     </div>
-                </div>
-                <div class="flex float statistics_msg" style="margin-right: 25px;">
-                    <div class="minute_divider"></div>
-                    <div>
-                        <div class="income_detail_title">廣告類型和投放分鐘數</div>
-                        <div class="showMsg">5種類型 - 3300分鐘</div>
+                    <div class="flex float statistics_msg" style="margin-right: 25px;">
+                        <div class="minute_divider"></div>
+                        <div>
+                            <div class="income_detail_title">廣告類型和投放分鐘數</div>
+                            <div class="showMsg">5種類型 - 3300分鐘</div>
+                        </div>
                     </div>
-                </div>
-                <div class="flex float statistics_msg" style="margin-right: 25px;">
-                    <div class="total_divider"></div>
-                    <div>
-                        <div class="income_detail_title">總收入</div>
-                        <div class="showMsg">$30000HKD</div>
+                    <div class="flex float statistics_msg" style="margin-right: 25px;">
+                        <div class="total_divider"></div>
+                        <div>
+                            <div class="income_detail_title">總收入</div>
+                            <div class="showMsg">$30000HKD</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -166,24 +196,18 @@ export default {
         return {
             value: '全部店鋪',
             value1: '',
-            value2: '',
+            value2: '4',
             index: 3,
-            columns: [
-                {title:'店鋪',key:'name'},
-                {title:'繁忙時段(9am - 9pm)收入',slot:'busy'},
-                {title:'非繁忙時段(9pm - 9am)收入',slot:'unbusy'},
-                {title:'廣告類型和投放分鐘收入',slot:'income'},
-                {title:'收入總數', slot: 'totalIncome'},
-            ],
-            arr:[
-                {name:'九龍店',busy: '$5000HKD',unbusy: '$4000HKD', income: 'incomeDetail',totalIncome:'$9000HKD',active: true},
-                {name:'九龍店',busy: '$5000HKD',unbusy: '$4000HKD', income: 'incomeDetail',totalIncome:'$9000HKD',active: true},
-                {name:'九龍店',busy: '$5000HKD',unbusy: '$4000HKD', income: 'incomeDetail',totalIncome:'$9000HKD',active: true},
-                {name:'九龍店',busy: '$5000HKD',unbusy: '$4000HKD', income: 'incomeDetail',totalIncome:'$9000HKD',active: true},
+            tableData:[
+                {name:'九龍店',busy: '$5000HKD',unbusy: '$4000HKD', income: 'incomeDetail',totalIncome:'$9000HKD'},
+                {name:'九龍店',busy: '$5000HKD',unbusy: '$4000HKD', income: 'incomeDetail',totalIncome:'$9000HKD'},
+                {name:'九龍店',busy: '$5000HKD',unbusy: '$4000HKD', income: 'incomeDetail',totalIncome:'$9000HKD'},
+                {name:'九龍店',busy: '$5000HKD',unbusy: '$4000HKD', income: 'incomeDetail',totalIncome:'$9000HKD'},
             ],
             option: {
                 title: {
-                    text: '店鋪廣告收入'
+                    // text: '店鋪廣告收入',
+                    text: ''
                 },
                 tooltip: {
                     trigger: 'axis'
@@ -260,18 +284,27 @@ export default {
         });
     },
     beforeMount() {
+        let that = this
         window.addEventListener('resize', (e) => {
-            if (e.target.innerWidth <= 484) {
-                this.option.title.text = '收入'
+            if (e.target.innerWidth < 484) {
+                that.option.title.text = '廣告收入'
+                that.$forceUpdate()
             } else {
-                this.option.title.text = '店鋪廣告收入'
+                that.option.title.text = '店鋪廣告收入'
+                that.$forceUpdate()
             }
         })
     },
     methods: {
         back () {
             this.$router.back()
-        }
+        },
+        tableRowClassName ({ row,rowIndex }) {
+            if (rowIndex%2 == 1) {
+                return 'el_color'
+            }
+            return ''
+        },
     },
 }
 </script>
@@ -314,6 +347,7 @@ export default {
     }
     .divider {
         width: 0;
+        background: @themeColor;
         margin-right: 5px;
         border: solid 2px @themeColor;
     }
@@ -385,6 +419,9 @@ export default {
     .income_detail {
         padding: 20px 10px;
         background: #E5E5E5;
+        @media screen and (max-width: 928px) {
+            display: block;
+        }
     }
     .income_detail_title {
         font-size: 12px;
@@ -427,5 +464,14 @@ export default {
     }
     #main {
         height: 400px;
+    }
+    .Income_table {
+        /deep/.el-table th > .cell {
+            text-align: center;
+        }
+        
+        /deep/.el-table .cell {
+            text-align: center;
+        }
     }
 </style>

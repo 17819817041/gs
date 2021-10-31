@@ -12,24 +12,26 @@
                             <div class="divider_text">美食九龍店</div>
                         </div>
                         <div class="flex">
-                            <div class="delUSer cursor">註銷賬戶</div>
-                            <div class="arrow_m al"><img src="@/assets/img/pull_down.png" alt=""></div>
+                            <div class="delUSer cursor">註銷店鋪</div>
+                            <div class="arrow_m al" @click="drawer = !drawer"><img src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
-                    <ModuleMin1 :columns="columns" :arr="arr" ref="child">
-                        <template slot="id" slot-scope="{ data }">
-                            <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
-                                {{data}}
-                                <img src="@/assets/img/copy.png" alt="">
-                            </div>
-                        </template>
-                        <template slot="key" slot-scope="{ data }">
-                            <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
-                                {{data}}
-                                <img src="@/assets/img/copy.png" alt="">
-                            </div>
-                        </template>
-                    </ModuleMin1>
+                    <div :class="['drawer_h', {'drawer_h1': drawer}]">
+                        <ModuleMin1 :columns="columns" :arr="arr" ref="child">
+                            <template slot="id" slot-scope="{ data }">
+                                <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
+                                    {{data}}
+                                    <img src="@/assets/img/copy.png" alt="">
+                                </div>
+                            </template>
+                            <template slot="key" slot-scope="{ data }">
+                                <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
+                                    {{data}}
+                                    <img src="@/assets/img/copy.png" alt="">
+                                </div>
+                            </template>
+                        </ModuleMin1>
+                    </div>
                 </div>
             </div>
             <div class="Settingadvertising_content mg">
@@ -41,23 +43,25 @@
                         </div>
                         <div class="flex">
                             <div class="delUSer cursor">註銷賬戶</div>
-                            <div class="arrow_m al"><img src="@/assets/img/pull_down.png" alt=""></div>
+                            <div class="arrow_m al" @click="drawer1 = !drawer1"><img src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
-                    <ModuleMin1 :columns="columns1" :arr="arr1" ref="child">
-                        <template slot="id" slot-scope="{ data }">
-                            <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
-                                {{data}}
-                                <img src="@/assets/img/copy.png" alt="">
-                            </div>
-                        </template>
-                        <template slot="key" slot-scope="{ data }">
-                            <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
-                                {{data}}
-                                <img src="@/assets/img/copy.png" alt="">
-                            </div>
-                        </template>
-                    </ModuleMin1>
+                    <div :class="['drawer_h', {'drawer_h1': drawer1}]">
+                        <ModuleMin1 :columns="columns1" :arr="arr1" ref="child">
+                            <template slot="id" slot-scope="{ data }">
+                                <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
+                                    {{data}}
+                                    <img src="@/assets/img/copy.png" alt="">
+                                </div>
+                            </template>
+                            <template slot="key" slot-scope="{ data }">
+                                <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
+                                    {{data}}
+                                    <img src="@/assets/img/copy.png" alt="">
+                                </div>
+                            </template>
+                        </ModuleMin1>
+                    </div>
                 </div>
             </div>
             <div class="Settingadvertising_content mg">
@@ -69,23 +73,25 @@
                         </div>
                         <div class="flex">
                             <div class="delUSer cursor">註銷賬戶</div>
-                            <div class="arrow_m al"><img src="@/assets/img/pull_down.png" alt=""></div>
+                            <div class="arrow_m al" @click="drawer2 = !drawer2"><img src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
-                    <ModuleMin1 :columns="columns2" :arr="arr2" ref="child">
-                        <template slot="id" slot-scope="{ data }">
-                            <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
-                                {{data}}
-                                <img src="@/assets/img/copy.png" alt="">
-                            </div>
-                        </template>
-                        <template slot="key" slot-scope="{ data }">
-                            <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
-                                {{data}}
-                                <img src="@/assets/img/copy.png" alt="">
-                            </div>
-                        </template>
-                    </ModuleMin1>
+                    <div :class="['drawer_h', {'drawer_h1': drawer2}]">
+                        <ModuleMin1 :columns="columns2" :arr="arr2" ref="child">
+                            <template slot="id" slot-scope="{ data }">
+                                <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
+                                    {{data}}
+                                    <img src="@/assets/img/copy.png" alt="">
+                                </div>
+                            </template>
+                            <template slot="key" slot-scope="{ data }">
+                                <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
+                                    {{data}}
+                                    <img src="@/assets/img/copy.png" alt="">
+                                </div>
+                            </template>
+                        </ModuleMin1>
+                    </div>
                 </div>
             </div>
         </div>
@@ -97,6 +103,9 @@ import Clipboard from 'clipboard'
 export default {
     data () {
         return {
+            drawer: false,
+            drawer2: false,
+            drawer1: false,
             columns: [
                 {title:'店鋪設備配置',key:'name'},
                 {title:'賬戶設備ID',slot:'id'},
@@ -198,6 +207,7 @@ export default {
     .divider {
         width: 0;
         margin-right: 5px;
+        background: @themeColor;
         border: solid 2px @themeColor;
     }
     .divider_text {
@@ -224,8 +234,17 @@ export default {
         margin-right: 20px;
     }
     .arrow_m {
+        width: 20px;
         img {
             width: 17px;
         }
+    }
+    .drawer_h {
+        transition: 0.2s;
+        overflow: hidden;
+        max-height: 500px;
+    }
+    .drawer_h1 {
+        max-height: 0;
     }
 </style>

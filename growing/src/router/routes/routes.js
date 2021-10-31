@@ -72,6 +72,16 @@ export default [
                 path:"/AdministrationStore",
                 name: "AdministrationStore",
                 component: () => import("@/view/AdministrationStore/AdministrationStore.vue")
+            },  
+            {
+                path:"/AdvertiserManagement",
+                name: "AdvertiserManagement",
+                component: () => import("@/view/AdvertiserManagement/AdvertiserManagement.vue")
+            },   
+            {
+                path:"/UserDetailEdit",
+                name: "UserDetailEdit",
+                component: () => import("@/view/UserDetailEdit/UserDetailEdit.vue")
             },
         ] 
     },

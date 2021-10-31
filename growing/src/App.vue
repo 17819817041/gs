@@ -100,6 +100,19 @@ export default {
 	.boxs {
 		box-shadow: 0 0 5px rgb(163, 163, 163) inset;
 	}
+
+	.el-table__header .has-gutter {
+		color: black !important;
+	}
+	.el-table .el_color {
+        background: #E5E5E5;
+    }
+
+	
+	.AdvertisingOperation .el-table .el-table__header-wrapper {
+		background: black !important;
+	}
+
 	.Sign .el-select .el-input .el-select__caret::before {
 		content: "";
 		background: url('~@/assets/img/arrow.png') center center no-repeat;
@@ -118,22 +131,44 @@ export default {
 		background: none !important;
 	}
 	.Income .el-select .el-input .el-input__inner {
-		color: white;
+		color: white !important;
 		border: none !important;
 		outline: none !important;
 		background: none !important;
 		height: 30px !important;
 		display: flex;
 	}
+	.Income .el-select .el-input .el-input__inner::-webkit-input-placeholder{
+		color:#DCDCDC;
+	}
 	.Income .el-select .el-input .el-input__suffix {
 		display: flex;
 		align-items: center;
+	}
+
+
+	.AdvertisingAdd .el-select .el-input .el-select__caret::before {
+		content: "";
+		background: url('~@/assets/img/arrow_up.png') center center no-repeat;
+		position: absolute;
+		width: 23px;
+		height: 17px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		overflow: hidden !important;
 	}
 	.AdvertisingAdd .el-form .el-form-item__label {
 		white-space: nowrap;
 	}
 	.AdvertisingAdd .el-date-editor {
 		width: 100% !important;
+	}
+	.AddStore .block .el-input .el-input__inner, .AddStore .block .el-input {
+		border: none !important;
+		outline: none !important;
+		height: 32px !important;
+		line-height: 32px !important;
 	}
 
 	.AddStore .el-form .el-form-item__label {
@@ -200,6 +235,9 @@ export default {
 	.Income .el-date-editor .el-input__inner {
 		background: @themeColor;
 	}
+
+	
+
 	.el-picker-panel {
 		width: 240px !important;
 	}

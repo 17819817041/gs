@@ -1,6 +1,6 @@
 <template>
     <div class="Sign flex">
-        <div class="form_item ju">
+        <div class="form_item ju noBar">
             <div class="i_form" v-if="active">
                 <div class="login_text">註冊</div>
                 <div class="msg_input">
@@ -111,7 +111,7 @@ export default {
             // min-height: 520px;
             transform: translate(0, -50%);
             width: 35%;
-            height: 85%;
+            // height: 85%;
             overflow: auto;
             background: #5C48B7;
             color: white;
@@ -123,12 +123,18 @@ export default {
             @media screen and (max-width: 564px) and (max-height: 1190px) {
                 max-height: 500px;
             }
+            @media screen and (max-height: 360px) {
+                height: 90%;
+                max-height: 500px;
+            }
             @media screen and (max-width: 564px) {
                 left: 50%;
                 top: 50%;
                 transform: translate(-50%, -50%);
                 width: 50%;
                 min-width: 290px;
+                // min-height: 525px;
+                // max-height: 525px;
                 // height: 460px;
             }
         }
@@ -140,21 +146,26 @@ export default {
         
         .login_text {
             font-size: 60px;
-            padding-bottom: 25px;
+            padding-bottom: 65px;
             color: rgb(255, 255, 255);
             @media screen and (max-width: 1680px) {
                 font-size: 50px;
+                padding-bottom: 35px;
             }
-            @media screen and (max-width: 1477px) {
-                font-size: 40px;
+            @media screen and (max-width: 1400px) {
+                font-size: 35px;
+                padding-bottom: 30px;
             }
-            @media screen and (max-width: 1300px) {
+            @media screen and (max-width: 1200px) {
                 font-size: 30px;
                 padding-bottom: 20px;
             }
-            @media screen and (max-width: 1200px) {
+            @media screen and (max-width: 800px) {
                 font-size: 25px;
-                padding-bottom: 15px;
+                padding: 3px 0;
+            }
+            @media screen and (max-height: 360px) {
+                font-size: 20px;
             }
         }
     }
@@ -182,6 +193,9 @@ export default {
         }
         @media screen and (max-width: 1200px) {
             margin-top: 10px;
+        }
+        @media screen and (max-width: 564px) {
+            margin-top: 6px;
         }
     }
     .user {
