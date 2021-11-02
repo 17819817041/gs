@@ -152,6 +152,9 @@
                             <div v-else-if="(child.slot == 'key')" class="slot">
                                 <slot name="key" :data="item.key"></slot>
                             </div>
+                            <div v-else-if="(child.slot == 'slot')" class="slot">
+                                <slot name="deleUser"></slot>
+                            </div>
                             <div :class="['child_item']" v-else>{{item[child.key]}}</div>
                         </div>
                     </div>

@@ -1,13 +1,13 @@
 <template>
     <div class="AdvertiserManagement">
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告收入統計
+            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告商管理
         </div>
         <div class="AdvertiserManagement_content mg bar">
             <div class="AdvertiserManagement_content_title sb al block">
                 <div class="flex">
                     <div class="divider"></div>
-                    <div class="divider_text">店鋪廣告收入統計</div>
+                    <div class="divider_text">廣告商詳細信息管理</div>
                 </div>
             </div>
             <div class="AdvertiserManagement_table">
@@ -78,7 +78,7 @@
                         min-width="130"
                         >
                         <template>
-                            <div class="ju al"><img class="planEdit" src="@/assets/img/planEdit.png" alt=""> </div>
+                            <div class="ju al"><img class="planEdit cursor" @click="AdminPlan" src="@/assets/img/planEdit.png" alt=""> </div>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -140,6 +140,9 @@ export default {
                     key: item
                 }
             })
+        },
+        AdminPlan () {
+            this.$router.push('/AdminPlan')
         }
     }
 }

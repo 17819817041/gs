@@ -3,6 +3,67 @@
         <div class="content ju">
             <div class="content_item flex">
                 <div class="item_child clear bar">
+                    <div class="flexEnd category_button_wrap">
+                        <div class="category_button cursor" @click="category_list = !category_list">
+                            <img style="height: 100%;" v-show="!category_list" src="@/assets/img/category.png" alt="">
+                            <img style="height: 100%;" v-show="category_list" src="@/assets/img/close.png" alt="">
+                        </div>
+                    </div>
+                    <div :class="['child_message1']" v-show="category_list">
+                        <div class="child_message_title">
+                            <div class="tc cursor" @click="showadd = !showadd">
+                                Title1(九龍店)
+                                <img class="t_arrow" src="@/assets/img/arrow.png" alt="">
+                            </div>
+
+                            <div class="addPlat_wrap boxs" v-show="showadd">
+                                <div class="input_msg cursor tc">
+                                    九龍店
+                                </div>
+
+                                <div class="addPlat al ju cursor mg" @click="AddStore">
+                                    <img src="@/assets/img/plat.png" alt="">新增店鋪
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <div class="child_message_content">
+                            <div class="child_message_content_item sb">
+                                <div class="al">
+                                    <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">外來廣告數
+                                </div>
+                                <div class="al">4</div>
+                            </div>
+                            <div class="child_message_content_item sb">
+                                <div class="al">
+                                    <img class="child_message_content_item_logo" src="@/assets/img/area.png" alt="">接受時間
+                                </div>
+                                <div class="al">非繁忙9am-9pm</div>
+                            </div>
+                            <div class="child_message_content_item sb">
+                                <div class="al">
+                                    <img class="child_message_content_item_logo" src="@/assets/img/add-address.png" alt="">店鋪區域
+                                </div>
+                                <div class="al">九龍</div>
+                            </div>
+                            <div class="child_message_content_item sb">
+                                <div class="al">
+                                    <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">本店廣告數
+                                </div>
+                                <div class="al">1</div>
+                            </div>
+                            <div class="child_message_content_item sb">
+                                <div class="al">
+                                    <img class="child_message_content_item_logo" src="@/assets/img/bili.png" alt="">外來廣告比例
+                                </div>
+                                <div class="al">80%</div>
+                            </div>
+                            <div class="moreMsg flexEnd al">
+                                <img class="cursor" @click="PlatSetting" src="@/assets/img/more.png" alt=""><span @click="PlatSetting" class="cursor">店鋪詳細設定</span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="child float">
                         <div class="child_title al">
                             <div class="logo_wrap ju al"><img style="height: 70%;" src="@/assets/img/logo_ie.png" alt=""></div>
@@ -48,7 +109,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div :class="['child_message']">
                     <div class="child_message_title">
@@ -57,16 +117,10 @@
                             <img class="t_arrow" src="@/assets/img/arrow.png" alt="">
                         </div>
 
-                        <div class="addPlat_wrap" v-show="showadd">
-                            <!-- <div class="input_msg">
-                                <input type="text">
+                        <div class="addPlat_wrap boxs" v-show="showadd">
+                            <div class="input_msg cursor tc">
+                                九龍店
                             </div>
-                            <div class="input_msg">
-                                <input type="text">
-                            </div>
-                            <div class="input_msg">
-                                <input type="text">
-                            </div> -->
 
                             <div class="addPlat al ju cursor mg" @click="AddStore">
                                 <img src="@/assets/img/plat.png" alt="">新增店鋪
@@ -90,7 +144,7 @@
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/category.png" alt="">店鋪區域
+                                <img class="child_message_content_item_logo" src="@/assets/img/add-address.png" alt="">店鋪區域
                             </div>
                             <div class="al">九龍</div>
                         </div>
@@ -102,7 +156,7 @@
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">外來廣告比例
+                                <img class="child_message_content_item_logo" src="@/assets/img/bili.png" alt="">外來廣告比例
                             </div>
                             <div class="al">80%</div>
                         </div>
@@ -121,6 +175,7 @@ export default {
     data () {
         return {
             showadd: false,
+            category_list: false
         }
     },
     methods: {
@@ -156,6 +211,7 @@ export default {
             height: 100%;
             overflow: auto;
             @media screen and (max-width: 850px) {
+                margin-top: 10px;
                 display: block;
             }
         }
@@ -165,6 +221,12 @@ export default {
         overflow: auto;
         @media screen and (max-width: 850px) {
             width: 100%;
+        }
+        .category_button {
+            width: 35px;
+            height: 35px;
+            padding: 5px;
+            transform: translate(-10px,5px);
         }
         .child {
             width: 27%;
@@ -181,8 +243,37 @@ export default {
             }
         }
     }
+    .category_button_wrap {
+        position: fixed;
+        top: 57px;
+        right: 10px;
+        display: none;
+        @media screen and (max-width: 850px) {
+            display: flex;
+        }
+    }
     .child_message {
         width: 25%;
+        min-width: 255px;
+        height: 320px;
+        background: #F7F8FB;
+        box-shadow: 0 0 5px rgb(194, 194, 194);
+        margin-top: 20px;
+        transition: 0.2s;
+        @media screen and (max-width: 850px) {
+            display: none;
+            margin: auto;
+            margin-bottom: 20px;
+            width: 50%;
+        }
+    }
+    .child_message1 {
+        width: 25%;
+        position: fixed;
+        top: 100px;
+        right: 15px;
+        padding: 0 5px;
+        z-index: 10;
         min-width: 255px;
         height: 320px;
         background: #F7F8FB;
@@ -247,13 +338,24 @@ export default {
         }
         .addPlat_wrap {
             position: absolute;
-            left: 0;
-            top: 50px;
-            width: 100%;
-            // height: 300px;
+            right: 0;
+            top: 40px;
+            width: 70%;
             padding: 5px 17px;
-            border-radius: 12px;
             background: white;
+        }
+    }
+    .addPlat {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        // width: 70%;
+        box-shadow: 0 0 5px gray;
+        padding: 5px 0;
+        font-size: 12px;
+        img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
         }
     }
     .child_message_content {
@@ -275,28 +377,11 @@ export default {
             margin-right: 3px;
             width: 23px;
         }  
-    } 
-    .addPlat {
-        margin-top: 40px;
-        margin-bottom: 20px;
-        width: 70%;
-        box-shadow: 0 0 5px gray;
-        padding: 7px 0;
-        font-size: 14px;
-        img {
-            width: 20px;
-            height: 20px;
-            margin-right: 5px;
-        }
     }
     .input_msg {
         margin-top: 30px;
         border-bottom: solid 1px;
-        input {
-            border: none;
-            outline: none;
-            width: 100%;
-            font-size: 15px;
-        }
+        padding: 15px 0 5px 0;
+        font-size: 12px;
     }
 </style>

@@ -130,21 +130,6 @@ export default {
 		outline: none !important;
 		background: none !important;
 	}
-	.Income .el-select .el-input .el-input__inner {
-		color: white !important;
-		border: none !important;
-		outline: none !important;
-		background: none !important;
-		height: 30px !important;
-		display: flex;
-	}
-	.Income .el-select .el-input .el-input__inner::-webkit-input-placeholder{
-		color:#DCDCDC;
-	}
-	.Income .el-select .el-input .el-input__suffix {
-		display: flex;
-		align-items: center;
-	}
 
 
 	.AdvertisingAdd .el-select .el-input .el-select__caret::before {
@@ -163,7 +148,26 @@ export default {
 	}
 	.AdvertisingAdd .el-date-editor {
 		width: 100% !important;
+	} 
+	.Gdetail .el-select .el-input .el-select__caret::before {
+		content: "";
+		background: url('~@/assets/img/arrow_up.png') center center no-repeat;
+		position: absolute;
+		width: 23px;
+		height: 17px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		overflow: hidden !important;
 	}
+	.Gdetail .el-form .el-form-item__label {
+		white-space: nowrap;
+	}
+	.Gdetail .el-date-editor {
+		width: 100% !important;
+	}
+
+
 	.AddStore .block .el-input .el-input__inner, .AddStore .block .el-input {
 		border: none !important;
 		outline: none !important;
@@ -235,6 +239,117 @@ export default {
 	.Income .el-date-editor .el-input__inner {
 		background: @themeColor;
 	}
+	.Income .el-select .el-input .el-input__inner {
+		color: white !important;
+		border: none !important;
+		outline: none !important;
+		background: none !important;
+		height: 30px !important;
+		display: flex;
+	}
+	.Income .el-select .el-input .el-input__inner::-webkit-input-placeholder{
+		color:#DCDCDC;
+	}
+	.Income .el-select .el-input .el-input__suffix {
+		display: flex;
+		align-items: center;
+	}
+
+
+	.StoreAdministrator .el-select .el-input .el-input__inner {
+		border: none !important;
+		outline: none !important;
+		background: white !important;
+		height: 28px !important;
+		display: flex;
+	}
+	.StoreAdministrator .el-select .el-input .el-select__caret::before {
+		content: "";
+		background: url('~@/assets/img/arrow_up.png') center center no-repeat;
+		position: absolute;
+		width: 23px;
+		height: 17px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		overflow: hidden !important;
+	}  
+
+	.AuditList .el-select .el-input .el-input__inner {
+		border: none !important;
+		outline: none !important;
+		background: white !important;
+		height: 28px !important;
+		display: flex;
+	}
+	.AuditList .el-select .el-input .el-select__caret::before {
+		content: "";
+		background: url('~@/assets/img/arrow_up.png') center center no-repeat;
+		position: absolute;
+		width: 23px;
+		height: 17px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		overflow: hidden !important;
+	}
+
+	.StoreSet .block .el-input .el-input__inner, .StoreSet .block .el-input {
+		border: none !important;
+		outline: none !important;
+		height: 32px !important;
+		line-height: 32px !important;
+	}
+	.StoreSet .el-form .el-form-item__label {
+		white-space: nowrap;
+	}
+	.StoreSet .el-select .el-input .el-select__caret::before {
+		content: "";
+		background: url('~@/assets/img/arrow_up.png') center center no-repeat;
+		position: absolute;
+		width: 23px;
+		height: 17px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		overflow: hidden !important;
+	}
+	.StoreSet .el-select {
+		box-shadow: 0 0 5px rgb(163, 163, 163) inset;
+		padding: 4px;
+	}
+	.StoreSet .elinput .el-input .el-input__inner {
+		box-shadow: 0 0 5px rgb(163, 163, 163) inset;
+		border: none !important;
+		outline: none !important;
+	}
+	.StoreSet .el-select .el-input .el-input__inner {
+		border: none !important;
+		outline: none !important;
+		background: white !important;
+		height: 30px !important;
+		display: flex;
+	}
+	.StoreSet .el-select .el-input .el-input__suffix {
+		display: flex;
+		align-items: center;
+	}
+	.StoreSet .el-date-editor {
+		width: 100% !important;
+	}
+	.StoreSet .el-form-item {
+		margin-bottom: 0;
+		padding: 20px 0;
+	}
+
+
+	.PreviewMsg .el-form .el-form-item__label {
+		white-space: nowrap;
+	}
+	.PreviewMsg .el-form-item {
+		margin-bottom: 0;
+		padding: 20px 0;
+	}
 
 	
 
@@ -243,5 +358,11 @@ export default {
 	}
 	.el-picker-panel__content {
 		width: 200px !important;
+	}
+
+	.el-message {
+		width: 80%;
+		max-width: 450px;
+		min-width: 275px !important;
 	}
 </style>

@@ -7,7 +7,7 @@
             <div class="AdvertiserManagement_content_title sb al block">
                 <div class="flex">
                     <div class="divider"></div>
-                    <div class="divider_text">店鋪廣告收入統計</div>
+                    <div class="divider_text">Jordan Cheung -XXXcompany</div>
                 </div>
             </div>
             <div class="AdvertiserManagement_table">

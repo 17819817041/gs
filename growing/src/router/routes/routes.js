@@ -82,6 +82,46 @@ export default [
                 path:"/UserDetailEdit",
                 name: "UserDetailEdit",
                 component: () => import("@/view/UserDetailEdit/UserDetailEdit.vue")
+            },  
+            {
+                path:"/AdminPlan",
+                name: "AdminPlan",
+                component: () => import("@/view/AdminIndex/AdminPlan.vue")
+            },
+            {
+                path:"/StoreSet",
+                name: "StoreSet",
+                component: () => import("@/view/AdminIndex/storeSet.vue")
+            }, 
+            {
+                path:"/StoreAdministrator",
+                name: "StoreAdministrator",
+                component: () => import("@/view/AdminIndex/StoreAdministrator.vue")
+            },  
+            {
+                path:"/PreviewMsg",
+                name: "PreviewMsg",
+                component: () => import("@/view/AdminIndex/PreviewMsg.vue")
+            }, 
+            {
+                path:"/StoreUserSet",
+                name: "StoreUserSet",
+                component: () => import("@/view/AdminIndex/StoreUserSet.vue")
+            },   
+            {
+                path:"/AuditList",
+                name: "AuditList",
+                component: () => import("@/view/AdminIndex/AuditList.vue")
+            },  
+            {
+                path:"/Gdetail",
+                name: "Gdetail",
+                component: () => import("@/view/AdminIndex/Gdetail.vue")
+            },   
+            {
+                path:"/Ddetail",
+                name: "Ddetail",
+                component: () => import("@/view/AdminIndex/Ddetail.vue")
             },
         ] 
     },

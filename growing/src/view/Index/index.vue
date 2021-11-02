@@ -3,6 +3,52 @@
         <div class="content ju">
             <div class="content_item sb">
                 <div class="item_child clear bar">
+                    <div class="flexEnd category_button_wrap">
+                        <div class="category_button cursor" @click="category_list = !category_list">
+                            <img style="height: 100%;" v-show="!category_list" src="@/assets/img/category.png" alt="">
+                            <img style="height: 100%;" v-show="category_list" src="@/assets/img/close.png" alt="">
+                        </div>
+                    </div>
+                    <div :class="['child_message1']" v-show="category_list">
+                        <div class="child_message_title tc">
+                            Title
+                        </div>
+                        <div class="child_message_content">
+                            <div class="child_message_content_item sb">
+                                <div class="al">
+                                    <img class="child_message_content_item_logo" src="@/assets/img/guanggao.png" alt="">投放廣告數
+                                </div>
+                                <div class="al">4</div>
+                            </div>
+                            <div class="child_message_content_item sb">
+                                <div class="al">
+                                    <img class="child_message_content_item_logo" src="@/assets/img/area.png" alt="">投放區域
+                                </div>
+                                <div class="al">九龍</div>
+                            </div>
+                            <div class="child_message_content_item sb">
+                                <div class="al">
+                                    <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">投放類型
+                                </div>
+                                <div class="al">食品</div>
+                            </div>
+                            <div class="child_message_content_item sb">
+                                <div class="al">
+                                    <img class="child_message_content_item_logo" src="@/assets/img/time.png" alt="">投放時段
+                                </div>
+                                <div class="al">繁忙9am-9pm</div>
+                            </div>
+                            <div class="child_message_content_item sb">
+                                <div class="al">
+                                    <img class="child_message_content_item_logo" src="@/assets/img/endTime.png" alt="">最近活動到期日
+                                </div>
+                                <div class="al">2021-06-26</div>
+                            </div>
+                            <div class="moreMsg flexEnd al">
+                                <img class="cursor" src="@/assets/img/more.png" alt="">查看更多详细
+                            </div>
+                        </div>
+                    </div>
                     <div class="child float">
                         <div class="child_title al">
                             <div class="logo_wrap ju al"><img style="height: 70%;" src="@/assets/img/logo_ie.png" alt=""></div>
@@ -56,7 +102,7 @@
                     <div class="child_message_content">
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">投放廣告數
+                                <img class="child_message_content_item_logo" src="@/assets/img/guanggao.png" alt="">投放廣告數
                             </div>
                             <div class="al">4</div>
                         </div>
@@ -68,24 +114,24 @@
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/category.png" alt="">投放類型
+                                <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">投放類型
                             </div>
                             <div class="al">食品</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">投放時段
+                                <img class="child_message_content_item_logo" src="@/assets/img/time.png" alt="">投放時段
                             </div>
                             <div class="al">繁忙9am-9pm</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">最近活動到期日
+                                <img class="child_message_content_item_logo" src="@/assets/img/endTime.png" alt="">最近活動到期日
                             </div>
                             <div class="al">2021-06-26</div>
                         </div>
                         <div class="moreMsg flexEnd al">
-                            <img class="cursor" src="@/assets/img/more.png" alt="">查看更多详细
+                            <img class="cursor" src="@/assets/img/more.png" alt=""><span class="cursor">查看更多详细</span>
                         </div>
                     </div>
                 </div>
@@ -98,7 +144,7 @@
 export default {
     data () {
         return {
-            
+            category_list: false,
         }
     },
     methods: {
@@ -129,6 +175,7 @@ export default {
             height: 100%;
             overflow: auto;
             @media screen and (max-width: 850px) {
+                margin-top: 10px;
                 display: block;
             }
         }
@@ -140,9 +187,12 @@ export default {
         @media screen and (max-width: 850px) {
             width: 100%;
         }
-        // @media screen and (max-width: 564px) {
-        //     width: 88%;
-        // }
+        .category_button {
+            width: 35px;
+            height: 35px;
+            padding: 5px;
+            transform: translate(-10px,5px);
+        }
         .child {
             width: 27%;
             min-width: 197px;
@@ -158,8 +208,37 @@ export default {
             }
         }
     }
+    .category_button_wrap {
+        position: fixed;
+        top: 57px;
+        right: 10px;
+        display: none;
+        @media screen and (max-width: 850px) {
+            display: flex;
+        }
+    }
     .child_message {
         width: 25%;
+        min-width: 255px;
+        height: 320px;
+        background: #F7F8FB;
+        box-shadow: 0 0 5px rgb(194, 194, 194);
+        margin-top: 20px;
+        transition: 0.2s;
+        @media screen and (max-width: 850px) {
+            display: none;
+            margin: auto;
+            margin-bottom: 20px;
+            width: 50%;
+        }
+    }
+    .child_message1 {
+        width: 25%;
+        position: fixed;
+        top: 100px;
+        right: 15px;
+        padding: 0 5px;
+        z-index: 10;
         min-width: 255px;
         height: 320px;
         background: #F7F8FB;

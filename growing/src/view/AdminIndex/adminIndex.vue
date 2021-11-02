@@ -26,7 +26,7 @@
                         <div class="jieshao">
                             为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
                         </div>
-                        <div class="detailBtn tc cursor">
+                        <div class="detailBtn tc cursor" @click="StoreAdministrator">
                             了解详情
                             <div class="arrow_r ju al">
                                 <img style="height: 100%;" src="@/assets/img/arrow_r.png" alt="">
@@ -41,7 +41,7 @@
                         <div class="jieshao">
                             为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
                         </div>
-                        <div class="detailBtn tc cursor">
+                        <div class="detailBtn tc cursor" @click="AuditList">
                             了解详情
                             <div class="arrow_r ju al">
                                 <img style="height: 100%;" src="@/assets/img/arrow_r.png" alt="">
@@ -56,7 +56,7 @@
                         <div class="jieshao">
                             为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
                         </div>
-                        <div class="detailBtn1 tc cursor">
+                        <div class="detailBtn tc cursor">
                             了解详情
                             <div class="arrow_r_black ju al">
                                 <img style="height: 100%;" src="@/assets/img/arrow_r_black.png" alt="">
@@ -71,7 +71,7 @@
                         <div class="jieshao">
                             为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
                         </div>
-                        <div class="detailBtn1 tc cursor">
+                        <div class="detailBtn tc cursor">
                             了解详情
                             <div class="arrow_r_black ju al">
                                 <img style="height: 100%;" src="@/assets/img/arrow_r_black.png" alt="">
@@ -86,7 +86,7 @@
                         <div class="jieshao">
                             为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
                         </div>
-                        <div class="detailBtn1 tc cursor">
+                        <div class="detailBtn tc cursor">
                             了解详情
                             <div class="arrow_r_black ju al">
                                 <img style="height: 100%;" src="@/assets/img/arrow_r_black.png" alt="">
@@ -109,6 +109,12 @@ export default {
     methods: {
         AdvertiserManagement () {
             this.$router.push('/AdvertiserManagement')
+        },
+        StoreAdministrator () {
+            this.$router.push('/StoreAdministrator')
+        },
+        AuditList () {
+            this.$router.push('/AuditList')
         }
     }
 }

@@ -47,12 +47,26 @@
                         label="繁忙時段(9am - 9pm)收入"
                         min-width="190"
                         >
+                        <template>
+                            <div class="timeIncome ju">
+                                <!-- <div class="busyTime"> -->
+                                    <div class="perple">$5000HKD</div>
+                                <!-- </div> -->
+                            </div>
+                        </template>
                     </el-table-column>
                     <el-table-column
                         prop="unbusy"
                         label="非繁忙時段(9pm - 9am)收入"
                         min-width="200"
                         >
+                        <template>
+                            <div class="timeIncome ju">
+                                <!-- <div class="busyTime"> -->
+                                    <div class="perple">$4000HKD</div>
+                                <!-- </div> -->
+                            </div>
+                        </template>
                     </el-table-column>
                     <el-table-column
                         prop="income"
@@ -106,6 +120,13 @@
                         label="收入總數"
                         min-width="120"
                         >
+                        <template>
+                            <div class="timeIncome ju">
+                                <!-- <div class="busyTime"> -->
+                                    <div class="perple">$9000HKD</div>
+                                <!-- </div> -->
+                            </div>
+                        </template>
                     </el-table-column>
                 </el-table>
             </div>
@@ -364,6 +385,9 @@ export default {
     }
     .timeIncome {
         font-size: 14px;
+    }
+    .perple {
+        color: @themeColor;
     }
     .busyTime {
         color: @themeColor;

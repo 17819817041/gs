@@ -205,7 +205,7 @@ export default {
     }
     .Statistics_content {
         background: #F6F6F6;
-        height: calc(100% - 70px);
+        height: calc(100% - 26px);
         overflow: auto;
     }
     .echarts_wrap {

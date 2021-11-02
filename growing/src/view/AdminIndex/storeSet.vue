@@ -1,9 +1,9 @@
 <template>
-    <div class="AddStore" id="AddStore">
+    <div class="StoreSet" id="AddStore">
 		<img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt="">
         <div class="content mg bar">
             <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div>
-            <div class="noBar" style="height: calc(100% - 60px); overflow:auto">
+            <div class="noBar" style="height: calc(100% - 109px); overflow:auto">
                 <div class="basicsMsg boxs theme" v-show="submit">
                 <div class="flex divider_message_title">
                     <div class="divider"></div>
@@ -166,8 +166,8 @@
             </div>
 
             <div class="addorcancel tc ju al" v-show="submit">
-                <div class="addorcancel_btn cursor" style="margin-right: 30px;" @click="submitG">確認新增</div>
-                <div class="addorcancel_btn cursor" @click="goBack">取消</div>
+                <div class="addorcancel_btn cursor" style="margin-right: 30px;" @click="submitG">確認修改</div>
+                <div class="addorcancel_btn cursor" @click="goBack">取消修改</div>
             </div>  
 
 			<div class="basicsMsg boxs padding backWhite" v-show="!submit">
@@ -180,6 +180,8 @@
                 </div>
 			</div>
             </div>
+
+			<div class="footer_w"></div>
         </div>
     </div>
 </template>
@@ -466,7 +468,7 @@ export default {
 
 <style lang='less' scoped>
     @import "@/less/style.less";
-    .AddStore {
+    .StoreSet {
         margin-top: 20px;
         height: 100%;
 		position: relative;
@@ -592,6 +594,9 @@ export default {
 			width: 70px;
 			height: 70px;
 		}
+	}
+	.footer_w {
+		height: 50px;
 	}
 
 	.true_title {
