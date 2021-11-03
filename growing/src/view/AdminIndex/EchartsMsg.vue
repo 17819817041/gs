@@ -126,6 +126,16 @@
                                 <div class="point"></div>
                                 <div>廣告類型活動狀態</div>
                             </div>
+                            <div class="select_e">
+                                <el-select v-model="value1" placeholder="请选择" class="width100">
+                                    <el-option
+                                    v-for="item in options"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </div>
                         </div>
                         <div class="ECHARTS" id="main1"></div>
                     </div>
@@ -134,6 +144,16 @@
                             <div class="al echarts_title_text">
                                 <div class="point"></div>
                                 <div>近期廣告活動到期時間</div>
+                            </div>
+                            <div class="select_e">
+                                <el-select v-model="value2" placeholder="请选择" class="width100">
+                                    <el-option
+                                    v-for="item in options"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
                             </div>
                         </div>
                         <div class="ECHARTS" id="main2"></div>
@@ -351,21 +371,23 @@ export default {
             },
             options: [{
             value: '选项1',
-            label: '黄金糕'
+            label: '2021'
             }, {
             value: '选项2',
-            label: '双皮奶'
+            label: '2020'
             }, {
             value: '选项3',
-            label: '蚵仔煎'
+            label: '2019'
             }, {
             value: '选项4',
-            label: '龙须面'
+            label: '2018'
             }, {
             value: '选项5',
-            label: '北京烤鸭'
+            label: '2017'
             }],
-            value: ''
+            value: '',
+            value1: '',
+            value2: '',
             }
     },
     mounted () {
