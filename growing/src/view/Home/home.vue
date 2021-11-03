@@ -25,12 +25,12 @@ export default {
         height: 100%;
     }
     .h_content {
-        height: calc(100% - 111px);
+        height: calc(100% - 119px);
     }
     .footer {
         padding: 10px 20px;
         width: 100%;
-        background: white;
+        // background: white;
     }
     .platformLogo {
         width: 20px;

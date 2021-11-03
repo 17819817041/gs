@@ -1,8 +1,11 @@
 <template>
     <div class="AddStore" id="AddStore">
-		<img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt="">
+		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
+		<div class="AdvertisingOperation_back mg al">
+            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">店鋪管理
+        </div>
         <div class="content mg bar">
-            <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div>
+            <!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div> -->
             <div class="noBar" style="height: calc(100% - 60px); overflow:auto">
                 <div class="basicsMsg boxs theme" v-show="submit">
                 <div class="flex divider_message_title">
@@ -143,7 +146,7 @@
 								<div class="addImg ju al cursor float">
 									<img src="@/assets/img/add.png" alt="">
 								</div>
-								<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
+								<input type="file" id="img" v-show="false" multiple="multiple" @change="changeFile">
 							</label>
 							<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
 								<div class="imageList_wrap">
@@ -176,7 +179,7 @@
 				</div>
 				<div class="ju">您的店鋪信息修改申請已提交至後台，管理员将蛊快蕃核您的店鋪信息.</div>
                 <div class="iknow ju al">
-                    <div class="cursor" @click="submit = true">確定</div>
+                    <div class="cursor" @click="goBack">確定</div>
                 </div>
 			</div>
             </div>
@@ -329,7 +332,7 @@ export default {
 		deleTime (i) {
 			this.timeList.splice(i,1)
 		},
-        cahngeFile (e) {
+        changeFile (e) {
 			var files = e.target.files
 			let that = this
 			if (this.ruleForm.mediaType) {
@@ -466,6 +469,21 @@ export default {
 
 <style lang='less' scoped>
     @import "@/less/style.less";
+	.AdvertisingOperation_back {
+        width: 98%;
+        font-size: 20px;
+        img {
+            width: 20px;
+            height: 20px;
+            @media screen and (max-width: 960px) {
+                width: 15px;
+                height: 15px;
+            }
+        }
+        @media screen and (max-width: 960px) {
+            font-size: 15px;
+        }
+    }
     .AddStore {
         margin-top: 20px;
         height: 100%;

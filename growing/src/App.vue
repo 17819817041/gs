@@ -104,8 +104,11 @@ export default {
 	.el-table__header .has-gutter {
 		color: black !important;
 	}
+	.el-table .el-table__row {
+		background: #F2F2F2;
+	}
 	.el-table .el_color {
-        background: #E5E5E5;
+        background: #E5E5E5 !important;
     }
 
 	
@@ -149,6 +152,19 @@ export default {
 	.AdvertisingAdd .el-date-editor {
 		width: 100% !important;
 	} 
+	.AdvertisingAdd .el-popover__reference {
+		transform: translate(0px, 20px);
+		width: 140px;
+		opacity: 0;
+	}  
+	.el-popover {
+		@media screen and (max-width: 888px) {
+			width: 350px !important;
+		}
+		@media screen and (max-width: 564px) {
+			width: 270px !important;
+		}
+	}
 	.Gdetail .el-select .el-input .el-select__caret::before {
 		content: "";
 		background: url('~@/assets/img/arrow_up.png') center center no-repeat;
@@ -293,6 +309,38 @@ export default {
 		transform: translate(-50%, -50%);
 		overflow: hidden !important;
 	}
+	.AuditList .el-dialog {
+		border-radius: 7px;
+		min-width: 516px;
+		@media screen and (max-width: 600px) {
+			min-width: 285px;
+		}
+	}
+	.AuditList .el-dialog__wrapper .el-dialog__header {
+		height: 0px !important;
+		padding: 0 !important;
+	}  
+	.AuditList .el-dialog__wrapper .el-dialog__body {
+		padding: 0 !important;
+		height: 328px;
+	}
+
+	
+	.Setting .el-dialog {
+		border-radius: 7px;
+		min-width: 516px;
+		@media screen and (max-width: 600px) {
+			min-width: 285px;
+		}
+	}
+	.Setting .el-dialog__wrapper .el-dialog__header {
+		height: 0px !important;
+		padding: 0 !important;
+	}  
+	.Setting .el-dialog__wrapper .el-dialog__body {
+		// padding: 0 !important;
+		height: 371px;
+	}
 
 	.StoreSet .block .el-input .el-input__inner, .StoreSet .block .el-input {
 		border: none !important;
@@ -343,6 +391,19 @@ export default {
 	}
 
 
+	.EchartsMsg .el-select .el-input, .EchartsMsg .el-select .el-input .el-input__inner {
+		height: 25px;
+		border: none;
+		outline: none;
+	}
+	.EchartsMsg .el-select .el-input .el-input__suffix {
+		display: flex;
+		align-items: center;
+		background: #DEE7EF;
+		right: 0;
+	}
+
+
 	.PreviewMsg .el-form .el-form-item__label {
 		white-space: nowrap;
 	}
@@ -351,7 +412,9 @@ export default {
 		padding: 20px 0;
 	}
 
-	
+
+
+
 
 	.el-picker-panel {
 		width: 240px !important;

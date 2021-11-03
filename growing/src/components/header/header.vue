@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <div class="header_item sb">
-            <div class="al"><img src="@/assets/img/logo.png" alt=""></div>
+            <div class="al"><img class="LOGO" src="@/assets/img/logo.png" alt=""></div>
             <div class="ju al">
                 <!-- <div class="al"><img style="height: 20px;width: 17px;" src="@/assets/img/save.png" alt=""></div> -->
                 <div class="headImg radius ju al">
@@ -23,8 +23,12 @@ export default {
         height: 50px;
         // margin-bottom: 20px;
     }
+    .LOGO {
+        height: 70px;
+    }
     .header_item {
         padding: 5px 20px;
+        height: 55px;
         background: white;
     }
     .headImg {

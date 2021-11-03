@@ -1,9 +1,12 @@
 <template>
     <div class="AdvertisingAdd">
 		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
+		<div class="AdvertisingOperation_back mg al">
+            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">新增廣告計劃
+        </div>
         <div class="content mg bar">
-            <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div>
-			<div class="noBar" style="height: calc(100% - 60px); overflow:auto">
+            <!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
+			<div class="noBar" style="height: calc(100% - 10px); overflow:auto">
 			<div class="basicsMsg theme" v-show="submit">
                 <div class=" basicsMsg_item bold al">
                     <div class="iden radius"></div> 基礎信息
@@ -81,6 +84,7 @@
 							<div class="float" style="margin-right: 15px;width: 140px;">
 								<el-form-item prop="startDate">
 									<el-date-picker
+										@change="STIME"
 										class="width100"
 										v-model="ruleForm.startDate"
 										type="date"
@@ -96,6 +100,7 @@
 										v-model="ruleForm.endDate"
 										type="date"
 										placeholder="結束日期"
+										:picker-options="pickerOptions2"
 										>
 									</el-date-picker>
 								</el-form-item>
@@ -149,37 +154,8 @@
 						<div style='font-size: 12px; line-height: 15px;'>媒體時長按每分鐘計數。不足1分鐘按1分鐘計算.</div>
                     </el-form-item>
                 </el-form>
-				<div class="total mg sb br1">
-					<div class="total_msg " v-show="drawer">
-						<div>
-							<div class="flex total_item">
-								<div class="l_msg">基礎價格: </div>
-								<div class="r_msg">100港幣</div>
-							</div>
-							<div class="flex total_item">
-								<div class="l_msg">繁忙時段價格: </div>
-								<div class="r_msg">基礎價格*2/分鐘</div>
-							</div>
-							<div class="flex total_item">
-								<div class="l_msg">非繁忙時段價格: </div>
-								<div class="r_msg">基礎價格/分鐘</div>
-							</div>
-						</div>
-						<div>
-							計劃投放總價=(繁忙畤段價格+非繁忙畤段價格)*廣告媒體時長*所選區數*廣告投放過期
-						</div>
-						<div class="arrow_br"></div>
-					</div>
-					<div v-show="!drawer"></div>
-					<el-popover
-						placement="bottom"
-						title="标题"
-						width="200"
-						trigger="manual"
-						content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
-						v-model="visible">
-						<el-button slot="reference" @click="visible = !visible">手动激活</el-button>
-					</el-popover>
+				<div class="total mg sb">
+					<div></div>
 					<div class="total_price">
 						<div class="t_price bold">
 							<span>計劃投放總價:</span><span class="math_price"> $ 6000 </span><span class="p_d">HKD</span>
@@ -187,6 +163,30 @@
 						<div class="total_price_item">繁忙時段價格: $4000 HKD</div>
 						<div class="total_price_item">非繁忙時段價格: $2000 HKD</div>
 						<!-- <div class="price_plan flex cursor" @click="drawer = !drawer"> -->
+						<el-popover
+							:placement="position"
+							trigger="manual"
+							v-model="visible">
+							<div>
+								<div class="flex total_item">
+									<div class="l_msg">基礎價格: </div>
+									<div class="r_msg">100港幣</div>
+								</div>
+								<div class="flex total_item">
+									<div class="l_msg">繁忙時段價格: </div>
+									<div class="r_msg">基礎價格*2/分鐘</div>
+								</div>
+								<div class="flex total_item">
+									<div class="l_msg">非繁忙時段價格: </div>
+									<div class="r_msg">基礎價格/分鐘</div>
+								</div>
+							</div>
+							<div>
+								計劃投放總價=(繁忙畤段價格+非繁忙畤段價格)*廣告媒體時長*所選區數*廣告投放過期
+							</div>
+							<div class="arrow_br"></div>
+							<el-button slot="reference" @click="visible = !visible">手动激活</el-button>
+						</el-popover>
 						<div class="price_plan flex cursor" @click="visible = !visible">
 							<img src="@/assets/img/help.png" alt="">
 							<div>價格計數方案</div>
@@ -212,6 +212,7 @@
 export default {
     data() {
         return {
+			position: 'left-end',
 			visible: false,
 			drawer: false,
 			submit: true,
@@ -291,10 +292,19 @@ export default {
                 }]
             },
 			pickerOptions1: {
-				disabledDate(time) {
-					return time.getTime() < Date.now() - 8.64e7;
-				},
-			},
+                disabledDate: (time) => {
+                    if (this.ruleForm.startDate != "") {
+                        return time.getTime() < Date.now() - 8.64e7 || time.getTime() < this.ruleForm.startDate;
+                    } else {
+                        return time.getTime() < Date.now() - 8.64e7;
+                    }
+                }
+            },
+            pickerOptions2: {
+                disabledDate: (time) => {
+                    return time.getTime() < this.ruleForm.startDate || time.getTime() < Date.now();
+                }
+            },
             startDate: '',
 			endDate: '',
             value2: '',
@@ -322,6 +332,20 @@ export default {
             } else {
                 this.labelPosition = 'left'
             }
+			if (window.innerWidth <= 666) {
+				this.position = 'top'
+			} else {
+				this.position = 'left-end'
+			}
+		},
+		STIME (val) {
+			let D = new Date(val)
+			let start = D.getTime()
+			if (this.ruleForm.endDate) {
+				if (start > this.ruleForm.endDate.getTime()) {
+					this.ruleForm.endDate = ''
+				}
+			}
 		},
 		submitForm(formName) {
 			this.$refs[formName].validate((valid) => {
@@ -522,6 +546,21 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.AdvertisingOperation_back {
+        width: 98%;
+        font-size: 20px;
+        img {
+            width: 20px;
+            height: 20px;
+            @media screen and (max-width: 960px) {
+                width: 15px;
+                height: 15px;
+            }
+        }
+        @media screen and (max-width: 960px) {
+            font-size: 15px;
+        }
+    }
     .AdvertisingAdd {
         margin-top: 20px;
         height: 100%;
@@ -535,8 +574,8 @@ export default {
     }
     .content {
         width: 85%;
-        height: 100%;
-        padding: 0px 20px;
+        height: calc(100% - 30px);
+        padding: 15px 20px;
         background: white;
         overflow: auto;
 		@media screen and (max-width: 564px) {
@@ -596,7 +635,7 @@ export default {
       width: 90%;
       min-height: 250px;
       background: white;
-      box-shadow: 0 0 8px rgb(112, 112, 112) inset;
+      box-shadow: 0 0 8px rgb(190, 190, 190) inset;
 	  padding: 20px 27px;
     }
 	.addImg {
@@ -663,7 +702,7 @@ export default {
 		font-size: 14px;
 		@media screen and (max-width: 774px) {
 			font-size: 12px;
-			width: 100%;
+			// width: 100%;
 		}
 		.total_msg {
 			width: 60%;
@@ -687,8 +726,9 @@ export default {
 		.total_price {
 			width: 30%;
 			padding: 10px;
+			min-width: 224px;
 			@media screen and (max-width: 774px) {
-				width: 100%;
+				width: 45%;
 			}
 		}
 	}
@@ -721,7 +761,8 @@ export default {
 		margin-top: 10px;
 	}
 	.price_plan {
-		margin-top: 17px;
+		// margin-top: 17px;
+		transform: translate(0px, -17px);
 		font-size: 16px;
 		color: rgb(92, 92, 92);
 		text-decoration: underline;

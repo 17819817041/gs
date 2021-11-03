@@ -201,23 +201,25 @@ export default {
 <style lang='less' scoped>
     .Index {
         height: 100%;
+        margin-top: 20px;
     }
     .content {
-        margin-top: 20px;
-        height: calc(100%);
+        margin-top: 28px;
+        height: calc(96%);
         .content_item {
             width: 100%;
-            max-width: 1100px;
+            max-width: 1450px;
             height: 100%;
             overflow: auto;
+            padding: 0 15px;
             @media screen and (max-width: 850px) {
-                margin-top: 10px;
+                margin-top: 24px;
                 display: block;
             }
         }
     }
     .item_child {
-        width: 75%;
+        width: 85%;
         overflow: auto;
         @media screen and (max-width: 850px) {
             width: 100%;
@@ -229,16 +231,22 @@ export default {
             transform: translate(-10px,5px);
         }
         .child {
-            width: 27%;
+            // width: 27%;
+            // min-width: 197px;
+            // background: white;
+            // margin: 20px 3%;
+            // padding: 17px;
+            width: 29%;
             min-width: 197px;
             background: white;
-            margin: 20px 3%;
-            padding: 17px;
-            @media screen and (max-width: 974px) {
+            height: 270px;
+            margin: 20px 2%;
+            padding: 36px 25px;
+            @media screen and (max-width: 1055px) {
                 width: 43%;
             }
             @media screen and (max-width: 710px) {
-                margin: 20px 9%;
+                margin: 0 9% 20px 9%;
                 width: 83%;
             }
         }
@@ -253,11 +261,12 @@ export default {
         }
     }
     .child_message {
-        width: 25%;
+        width: 30%;
         min-width: 255px;
-        height: 320px;
+        padding: 23px 17px;
+        height: 298px;
         background: #F7F8FB;
-        box-shadow: 0 0 5px rgb(194, 194, 194);
+        box-shadow: 0 0 2px #c2c2c2;
         margin-top: 20px;
         transition: 0.2s;
         @media screen and (max-width: 850px) {
@@ -275,12 +284,15 @@ export default {
         padding: 0 5px;
         z-index: 10;
         min-width: 255px;
-        height: 320px;
+        height: 298px;
+        padding: 23px 17px;
         background: #F7F8FB;
         box-shadow: 0 0 5px rgb(194, 194, 194);
         margin-top: 20px;
         transition: 0.2s;
+        display: none;
         @media screen and (max-width: 850px) {
+            display: block;
             margin: auto;
             margin-bottom: 20px;
             width: 50%;
@@ -294,10 +306,10 @@ export default {
         margin-right: 15px;
     }
     .text_title {
-        font-size: 14px;
+        font-size: 18px;
     }
     .jieshao {
-        font-size: 12px;
+        font-size: 15px;
         color: #919B9D;
         height: 70px;
         margin: 20px 0;
@@ -317,9 +329,6 @@ export default {
         height: 17px;
         border-radius: 50%;
         background: #5C6BB5;
-    }
-    .child_message {
-        padding: 7px 12px;
     }
     .child_message_title {
         padding: 5px 0;

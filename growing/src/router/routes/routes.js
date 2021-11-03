@@ -122,6 +122,16 @@ export default [
                 path:"/Ddetail",
                 name: "Ddetail",
                 component: () => import("@/view/AdminIndex/Ddetail.vue")
+            },   
+            {
+                path:"/Setting",
+                name: "Setting",
+                component: () => import("@/view/AdminIndex/Setting.vue")
+            },   
+            {
+                path:"/EchartsMsg",
+                name: "EchartsMsg",
+                component: () => import("@/view/AdminIndex/EchartsMsg.vue")
             },
         ] 
     },

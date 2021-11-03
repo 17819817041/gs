@@ -101,6 +101,58 @@
         // left: -18px;
         transform: translate(-18px, 0);
     }
+    .auditBtn {
+        padding: 20px 0;
+        width: 45%;
+        @media screen and (max-width: 600px) {
+			width: 85%;
+		}
+    }
+    .gray_text {
+        color: rgb(204, 204, 204);
+        font-size: 13px;
+        margin-top: 10px;
+    }
+    .result {
+        width: 100%;
+        padding: 25px 20px;
+    }
+    .no_wrap {
+        .no {
+            width: 85px;
+            height: 85px;
+            border: solid 1px #FD0F1C;
+            border-radius: 6px;
+        }
+        .no_text {
+            color: #FD0F1C;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+    }
+    .yes_wrap {
+        .yes {
+            width: 85px;
+            height: 85px;
+            border: solid 1px #B3F268;
+            border-radius: 6px;
+        }
+        .yes_text {
+            color: #B3F268;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+    }
+    .plat_f {
+        color: rgb(196, 196, 196);
+        font-size: 12px;
+        margin-top: 30px;
+    }
+    .backimg {
+        @media screen and (max-width: 600px) {
+			display: none;
+		}
+    }
 </style>
 <template>
     <div class="AuditList">
@@ -228,7 +280,7 @@
                         prop="d_auditTime"
                         sortable
                         label="審核申請時間"
-                        min-width="130"
+                        min-width="140"
                         >
                         <template slot-scope="scope">
                             <div class="tc th_color">
@@ -242,7 +294,7 @@
                         min-width="130"
                         >
                         <template>
-                            <div class="tc" style="font-size: 12px;">
+                            <div class="tc" style="font-size: 12px;" @click="dialogVisible = true">
                                 <div class="ju al"><img class="cuditImg" src="@/assets/img/audit.png" alt=""></div>
                                 <div class="tc">審核操作</div>
                             </div>
@@ -367,7 +419,7 @@
                         prop="auditTime"
                         sortable
                         label="審核申請時間"
-                        min-width="130"
+                        min-width="140"
                         >
                         <template slot-scope="scope">
                             <div class="tc th_color">
@@ -381,7 +433,7 @@
                         min-width="130"
                         >
                         <template>
-                            <div class="tc" style="font-size: 12px;">
+                            <div class="tc" style="font-size: 12px;" @click="dialogVisible = true">
                                 <div class="ju al"><img class="cuditImg" src="@/assets/img/audit.png" alt=""></div>
                                 <div class="tc">審核操作</div>
                             </div>
@@ -390,6 +442,28 @@
                 </el-table>
             </div>
         </div>
+        <el-dialog
+            :visible.sync="dialogVisible"
+            width="30%">
+            <div class="flex" style="height: 100%">
+                <div class="backimg"><img style="height: 100%;" src="@/assets/img/backimg.png" alt=""></div>
+                <div class="auditBtn mg">
+                    <div class="ju"><img src="@/assets/img/logo.png" alt=""></div>
+                    <div class="gray_text tc"> — 請詳細審閱內容後，選擇審核結果 — </div>
+                    <div class="result sb mg">
+                        <div class="no_wrap">
+                            <div class="no ju al"><img style="height: 70%;" src="@/assets/img/no.png" alt=""></div>
+                            <div class="no_text tc">審核不通過</div>
+                        </div>
+                        <div class="yes_wrap">
+                            <div class="yes ju al"><img style="height: 70%;" src="@/assets/img/yes.png" alt=""></div>
+                            <div class="yes_text tc">審核通過</div>
+                        </div>
+                    </div>
+                    <div class="plat_f tc">Compoundeyes提供技術支持</div>
+                </div>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -397,6 +471,7 @@
 export default {
     data () {
         return {
+            dialogVisible: false,
             type: '',
             d_type: '',
             area: '',

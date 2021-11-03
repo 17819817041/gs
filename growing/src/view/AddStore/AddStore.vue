@@ -1,8 +1,11 @@
 <template>
     <div class="AddStore">
-		<img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt="">
+		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
+		<div class="AdvertisingOperation_back mg al">
+            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">新增店鋪
+        </div>
         <div class="content mg bar">
-            <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增店鋪</div>
+            <!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增店鋪</div> -->
             <div class="noBar" style="height: calc(100% - 60px); overflow:auto">
             <div class="basicsMsg boxs theme" v-show="submit">
                 <div class="flex divider_message_title">
@@ -176,7 +179,7 @@
 				</div>
 				<div class="ju">您的新增店铺信息已提交至後台，管理夤将蛊快蜜核您的店铺信息.</div>
                 <div class="iknow ju al">
-                    <div class="cursor" @click="submit = true">確定</div>
+                    <div class="cursor" @click="goBack">確定</div>
                 </div>
 			</div>
             </div>
@@ -467,6 +470,21 @@ export default {
 
 <style lang='less' scoped>
     @import "@/less/style.less";
+	.AdvertisingOperation_back {
+        width: 98%;
+        font-size: 20px;
+        img {
+            width: 20px;
+            height: 20px;
+            @media screen and (max-width: 960px) {
+                width: 15px;
+                height: 15px;
+            }
+        }
+        @media screen and (max-width: 960px) {
+            font-size: 15px;
+        }
+    }
     .AddStore {
         margin-top: 20px;
         height: 100%;
