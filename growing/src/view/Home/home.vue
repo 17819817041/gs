@@ -28,8 +28,10 @@ export default {
         height: calc(100% - 119px);
     }
     .footer {
-        padding: 10px 20px;
+        padding: 10px 10px;
         width: 100%;
+        // position: fixed;
+        // bottom: 0;
         // background: white;
     }
     .platformLogo {

@@ -18,8 +18,13 @@
     .EchartsMsg_content {
         width: 97%;
         height: calc(100% - 45px);
-        overflow: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
         margin-top: 20px;
+        @media screen and (max-width: 564px) {
+            width: 100%;
+        }
+
     }
     .EchartsMsg {
         height: 100%;
@@ -45,6 +50,9 @@
     .EchartsMsg_content_item {
         background: white;
         padding: 15px 20px;
+        @media screen and (max-width: 564px) {
+           padding: 15px 0px;
+        }
     }
     .echarts {
         width: 33%;
@@ -74,7 +82,34 @@
         min-width: 345px;
         padding: 0 20px;
         height: 400px;
-        
+        @media screen and (max-width: 564px) {
+           margin: 20px 0;
+           padding: 0;
+        }
+    }
+    .ECHARTS1 {
+        margin: 20px 0;
+        background: white;
+        width: 100%;
+        min-width: 345px;
+        padding: 0 20px;
+        height: 205px;
+        @media screen and (max-width: 564px) {
+           margin: 20px 0;
+           padding: 0;
+        }
+    }
+    .ECHARTS2 {
+        margin: 20px 0;
+        background: white;
+        width: 100%;
+        min-width: 345px;
+        padding: 0 20px;
+        height: 400px;
+        @media screen and (max-width: 564px) {
+           margin: 20px 0;
+           padding: 0;
+        }
     }
     .select_e {
         width: 93px;
@@ -84,6 +119,136 @@
     .block {
         @media screen and (max-width: 1080px) {
             display: block;
+        }
+    }
+    .footer_echarts1 {
+        width: 66.5%;
+        border: solid 1px rgb(243, 243, 243);
+        border-radius: 7px;
+        @media screen and (max-width: 1355px) {
+            width: 100%;
+        }
+    }
+    .footer_echarts2_wrap {
+        width: 33%;
+        @media screen and (max-width: 1355px) {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+        @media screen and (max-width: 800px) {
+            display: block;
+        }
+    }
+    .footer_echarts2 {
+        // width: 33%;
+        border: solid 1px rgb(243, 243, 243);
+        border-radius: 7px;
+        @media screen and (max-width: 1355px) {
+            width: 47%;
+        }
+        @media screen and (max-width: 800px) {
+           width: 100%;
+           margin-top: 20px;
+        }
+    }
+    .size12 {
+        font-size: 12px;
+        color: gray;
+    }
+    .busyTime {
+        padding: 20px 30px;
+        color: white;
+        background: #1B87FE ;
+        border-radius: 10px;
+        @media screen and (max-width: 880px) {
+           padding: 10px 20px;
+        }
+        @media screen and (max-width: 800px) {
+           padding: 20px 30px;
+        }
+        @media screen and (max-width: 564px) {
+           padding: 10px 20px;
+        }
+        @media screen and (max-width: 418px) {
+           padding: 10px 15px;
+           display: flex;
+            justify-content: center;
+        }
+    }
+    .unbusyTime {
+        padding: 20px 30px;
+        color: white;
+        background:#28CEAE;
+        border-radius: 10px;
+        @media screen and (max-width: 880px) {
+           padding: 10px 20px;
+        }
+        @media screen and (max-width: 800px) {
+           padding: 20px 30px;
+        }
+        @media screen and (max-width: 564px) {
+           padding: 10px 20px;
+        }
+        @media screen and (max-width: 418px) {
+           padding: 10px 15px;
+           display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+    }
+    .size15 {
+        font-size: 18px;
+        @media screen and (max-width: 1000px) {
+           font-size: 15px;
+        }
+        @media screen and (max-width: 800px) {
+           font-size: 18px;
+        }
+        @media screen and (max-width: 564px) {
+           font-size: 15px;
+        }
+        @media screen and (max-width: 418px) {
+           font-size: 12px;
+        }
+    }
+    .size25 {
+        font-size: 35px;
+        @media screen and (max-width: 1000px) {
+           font-size: 30px;
+        }
+        @media screen and (max-width: 800px) {
+           font-size: 35px;
+        }
+        @media screen and (max-width: 564px) {
+           font-size: 30px;
+        }
+        @media screen and (max-width: 418px) {
+           font-size: 23px;
+        }
+    }
+    .footerEcharts {
+        margin-top: 10px;
+        @media screen and (max-width: 1355px) {
+           display: block;
+        }
+    }
+    .totalMSG {
+        margin-top: 20px;
+        min-width: 280px;
+        @media screen and (max-width: 1355px) {
+           height: 277px;
+           margin-top: 0;
+        }
+        @media screen and (max-width: 800px) {
+            width: 100%;
+            height: 200px;
+            margin-top: 20px;
+        }
+    }
+    .block410 {
+        @media screen and (max-width: 410px) {
+           display: block;
         }
     }
 </style>
@@ -157,6 +322,69 @@
                             </div>
                         </div>
                         <div class="ECHARTS" id="main2"></div>
+                    </div>
+                </div>
+                <div class="sb footerEcharts">
+                    <div class="footer_echarts1">
+                        <div class="echarts_title sb">
+                            <div class="al echarts_title_text">
+                                <div class="point"></div>
+                                <div>近12日廣告活動時段統計</div>
+                            </div>
+                            <div class="select_e">
+                                <el-select v-model="value3" placeholder="请选择" class="width100">
+                                    <el-option
+                                    v-for="item in options"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                        <div class="ECHARTS2" id="main3"></div>
+                    </div>
+                    <div class="footer_echarts2_wrap">
+                        <div class="footer_echarts2">
+                            <div class="echarts_title sb">
+                                <div class="al echarts_title_text">
+                                    <div class="point"></div>
+                                    <div>近半年廣告活動統計</div>
+                                </div>
+                                <div class="size12">
+                                    單位： 分鐘
+                                </div>
+                            </div>
+                            <div class="ECHARTS1" id="main4"></div>
+                        </div>
+                        <div class="footer_echarts2 totalMSG">
+                            <div class="echarts_title sb">
+                                <div class="al echarts_title_text">
+                                    <div class="point"></div>
+                                    <div>廣告活動時段總數</div>
+                                </div>
+                            </div>
+                            <div class="sa block410" style="padding: 20px;">
+                                <div class="busyTime bold">
+                                    <div>
+                                        <div class="size15">繁忙時段</div>
+                                        <div>
+                                            <span class='size25'>4000</span>
+                                            <span class="size15">分鐘</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="unbusyTime bold">
+                                    <div>
+                                        <div class="size15">非繁忙時段</div>
+                                        <div>
+                                            <span class='size25'>2585</span>
+                                            <span class="size15">分鐘</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -369,6 +597,90 @@ export default {
                     }
                 ]
             },
+            option3: {
+                legend: {},
+                tooltip: {},
+                dataset: {
+                    source: [
+                    ['product', '2016', '2017'],
+                    ['Matcha Latte', 43.3, 93.7],
+                    ['Milk Tea', 83.1, 55.1],
+                    ['Cheese Cocoa', 86.4, 82.5],
+                    ['Walnut Brownie', 72.4, 39.1]
+                    ]
+                },
+                xAxis: { type: 'category' },
+                yAxis: {},
+                // Declare several bar series, each will be mapped
+                // to a column of dataset.source by default.
+                series: [{ type: 'bar' }, { type: 'bar' }]
+            },
+            option4: {
+                title: {
+                    text: ''
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#6a7985'
+                    }
+                    }
+                },
+                legend: {
+                    data: [ 'Direct', 'Search Engine']
+                },
+                toolbox: {
+                    feature: {
+                    saveAsImage: {}
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['1月', '2月', '3月', '4月', '5月', '6月']
+                    }
+                ],
+                yAxis: [
+                    {
+                    type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                    name: 'Direct',
+                    type: 'line',
+                    stack: 'Total',
+                    areaStyle: {},
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [20, 25, 31, 34, 90, 40, 30]
+                    },
+                    {
+                    name: 'Search Engine',
+                    type: 'line',
+                    stack: 'Total',
+                    label: {
+                        show: true,
+                        position: 'top'
+                    },
+                    areaStyle: {},
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [20, 32, 51, 34, 90, 30, 20]
+                    }
+                ]
+                },
             options: [{
             value: '选项1',
             label: '2021'
@@ -388,7 +700,8 @@ export default {
             value: '',
             value1: '',
             value2: '',
-            }
+            value3: '',
+        }
     },
     mounted () {
         var myChart = echarts.init(document.getElementById('main'));
@@ -400,14 +713,18 @@ export default {
         var myChart2 = echarts.init(document.getElementById('main2'));
         myChart2.setOption(this.option2);
 
-        // var myChart3 = echarts.init(document.getElementById('main3'));
-        // myChart3.setOption(this.option3);
+        var myChart3 = echarts.init(document.getElementById('main3'));
+        myChart3.setOption(this.option3);
+
+        var myChart4 = echarts.init(document.getElementById('main4'));
+        myChart4.setOption(this.option4);
 
         window.addEventListener("resize",function(){
             myChart.resize();
             myChart1.resize();
             myChart2.resize();
-            // myChart3.resize();
+            myChart3.resize();
+            myChart4.resize();
         });
     },
     methods: {

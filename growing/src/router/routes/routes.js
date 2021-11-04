@@ -132,7 +132,12 @@ export default [
                 path:"/EchartsMsg",
                 name: "EchartsMsg",
                 component: () => import("@/view/AdminIndex/EchartsMsg.vue")
-            },
+            },    
+            {
+                path:"/TradingRecord",
+                name: "TradingRecord",
+                component: () => import("@/view/AdminIndex/TradingRecord.vue")
+            }
         ] 
     },
 ]

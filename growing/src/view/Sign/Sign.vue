@@ -1,5 +1,8 @@
 <template>
     <div class="Sign flex">
+        <div class="Logo ju">
+            <img src="@/assets/img/logo.png" alt="">
+        </div>
         <div class="form_item ju noBar">
             <div class="i_form" v-if="active">
                 <div class="login_text">註冊</div>
@@ -59,7 +62,10 @@
             </div>
         </div>
         <div class="welcome ju al">
-            <div style="margin-bottom: 130px;">
+            <div style="margin-bottom: 70px;">
+                <div class="Logo1 ju">
+                    <img src="@/assets/img/logo.png" alt="">
+                </div>
                 <div class="guanggao tc">XXX廣告平台</div>
                 <div class="welcome_text tc">Welcome</div>
             </div>
@@ -107,7 +113,7 @@ export default {
             position: absolute;
             padding: 15px 0;
             left: 55%;
-            top: 50%;
+            top: 53%;
             // min-height: 520px;
             transform: translate(0, -50%);
             width: 35%;
@@ -129,21 +135,43 @@ export default {
             }
             @media screen and (max-width: 564px) {
                 left: 50%;
-                top: 50%;
+                top: 54%;
                 transform: translate(-50%, -50%);
                 width: 50%;
-                min-width: 290px;
+                min-width: 345px;
                 // min-height: 525px;
                 // max-height: 525px;
                 // height: 460px;
             }
         }
     }
+    .Logo {
+        height: 40px;
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        z-index: 100;
+        transform: translate(-50%,0);
+        margin-bottom: 20px;
+        display: none;
+        img {
+            height: 90px;
+        }
+        @media screen and (max-width: 564px) {
+            display: block;
+        }
+    }
+    .Logo1 {
+        height: 80px;
+        margin-bottom: 40px;
+        img {
+            height: 130px;
+        }
+    }
     .i_form {
         width: 90%;
         // height: 95%;
         margin-bottom: 15px;
-        
         .login_text {
             font-size: 60px;
             padding-bottom: 65px;

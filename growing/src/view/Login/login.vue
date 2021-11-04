@@ -3,6 +3,9 @@
         <div class="form_item ju al">
             <div class="width100 form_item_c_wrap">
                 <div class="mobile_title">
+                    <div class="Logo ju">
+                        <img src="@/assets/img/logo.png" alt="">
+                    </div>
                     <div class="guanggao tc">XXX廣告平台</div>
                     <div class="welcome_text tc">Welcome</div>
                 </div>
@@ -26,7 +29,10 @@
             </div>
         </div>
         <div class="welcome al ju">
-            <div style="margin-bottom: 130px;">
+            <div style="margin-bottom: 70px;">
+                <div class="Logo1">
+                    <img src="@/assets/img/logo.png" alt="">
+                </div>
                 <div class="guanggao tc">XXX廣告平台</div>
                 <div class="welcome_text tc">Welcome</div>
             </div>
@@ -58,15 +64,19 @@ export default {
             if (this.userName == 1) {
                 this.$router.push('/Index')
                 localStorage.setItem('plat','廣告商')
+                localStorage.setItem('platform',1)
             } else if (this.userName == 2) {
                 localStorage.setItem('plat','店鋪')
                 this.$router.push('/PlatIndex')
+                localStorage.setItem('platform',2)
             } else if (this.userName == 3) {
                 localStorage.setItem('plat','廣告後台')
                 this.$router.push('/AdminIndex')
+                localStorage.setItem('platform',3)
             } else {
                 localStorage.setItem('plat','廣告商')
                 this.$router.push('/Index')
+                localStorage.setItem('platform',1)
             }
         }
     }
@@ -99,10 +109,25 @@ export default {
                 top: 45%;
                 transform: translate(-50%, -50%);
                 width: 50%;
-                min-width: 290px;
+                min-width: 345px;
                 min-height: 425px;
-                height: 425px;
+                height: 552px;
             }
+        }
+    }
+    .Logo {
+        height: 40px;
+        margin-bottom: 30px;
+        img {
+            height: 70px;
+        }
+    }
+    .Logo1 {
+        height: 80px;
+        margin-bottom: 40px;
+        margin-left: 14px;
+        img {
+            height: 130px;
         }
     }
     .form_item_c_wrap {
@@ -119,21 +144,17 @@ export default {
         width: 100%;
         height: 80%;
         background: #5C48B7;
+        // background: #0c46a3;
         padding: 60px;
         margin-top: 20px;
-        // margin: 25px;
         overflow: auto;
         box-shadow: rgb(0, 0, 0) 30px 30px 60px;
         @media screen and (max-width: 1050px) {
             padding: 40px;
         }
         @media screen and (max-width: 800px) {
-            padding: 30px;
-            height: 90%;
-        }
-        @media screen and (max-width: 800px) {
             padding: 25px;
-            height: 392px;
+            height: 450px;
         }
         @media screen and (max-height: 360px) {
             height: 90%;
@@ -157,7 +178,7 @@ export default {
             }
             @media screen and (max-width: 800px) {
                 font-size: 25px;
-                padding: 3px 0;
+                padding: 25px 0 20px 0;
             }
             @media screen and (max-height: 360px) {
                 font-size: 20px;
@@ -264,7 +285,7 @@ export default {
         }
         @media screen and (max-width: 564px) {
             font-size: 19px;
-            padding: 5px 0;
+            padding: 8px 0;
         }
     }
     .login_btn {
@@ -279,7 +300,7 @@ export default {
             margin-bottom: 15px;
         }
         @media screen and (max-width: 1200px) {
-            margin-top: 30px;
+            margin-top: 50px;
             margin-bottom: 15px;
         }
         @media screen and (max-width: 800px) {
@@ -288,7 +309,7 @@ export default {
         }
         @media screen and (max-width: 564px) {
             font-size: 19px;
-            padding: 5px 0;
+            padding: 8px 0;
         }
         @media screen and (max-height: 360px) {
             margin-top: 20px !important;
@@ -303,7 +324,7 @@ export default {
             font-size: 50px;
         }
         @media screen and (max-width: 800px) {
-            font-size: 40px;
+            font-size: 30px;
         }
     }
     .welcome_text {
@@ -314,7 +335,7 @@ export default {
             font-size: 40px;
         }
         @media screen and (max-width: 800px) {
-            font-size: 30px;
+            font-size: 23px;
         }
     }
 </style>

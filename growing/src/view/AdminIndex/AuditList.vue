@@ -19,6 +19,13 @@
             font-size: 15px;
         }
     }
+    .Logo {
+        height: 45px;
+        img {
+            width: 200px;
+            height: 70px;
+        }
+    }
     .green {
         color: #35E739;
     }
@@ -102,7 +109,7 @@
         transform: translate(-18px, 0);
     }
     .auditBtn {
-        padding: 20px 0;
+        // padding: 20px 0;
         width: 45%;
         @media screen and (max-width: 600px) {
 			width: 85%;
@@ -111,7 +118,8 @@
     .gray_text {
         color: rgb(204, 204, 204);
         font-size: 13px;
-        margin-top: 10px;
+        margin-top: 48px;
+        margin-bottom: 15px;
     }
     .result {
         width: 100%;
@@ -146,7 +154,6 @@
     .plat_f {
         color: rgb(196, 196, 196);
         font-size: 12px;
-        margin-top: 30px;
     }
     .backimg {
         @media screen and (max-width: 600px) {
@@ -448,7 +455,7 @@
             <div class="flex" style="height: 100%">
                 <div class="backimg"><img style="height: 100%;" src="@/assets/img/backimg.png" alt=""></div>
                 <div class="auditBtn mg">
-                    <div class="ju"><img src="@/assets/img/logo.png" alt=""></div>
+                    <div class="ju Logo"><img src="@/assets/img/logo.png" alt=""></div>
                     <div class="gray_text tc"> — 請詳細審閱內容後，選擇審核結果 — </div>
                     <div class="result sb mg">
                         <div class="no_wrap">

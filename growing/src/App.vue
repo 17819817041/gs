@@ -291,6 +291,7 @@ export default {
 		overflow: hidden !important;
 	}  
 
+
 	.AuditList .el-select .el-input .el-input__inner {
 		border: none !important;
 		outline: none !important;
@@ -323,6 +324,26 @@ export default {
 	.AuditList .el-dialog__wrapper .el-dialog__body {
 		padding: 0 !important;
 		height: 328px;
+	}
+
+
+	.PlatSetting .el-select .el-input .el-input__inner {
+		border: none !important;
+		outline: none !important;
+		background: white !important;
+		height: 28px !important;
+		display: flex;
+	}
+	.PlatSetting .el-select .el-input .el-select__caret::before {
+		content: "";
+		background: url('~@/assets/img/arrow_up.png') center center no-repeat;
+		position: absolute;
+		width: 23px;
+		height: 17px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		overflow: hidden !important;
 	}
 
 	

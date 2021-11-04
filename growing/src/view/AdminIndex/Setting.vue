@@ -12,7 +12,7 @@
                             <div class="divider_text">廣告地區設定</div>
                         </div>
                         <div class="flex">
-                            <div class="arrow_m al" @click="drawer = !drawer"><img src="@/assets/img/pull_down.png" alt=""></div>
+                            <div :class="['arrow_m al']" @click="drawer = !drawer"><img :class="[{ rotate: drawer }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
                     <div :class="[' drawer_h', {'drawer_h1': drawer}]">
@@ -21,15 +21,25 @@
                                 <div class="menu_title bold">地區新增與移除</div>
                                 <el-popover
                                     :placement="position"
-                                    trigger="manual"
+                                    trigger="click"
                                     v-model="visible">
-                                    <div class="flex">
-                                        <el-input v-model="area"></el-input>
-                                        <div class="addCate cursor al" @click="addArea(area)">
-                                            添加
+                                    <div class="">
+                                        <el-form :model="ruleForm" status-icon :rules="rules" ref="form" class="demo-ruleForm">
+                                            <el-form-item prop="inp">
+                                                <el-input type="text" v-model="ruleForm.inp" placeholder="請輸入地區" autocomplete="off"></el-input>
+                                            </el-form-item>
+                                            <el-form-item prop="inp">
+                                                <el-input type="text" v-model="ruleForm.Einp" autocomplete="off" placeholder="Please enter region"></el-input>
+                                            </el-form-item>
+                                        </el-form>
+                                        <div class="sb">
+                                            <div class="addCate cursor al" @click="addArea(area, 'ruleForm')">
+                                                添加
+                                            </div>
+                                            <div class="addCate cursor al" @click='visible = false'>取消</div>
                                         </div>
                                     </div>
-                                    <div class="addArea tc cursor" slot="reference" @click="visible = !visible">新增地區</div>
+                                    <div class="addArea tc cursor" slot="reference" @click="visible = true">新增地區</div>
                                 </el-popover>
                             </div>
                         </div>
@@ -57,7 +67,7 @@
                             <div class="divider_text">廣告類型設定</div>
                         </div>
                         <div class="flex">
-                            <div class="arrow_m al" @click="drawer1 = !drawer1"><img src="@/assets/img/pull_down.png" alt=""></div>
+                            <div :class="['arrow_m al']" @click="drawer1 = !drawer1"><img :class="[{ rotate: drawer1 }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
                     <div :class="['drawer_h', {'drawer_h1': drawer1}]">
@@ -66,15 +76,25 @@
                                 <div class="menu_title bold">類型新增與移除</div>
                                 <el-popover
                                     :placement="position"
-                                    trigger="manual"
+                                    trigger="click"
                                     v-model="visible1">
-                                    <div class="flex">
-                                        <el-input v-model="type"></el-input>
-                                        <div class="addCate cursor al" @click="addType(type)">
-                                            添加
+                                    <div class="">
+                                        <el-form :model="ruleForm" status-icon :rules="rules" ref="form" class="demo-ruleForm">
+                                            <el-form-item prop="inp">
+                                                <el-input type="text" v-model="ruleForm.type" placeholder="請輸入類型" autocomplete="off"></el-input>
+                                            </el-form-item>
+                                            <el-form-item prop="inp">
+                                                <el-input type="text" v-model="ruleForm.Etype" autocomplete="off" placeholder="Please enter the type"></el-input>
+                                            </el-form-item>
+                                        </el-form>
+                                        <div class="sb">
+                                            <div class="addCate cursor al" @click="addType(type)">
+                                                添加
+                                            </div>
+                                            <div class="addCate cursor al" @click='visible1 = false'>取消</div>
                                         </div>
                                     </div>
-                                    <div class="addArea tc cursor" slot="reference" @click="visible1 = !visible1">新增類型</div>
+                                    <div class="addArea tc cursor" slot="reference" @click="visible1 = true">新增類型</div>
                                 </el-popover>
                             </div>
                         </div>
@@ -102,7 +122,7 @@
                             <div class="divider_text">醫療九龍店</div>
                         </div>
                         <div class="flex">
-                            <div class="arrow_m al" @click="drawer2 = !drawer2"><img src="@/assets/img/pull_down.png" alt=""></div>
+                            <div :class="['arrow_m al']" @click="drawer2 = !drawer2"><img :class="[{ rotate: drawer2 }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
                     <div :class="['Setting_table drawer_h', {'drawer_h1': drawer2}]">
@@ -152,7 +172,13 @@
                                 min-width="105"
                                 >
                                 <template slot-scope="scope">
-                                    <div class="ju al"><div class="ju al deleMsg cursor" @click="deleLive(scope.$index)">刪除記錄</div></div>
+                                    <el-popconfirm
+                                        triggrt='click'
+                                        title="確定刪除嗎？"
+                                        @confirm='deleLive(scope.$index)'
+                                        >
+                                        <div class="ju al" slot="reference"><div class="ju al deleMsg cursor">刪除記錄</div></div>
+                                    </el-popconfirm>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -212,8 +238,35 @@ export default {
                 {live:'1',time: '221-06-06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
                 {live:'2',time: '221-06-06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
                 {live:'3',time: '221-06-06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
-            ]
+            ],
+            ruleForm: {
+                inp: '',
+                Einp: '',
+                type: '',
+                Etype: ''
+            },
+            rules: {
+                inp: [
+                    // { required:true, message:'Please enter your email', trigger:"blur" }
+                    { required:true, message:'內容不能為空', trigger:"blur" }
+                ],
+                Einp: [
+                    // { required:true, message:'Please enter your email', trigger:"blur" }
+                    { required:true, message:'The content cannot be empty', trigger:"blur" }
+                ],
+                type: [
+                    // { required:true, message:'Please enter your email', trigger:"blur" }
+                    { required:true, message:'The content cannot be empty', trigger:"blur" }
+                ],
+                Etype: [
+                    // { required:true, message:'Please enter your email', trigger:"blur" }
+                    { required:true, message:'The content cannot be empty', trigger:"blur" }
+                ],
+            }
         }
+    },
+    mounted () {
+        // location.reload();
     },
     methods: {
         tableRowClassName ({ row,rowIndex }) {
@@ -235,13 +288,18 @@ export default {
 			}
 		},
 		addArea (item) {
-            this.area = ''
-            this.visible = false
-            if (item) {
-				this.areaList.push(item)
-				let arr = new Set(this.areaList)
-				this.areaList = Array.from(arr)
-			}
+            this.$refs.form.validate(flag => {
+                if (flag) {
+                    this.area = ''
+                    this.visible = false
+                    if (item) {
+                        this.areaList.push(item)
+                        let arr = new Set(this.areaList)
+                        this.areaList = Array.from(arr)
+                    }
+                }
+            })
+            
 		},
 		deleType (i) {
 			this.typeList.splice(i,1)
@@ -254,8 +312,8 @@ export default {
             this.url = url
         },
         deleLive (i) {
-            console.log(i)
             this.tableData.splice(i,1)
+            this.tableData.$forceUpdate()
         },
         addLive () {
             this.dialogVisible = false
@@ -336,8 +394,7 @@ export default {
         border: solid 1px rgb(206, 206, 206);
         padding: 0 20px;
         box-shadow: 2px 2px 6px rgb(224, 224, 224) inset;
-        height: 39px;
-        margin-left: 15px;
+        height: 32px;
 		white-space: nowrap;
     }
     .addArea {
@@ -412,7 +469,12 @@ export default {
         width: 20px;
         img {
             width: 17px;
+            transform: rotateZ(-180deg);
+            transition: 0.2s;
         }
+    }
+    .rotate {
+        transform: rotateZ(0deg) !important;
     }
     .drawer_h {
         transition: 0.2s;

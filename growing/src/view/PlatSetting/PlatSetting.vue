@@ -3,7 +3,152 @@
         <div class="back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">店鋪詳細設定
         </div>
-        <div class="Settingadvertising_content_wrap bar">
+        <div class="Settingadvertising_content_wrap noBar">
+            <div class="Settingadvertising_content mg">
+                <div class="divider_wrap">
+                    <div class="sb al divider_message_title">
+                        <div class="flex">
+                            <div class="divider"></div>
+                            <div class="divider_text">所有店鋪設定</div>
+                        </div>
+                        <div class="flex">
+                            <div class="arrow_m al" @click="drawer4 = !drawer4"><img :class="[{ rotate: drawer4 }]" src="@/assets/img/pull_down.png" alt=""></div>
+                        </div>
+                    </div>
+                    <div :class="['drawer_h', {'drawer_h1': drawer4}]">
+                        <el-table :row-class-name="tableRowClassName" 
+                            :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
+                            :data="tableData"
+                            style="width: 100%"
+                            height="95%"
+                            >
+                            <el-table-column
+                                fixed
+                                prop="d_name"
+                                label="店鋪名稱"
+                                min-width="150"
+                                >
+                                <template slot="header">
+                                    店鋪名稱
+                                    <div class="searchInp mg">
+                                        <el-input
+                                        class="width100"
+                                        v-model="search"
+                                        size="mini"
+                                        placeholder="输入关键字搜索"/>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="d_type"
+                                label="店鋪類型"
+                                min-width="190"
+                                >
+                                <template slot="header">
+                                    店鋪類型
+                                    <div class="searchInp mg">
+                                        <el-select class="width100" style="height: 28px;" v-model="type" placeholder="請選擇類型">
+                                            <el-option label="食品" value="食品"></el-option>
+                                            <el-option label="科技" value="科技"></el-option>
+                                            <el-option label="醫療" value="醫療"></el-option>
+                                            <el-option label="汽車" value="汽車"></el-option>
+                                        </el-select>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="d_area"
+                                label="店鋪區域"
+                                min-width="150"
+                                >
+                                <template slot="header">
+                                    店鋪區域
+                                    <div class="searchInp mg">
+                                        <el-select class="width100" style="height: 28px;" v-model="area" placeholder="請選擇類型">
+                                            <el-option label="九龍" value="九龍"></el-option>
+                                            <el-option label="旺角" value="旺角"></el-option>
+                                            <el-option label="中環" value="中環"></el-option>
+                                        </el-select>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="d_ratio"
+                                sortable
+                                label="接收外來廣告比例"
+                                min-width="170"
+                                >
+                                <template slot-scope="scope">
+                                    <div class="tc th_color">
+                                        {{scope.row.d_ratio}}%
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="d_time"
+                                sortable
+                                label="接收外來廣告時段"
+                                min-width="170"
+                                >
+                                <template slot-scope="scope">
+                                    <div class="tc th_color">
+                                        <div class="th_color tc" v-show="scope.row.d_time.busy">{{scope.row.d_time.busy}}</div>
+                                        <div class="th_color tc" v-show="scope.row.d_time.unbusy">{{scope.row.d_time.unbusy}}</div>
+                                        <div class="th_color tc" v-show="scope.row.d_time.busy == '' && scope.row.d_time.unbusy == '' ">無</div>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="d_detail"
+                                label="店鋪詳細計劃"
+                                min-width="105"
+                                >
+                                <template>
+                                    <div class="ju al"><img class="planEdit cursor" src="@/assets/img/planEdit.png" alt=""> </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="d_state"
+                                sortable
+                                label="審核狀態"
+                                min-width="130"
+                                >
+                                <template slot-scope="scope">
+                                    <div class="tc">
+                                        <span class="green" v-if="scope.row.d_state == 1">通過</span>
+                                        <span class="th_color" v-else-if="scope.row.d_state == 2">待審核</span>
+                                        <span class="red" v-else-if="scope.row.d_state == 3">不通過</span>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="d_auditTime"
+                                sortable
+                                label="審核申請時間"
+                                min-width="140"
+                                >
+                                <template slot-scope="scope">
+                                    <div class="tc th_color">
+                                        {{scope.row.d_auditTime}}
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="d_storePlanDetail"
+                                label="操作"
+                                min-width="130"
+                                >
+                                <template slot-scope="scope">
+                                    <div class="tc cursor" style="font-size: 12px;" v-show="scope.row.d_state == 3">
+                                        <div class="ju al"><img class="cuditImg" src="@/assets/img/editPlan.png" alt=""></div>
+                                        <div class="tc">更改計劃</div>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </div>
+            </div>
             <div class="Settingadvertising_content mg">
                 <div class="divider_wrap">
                     <div class="sb al divider_message_title">
@@ -13,7 +158,7 @@
                         </div>
                         <div class="flex">
                             <div class="delUSer cursor">註銷店鋪</div>
-                            <div class="arrow_m al" @click="drawer = !drawer"><img src="@/assets/img/pull_down.png" alt=""></div>
+                            <div class="arrow_m al" @click="drawer = !drawer"><img :class="[{ rotate: drawer }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
                     <div :class="['drawer_h', {'drawer_h1': drawer}]">
@@ -43,7 +188,7 @@
                         </div>
                         <div class="flex">
                             <div class="delUSer cursor">註銷賬戶</div>
-                            <div class="arrow_m al" @click="drawer1 = !drawer1"><img src="@/assets/img/pull_down.png" alt=""></div>
+                            <div class="arrow_m al" @click="drawer1 = !drawer1"><img :class="[{ rotate: drawer1 }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
                     <div :class="['drawer_h', {'drawer_h1': drawer1}]">
@@ -73,7 +218,7 @@
                         </div>
                         <div class="flex">
                             <div class="delUSer cursor">註銷賬戶</div>
-                            <div class="arrow_m al" @click="drawer2 = !drawer2"><img src="@/assets/img/pull_down.png" alt=""></div>
+                            <div class="arrow_m al" @click="drawer2 = !drawer2"><img :class="[{ rotate: drawer2 }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
                     <div :class="['drawer_h', {'drawer_h1': drawer2}]">
@@ -106,6 +251,20 @@ export default {
             drawer: false,
             drawer2: false,
             drawer1: false,
+            drawer4: false,
+            search: '',
+            tableData:[
+                {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 1, 
+                d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
+                {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 2, 
+                d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
+                {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 1, 
+                d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
+                {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 3, 
+                d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
+            ],
+            area: '',
+            type: '',
             columns: [
                 {title:'店鋪設備配置',key:'name'},
                 {title:'賬戶設備ID',slot:'id'},
@@ -138,6 +297,12 @@ export default {
         }
     },
     methods: {
+        tableRowClassName ({ row,rowIndex }) {
+            if (rowIndex%2 == 1) {
+                return 'el_color'
+            }
+            return ''
+        },
         back () {
             this.$router.back()
         },
@@ -197,9 +362,21 @@ export default {
             font-size: 15px;
         }
     }
+    .cuditImg {
+        width: 30px;
+        height: 30px;
+    }
+    .planEdit {
+        width: 23px;
+        height: 23px;
+    }
     .divider_wrap {
         box-shadow: 0 0 5px rgb(163, 163, 163) inset;
         padding: 4px;
+    }
+    .searchInp {
+        margin-top: 10px;
+        width: 135px;
     }
     .divider_message_title {
         padding: 15px 30px;
@@ -226,6 +403,25 @@ export default {
             margin-left: 3px;
         }
     }
+    .green {
+        color: #35E739;
+    }
+    .red {
+        color: #FF0000;
+    }
+    .Settingadvertising_content {
+        // height: 100%;
+        /deep/.el-table th > .cell {
+            text-align: center;
+        }
+        
+        /deep/.el-table .cell {
+            text-align: center;
+        }
+    }
+    .th_color {
+        color: #7868C1;
+    }
     .delUSer {
         color: white;
         padding: 4px 20px;
@@ -237,7 +433,12 @@ export default {
         width: 20px;
         img {
             width: 17px;
+            transform: rotateZ(-180deg);
+            transition: 0.2s;
         }
+    }
+    .rotate {
+        transform: rotateZ(0deg) !important;
     }
     .drawer_h {
         transition: 0.2s;
