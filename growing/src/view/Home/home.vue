@@ -23,16 +23,18 @@ export default {
 <style lang='less' scoped>
     .home {
         height: 100%;
+        position: relative;
     }
     .h_content {
-        height: calc(100% - 119px);
+        height: calc(100% - 100px);
     }
     .footer {
-        padding: 10px 10px;
+        padding: 0px 0 5px 20px;
         width: 100%;
-        // position: fixed;
-        // bottom: 0;
-        // background: white;
+        position: absolute;
+        bottom: 0;
+        font-size: 12px;
+        background: #F2F2F2;
     }
     .platformLogo {
         width: 20px;

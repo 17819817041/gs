@@ -74,16 +74,16 @@
                 <el-table-column
                     prop="edit"
                     label="操作"
-                    min-width="250"
+                    min-width="200"
                     >
                     <template slot-scope="scope">
-                        <div class="putaway sa">
+                        <div class="putaway sa al">
                             <div class="putaway_logo" v-if="scope.row.edit == 2 || scope.row.edit == 3">
                                 <div class="ju"><img src="@/assets/img/edit.png" alt=""></div>
                                 <div class="tc">編輯計劃</div>
                             </div>
                             <!-- <div v-else></div> -->
-                            <div class="putaway_logo centerL" v-if="scope.row.edit == 3">
+                            <div class="putaway_logo centerL" v-if="scope.row.edit == 3 || scope.row.edit == 2">
                                 <div class="ju "><img src="@/assets/img/up.png" alt=""></div>
                                 <div class="tc">上架計劃</div>
                             </div>
@@ -147,7 +147,7 @@ export default {
     
     .AdvertisingOperation {
         margin-top: 20px;
-        height: calc(100% - 30px);
+        height: calc(100% - 23px);
     }
     .AdvertisingOperation_back {
         width: 98%;
@@ -178,7 +178,7 @@ export default {
         width: 97%;
         background: #F7F7F7;
         height: 100%;
-        margin-top: 20px;
+        margin-top: 15px;
     }
     .red {
         background: #DC3545;
@@ -193,18 +193,9 @@ export default {
         color: #FA3A3A;
     }
     .preview {
-        font-size: 13px;
-        @media screen and (max-width: 1300px) {
-            font-size: 12px;
-        }
+        font-size: 12px;
         img {
-            width: 40px;
-            @media screen and (max-width: 1500px) {
-                width: 35px;
-            }
-            @media screen and (max-width: 1300px) {
-                width: 30px;
-            }
+            width: 20px;
         }
     }
     .add {
@@ -227,21 +218,10 @@ export default {
         }
     }
     .putaway_logo {
-        font-size: 14px;
-        @media screen and (max-width: 1300px) {
-            font-size: 12px;
-        }
-        div img {
-            width: 40px;
-            height: 40px;
-            @media screen and (max-width: 1500px) {
-                width: 35px;
-                height: 35px;
-            }
-            @media screen and (max-width: 1300px) {
-                width: 30px;
-                height: 30px;
-            }
+        font-size: 12px;
+        div>img {
+            width: 20px;
+            height: 20px;
         }
     }
     .centerL {

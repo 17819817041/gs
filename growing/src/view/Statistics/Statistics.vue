@@ -205,8 +205,9 @@ export default {
     }
     .Statistics_content {
         background: #F6F6F6;
-        height: calc(100% - 26px);
+        height: calc(100% - 35px);
         overflow: auto;
+        margin-top: 15px;
     }
     .echarts_wrap {
         width: 70%;
@@ -225,7 +226,7 @@ export default {
         background: white;
         width: 40%;
         min-width: 345px;
-        padding: 0 20px;
+        padding: 30px;
         height: 400px;
         @media screen and (max-width: 960px) {
             width: 80%;

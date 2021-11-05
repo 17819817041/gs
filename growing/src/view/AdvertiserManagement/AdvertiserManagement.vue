@@ -66,7 +66,7 @@
                         prop="endPlan"
                         sortable
                         label="最近計劃到期日"
-                        min-width="130"
+                        min-width="170"
                         >
                         <template slot-scope="scope">
                             <div class="tc th_color">{{scope.row.endPlan}}</div>
@@ -85,7 +85,7 @@
                         prop="userState"
                         label="賬戶狀態"
                         sortable=""
-                        min-width="100"
+                        min-width="160"
                         >
                         <template slot-scope="scope">
                             <div class="ju al">
@@ -97,7 +97,7 @@
                     <el-table-column
                         prop="detail"
                         label="賬戶詳情管理"
-                        min-width="105"
+                        min-width="125"
                         >
                         <template slot-scope="scope">
                             <div class="ju al"><img class="planEdit cursor" @click="UserDetailEdit(scope.row)" src="@/assets/img/userDetail.png" alt=""> </div>
@@ -172,7 +172,7 @@ export default {
     .AdvertiserManagement_content {
         width: 98%;
         overflow: auto;
-        height: calc(100% - 50px);
+        height: calc(100% - 37px);
         box-shadow: 0 0 5px #acacac inset;
         padding: 4px;
         margin-top: 15px;

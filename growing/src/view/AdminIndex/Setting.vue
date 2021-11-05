@@ -21,19 +21,19 @@
                                 <div class="menu_title bold">地區新增與移除</div>
                                 <el-popover
                                     :placement="position"
-                                    trigger="click"
+                                    trigger="manual"
                                     v-model="visible">
                                     <div class="">
-                                        <el-form :model="ruleForm" status-icon :rules="rules" ref="form" class="demo-ruleForm">
-                                            <el-form-item prop="inp">
-                                                <el-input type="text" v-model="ruleForm.inp" placeholder="請輸入地區" autocomplete="off"></el-input>
+                                        <el-form :model="ruleForm" status-icon :rules="rules" ref="form1" class="demo-ruleForm">
+                                            <el-form-item prop="area">
+                                                <el-input type="text" v-model="ruleForm.area" placeholder="請輸入地區" autocomplete="off"></el-input>
                                             </el-form-item>
-                                            <el-form-item prop="inp">
+                                            <el-form-item prop="Einp">
                                                 <el-input type="text" v-model="ruleForm.Einp" autocomplete="off" placeholder="Please enter region"></el-input>
                                             </el-form-item>
                                         </el-form>
                                         <div class="sb">
-                                            <div class="addCate cursor al" @click="addArea(area, 'ruleForm')">
+                                            <div class="addCate cursor al" @click="addArea(ruleForm.area)">
                                                 添加
                                             </div>
                                             <div class="addCate cursor al" @click='visible = false'>取消</div>
@@ -76,19 +76,19 @@
                                 <div class="menu_title bold">類型新增與移除</div>
                                 <el-popover
                                     :placement="position"
-                                    trigger="click"
+                                    trigger="manual"
                                     v-model="visible1">
                                     <div class="">
-                                        <el-form :model="ruleForm" status-icon :rules="rules" ref="form" class="demo-ruleForm">
-                                            <el-form-item prop="inp">
+                                        <el-form :model="ruleForm" status-icon :rules="rules1" ref="form" class="demo-ruleForm">
+                                            <el-form-item prop="type">
                                                 <el-input type="text" v-model="ruleForm.type" placeholder="請輸入類型" autocomplete="off"></el-input>
                                             </el-form-item>
-                                            <el-form-item prop="inp">
+                                            <el-form-item prop="Etype">
                                                 <el-input type="text" v-model="ruleForm.Etype" autocomplete="off" placeholder="Please enter the type"></el-input>
                                             </el-form-item>
                                         </el-form>
                                         <div class="sb">
-                                            <div class="addCate cursor al" @click="addType(type)">
+                                            <div class="addCate cursor al" @click="addType(ruleForm.type)">
                                                 添加
                                             </div>
                                             <div class="addCate cursor al" @click='visible1 = false'>取消</div>
@@ -136,11 +136,11 @@
                                 fixed
                                 prop="live"
                                 label="Live序號"
-                                min-width="200"
+                                min-width="175"
                                 >
                                 <template slot="header">
                                     <div class="ju al width100">
-                                        <div class="addArea" style="opacity: 0;">發表Live</div>
+                                        <div class="addArea1" style="opacity: 0;">發表Live</div>
                                         <div class="al">Live序號</div>
                                         <div class="addArea cursor" @click="dialogVisible = true">發表Live</div>
                                     </div>
@@ -169,7 +169,7 @@
                             <el-table-column
                                 prop="edit"
                                 label="操作"
-                                min-width="105"
+                                min-width="155"
                                 >
                                 <template slot-scope="scope">
                                     <el-popconfirm
@@ -177,7 +177,7 @@
                                         title="確定刪除嗎？"
                                         @confirm='deleLive(scope.$index)'
                                         >
-                                        <div class="ju al" slot="reference"><div class="ju al deleMsg cursor">刪除記錄</div></div>
+                                        <div class="ju al" slot="reference"><div class="ju al mg deleMsg cursor">刪除記錄</div></div>
                                     </el-popconfirm>
                                 </template>
                             </el-table-column>
@@ -232,21 +232,19 @@ export default {
             drawer1: false,
             areaList: ['旺角','九龍', '黃大仙'],
             typeList: ['美食','科技'],
-            area: '',
-            type: '',
             tableData:[
                 {live:'1',time: '221-06-06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
                 {live:'2',time: '221-06-06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
                 {live:'3',time: '221-06-06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
             ],
             ruleForm: {
-                inp: '',
+                area: '',
                 Einp: '',
                 type: '',
                 Etype: ''
             },
             rules: {
-                inp: [
+                area: [
                     // { required:true, message:'Please enter your email', trigger:"blur" }
                     { required:true, message:'內容不能為空', trigger:"blur" }
                 ],
@@ -254,6 +252,8 @@ export default {
                     // { required:true, message:'Please enter your email', trigger:"blur" }
                     { required:true, message:'The content cannot be empty', trigger:"blur" }
                 ],
+            },
+            rules1: {
                 type: [
                     // { required:true, message:'Please enter your email', trigger:"blur" }
                     { required:true, message:'The content cannot be empty', trigger:"blur" }
@@ -279,27 +279,32 @@ export default {
             this.$router.back()
         },
         addType (item) {
-            this.visible1 = false
-            this.type = ''
-			if (item) {
-				this.typeList.push(item)
-				let arr = new Set(this.typeList)
-				this.typeList = Array.from(arr)
-			}
-		},
-		addArea (item) {
+            let that = this
             this.$refs.form.validate(flag => {
                 if (flag) {
-                    this.area = ''
-                    this.visible = false
+                    that.ruleForm.area = ''
+                    that.visible1 = false
                     if (item) {
-                        this.areaList.push(item)
-                        let arr = new Set(this.areaList)
-                        this.areaList = Array.from(arr)
+                        that.typeList.push(item)
+                        let arr = new Set(that.typeList)
+                        that.typeList = Array.from(arr)
                     }
                 }
             })
-            
+		},
+		addArea (item) {
+            let that = this
+            this.$refs.form1.validate(flag => {
+                if (flag) {
+                    that.ruleForm.area = ''
+                    that.visible = false
+                    if (item) {
+                        that.areaList.push(item)
+                        let arr = new Set(that.areaList)
+                        that.areaList = Array.from(arr)
+                    }
+                }
+            })
 		},
 		deleType (i) {
 			this.typeList.splice(i,1)
@@ -404,13 +409,34 @@ export default {
         margin-left: 20px;
         color: white;
         background: @themeColor;
+        @media screen and (max-width: 564px) {
+            padding: 3px;
+            width: 70px;
+        }
+    }
+    .addArea1 {
+        padding: 5px;
+        width: 75px;
+        font-size: 12px;
+        margin-left: 20px;
+        color: white;
+        @media screen and (max-width: 1145px) {
+			display: none;
+		}
     }
     .menu_title_wrap {
         background: #E5E5E5;
         padding: 7px 125px;
+        white-space: nowrap;
+        @media screen and (max-width: 564px) {
+            padding: 7px 75px;
+        }
     }
     .area_content {
         padding: 15px 125px;
+        @media screen and (max-width: 564px) {
+            padding: 7px 15px;
+        }
     }
     .menu_title {
         font-size: 14px;

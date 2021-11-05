@@ -340,12 +340,12 @@ export default {
         
     }
     .Settingadvertising_content_wrap {
-        height: calc(100% - 50px);
+        height: calc(100% - 20px);
         overflow: auto;
     }
     .Settingadvertising_content {
         width: 97%;
-        margin-top: 20px;
+        margin-top: 15px;
     }
     .back {
         width: 97%;

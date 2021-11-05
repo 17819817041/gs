@@ -1,5 +1,6 @@
 <template>
     <div class="Login flex">
+        <div class="growing"><img style="height: 148%" src="@/assets/img/growing.jpg" alt=""></div>
         <div class="form_item ju al">
             <div class="width100 form_item_c_wrap">
                 <div class="mobile_title">
@@ -87,7 +88,7 @@ export default {
     .Login {
         width: 100%;
         height: 100%;
-        background: url('../../assets/img/growing.jpg');
+        // background: url('../../assets/img/growing.jpg');
         background-size: auto 100%;
         position: relative;
         .form_item {
@@ -113,6 +114,15 @@ export default {
                 min-height: 425px;
                 height: 552px;
             }
+        }
+        .growing {
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            z-index: 0;
         }
     }
     .Logo {
@@ -156,7 +166,7 @@ export default {
             padding: 25px;
             height: 450px;
         }
-        @media screen and (max-height: 360px) {
+        @media screen and (max-height: 500px) {
             height: 90%;
             padding: 10px 30px;
         }
@@ -180,7 +190,7 @@ export default {
                 font-size: 25px;
                 padding: 25px 0 20px 0;
             }
-            @media screen and (max-height: 360px) {
+            @media screen and (max-height: 500px) {
                 font-size: 20px;
             }
         }
@@ -201,7 +211,7 @@ export default {
             font-size: 14px;
             margin-bottom: 10px;
         }
-        @media screen and (max-height: 360px) {
+        @media screen and (max-height: 500px) {
             margin-bottom: 5px;
         }
     }
@@ -228,7 +238,7 @@ export default {
             @media screen and (max-width: 800px) {
                 font-size: 15px;
             }
-            @media screen and (max-height: 360px) {
+            @media screen and (max-height: 500px) {
                 font-size: 13px;
             }
         }
@@ -236,6 +246,8 @@ export default {
     .welcome {
         width: 55%;
         height: 100%;
+        position: relative;
+        z-index: 1;
         @media screen and (max-width: 564px) {
             display: none;
         }
@@ -246,6 +258,7 @@ export default {
         transform: rotateY(180deg);
         overflow: hidden;
         position: relative;
+        z-index: 10;
         @media screen and (max-width: 564px) {
             width: 100%;
         }
@@ -261,8 +274,8 @@ export default {
             left: 0;
             opacity: 0.45;
             display: inline-block;
-            background: #5C48B7;
-            z-index: 99;
+            background: #5C48B7 !important;
+            z-index: 199;
         }
         
     }
@@ -311,7 +324,7 @@ export default {
             font-size: 19px;
             padding: 8px 0;
         }
-        @media screen and (max-height: 360px) {
+        @media screen and (max-height: 500px) {
             margin-top: 20px !important;
             margin-bottom: 10px;
         }

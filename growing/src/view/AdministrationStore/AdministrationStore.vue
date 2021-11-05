@@ -6,7 +6,7 @@
         </div>
         <div class="content mg bar">
             <!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div> -->
-            <div class="noBar" style="height: calc(100% - 60px); overflow:auto">
+            <div class="noBar" style="height: calc(100% - 20px); overflow:auto">
                 <div class="basicsMsg boxs theme" v-show="submit">
                 <div class="flex divider_message_title">
                     <div class="divider"></div>
@@ -52,7 +52,7 @@
                     </el-form-item>
                     <el-form-item label="店鋪描述" prop="message" class="bcolor">
                         <div class="al">
-                            <div class="al textarea boxs">
+                            <div class="al textarea">
                                 <textarea v-model="ruleForm.message" id="" cols="60" rows="8"></textarea>
 							</div>
                         </div>
@@ -141,7 +141,7 @@
                         </div>
                     </el-form-item>
                     <el-form-item label="廣告媒體內容" prop="content" class="bcolor">
-                        <div class="textarea_wrap clear">
+                        <div class="textarea_wrap mg clear">
 							<label for="img">
 								<div class="addImg ju al cursor float">
 									<img src="@/assets/img/add.png" alt="">
@@ -500,7 +500,7 @@ export default {
     }
     .width30 {
         width: 35%;
-        min-width: 225px;
+        min-width: 275px;
         // padding: 3px;
         // box-shadow: 0 0 5px rgb(199, 199, 199) inset !important;;
     }
@@ -509,7 +509,9 @@ export default {
         height: 100%;
         padding: 0px 20px;
         overflow: auto;
+		margin-top: 15px;
 		@media screen and (max-width: 564px) {
+			padding: 0px 10px;
 			width: 100%;
 		}
     }
@@ -523,7 +525,7 @@ export default {
     }
     .basicsMsg {
         margin-bottom: 15px;
-        padding: 0 4px 20px 4px;
+        padding: 0 4px 0px 4px;
     }
     .detailPlan {
         margin-bottom: 15px;
@@ -551,11 +553,10 @@ export default {
       overflow: hidden;
     }
     .textarea_wrap {
-      width: 90%;
-      height: 300px;
-      background: white;
-      box-shadow: 0 0 8px rgb(112, 112, 112) inset;
-	  padding: 20px 27px;
+		width: 95%;
+		height: 300px;
+		background: white;
+		padding: 20px 27px;
     }
     .textarea_wrap_item {
 		width: 100px;

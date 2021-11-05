@@ -263,16 +263,8 @@ export default {
             font-size: 12px;
         }
         div img {
-            width: 40px;
-            height: 40px;
-            @media screen and (max-width: 1500px) {
-                width: 35px;
-                height: 35px;
-            }
-            @media screen and (max-width: 1300px) {
-                width: 30px;
-                height: 30px;
-            }
+            width: 20px;
+            height: 20px;
         }
     }
     .centerL {

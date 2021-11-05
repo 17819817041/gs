@@ -14,7 +14,7 @@
                         <template slot="set">
                             <div class="setText cursor">
                                 <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
-                                <div>編輯比例</div>
+                                <div class="size12">編輯比例</div>
                             </div>
                         </template>
                     </ModuleMin>
@@ -30,7 +30,7 @@
                         <template slot="set">
                             <div class="setText cursor">
                                 <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
-                                <div>編輯比例</div>
+                                <div class="size12">編輯比例</div>
                             </div>
                         </template>
                     </ModuleMin>
@@ -46,7 +46,7 @@
                         <template slot="set">
                             <div class="setText cursor">
                                 <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
-                                <div>編輯比例</div>
+                                <div class="size12">編輯比例</div>
                             </div>
                         </template>
                     </ModuleMin>
@@ -98,12 +98,12 @@ export default {
         margin-top: 20px;
     }
     .Settingadvertising_content_wrap {
-        height: calc(100% - 50px);
+        height: calc(100% - 20px);
         overflow: auto;
     }
     .Settingadvertising_content {
         width: 97%;
-        margin-top: 20px;
+        margin-top: 15px;
     }
     .back {
         width: 97%;
@@ -139,7 +139,7 @@ export default {
     }
     .setImg {
         img {
-            width: 30px;
+            width: 20px;
         }
     }
     .setText {

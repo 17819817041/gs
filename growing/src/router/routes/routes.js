@@ -32,7 +32,12 @@ export default [
                 path:"/PlatIndex",
                 name: "PlatIndex",
                 component: () => import("@/view/PlatIndex/platIndex.vue")
-            }, 
+            },  
+            {
+                path:"/UserMessage",
+                name: "UserMessage",
+                component: () => import("@/view/UserMessage/UserMessage.vue")
+            },
             {
                 path:"/AdvertisingOperation",
                 name: "AdvertisingOperation",
@@ -141,3 +146,8 @@ export default [
         ] 
     },
 ]
+
+
+
+
+

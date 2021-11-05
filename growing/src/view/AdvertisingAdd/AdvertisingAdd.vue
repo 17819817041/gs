@@ -6,7 +6,7 @@
         </div>
         <div class="content mg bar">
             <!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
-			<div class="noBar" style="height: calc(100% - 10px); overflow:auto">
+			<div class="noBar" style="height: calc(100% - 0px); overflow:auto" v-show="submit">
 			<div class="basicsMsg theme" v-show="submit">
                 <div class=" basicsMsg_item bold al">
                     <div class="iden radius"></div> 基礎信息
@@ -65,8 +65,8 @@
                         <div class="flex br">
                             <div class="flex">
 								<el-select v-model="ruleForm.time" placeholder="請選擇時間段">
-									<el-option label="繁忙时段(9am-9pm)" value="繁忙时段(9am-9pm)"></el-option>
-									<el-option label="非繁忙时段(9pm-9am)" value="非繁忙时段(9pm-9am)"></el-option>
+									<el-option label="繁忙時段(9am-9pm)" value="繁忙時段(9am-9pm)"></el-option>
+									<el-option label="非繁忙時段(9pm-9am)" value="非繁忙時段(9pm-9am)"></el-option>
 								</el-select>
 								<div class="addCate al" @click="addTime(ruleForm.time)">
 									添加
@@ -132,7 +132,7 @@
 						<div class="textarea_wrap clear">
 							<label for="img">
 								<div class="addImg ju al cursor float">
-									<img src="@/assets/img/add.png" alt="">
+									<img style="height: 70%;" src="@/assets/img/add.png" alt="">
 								</div>
 								<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
 							</label>
@@ -165,7 +165,7 @@
 						<!-- <div class="price_plan flex cursor" @click="drawer = !drawer"> -->
 						<el-popover
 							:placement="position"
-							trigger="manual"
+							trigger="click"
 							v-model="visible">
 							<div>
 								<div class="flex total_item">
@@ -185,12 +185,12 @@
 								計劃投放總價=(繁忙畤段價格+非繁忙畤段價格)*廣告媒體時長*所選區數*廣告投放過期
 							</div>
 							<div class="arrow_br"></div>
-							<el-button slot="reference" @click="visible = !visible">手动激活</el-button>
+							<div slot="reference" class="price_plan flex cursor">
+								<img src="@/assets/img/help.png" alt="">
+								<div>價格計數方案</div>
+							</div>
 						</el-popover>
-						<div class="price_plan flex cursor" @click="visible = !visible">
-							<img src="@/assets/img/help.png" alt="">
-							<div>價格計數方案</div>
-						</div>
+						
 					</div>
 				</div>
 				<div class="flexEnd" style="width: 85%;">
@@ -198,11 +198,14 @@
 				</div>
             </div>
 			</div>
-			<div class="basicsMsg theme padding" v-show="!submit">
+			<div class="basicsMsg theme padding" style="margin-top: 40px" v-show="!submit">
 				<div class="true_title al ju">
 					<img src="@/assets/img/success_sign.png" alt="">確認廣告計劃成功 ！
 				</div>
 				<div class="ju">您的廣告計劃已提交至後台，管理員将盡快審核您的廣告計劃.</div>
+				<div class="iknow ju al">
+                    <div class="cursor" @click="goBack">確定</div>
+                </div>
 			</div>
         </div>
     </div>
@@ -546,6 +549,7 @@ export default {
 </script>
 
 <style lang='less' scoped>
+@import "@/less/style.less";
 .AdvertisingOperation_back {
         width: 98%;
         font-size: 20px;
@@ -575,8 +579,9 @@ export default {
     .content {
         width: 85%;
         height: calc(100% - 30px);
-        padding: 15px 20px;
+        padding: 7px 7px;
         background: white;
+		margin-top: 15px;
         overflow: auto;
 		@media screen and (max-width: 564px) {
 			width: 100%;
@@ -602,7 +607,7 @@ export default {
         font-size: 15px;
     }
     .detailPlan {
-        margin-bottom: 15px;
+        // margin-bottom: 15px;
         padding: 0 20px 20px 20px;
     }
     .iden {
@@ -612,11 +617,11 @@ export default {
         height: 0;
         margin-right: 7px;
     }
-    .detailPlan {
-        // height: 1000px;
-		padding-bottom: 30px;
-		margin-bottom: 20px;
-    }
+    // .detailPlan {
+    //     // height: 1000px;
+	// 	padding-bottom: 30px;
+	// 	margin-bottom: 20px;
+    // }
     .addCate {
         border: solid 1px rgb(206, 206, 206);
         padding: 0 20px;
@@ -632,11 +637,14 @@ export default {
 		margin-right: 5px;
     }
     .textarea_wrap {
-      width: 90%;
-      min-height: 250px;
-      background: white;
-      box-shadow: 0 0 8px rgb(190, 190, 190) inset;
-	  padding: 20px 27px;
+		width: 100%;
+		min-height: 250px;
+		background: white;
+		box-shadow: 0 0 8px rgb(212, 212, 212) inset;
+		padding: 20px 27px;
+		@media screen and (max-width: 564px) {
+			padding: 10px 17px;
+		}
     }
 	.addImg {
 		border: dashed 2px rgb(201, 201, 201);
@@ -644,8 +652,8 @@ export default {
 		height: 100px;
 		margin: 5px;
 		@media screen and (max-width: 564px) {
-			width: 70px;
-			height: 70px;
+			width: 50px;
+			height: 50px;
 		}
 	}
 	.textarea_wrap_item {
@@ -761,8 +769,8 @@ export default {
 		margin-top: 10px;
 	}
 	.price_plan {
-		// margin-top: 17px;
-		transform: translate(0px, -17px);
+		margin-top: 17px;
+		// transform: translate(0px, -17px);
 		font-size: 16px;
 		color: rgb(92, 92, 92);
 		text-decoration: underline;
@@ -788,7 +796,7 @@ export default {
 		}
 	}
 	.padding {
-		padding: 125px 0;
+		padding: 85px 0;
 	}
 	.list {
 		margin-left: 15px;
@@ -818,4 +826,12 @@ export default {
 			display: block !important;
 		}
 	}
+	.iknow {
+        margin-top: 30px;
+        div {
+            color: white;
+            background: @themeColor;
+            padding: 15px 40px;
+        }
+    } 
 </style>

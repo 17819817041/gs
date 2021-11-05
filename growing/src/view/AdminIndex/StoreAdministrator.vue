@@ -21,7 +21,7 @@
                         fixed
                         prop="name"
                         label="店鋪名稱"
-                        min-width="150"
+                        min-width="180"
                         >
                         <template slot="header">
                             店鋪名稱
@@ -37,7 +37,7 @@
                     <el-table-column
                         prop="type"
                         label="店鋪類型"
-                        min-width="120"
+                        min-width="180"
                         >
                         <template slot="header">
                             店鋪類型
@@ -54,7 +54,7 @@
                     <el-table-column
                         prop="area"
                         label="店鋪區域"
-                        min-width="110"
+                        min-width="170"
                         >
                         <template slot="header">
                             店鋪區域
@@ -72,7 +72,7 @@
                         prop="ratio"
                         label="接收外來廣告比例"
                         sortable
-                        min-width="120"
+                        min-width="190"
                         >
                         <template slot-scope="scope">
                             <div class="ju al th_color">
@@ -83,7 +83,7 @@
                     <el-table-column
                         prop="gtime"
                         label="接收外來廣告時段"
-                        min-width="160"
+                        min-width="180"
                         >
                         <template slot="header">
                             接收外來廣告時段
@@ -125,21 +125,21 @@
                     <el-table-column
                         prop="detail"
                         label="店鋪詳細設定操作"
-                        min-width="200"
+                        min-width="250"
                         >
                         <template>
                             <div class="sb al">
                                 <div class="cursor" @click="PreviewMsg">
                                     <div class="ju al"><img class="planEdit" src="@/assets/img/preview.png" alt=""></div>
-                                    <div class="tc">預覽全部資料</div>
+                                    <div class="tc size12">預覽全部資料</div>
                                 </div>
                                 <div class="cursor" @click="StoreSet">
                                     <div class="ju al"><img class="planEdit" src="@/assets/img/plat.png" alt=""></div>
-                                    <div class="tc">店鋪資料設定</div>
+                                    <div class="tc size12">店鋪資料設定</div>
                                 </div>
                                 <div class="cursor" @click="StoreUserSet">
                                     <div class="ju al"><img class="planEdit" src="@/assets/img/userDetail.png" alt=""></div>
-                                    <div class="tc">店鋪賬戶設定</div>
+                                    <div class="tc size12">店鋪賬戶設定</div>
                                 </div>
                             </div>
                         </template>
@@ -214,7 +214,7 @@ export default {
     .StoreAdministrator_content {
         width: 98%;
         overflow: auto;
-        height: calc(100% - 50px);
+        height: calc(100% - 37px);
         box-shadow: 0 0 5px #acacac inset;
         padding: 4px;
         margin-top: 15px;
@@ -251,8 +251,8 @@ export default {
         font-size: 14px;
     }
     .planEdit {
-        width: 33px;
-        height: 33px;
+        width: 20px;
+        height: 20px;
     }
     .th_color {
         color: #7868C1;

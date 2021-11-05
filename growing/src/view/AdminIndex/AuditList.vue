@@ -32,7 +32,7 @@
     .AuditList_content {
         width: 98%;
         overflow: auto;
-        height: calc(100% - 50px);
+        height: calc(100% - 37px);
         box-shadow: 0 0 5px #acacac inset;
         padding: 4px;
         margin-top: 15px;

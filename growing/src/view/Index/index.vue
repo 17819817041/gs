@@ -225,7 +225,7 @@ export default {
     }
     .child_message {
         width: 30%;
-        min-width: 255px;
+        min-width: 272px;
         padding: 23px 17px;
         height: 298px;
         background: #F7F8FB;
@@ -246,7 +246,7 @@ export default {
         right: 15px;
         padding: 0 5px;
         z-index: 10;
-        min-width: 255px;
+        min-width: 272px;
         height: 298px;
         padding: 23px 17px;
         background: #F7F8FB;
@@ -254,6 +254,15 @@ export default {
         margin-top: 20px;
         transition: 0.2s;
         display: none;
+        @media screen and (max-width: 900px) and (max-height: 400px) {
+            top: 5px;
+            right: 65px;
+            display: block;
+            margin: auto;
+            margin-bottom: 20px;
+            width: 50%;
+            height: 286px;
+        }
         @media screen and (max-width: 850px) {
             display: block;
             margin: auto;

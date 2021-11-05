@@ -36,6 +36,9 @@ export default {
   	.width100 {
 		width: 100% !important;
 	}
+	.size12 {
+		font-size: 12px !important;
+	}
 	.al {
 		display: flex;
 		align-items: center;
@@ -98,7 +101,7 @@ export default {
 		color: white;
 	}
 	.boxs {
-		box-shadow: 0 0 5px rgb(163, 163, 163) inset;
+		box-shadow: 0 0 15px rgb(207, 207, 207) inset;
 	}
 
 	.el-table__header .has-gutter {
@@ -110,6 +113,22 @@ export default {
 	.el-table .el_color {
         background: #E5E5E5 !important;
     }
+
+
+	.header .el-popover__reference {
+		// transform: translate(0px, 20px);
+		width: 40px;
+		border: none;
+		outline: none;
+	}  
+	.header .el-popover {
+		@media screen and (max-width: 888px) {
+			width: 50px !important;
+		}
+		@media screen and (max-width: 564px) {
+			width: 100px !important;
+		}
+	}
 
 	
 	.AdvertisingOperation .el-table .el-table__header-wrapper {
@@ -153,16 +172,18 @@ export default {
 		width: 100% !important;
 	} 
 	.AdvertisingAdd .el-popover__reference {
-		transform: translate(0px, 20px);
+		// transform: translate(0px, 20px);
 		width: 140px;
-		opacity: 0;
+		// opacity: 0;
+		border: none;
+		outline: none;
 	}  
 	.el-popover {
 		@media screen and (max-width: 888px) {
-			width: 350px !important;
+			width: 350px;
 		}
 		@media screen and (max-width: 564px) {
-			width: 270px !important;
+			width: 270px;
 		}
 	}
 	.Gdetail .el-select .el-input .el-select__caret::before {
@@ -206,11 +227,11 @@ export default {
 		overflow: hidden !important;
 	}
 	.AddStore .el-select {
-		box-shadow: 0 0 5px rgb(163, 163, 163) inset;
+		box-shadow: 0 0 1px rgb(211, 211, 211) inset;
 		padding: 4px;
 	}
 	.AddStore .elinput .el-input .el-input__inner {
-		box-shadow: 0 0 5px rgb(163, 163, 163) inset;
+		box-shadow: 0 0 1px rgb(211, 211, 211) inset;
 		border: none !important;
 		outline: none !important;
 	}
@@ -218,7 +239,7 @@ export default {
 		border: none !important;
 		outline: none !important;
 		background: white !important;
-		height: 30px !important;
+		height: 35px !important;
 		display: flex;
 	}
 	.AddStore .el-select .el-input .el-input__suffix {
@@ -361,6 +382,10 @@ export default {
 	.Setting .el-dialog__wrapper .el-dialog__body {
 		// padding: 0 !important;
 		height: 371px;
+	}
+	.el-popconfirm .el-button--primary {
+		background-color: #FF0000 !important;
+		border: #FF0000;
 	}
 
 	.StoreSet .block .el-input .el-input__inner, .StoreSet .block .el-input {
