@@ -42,6 +42,7 @@ export default {
             }
         },
         UserMessage () {
+            this.visible = false
             this.$router.push('/UserMessage')
         },
         outLogin () {
@@ -64,6 +65,7 @@ export default {
     }
     .LOGO {
         height: 70px;
+        margin-left: -30px;
     }
     .header_item {
         padding: 5px 20px;

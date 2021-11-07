@@ -205,7 +205,7 @@ export default {
     }
     .Statistics_content {
         background: #F6F6F6;
-        height: calc(100% - 35px);
+        height: calc(100% - 45px);
         overflow: auto;
         margin-top: 15px;
     }
@@ -234,7 +234,8 @@ export default {
         }
         @media screen and (max-width: 564px) {
             width: 100%;
-            margin: 20px 0%;
+            margin: 0px 0%;
+            transform: scale(0.9);
         }
     }
 </style>

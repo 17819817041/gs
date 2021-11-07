@@ -101,7 +101,7 @@ export default {
 		color: white;
 	}
 	.boxs {
-		box-shadow: 0 0 15px rgb(207, 207, 207) inset;
+		box-shadow: 0 0 7px rgb(207, 207, 207) inset;
 	}
 
 	.el-table__header .has-gutter {
@@ -205,12 +205,12 @@ export default {
 	}
 
 
-	.AddStore .block .el-input .el-input__inner, .AddStore .block .el-input {
-		border: none !important;
-		outline: none !important;
-		height: 32px !important;
-		line-height: 32px !important;
-	}
+	// .AddStore .block .el-input .el-input__inner, .AddStore .block .el-input {
+	// 	// border: none !important;
+	// 	// outline: none !important;
+	// 	height: 32px !important;
+	// 	line-height: 32px !important;
+	// }
 
 	.AddStore .el-form .el-form-item__label {
 		white-space: nowrap;
@@ -226,20 +226,9 @@ export default {
 		transform: translate(-50%, -50%);
 		overflow: hidden !important;
 	}
-	.AddStore .el-select {
-		box-shadow: 0 0 1px rgb(211, 211, 211) inset;
-		padding: 4px;
-	}
-	.AddStore .elinput .el-input .el-input__inner {
-		box-shadow: 0 0 1px rgb(211, 211, 211) inset;
-		border: none !important;
-		outline: none !important;
-	}
 	.AddStore .el-select .el-input .el-input__inner {
-		border: none !important;
-		outline: none !important;
 		background: white !important;
-		height: 35px !important;
+		// height: 35px !important;
 		display: flex;
 	}
 	.AddStore .el-select .el-input .el-input__suffix {
@@ -388,12 +377,6 @@ export default {
 		border: #FF0000;
 	}
 
-	.StoreSet .block .el-input .el-input__inner, .StoreSet .block .el-input {
-		border: none !important;
-		outline: none !important;
-		height: 32px !important;
-		line-height: 32px !important;
-	}
 	.StoreSet .el-form .el-form-item__label {
 		white-space: nowrap;
 	}
@@ -407,22 +390,6 @@ export default {
 		left: 50%;
 		transform: translate(-50%, -50%);
 		overflow: hidden !important;
-	}
-	.StoreSet .el-select {
-		box-shadow: 0 0 5px rgb(163, 163, 163) inset;
-		padding: 4px;
-	}
-	.StoreSet .elinput .el-input .el-input__inner {
-		box-shadow: 0 0 5px rgb(163, 163, 163) inset;
-		border: none !important;
-		outline: none !important;
-	}
-	.StoreSet .el-select .el-input .el-input__inner {
-		border: none !important;
-		outline: none !important;
-		background: white !important;
-		height: 30px !important;
-		display: flex;
 	}
 	.StoreSet .el-select .el-input .el-input__suffix {
 		display: flex;

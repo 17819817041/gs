@@ -1,8 +1,11 @@
 <template>
     <div class="PreviewMsg" id="AddStore">
         <div class="content mg bar">
-            <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">預覽全部資料</div>
-            <div class="noBar" style="height: calc(100% - 109px); overflow:auto">
+            <!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">預覽全部資料</div> -->
+            <div class="back mg al">
+                <img class="cursor" src="@/assets/img/back_arrow.png" @click="goBack" alt="">預覽全部資料
+            </div>
+            <div class="noBar" style="height: calc(100% - 36px); overflow:auto;margin-top: 15px;">
                 <div class="basicsMsg boxs theme">
                 <div class="flex divider_message_title">
                     <div class="divider"></div>
@@ -112,8 +115,6 @@
                 <div class="addorcancel_btn cursor" @click="goBack">返回</div>
             </div> 
             </div>
-
-			<div class="footer_w"></div>
         </div>
     </div>
 </template>
@@ -241,10 +242,25 @@ export default {
         // padding: 3px;
         // box-shadow: 0 0 5px rgb(199, 199, 199) inset !important;;
     }
+    .back {
+        width: 98%;
+        font-size: 20px;
+        img {
+            width: 20px;
+            height: 20px;
+            @media screen and (max-width: 960px) {
+                width: 15px;
+                height: 15px;
+            }
+        }
+        @media screen and (max-width: 960px) {
+            font-size: 15px;
+        }
+    }
     .content {
         width: 85%;
         height: 100%;
-        padding: 0px 20px;
+        padding: 0px 7px;
         overflow: auto;
 		@media screen and (max-width: 564px) {
 			width: 100%;
@@ -253,14 +269,9 @@ export default {
     .bcolor {
         background: #E5E5E5;
     }
-    .content_title {
-        font-size: 22px;
-        font-weight: 500;
-        padding: 15px 0;
-    }
     .basicsMsg {
         margin-bottom: 15px;
-        padding: 0 4px 20px 4px;
+        padding: 0 2px 20px 2px;
     }
     .detailPlan {
         margin-bottom: 15px;
@@ -291,7 +302,7 @@ export default {
       width: 90%;
       height: 300px;
       background: white;
-      box-shadow: 0 0 8px rgb(112, 112, 112) inset;
+      box-shadow: 0 0 8px rgb(182, 182, 182) inset;
 	  padding: 20px 27px;
     }
     .textarea_wrap_item {

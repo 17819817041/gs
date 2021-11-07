@@ -6,7 +6,7 @@
         </div>
         <div class="content mg bar">
             <!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增店鋪</div> -->
-            <div class="noBar" style="height: calc(100% - 60px); overflow:auto">
+            <div class="noBar" style="height: calc(100% - 36px); overflow:auto">
             <div class="basicsMsg boxs theme" v-show="submit">
                 <div class="flex divider_message_title">
                     <div class="divider"></div>
@@ -14,7 +14,7 @@
                 </div>
                 <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="135px" class="demo-ruleForm">
                     <el-form-item label="店鋪名" prop="name" class="bcolor">
-                        <div class="elinput boxs width30">
+                        <div class="elinput width30">
                             <el-input class="width100" v-model="ruleForm.name"></el-input>
                         </div>
                     </el-form-item>
@@ -52,7 +52,7 @@
                     </el-form-item>
                     <el-form-item label="店鋪描述" prop="message" class="bcolor">
                         <div class="al">
-                            <div class="al textarea boxs">
+                            <div class="al textarea">
                                 <textarea v-model="ruleForm.message" id="" cols="60" rows="8"></textarea>
 							</div>
                         </div>
@@ -132,7 +132,7 @@
                     </el-form-item>
                     <el-form-item label="廣告媒體時長" prop="inp">
                         <div class="al block">
-                            <div class="al inp_time ju boxs">
+                            <div class="al inp_time ju">
 									<!-- <input type="text" class="tc"> -->
 									<el-input class="width100"
 									oninput ="value=value.replace(/[^0-9.]/g,'')" :disabled="video" v-model="ruleForm.inp"></el-input>
@@ -510,8 +510,10 @@ export default {
         height: 100%;
         padding: 0px 20px;
         overflow: auto;
+		margin-top: 15px;
 		@media screen and (max-width: 564px) {
 			width: 100%;
+        	padding: 0px 7px;
 		}
     }
     .bcolor {
@@ -524,15 +526,15 @@ export default {
     }
     .basicsMsg {
         margin-bottom: 15px;
-        padding: 0 3px 20px 3px;
+        padding: 0 2px 20px 2px;
     }
     .detailPlan {
         margin-bottom: 15px;
-        padding: 0 4px 20px 4px;
+        padding: 0 2px 0px 2px;
     }
     .detailPlan {
         // height: 1000px;
-		padding-bottom: 30px;
+		// padding-bottom: 30px;
 		margin-bottom: 20px;
     }
     .addCate {
@@ -545,16 +547,13 @@ export default {
     }
     .inp_time {
       width: 217px;
-      background: white;
-      height: 37px;
       margin-right: 5px;
-      padding: 3px;
     }
     .textarea_wrap {
       width: 90%;
       height: 300px;
       background: white;
-      box-shadow: 0 0 8px rgb(112, 112, 112) inset;
+      box-shadow: 0 0 5px rgb(197, 197, 197) inset;
 	  padding: 20px 27px;
     }
     .textarea_wrap_item {
@@ -668,7 +667,7 @@ export default {
         font-size: 14px;
     }
     .textarea {
-        width: 80%;
+        width: 100%;
         height: 200px;
         padding: 3px;
         textarea {

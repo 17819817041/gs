@@ -6,7 +6,7 @@
         </div>
         <div class="content mg bar">
             <!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div> -->
-            <div class="noBar" style="height: calc(100% - 20px); overflow:auto">
+            <div class="noBar" style="height: calc(100% - 36px); overflow:auto">
                 <div class="basicsMsg boxs theme" v-show="submit">
                 <div class="flex divider_message_title">
                     <div class="divider"></div>
@@ -132,7 +132,7 @@
                     </el-form-item>
                     <el-form-item label="廣告媒體時長" prop="inp">
                         <div class="al block">
-                            <div class="al inp_time ju boxs">
+                            <div class="al inp_time ju">
 									<!-- <input type="text" class="tc"> -->
 									<el-input class="width100"
 									oninput ="value=value.replace(/[^0-9.]/g,'')" :disabled="video" v-model="ruleForm.inp"></el-input>
@@ -547,9 +547,7 @@ export default {
     .inp_time {
       width: 217px;
       background: white;
-      height: 37px;
       margin-right: 5px;
-      padding: 3px;
       overflow: hidden;
     }
     .textarea_wrap {
@@ -669,7 +667,7 @@ export default {
         font-size: 14px;
     }
     .textarea {
-        width: 80%;
+        width: 100%;
         height: 200px;
         padding: 3px;
         textarea {

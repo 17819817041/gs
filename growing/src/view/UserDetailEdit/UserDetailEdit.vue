@@ -127,7 +127,7 @@ export default {
     .AdvertiserManagement_content {
         width: 98%;
         overflow: auto;
-        height: calc(100% - 50px);
+        height: calc(100% - 34px);
         box-shadow: 0 0 5px #acacac inset;
         padding: 4px;
         margin-top: 15px;
@@ -144,7 +144,6 @@ export default {
         /deep/.el-table th > .cell {
             text-align: center;
         }
-        
         /deep/.el-table .cell {
             text-align: center;
         }

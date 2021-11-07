@@ -2,7 +2,7 @@
     <div class="Gdetail">
 		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
         <div class="content mg bar">
-            <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div>
+            <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">廣告詳細計劃</div>
 			<div class="noBar" style="height: calc(100% - 109px); overflow:auto">
 			<div class="basicsMsg theme">
                 <div class=" basicsMsg_item bold al">

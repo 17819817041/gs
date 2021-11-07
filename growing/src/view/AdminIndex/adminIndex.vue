@@ -135,7 +135,7 @@ export default {
     }
     .content {
         margin-top: 28px;
-        height: calc(96%);
+        height: calc(100% - 6px);
         .content_item {
             width: 100%;
             max-width: 1450px;
