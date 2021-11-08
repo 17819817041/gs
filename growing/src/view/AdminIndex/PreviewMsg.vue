@@ -5,7 +5,7 @@
             <div class="back mg al">
                 <img class="cursor" src="@/assets/img/back_arrow.png" @click="goBack" alt="">預覽全部資料
             </div>
-            <div class="noBar" style="height: calc(100% - 36px); overflow:auto;margin-top: 15px;">
+            <div class="noBar allcontent_wrap">
                 <div class="basicsMsg boxs theme">
                 <div class="flex divider_message_title">
                     <div class="divider"></div>
@@ -221,6 +221,14 @@ export default {
 
 <style lang='less' scoped>
     @import "@/less/style.less";
+    .allcontent_wrap {
+		height: calc(100% - 42px); 
+		overflow:auto;
+		margin-top: 15px;
+		@media screen and (max-width: 564px) {
+			height: calc(100% - 36px); 
+		}
+	}
     .PreviewMsg {
         margin-top: 20px;
         height: 100%;
@@ -275,12 +283,7 @@ export default {
     }
     .detailPlan {
         margin-bottom: 15px;
-        padding: 0 4px 20px 4px;
-    }
-    .detailPlan {
-        // height: 1000px;
-		padding-bottom: 30px;
-		margin-bottom: 20px;
+        padding: 0 2px 2px 2px;
     }
     .addCate {
         border: solid 1px rgb(206, 206, 206);
@@ -396,7 +399,7 @@ export default {
 		}
     }
     .divider_message_title {
-        padding: 15px 0px;
+        padding: 15px 10px;
     }
     .divider {
         width: 0;

@@ -340,8 +340,11 @@ export default {
         
     }
     .Settingadvertising_content_wrap {
-        height: calc(100% - 20px);
+        height: calc(100% - 26px);
         overflow: auto;
+        @media screen and (max-width: 564px) {
+            height: calc(100% - 20px);
+        }
     }
     .Settingadvertising_content {
         width: 97%;

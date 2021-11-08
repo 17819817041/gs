@@ -45,7 +45,7 @@
                     <el-table-column
                         prop="busy"
                         label="繁忙時段(9am - 9pm)收入"
-                        min-width="190"
+                        min-width="200"
                         >
                         <template>
                             <div class="timeIncome ju">
@@ -58,7 +58,7 @@
                     <el-table-column
                         prop="unbusy"
                         label="非繁忙時段(9pm - 9am)收入"
-                        min-width="200"
+                        min-width="210"
                         >
                         <template>
                             <div class="timeIncome ju">
@@ -354,10 +354,13 @@ export default {
     .Income_content {
         width: 98%;
         overflow: auto;
-        height: calc(100% - 35px);
+        height: calc(100% - 42px);
         box-shadow: 0 0 5px #acacac inset;
         padding: 4px;
         margin-top: 15px;
+        @media screen and (max-width: 564px) {
+			height: calc(100% - 36px); 
+		}
     }
     .Income_content_title {
         padding: 7px 15px;

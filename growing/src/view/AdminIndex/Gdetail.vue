@@ -1,9 +1,11 @@
 <template>
     <div class="Gdetail">
 		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
+		<div class="back mg al">
+			<img class="cursor" src="@/assets/img/back_arrow.png" @click="goBack" alt="">廣告詳細計劃
+		</div>
         <div class="content mg bar">
-            <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">廣告詳細計劃</div>
-			<div class="noBar" style="height: calc(100% - 109px); overflow:auto">
+			<div class="noBar" style="height: calc(100% - 0px); overflow:auto">
 			<div class="basicsMsg theme">
                 <div class=" basicsMsg_item bold al">
                     <div class="iden radius"></div> 基礎信息
@@ -84,7 +86,7 @@
                     </el-form-item>
                 </el-form>
 				<div class="total mg sb br1">
-					<div class="total_msg " v-show="drawer">
+					<!-- <div class="total_msg " v-show="drawer">
 						<div>
 							<div class="flex total_item">
 								<div class="l_msg">基礎價格: </div>
@@ -103,7 +105,7 @@
 							計劃投放總價=(繁忙畤段價格+非繁忙畤段價格)*廣告媒體時長*所選區數*廣告投放過期
 						</div>
 						<div class="arrow_br"></div>
-					</div>
+					</div> -->
 					<div v-show="!drawer"></div>
 					<div class="total_price">
 						<div class="t_price bold">
@@ -111,15 +113,41 @@
 						</div>
 						<div class="total_price_item">繁忙時段價格: $4000 HKD</div>
 						<div class="total_price_item">非繁忙時段價格: $2000 HKD</div>
-						<div class="price_plan flex cursor" @click="drawer = !drawer">
+						<!-- <div class="price_plan flex cursor" @click="drawer = !drawer">
 							<img src="@/assets/img/help.png" alt="">
 							<div>價格計數方案</div>
-						</div>
+						</div> -->
+						<el-popover
+							:placement="position"
+							trigger="click"
+							v-model="visible">
+							<div>
+								<div class="flex total_item">
+									<div class="l_msg">基礎價格: </div>
+									<div class="r_msg">100港幣</div>
+								</div>
+								<div class="flex total_item">
+									<div class="l_msg">繁忙時段價格: </div>
+									<div class="r_msg">基礎價格*2/分鐘</div>
+								</div>
+								<div class="flex total_item">
+									<div class="l_msg">非繁忙時段價格: </div>
+									<div class="r_msg">基礎價格/分鐘</div>
+								</div>
+							</div>
+							<div>
+								計劃投放總價=(繁忙畤段價格+非繁忙畤段價格)*廣告媒體時長*所選區數*廣告投放過期
+							</div>
+							<div class="arrow_br"></div>
+							<div slot="reference" class="price_plan flex cursor">
+								<img src="@/assets/img/help.png" alt="">
+								<div>價格計數方案</div>
+							</div>
+						</el-popover>
 					</div>
 				</div>
             </div>
 			</div>
-			<div class="footer_w"></div>
         </div>
     </div>
 </template>
@@ -128,7 +156,9 @@
 export default {
     data() {
         return {
+			position: 'left-end',
 			drawer: false,
+			visible: false,
 			video: true,
             ruleForm: {
                 name: 'XXX廣告',
@@ -202,6 +232,11 @@ export default {
             } else {
                 this.labelPosition = 'left'
             }
+			if (window.innerWidth <= 666) {
+				this.position = 'top'
+			} else {
+				this.position = 'left-end'
+			}
 		},
 		submitForm(formName) {
 			this.$refs[formName].validate((valid) => {
@@ -240,19 +275,29 @@ export default {
     }
     .content {
         width: 85%;
-        height: 100%;
-        padding: 0px 20px;
+        height: calc(100% - 36px);
+        padding: 10px 7px 0 7px;
         background: white;
         overflow: auto;
+		margin-top: 15px;
 		@media screen and (max-width: 564px) {
 			width: 100%;
 		}
     }
-    .content_title {
-        font-size: 22px;
-        font-weight: 500;
-        padding: 15px 0;
-        background: white;
+	.back {
+        width: 98%;
+        font-size: 20px;
+        img {
+            width: 20px;
+            height: 20px;
+            @media screen and (max-width: 960px) {
+                width: 15px;
+                height: 15px;
+            }
+        }
+        @media screen and (max-width: 960px) {
+            font-size: 15px;
+        }
     }
 	.width384 {
 		@media screen and (max-width: 384px) {
@@ -290,10 +335,10 @@ export default {
 		margin-right: 5px;
     }
     .textarea_wrap {
-      width: 90%;
+      width: 100%;
       min-height: 250px;
       background: white;
-      box-shadow: 0 0 8px rgb(182, 182, 182) inset;
+      box-shadow: 0 0 8px rgb(207, 207, 207) inset;
 	  padding: 20px 27px;
     }
 	.textarea_wrap_item {

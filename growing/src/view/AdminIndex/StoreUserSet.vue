@@ -17,7 +17,7 @@
                         </div>
                         <div class="flex">
                             <div class="delUSer cursor">註銷店鋪</div>
-                            <div class="arrow_m al" @click="drawer = !drawer"><img src="@/assets/img/pull_down.png" alt=""></div>
+                            <div class="arrow_m al" @click="drawer = !drawer"><img :class="[{ rotate: drawer }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
                     <div :class="['drawer_h', {'drawer_h1': drawer}]">
@@ -54,7 +54,7 @@
                         </div>
                         <div class="flex">
                             <div class="delUSer cursor">註銷賬戶</div>
-                            <div class="arrow_m al" @click="drawer1 = !drawer1"><img src="@/assets/img/pull_down.png" alt=""></div>
+                            <div class="arrow_m al" @click="drawer1 = !drawer1"><img :class="[{ rotate: drawer1 }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
                     <div :class="['drawer_h', {'drawer_h1': drawer1}]">
@@ -91,7 +91,7 @@
                         </div>
                         <div class="flex">
                             <div class="delUSer cursor">註銷賬戶</div>
-                            <div class="arrow_m al" @click="drawer2 = !drawer2"><img src="@/assets/img/pull_down.png" alt=""></div>
+                            <div class="arrow_m al" @click="drawer2 = !drawer2"><img :class="[{ rotate: drawer2 }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
                     <div :class="['drawer_h', {'drawer_h1': drawer2}]">
@@ -291,7 +291,12 @@ export default {
         width: 20px;
         img {
             width: 17px;
+            transform: rotateZ(-180deg);
+            transition: 0.2s;
         }
+    }
+    .rotate {
+        transform: rotateZ(0deg) !important;
     }
     .drawer_h {
         transition: 0.2s;
@@ -300,5 +305,6 @@ export default {
     }
     .drawer_h1 {
         max-height: 0;
+        transition: 0.2s;
     }
 </style>
