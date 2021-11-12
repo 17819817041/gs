@@ -183,7 +183,7 @@
                     :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
                     :data="tableData"
                     style="width: 100%"
-                    height="95%"
+                    :max-height="tableHeight"
                     >
                     <el-table-column
                         fixed
@@ -308,13 +308,25 @@
                         </template>
                     </el-table-column>
                 </el-table>
+                <div class="footpage flexEnd">
+                    <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        small
+                        :pager-count="5"
+                        :current-page="1"
+                        :page-size="10"
+                        layout=" jumper, prev, pager, next"
+                        :total="tableData.length">
+                    </el-pagination>
+                </div>
             </div>
             <div class="AuditList_table" v-else>
                 <el-table :row-class-name="tableRowClassName"
                     :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
                     :data="tableData1"
                     style="width: 100%"
-                    height="95%"
+                    :max-height="tableHeight"
                     >
                     <el-table-column
                         fixed
@@ -447,6 +459,18 @@
                         </template>
                     </el-table-column>
                 </el-table>
+                <div class="footpage flexEnd">
+                    <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        small
+                        :pager-count="5"
+                        :current-page="1"
+                        :page-size="10"
+                        layout=" jumper, prev, pager, next"
+                        :total="tableData.length">
+                    </el-pagination>
+                </div>
             </div>
         </div>
         <el-dialog
@@ -478,6 +502,7 @@
 export default {
     data () {
         return {
+            tableHeight:0,
             dialogVisible: false,
             type: '',
             d_type: '',
@@ -489,6 +514,10 @@ export default {
             tableData:[
                 {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 1, 
                 d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
+                {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 1, 
+                d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
+                {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 1, 
+                d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
             ],
             tableData1:[
                 {name:'九龍店',type: '美食',area: '九龍', time: '2021-06-06 ~ 2021-10-26', total: '6000',videoLong:'5',gDetail: '', state: 1, 
@@ -496,7 +525,26 @@ export default {
             ],
         }
     },
+    mounted () {
+        let that = this
+        window.addEventListener("resize",function(){
+            that.resi()
+        });
+        this.resi()
+    },
     methods: {
+        resi () {
+            let that = this
+            this.$nextTick(() => {
+                that.tableHeight = window.innerHeight - 205
+            })
+        },
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+        },
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+        },
         back () {
             this.$router.back()
         },

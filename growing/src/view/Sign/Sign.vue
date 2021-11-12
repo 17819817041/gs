@@ -5,59 +5,59 @@
         </div>
         <div class="form_item ju noBar">
             <div class="i_form" v-if="active">
-                <div class="login_text">註冊</div>
+                <div class="login_text">{{$t("lang.register")}}</div>
                 <div class="msg_input">
                     <div class="input_form">
-                        <div class="user_title">用戶身份</div>
+                        <div class="user_title">{{$t("lang.userId")}}</div>
                         <div class="user">
-                            <el-select v-model="value" class="width100">
-                                <el-option label="店鋪" value="1"></el-option>
-                                <el-option label="廣告商" value="2"></el-option>
-                                <el-option label="廣告後台" value="3"></el-option>
+                            <el-select v-model="value" class="width100" :placeholder="$t('lang.select')">
+                                <el-option :label="$t('lang.store')" value="1"></el-option>
+                                <el-option :label="$t('lang.advertisers')" value="2"></el-option>
+                                <el-option :label="$t('lang.backstage')" value="3"></el-option>
                             </el-select>
                         </div>
                     </div>
                     <div class="input_form pwd_inp">
-                        <div class="user_title">姓名</div>
+                        <div class="user_title">{{$t("lang.name")}}</div>
                         <div class="user">
                             <input type="text">
                         </div>
                     </div>
                     <div class="input_form pwd_inp">
-                        <div class="user_title">聯繫電話</div>
+                        <div class="user_title">{{$t("lang.phone")}}</div>
                         <div class="user">
                             <input type="text">
                         </div>
                     </div>
                     <div class="input_form pwd_inp">
-                        <div class="user_title">郵箱地址</div>
+                        <div class="user_title">{{$t("lang.email")}}</div>
                         <div class="user">
                             <input type="text">
                         </div>
                     </div>
                     <div class="input_form pwd_inp">
-                        <div class="user_title">公司名稱</div>
+                        <div class="user_title">{{$t("lang.company")}}</div>
                         <div class="user">
                             <input type="text">
                         </div>
                     </div>
                     <div class="input_form pwd_inp">
-                        <div class="user_title">密碼</div>
+                        <div class="user_title">{{$t("lang.pwd")}}</div>
                         <div class="user">
                             <input type="password">
                         </div>
                     </div>
-                    <div class="sign_btn tc cursor" @click="sign">註冊</div>
+                    <div class="sign_btn tc cursor" @click="sign">{{$t("lang.register")}}</div>
                 </div>
             </div>
             <div class="success al" v-else>
                 <div>
                     <div class="al success_item">
-                        <img src="@/assets/img/success_sign.png" alt="">您已提交註冊申請
+                        <img src="@/assets/img/success_sign.png" alt="">{{$t("lang.success")}}
                     </div>
-                    <div class="notice">工作人員將會盡快核實通過您的申請</div>
-                    <div class="notice">感謝您的支持與理解！</div>
-                    <div class="sign_btn mg sure_btn tc cursor" @click="sure">確定</div>
+                    <div class="notice">{{$t("lang.staff")}}</div>
+                    <div class="notice">{{$t("lang.thank")}}</div>
+                    <div class="sign_btn mg sure_btn tc cursor" @click="sure">{{$t("lang.sure")}}</div>
                 </div>
             </div>
         </div>
@@ -66,7 +66,7 @@
                 <div class="Logo1 ju">
                     <img src="@/assets/img/logo.png" alt="">
                 </div>
-                <div class="guanggao tc">XXX廣告平台</div>
+                <div class="guanggao tc">XXX{{$t("lang.plat")}}</div>
                 <div class="welcome_text tc">Welcome</div>
             </div>
         </div>
@@ -317,13 +317,13 @@ export default {
         width: 80%;
     }
     .success_item {
-        font-size: 50px;
+        font-size: 40px;
         margin-bottom: 30px;
         @media screen and (max-width: 1477px) {
-            font-size: 40px;
+            font-size: 30px;
         }
         @media screen and (max-width: 1200px) {
-            font-size: 30px;
+            font-size: 20px;
         }
         img {
             width: 55px;
@@ -334,10 +334,10 @@ export default {
     .notice {
         width: 80%;
         margin: auto;
-        font-size: 25px;
+        font-size: 20px;
         margin-bottom: 10px;
         @media screen and (max-width: 1477px) {
-            font-size: 20px;
+            font-size: 17px;
         }
         @media screen and (max-width: 1200px) {
             font-size: 10px;

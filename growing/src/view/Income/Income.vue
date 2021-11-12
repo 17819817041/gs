@@ -3,7 +3,7 @@
         <div class="back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告收入統計
         </div>
-        <div class="Income_content mg bar">
+        <div class="Income_content mg noBar">
             <div class="Income_content_title sb al block">
                 <div class="flex">
                     <div class="divider"></div>
@@ -33,7 +33,7 @@
                     :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
                     :data="tableData"
                     style="width: 100%"
-                    height="95%"
+                    max-height="350"
                     >
                     <el-table-column
                         fixed
@@ -129,6 +129,18 @@
                         </template>
                     </el-table-column>
                 </el-table>
+                <div class="footpage flexEnd">
+                    <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        small
+                        :pager-count="5"
+                        :current-page="tableData.length"
+                        :page-size="10"
+                        layout=" jumper, prev, pager, next"
+                        :total="tableData.length">
+                    </el-pagination>
+                </div>
             </div>
             <div class="totalIncome_price flexEnd">
                 <div class="padding_foot">
@@ -217,6 +229,7 @@ export default {
         return {
             value: '全部店鋪',
             value1: '',
+            tableHeight:0,
             value2: '4',
             index: 3,
             tableData:[
@@ -298,11 +311,14 @@ export default {
         }
     },
     mounted () {
+        let that = this
         var myChart = echarts.init(document.getElementById('main'));
         myChart.setOption(this.option);
         window.addEventListener("resize",function(){
             myChart.resize();
+            that.resi()
         });
+        this.resi()
     },
     beforeMount() {
         let that = this
@@ -317,6 +333,18 @@ export default {
         })
     },
     methods: {
+        resi () {
+            let that = this
+            this.$nextTick(() => {
+                that.tableHeight = window.innerHeight - 165
+            })
+        },
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+        },
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+        },
         back () {
             this.$router.back()
         },

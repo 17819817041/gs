@@ -2,209 +2,216 @@
     <div class="AdvertisingAdd">
 		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
 		<div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">新增廣告計劃
+            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">{{$t("lang.newad")}}
         </div>
-        <div class="content mg bar">
+        <div :class="['content mg bar',{ heigh: !submit }]">
             <!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
 			<div class="noBar" style="height: calc(100% - 0px); overflow:auto" v-show="submit">
-			<div class="basicsMsg theme" v-show="submit">
-                <div class=" basicsMsg_item bold al">
-                    <div class="iden radius"></div> 基礎信息
-                </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                    <el-form-item label="廣告計劃名稱" prop="name">
-                        <el-input style="width: 40%;min-width: 200px;" v-model="ruleForm.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="廣告投放類型" prop="type">
-                        <div class="flex br">
-                            <div class="flex">
-								<el-select v-model="ruleForm.type" placeholder="請選擇類型">
-									<el-option label="食品" value="食品"></el-option>
-									<el-option label="科技" value="科技"></el-option>
-									<el-option label="醫療" value="醫療"></el-option>
-									<el-option label="汽車" value="汽車"></el-option>
-								</el-select>
-								<div class="addCate al" @click="addType(ruleForm.type)">
-									添加
-								</div>
-							</div>
-							<div class="list clear">
-								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
-									{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt=""></span>
-								</div>
-							</div>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="廣告投放區域" prop="area">
-                        <div class="flex br">
-                            <div class="flex">
-								<el-select v-model="ruleForm.area" placeholder="請選擇區域">
-									<el-option label="九龍區" value="九龍區"></el-option>
-									<el-option label="旺角區" value="旺角區"></el-option>
-									<el-option label="中環區" value="中環區"></el-option>
-								</el-select>
-								<div class="addCate al" @click="addArea(ruleForm.area)">
-									添加
-								</div>
-							</div>
-							<div class="list clear">
-								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in areaList" :key="i">
-									{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleArea(i)" src="@/assets/img/cha.png" alt=""></span>
-								</div>
-							</div>
-                        </div>
-                    </el-form-item>
-                </el-form>
-            </div>
-            <div class="detailPlan theme" v-show="submit">
-                <div class=" basicsMsg_item bold al">
-                    <div class="iden radius"></div> 詳細計劃
-                </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                    <el-form-item label="廣告投放時段" prop="time">
-                        <div class="flex br">
-                            <div class="flex">
-								<el-select v-model="ruleForm.time" placeholder="請選擇時間段">
-									<el-option label="繁忙時段(9am-9pm)" value="繁忙時段(9am-9pm)"></el-option>
-									<el-option label="非繁忙時段(9pm-9am)" value="非繁忙時段(9pm-9am)"></el-option>
-								</el-select>
-								<div class="addCate al" @click="addTime(ruleForm.time)">
-									添加
-								</div>
-							</div>
-							<div class="list clear">
-								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in timeList" :key="i">
-									{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleTime(i)" src="@/assets/img/cha.png" alt=""></span>
-								</div>
-							</div>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="廣告投放週期" prop="date">
-                        <div style="min-width: 200px;width: 100%" class='clear'>
-							<div class="float" style="margin-right: 15px;width: 140px;">
-								<el-form-item prop="startDate">
-									<el-date-picker
-										@change="STIME"
-										class="width100"
-										v-model="ruleForm.startDate"
-										type="date"
-										placeholder="起始日期"
-										:picker-options="pickerOptions1">
-									</el-date-picker>
-								</el-form-item>
-							</div>
-							<div class="float width384" style="width: 140px;">
-								<el-form-item prop="endDate">
-									<el-date-picker
-										class="width100"
-										v-model="ruleForm.endDate"
-										type="date"
-										placeholder="結束日期"
-										:picker-options="pickerOptions2"
-										>
-									</el-date-picker>
-								</el-form-item>
-								
-							</div>
-						</div>
-                    </el-form-item>
-                    <div class="flex br">
-                        <el-form-item label="廣告媒體類型" prop="mediaType" style="margin-right: 30px;">
-                            <div class="al">
-                                <el-select v-model="ruleForm.cmediaType" placeholder="請選擇類型" @change="getType">
-                                    <el-option label="圖片" value="1"></el-option>
-                                    <el-option label="視頻" value="2"></el-option>
-                                </el-select>
-                            </div>
-                        </el-form-item>
-                        <el-form-item label="廣告媒體時長" prop="inp">
-                            <div class="al">
-								<div class="al inp_time ju">
-									<!-- <input type="text" class="tc"> -->
-									<el-input class="width100"
-									oninput ="value=value.replace(/[^0-9]/g,'')" :disabled="video" v-model="ruleForm.inp"></el-input>
-								</div>
-								分鐘 <span style="color: gray;margin-left: 5px;">(請輸入整數)</span>
-                            </div>
-                        </el-form-item>
-                    </div>
-                    <el-form-item label="廣告媒體內容" prop="content">
-						<div class="textarea_wrap clear">
-							<label for="img">
-								<div class="addImg ju al cursor float">
-									<img style="height: 70%;" src="@/assets/img/add.png" alt="">
-								</div>
-								<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
-							</label>
-							<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
-								<div class="imageList_wrap">
-									<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
-									<div class="textarea_wrap_item_child ju al">
-										<img v-if="ruleForm.mediaType == 'image'" style="height: 100%;" :src="item.url" alt="">
-										<img v-else-if="ruleForm.mediaType == 'video'" style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+				<div class="basicsMsg theme" v-show="submit">
+					<div class=" basicsMsg_item bold al">
+						<div class="iden radius"></div> {{$t("lang.message")}}
+					</div>
+					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
+					:label-width="$i18n.locale == 'zh-CN'? '100px': '165px'" class="demo-ruleForm">
+						<el-form-item :label="$t('lang.adname')" prop="name">
+							<el-input style="width: 40%;min-width: 200px;" v-model="ruleForm.name"></el-input>
+						</el-form-item>
+						<el-form-item :label="$t('lang.adtype')" prop="type">
+							<div class="flex br">
+								<div class="flex">
+									<el-select v-model="ruleForm.type" :placeholder="$t('lang.pldselecttype')">
+										<el-option :label="$t('lang.food')" :value="$t('lang.food')"></el-option>
+										<el-option :label="$t('lang.Technology')" :value="$t('lang.Technology')"></el-option>
+										<el-option :label="$t('lang.medical')" :value="$t('lang.medical')"></el-option>
+										<el-option :label="$t('lang.car')" :value="$t('lang.car')"></el-option>
+									</el-select>
+									<div class="addCate al" @click="addType(ruleForm.type)">
+										{{$t("lang.addbtn")}}
 									</div>
 								</div>
-								<div class="imageList_name tc">{{item.name}}</div>
-								<div class="imageList_size tc">{{item.size}}</div>
-							</div>
-						</div>
-						<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
-							圖片格式限制PNG \JPG \JPEG \GIF，数量限制10張，大小限制3M。視頻格式限制 MP4，大小限制100M(媒體建議尺寸1920*1080)。
-						</div>
-						<div style='font-size: 12px; line-height: 15px;'>媒體時長按每分鐘計數。不足1分鐘按1分鐘計算.</div>
-                    </el-form-item>
-                </el-form>
-				<div class="total mg sb">
-					<div></div>
-					<div class="total_price">
-						<div class="t_price bold">
-							<span>計劃投放總價:</span><span class="math_price"> $ 6000 </span><span class="p_d">HKD</span>
-						</div>
-						<div class="total_price_item">繁忙時段價格: $4000 HKD</div>
-						<div class="total_price_item">非繁忙時段價格: $2000 HKD</div>
-						<!-- <div class="price_plan flex cursor" @click="drawer = !drawer"> -->
-						<el-popover
-							:placement="position"
-							trigger="click"
-							v-model="visible">
-							<div>
-								<div class="flex total_item">
-									<div class="l_msg">基礎價格: </div>
-									<div class="r_msg">100港幣</div>
-								</div>
-								<div class="flex total_item">
-									<div class="l_msg">繁忙時段價格: </div>
-									<div class="r_msg">基礎價格*2/分鐘</div>
-								</div>
-								<div class="flex total_item">
-									<div class="l_msg">非繁忙時段價格: </div>
-									<div class="r_msg">基礎價格/分鐘</div>
+								<div class="list clear">
+									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
+										{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt=""></span>
+									</div>
 								</div>
 							</div>
-							<div>
-								計劃投放總價=(繁忙畤段價格+非繁忙畤段價格)*廣告媒體時長*所選區數*廣告投放過期
+						</el-form-item>
+						<el-form-item :label="$t('lang.AdvertisingArea')" prop="area">
+							<div class="flex br">
+								<div class="flex">
+									<el-select v-model="ruleForm.area" :placeholder="$t('lang.pldselectarea')">
+										<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
+										<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
+										<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
+									</el-select>
+									<div class="addCate al" @click="addArea(ruleForm.area)">
+										{{$t("lang.addbtn")}}
+									</div>
+								</div>
+								<div class="list clear">
+									<div style="color: #B0B0B0;" class="list_item float al" 
+									v-for="(item,i) in areaList" :key="i">
+										{{item}} <span class="al" style="margin-left: 5px">
+											<img class="cursor" @click="deleArea(i)" src="@/assets/img/cha.png" alt="">
+										</span>
+									</div>
+								</div>
 							</div>
-							<div class="arrow_br"></div>
-							<div slot="reference" class="price_plan flex cursor">
-								<img src="@/assets/img/help.png" alt="">
-								<div>價格計數方案</div>
+						</el-form-item>
+					</el-form>
+				</div>
+				<div class="detailPlan theme" v-show="submit">
+					<div class=" basicsMsg_item bold al">
+						<div class="iden radius"></div> {{$t("lang.DetailedPlan")}}
+					</div>
+					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
+					:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" class="demo-ruleForm">
+						<el-form-item :label="$t('lang.adserving')" prop="time">
+							<div class="flex br">
+								<div class="flex">
+									<el-select v-model="ruleForm.time" :placeholder="$t('lang.pldselecttime')">
+										<el-option :label="$t('lang.busyhour')" :value="$t('lang.busyhour')"></el-option>
+										<el-option :label="$t('lang.unbusyhour')" :value="$t('lang.unbusyhour')"></el-option>
+									</el-select>
+									<div class="addCate al" @click="addTime(ruleForm.time)">
+										{{$t("lang.addbtn")}}
+									</div>
+								</div>
+								<div class="list clear">
+									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in timeList" :key="i">
+										{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleTime(i)" src="@/assets/img/cha.png" alt=""></span>
+									</div>
+								</div>
 							</div>
-						</el-popover>
-						
+						</el-form-item>
+						<el-form-item :label="$t('lang.cycle')" prop="date">
+							<div style="min-width: 200px;width: 100%" class='clear'>
+								<div class="float" style="margin-right: 15px;width: 140px;">
+									<el-form-item prop="startDate">
+										<el-date-picker
+											@change="STIME"
+											class="width100"
+											v-model="ruleForm.startDate"
+											type="date"
+											:placeholder="$t('lang.sdate')"
+											:picker-options="pickerOptions1">
+										</el-date-picker>
+									</el-form-item>
+								</div>
+								<div class="float width384" style="width: 140px;">
+									<el-form-item prop="endDate">
+										<el-date-picker
+											class="width100"
+											v-model="ruleForm.endDate"
+											type="date"
+											:placeholder="$t('lang.enddate')"
+											:picker-options="pickerOptions2"
+											>
+										</el-date-picker>
+									</el-form-item>
+									
+								</div>
+							</div>
+						</el-form-item>
+						<div :class="['flex br',{ br1185: $i18n.locale == 'en-US' }]">
+							<el-form-item :label="$t('lang.admediatype')" prop="mediaType" style="margin-right: 30px;">
+								<div class="al">
+									<el-select v-model="ruleForm.cmediaType" :placeholder="$t('lang.pldselecttype')" 
+									@change="getType">
+										<el-option :label="$t('lang.image')" value="1"></el-option>
+										<el-option :label="$t('lang.video')" value="2"></el-option>
+									</el-select>
+								</div>
+							</el-form-item>
+							<el-form-item :label="$t('lang.duration')" prop="inp">
+								<div class="al">
+									<div class="al inp_time ju">
+										<!-- <input type="text" class="tc"> -->
+										<el-input class="width100"
+										oninput ="value=value.replace(/[^0-9]/g,'')" :disabled="video" v-model="ruleForm.inp"></el-input>
+									</div>
+									<div>{{$t('lang.minute')}} <span style="color: gray;margin-left: 5px;">{{$t('lang.int')}}</span></div>
+								</div>
+							</el-form-item>
+						</div>
+						<el-form-item :label="$t('lang.adcontent')" prop="content">
+							<div class="textarea_wrap clear">
+								<label for="img">
+									<div class="addImg ju al cursor float">
+										<img style="height: 70%;" src="@/assets/img/add.png" alt="">
+									</div>
+									<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
+								</label>
+								<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
+									<div class="imageList_wrap">
+										<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
+										<div class="textarea_wrap_item_child ju al">
+											<img v-if="ruleForm.mediaType == 'image'" style="height: 100%;" :src="item.url" alt="">
+											<img v-else-if="ruleForm.mediaType == 'video'" style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+										</div>
+									</div>
+									<div class="imageList_name tc">{{item.name}}</div>
+									<div class="imageList_size tc">{{item.size}}</div>
+								</div>
+							</div>
+							<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
+								{{$t('lang.becare')}}
+							</div>
+							<div style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
+						</el-form-item>
+					</el-form>
+					<div class="total mg sb">
+						<div></div>
+						<div class="total_price">
+							<div class="t_price bold">
+								<span>{{$t('lang.total')}}:</span><span class="math_price"> $ 6000 </span><span class="p_d">HKD</span>
+							</div>
+							<div class="total_price_item">{{$t('lang.phprice')}}: $4000 HKD</div>
+							<div class="total_price_item">{{$t('lang.unphprice')}}: $2000 HKD</div>
+							<!-- <div class="price_plan flex cursor" @click="drawer = !drawer"> -->
+							<el-popover
+								:placement="position"
+								trigger="click"
+								v-model="visible">
+								<div>
+									<div class="flex total_item">
+										<div class="l_msg">{{$t('lang.base')}}: </div>
+										<div class="r_msg">100{{$t('lang.hdk')}}</div>
+									</div>
+									<div class="flex total_item">
+										<div class="l_msg">{{$t('lang.phprice')}}: </div>
+										<div class="r_msg">{{$t('lang.base')}}*2/{{$t('lang.minute')}}</div>
+									</div>
+									<div class="flex total_item">
+										<div class="l_msg">{{$t('lang.unphprice')}}: </div>
+										<div class="r_msg">{{$t('lang.base')}}/{{$t('lang.minute')}}</div>
+									</div>
+								</div>
+								<div>
+									{{$t('lang.detailgetprice')}}
+								</div>
+								<div class="arrow_br"></div>
+								<div slot="reference" class="price_plan flex cursor">
+									<img src="@/assets/img/help.png" alt="">
+									<div>{{$t('lang.scheme')}}</div>
+								</div>
+							</el-popover>
+							
+						</div>
+					</div>
+					<div class="sure_plan_wrap">
+						<div class="sure_plan cursor" @click="submitG">{{$t('lang.adconfirm')}}</div>
 					</div>
 				</div>
-				<div class="flexEnd" style="width: 85%;">
-					<div class="sure_plan cursor" @click="submitG">確認廣告計劃</div>
-				</div>
-            </div>
 			</div>
-			<div class="basicsMsg theme padding" style="margin-top: 40px" v-show="!submit">
-				<div class="true_title al ju">
-					<img src="@/assets/img/success_sign.png" alt="">確認廣告計劃成功 ！
+			<div class="basicsMsg theme padding" style="margin-top: 15px" v-show="!submit">
+				<div :class="['true_title mg al ju',
+					{ size27: $i18n.locale=='zh-CN',size15: $i18n.locale=='en-US' }]">
+					<img src="@/assets/img/success_sign.png" alt="">{{$t('lang.adconfirmsucc')}} ！
 				</div>
-				<div class="ju">您的廣告計劃已提交至後台，管理員将盡快審核您的廣告計劃.</div>
+				<div class="ju size_13 mg" >{{$t('lang.adconfirmsucc1')}}.</div>
 				<div class="iknow ju al">
-                    <div class="cursor" @click="goBack">確定</div>
+                    <div class="cursor" @click="goBack">{{$t('lang.sure')}}</div>
                 </div>
 			</div>
         </div>
@@ -578,7 +585,7 @@ export default {
     }
     .content {
         width: 85%;
-        height: calc(100% - 30px);
+        height: calc(100% - 35px);
         padding: 7px 7px;
         background: white;
 		margin-top: 15px;
@@ -587,6 +594,9 @@ export default {
 			width: 100%;
 		}
     }
+	.heigh {
+		height: auto !important;
+	}
     .content_title {
         font-size: 22px;
         font-weight: 500;
@@ -626,7 +636,7 @@ export default {
         border: solid 1px rgb(206, 206, 206);
         padding: 0 20px;
         box-shadow: 2px 2px 6px rgb(224, 224, 224) inset;
-        height: 37px;
+        height: 39px;
         margin-left: 15px;
 		white-space: nowrap;
     }
@@ -704,7 +714,11 @@ export default {
 		height: 20px;
 		// opacity: 0.9;
 	}
-	
+	.br1185 {
+		@media screen and (max-width: 1185px) {
+			display: block;
+		}
+	}
 	.total {
 		width: 90%;
 		font-size: 14px;
@@ -774,10 +788,20 @@ export default {
 		font-size: 16px;
 		color: rgb(92, 92, 92);
 		text-decoration: underline;
+		white-space: nowrap;
 		img {
 			width: 20px;
 			height: 20px;
 			margin-right: 4px;
+		}
+	}
+	.sure_plan_wrap {
+		width: 85%;
+		display: flex;
+		justify-content: flex-end;
+		@media screen and (max-width: 564px) {
+			width: 100%;
+			justify-content: center;
 		}
 	}
 	.sure_plan {
@@ -787,12 +811,35 @@ export default {
 		font-size: 16px;
 		box-shadow: 0 0 5px gray inset;
 		margin-top: 50px;
+		@media screen and (max-width: 564px) {
+			white-space: nowrap;
+			font-size: 14px;
+			padding: 18px 40px;
+			margin-top: 30px;
+		}
 	}
 	.true_title {
-		font-size: 27px;
+		width: 80%;
 		padding-bottom: 50px;
 		img {
+			margin-right: 5px;
 			width: 35px;
+		}
+	}
+	.size27 {
+		font-size: 27px;
+	}
+	.size15 {
+		font-size: 27px;
+		@media screen and (max-width: 870px) {
+			font-size: 17px;
+		}
+	}
+	.size_13 {
+		width: 90%;
+		font-size: 15px;
+		@media screen and (max-width: 870px) {
+			font-size: 12px;
 		}
 	}
 	.padding {

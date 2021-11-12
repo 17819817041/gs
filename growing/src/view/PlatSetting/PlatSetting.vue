@@ -16,11 +16,10 @@
                         </div>
                     </div>
                     <div :class="['drawer_h', {'drawer_h1': drawer4}]">
-                        <el-table :row-class-name="tableRowClassName" 
+                        <el-table :row-class-name="tableRowClassName" max-height="300" 
                             :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
                             :data="tableData"
                             style="width: 100%"
-                            height="95%"
                             >
                             <el-table-column
                                 fixed
@@ -146,6 +145,18 @@
                                 </template>
                             </el-table-column>
                         </el-table>
+                        <div class="footpage flexEnd">
+                            <el-pagination
+                                @size-change="handleSizeChange"
+                                @current-change="handleCurrentChange"
+                                small
+                                :pager-count="5"
+                                :current-page="tableData.length"
+                                :page-size="10"
+                                layout=" jumper, prev, pager, next"
+                                :total="tableData.length">
+                            </el-pagination>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -253,6 +264,7 @@ export default {
             drawer1: false,
             drawer4: false,
             search: '',
+            tableHeight:0,
             tableData:[
                 {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 1, 
                 d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
@@ -296,7 +308,26 @@ export default {
             ],
         }
     },
+    mounted () {
+        let that = this
+        window.addEventListener("resize",function(){
+            that.resi()
+        });
+        this.resi()
+    },
     methods: {
+        resi () {
+            let that = this
+            this.$nextTick(() => {
+                that.tableHeight = window.innerHeight - 165
+            })
+        },
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+        },
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+        },
         tableRowClassName ({ row,rowIndex }) {
             if (rowIndex%2 == 1) {
                 return 'el_color'

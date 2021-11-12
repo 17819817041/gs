@@ -113,6 +113,17 @@ export default {
 	.el-table .el_color {
         background: #E5E5E5 !important;
     }
+	.el-table .el-table__body-wrapper {
+		height: auto !important;
+	}
+	.footpage {
+		padding-right: 20px;
+		@media screen and (max-width: 564px) {
+			padding-right: 0px;
+			display: flex;
+			justify-content: center;
+		}
+	}
 
 
 	.header .el-popover__reference {
@@ -179,6 +190,7 @@ export default {
 		outline: none;
 	}  
 	.el-popover {
+		max-width: 800px;
 		@media screen and (max-width: 888px) {
 			width: 350px;
 		}
@@ -205,6 +217,12 @@ export default {
 	}
 
 
+		
+	.el-textarea .el-textarea__inner{ // 然后找到对应的类名，在这里将拉伸去掉即可
+		resize: none;
+	}
+
+
 	// .AddStore .block .el-input .el-input__inner, .AddStore .block .el-input {
 	// 	// border: none !important;
 	// 	// outline: none !important;
@@ -212,9 +230,9 @@ export default {
 	// 	line-height: 32px !important;
 	// }
 
-	.AddStore .el-form .el-form-item__label {
-		white-space: nowrap;
-	}
+	// .AddStore .el-form .el-form-item__label {
+	// 	white-space: nowrap;
+	// }
 	.AddStore .el-select .el-input .el-select__caret::before {
 		content: "";
 		background: url('~@/assets/img/arrow_up.png') center center no-repeat;
@@ -266,11 +284,11 @@ export default {
 		background: @themeColor;
 	}
 	.Income .el-select .el-input .el-input__inner {
-		color: white !important;
-		border: none !important;
-		outline: none !important;
-		background: none !important;
-		height: 30px !important;
+		color: white ;
+		border: none ;
+		outline: none ;
+		background: none ;
+		height: 30px ;
 		display: flex;
 	}
 	.Income .el-select .el-input .el-input__inner::-webkit-input-placeholder{

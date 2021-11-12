@@ -15,7 +15,7 @@
                     :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
                     :data="tableData"
                     style="width: 100%"
-                    height="95%"
+                    :max-height="tableHeight"
                     >
                     <el-table-column
                         fixed
@@ -104,6 +104,18 @@
                         </template>
                     </el-table-column>
                 </el-table>
+                <div class="footpage flexEnd">
+                    <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        small
+                        :pager-count="5"
+                        :current-page="tableData.length"
+                        :page-size="10"
+                        layout=" jumper, prev, pager, next"
+                        :total="tableData.length">
+                    </el-pagination>
+                </div>
             </div>
         </div>
     </div>
@@ -113,16 +125,37 @@
 export default {
     data () {
         return {
+            tableHeight:0,
             search: '',
             search1: '',
             tableData:[
                 {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
                 {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'無',plan: '', userState: 2, detail: ''},
                 {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
+                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
+                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'無',plan: '', userState: 2, detail: ''},
+                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
+                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
+                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'無',plan: '', userState: 2, detail: ''},
+                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
+                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
             ],
         }
     },
+    mounted () {
+        let that = this
+        window.addEventListener("resize",function(){
+            that.resi()
+        });
+        this.resi()
+    },
     methods: {
+        resi () {
+            let that = this
+            this.$nextTick(() => {
+                that.tableHeight = window.innerHeight - 210
+            })
+        },
         back () {
             this.$router.back()
         },
@@ -172,7 +205,7 @@ export default {
     .AdvertiserManagement_content {
         width: 98%;
         overflow: auto;
-        height: calc(100% - 37px);
+        height: calc(100% - 40px);
         box-shadow: 0 0 5px #acacac inset;
         padding: 4px;
         margin-top: 15px;
@@ -185,7 +218,8 @@ export default {
         }
     }
     .AdvertiserManagement_table {
-        // height: 100%;
+        height: calc(100% - 36px);
+        overflow: auto;
         /deep/.el-table th > .cell {
             text-align: center;
         }

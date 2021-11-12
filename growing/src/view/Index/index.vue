@@ -2,7 +2,7 @@
     <div class="Index">
         <div class="content ju">
             <div class="content_item sb">
-                <div class="item_child clear bar">
+                <div class="item_child clear noBar">
                     <div class="flexEnd category_button_wrap">
                         <div class="category_button cursor" @click="category_list = !category_list">
                             <img style="height: 100%;" v-show="!category_list" src="@/assets/img/category.png" alt="">
@@ -16,49 +16,49 @@
                         <div class="child_message_content">
                             <div class="child_message_content_item sb">
                                 <div class="al">
-                                    <img class="child_message_content_item_logo" src="@/assets/img/guanggao.png" alt="">投放廣告數
+                                    <img class="child_message_content_item_logo" src="@/assets/img/guanggao.png" alt="">{{$t("lang.gindex")}}
                                 </div>
                                 <div class="al">4</div>
                             </div>
                             <div class="child_message_content_item sb">
                                 <div class="al">
-                                    <img class="child_message_content_item_logo" src="@/assets/img/area.png" alt="">投放區域
+                                    <img class="child_message_content_item_logo" src="@/assets/img/area.png" alt="">{{$t("lang.garea")}}
                                 </div>
-                                <div class="al">九龍</div>
+                                <div class="al">{{$t("lang.Kowloon")}}</div>
                             </div>
                             <div class="child_message_content_item sb">
                                 <div class="al">
-                                    <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">投放類型
+                                    <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.gtype")}}
                                 </div>
-                                <div class="al">食品</div>
+                                <div class="al">{{$t("lang.food")}}</div>
                             </div>
                             <div class="child_message_content_item sb">
                                 <div class="al">
-                                    <img class="child_message_content_item_logo" src="@/assets/img/time.png" alt="">投放時段
+                                    <img class="child_message_content_item_logo" src="@/assets/img/time.png" alt="">{{$t("lang.gtime")}}
                                 </div>
-                                <div class="al">繁忙9am-9pm</div>
+                                <div class="al">{{$t("lang.busy")}}9am-9pm</div>
                             </div>
                             <div class="child_message_content_item sb">
-                                <div class="al">
-                                    <img class="child_message_content_item_logo" src="@/assets/img/endTime.png" alt="">最近活動到期日
+                                <div class="al" style="width: 61%;">
+                                    <img class="child_message_content_item_logo" src="@/assets/img/endTime.png" alt="">{{$t("lang.maturity")}}
                                 </div>
                                 <div class="al">2021-06-26</div>
                             </div>
                             <!-- <div class="moreMsg flexEnd al">
-                                <img class="cursor" src="@/assets/img/more.png" alt="">查看更多详细
+                                <img class="cursor" src="@/assets/img/more.png" alt=""><span class="cursor">查看更多详细</span>
                             </div> -->
                         </div>
                     </div>
                     <div class="child float">
                         <div class="child_title al">
                             <div class="logo_wrap ju al"><img style="height: 70%;" src="@/assets/img/logo_ie.png" alt=""></div>
-                            <div class="text_title bold">新增廣告</div>
+                            <div class="text_title al bold">{{$t("lang.add")}}</div>
                         </div>
                         <div class="jieshao">
-                            为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
+                            {{$t("lang.jieshao")}}
                         </div>
                         <div class="detailBtn tc cursor" @click="AdvertisingAdd">
-                            了解详情
+                            {{$t("lang.detail")}}
                             <div class="arrow_r ju al">
                                 <img style="height: 100%;" src="@/assets/img/arrow_r.png" alt="">
                             </div>
@@ -67,13 +67,13 @@
                     <div class="child float">
                         <div class="child_title al">
                             <div class="logo_wrap ju al"><img style="height: 70%;" src="@/assets/img/logo_ie.png" alt=""></div>
-                            <div class="text_title bold">廣告管理</div>
+                            <div class="text_title al bold">{{$t("lang.management")}}</div>
                         </div>
                         <div class="jieshao">
-                            为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
+                            {{$t("lang.jieshao")}}
                         </div>
                         <div class="detailBtn tc cursor" @click="advertisingOperation">
-                            了解详情
+                            {{$t("lang.detail")}}
                             <div class="arrow_r ju al">
                                 <img style="height: 100%;" src="@/assets/img/arrow_r.png" alt="">
                             </div>
@@ -82,13 +82,13 @@
                     <div class="child float">
                         <div class="child_title al">
                             <div class="logo_wrap ju al"><img style="height: 70%;" src="@/assets/img/logo_ie.png" alt=""></div>
-                            <div class="text_title bold">廣告統計</div>
+                            <div class="text_title al bold">{{$t("lang.statistics")}}</div>
                         </div>
                         <div class="jieshao">
-                            为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
+                            {{$t("lang.jieshao")}}
                         </div>
                         <div class="detailBtn tc cursor" @click="statistics">
-                            了解详情
+                            {{$t("lang.detail")}}
                             <div class="arrow_r ju al">
                                 <img style="height: 100%;" src="@/assets/img/arrow_r.png" alt="">
                             </div>
@@ -102,33 +102,33 @@
                     <div class="child_message_content">
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/guanggao.png" alt="">投放廣告數
+                                <img class="child_message_content_item_logo" src="@/assets/img/guanggao.png" alt="">{{$t("lang.gindex")}}
                             </div>
                             <div class="al">4</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/area.png" alt="">投放區域
+                                <img class="child_message_content_item_logo" src="@/assets/img/area.png" alt="">{{$t("lang.garea")}}
                             </div>
-                            <div class="al">九龍</div>
+                            <div class="al">{{$t("lang.Kowloon")}}</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">投放類型
+                                <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.gtype")}}
                             </div>
-                            <div class="al">食品</div>
+                            <div class="al">{{$t("lang.food")}}</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/time.png" alt="">投放時段
+                                <img class="child_message_content_item_logo" src="@/assets/img/time.png" alt="">{{$t("lang.gtime")}}
                             </div>
-                            <div class="al">繁忙9am-9pm</div>
+                            <div class="al">{{$t("lang.busy")}}9am-9pm</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/endTime.png" alt="">最近活動到期日
+                                <img class="child_message_content_item_logo" src="@/assets/img/endTime.png" alt="">{{$t("lang.maturity")}}
                             </div>
-                            <div class="al">2021-06-26</div>
+                            <div class="al" style="min-width: 72px; white-space: nowrap;">2021-06-26</div>
                         </div>
                         <!-- <div class="moreMsg flexEnd al">
                             <img class="cursor" src="@/assets/img/more.png" alt=""><span class="cursor">查看更多详细</span>
@@ -152,7 +152,8 @@ export default {
             this.$router.push('/AdvertisingOperation')    //廣告管理
         },
         AdvertisingAdd () {
-            this.$router.push('/AdvertisingAdd')         //新增廣告
+            // this.$router.push('/AdvertisingAdd')         //新增廣告
+            this.$router.push('/Combo')
         },
         statistics () {
             this.$router.push('/Statistics')          //廣告統計
@@ -278,13 +279,22 @@ export default {
         margin-right: 15px;
     }
     .text_title {
+        min-height: 48px;
+        height: 48px;
         font-size: 18px;
+        max-height: 48px;
     }
     .jieshao {
         font-size: 15px;
         color: #919B9D;
-        height: 70px;
+        height: 62px;
         margin: 20px 0;
+        text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+        display: -webkit-box;
+        -webkit-line-clamp: 3;/*规定超过两行的部分截断*/
+        -webkit-box-orient: vertical;
+        overflow : hidden; 
+        word-break: normal;/*在任何地方换行*/
     }
     .detailBtn {
         background: #3F4F9F;

@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="table mg">
-                <el-table :row-class-name="tableRowClassName" 
+                <el-table :row-class-name="tableRowClassName" :max-height="tableHeight" 
                 :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
                     :data="tableData"
                     style="width: 100%"
@@ -109,6 +109,18 @@
                         </template>
                     </el-table-column>
                 </el-table>
+                <div class="footpage flexEnd">
+                    <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        small
+                        :pager-count="5"
+                        :current-page="1"
+                        :page-size="10"
+                        layout=" jumper, prev, pager, next"
+                        :total="tableData.length">
+                    </el-pagination>
+                </div>
             </div>
         </div>
         
@@ -119,17 +131,37 @@
 export default {
     data () {
         return {
+            tableHeight:0,
             tableData: [
                 {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
                 outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 1, content: '查看預覽', edit: 1},
                 {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
                 outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 2, content: '查看預覽', edit: 2},
                 {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
-                outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 3, content: '查看預覽', edit: 3}
+                outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 3, content: '查看預覽', edit: 3},
             ]
         }
     },
+    mounted () {
+        let that = this
+        window.addEventListener("resize",function(){
+            that.resi()
+        });
+        this.resi()
+    },
     methods: {
+        resi () {
+            let that = this
+            this.$nextTick(() => {
+                that.tableHeight = window.innerHeight - 207
+            })
+        },
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+        },
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+        },
         tableRowClassName ({ row,rowIndex }) {
             if (rowIndex%2 == 1) {
                 return 'el_color'
@@ -200,24 +232,15 @@ export default {
         color: #FA3A3A;
     }
     .preview {
-        font-size: 13px;
-        @media screen and (max-width: 1300px) {
-            font-size: 12px;
-        }
+        font-size: 12px;
         img {
-            width: 40px;
-            @media screen and (max-width: 1500px) {
-                width: 35px;
-            }
-            @media screen and (max-width: 1300px) {
-                width: 30px;
-            }
+            width: 20px;
         }
     }
     .AdvertiserManagement_content {
         width: 98%;
         overflow: auto;
-        height: calc(100% - 4px);
+        height: calc(100% - 11px);
         box-shadow: 0 0 5px #acacac inset;
         padding: 4px;
         margin-top: 15px;
@@ -258,10 +281,7 @@ export default {
         }
     }
     .putaway_logo {
-        font-size: 14px;
-        @media screen and (max-width: 1300px) {
-            font-size: 12px;
-        }
+        font-size: 12px;
         div img {
             width: 20px;
             height: 20px;

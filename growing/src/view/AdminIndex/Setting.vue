@@ -24,12 +24,13 @@
                                     trigger="manual"
                                     v-model="visible">
                                     <div class="">
+                                        <div style="font-size: 12px;padding: 2px 0;">請輸入地區(中文和英文)</div>
                                         <el-form :model="ruleForm" status-icon :rules="rules" ref="form1" class="demo-ruleForm">
                                             <el-form-item prop="area">
-                                                <el-input type="text" v-model="ruleForm.area" placeholder="請輸入地區" autocomplete="off"></el-input>
+                                                <el-input type="text" v-model="ruleForm.area" placeholder="請輸入地區(繁文)" autocomplete="off"></el-input>
                                             </el-form-item>
                                             <el-form-item prop="Einp">
-                                                <el-input type="text" v-model="ruleForm.Einp" autocomplete="off" placeholder="Please enter region"></el-input>
+                                                <el-input type="text" v-model="ruleForm.Einp" autocomplete="off" placeholder="請輸入地區(英文)"></el-input>
                                             </el-form-item>
                                         </el-form>
                                         <div class="sb">
@@ -79,12 +80,13 @@
                                     trigger="manual"
                                     v-model="visible1">
                                     <div class="">
+                                        <div style="font-size: 12px;padding: 2px 0;">請輸入類型(中文和英文)</div>
                                         <el-form :model="ruleForm" status-icon :rules="rules1" ref="form" class="demo-ruleForm">
                                             <el-form-item prop="type">
-                                                <el-input type="text" v-model="ruleForm.type" placeholder="請輸入類型" autocomplete="off"></el-input>
+                                                <el-input type="text" v-model="ruleForm.type" placeholder="請輸入類型(英文)" autocomplete="off"></el-input>
                                             </el-form-item>
                                             <el-form-item prop="Etype">
-                                                <el-input type="text" v-model="ruleForm.Etype" autocomplete="off" placeholder="Please enter the type"></el-input>
+                                                <el-input type="text" v-model="ruleForm.Etype" autocomplete="off" placeholder="請輸入類型(英文)"></el-input>
                                             </el-form-item>
                                         </el-form>
                                         <div class="sb">
@@ -126,7 +128,7 @@
                         </div>
                     </div>
                     <div :class="['Setting_table drawer_h', {'drawer_h1': drawer2}]">
-                        <el-table :row-class-name="tableRowClassName" 
+                        <el-table :row-class-name="tableRowClassName"
                             :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
                             :data="tableData"
                             style="width: 100%"
@@ -174,8 +176,8 @@
                                 <template slot-scope="scope">
                                     <el-popconfirm
                                         triggrt='click'
-                                        title="確定刪除嗎？"
-                                        @confirm='deleLive(scope.$index)'
+                                        title="確定刪除嗎？"  
+                                        @confirm='deleteRow(scope.$index, tableData)'
                                         >
                                         <div class="ju al" slot="reference"><div class="ju al mg deleMsg cursor">刪除記錄</div></div>
                                     </el-popconfirm>
@@ -209,9 +211,17 @@
                         <div class="unmust" style="margin: 9px 0 0 10px;">(選填)</div>
                     </div>
                 </div>
-                <div class="liveContent">
-                    <textarea name="" id="" v-model="content"></textarea>
-                </div>
+                <el-form :model="ruleForms" :rules="ruless" style="margin-top: 15px;" ref="forms">
+                    <el-form-item prop="content">
+                        <!-- <textarea name="" id="" v-model="ruleForms.content"></textarea> -->
+                        <el-input
+                        type="textarea"
+                        :rows="9"
+                        placeholder="请输入内容"
+                        v-model="ruleForms.content">
+                        </el-input>
+                    </el-form-item>
+                </el-form>
             </div>
         </el-dialog>
     </div>
@@ -226,22 +236,29 @@ export default {
             position: 'right',
             visible: false,
             visible1: false,
-            content: '',
             drawer: false,
             drawer2: false,
             drawer1: false,
             areaList: ['旺角','九龍', '黃大仙'],
             typeList: ['美食','科技'],
             tableData:[
-                {live:'1',time: '221-06-06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
-                {live:'2',time: '221-06-06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
-                {live:'3',time: '221-06-06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
+                {live:'1',time: '221/06/06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
+                {live:'2',time: '221/06/06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
+                {live:'3',time: '221/06/06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
             ],
             ruleForm: {
                 area: '',
                 Einp: '',
                 type: '',
                 Etype: ''
+            },
+            ruleForms: {
+                content: ''
+            },
+            ruless: {
+                content: [
+                    { required:true, message:'內容不能為空', trigger:"blur" }
+                ],
             },
             rules: {
                 area: [
@@ -250,19 +267,19 @@ export default {
                 ],
                 Einp: [
                     // { required:true, message:'Please enter your email', trigger:"blur" }
-                    { required:true, message:'The content cannot be empty', trigger:"blur" }
+                    { required:true, message:'Please enter the region', trigger:"blur" }
                 ],
             },
             rules1: {
                 type: [
                     // { required:true, message:'Please enter your email', trigger:"blur" }
-                    { required:true, message:'The content cannot be empty', trigger:"blur" }
+                    { required:true, message:'請輸入類型', trigger:"blur" }
                 ],
                 Etype: [
                     // { required:true, message:'Please enter your email', trigger:"blur" }
-                    { required:true, message:'The content cannot be empty', trigger:"blur" }
+                    { required:true, message:'Please enter the type', trigger:"blur" }
                 ],
-            }
+            },
         }
     },
     mounted () {
@@ -316,17 +333,29 @@ export default {
             let url = URL.createObjectURL(e.target.files[0])
             this.url = url
         },
-        deleLive (i) {
-            this.tableData.splice(i,1)
-            this.tableData.$forceUpdate()
+        // deleLive (i) {
+        //     this.tableData.splice(i,1)
+        //     let arr = this.tableData
+        //     this.tableData = []
+        //     this.tableData = Array.from(arr)
+        //     // this.$forceUpdate()
+        // },
+        deleteRow(index, rows) {
+            rows.splice(index, 1);
         },
         addLive () {
-            this.dialogVisible = false
-            let D = new Date()
-            let time = D.toLocaleDateString()
-            let content = this.content
-            let url = this.url
-            this.tableData.unshift({ time:time, content: content, url: url, live: '', edit: true })
+            let that = this
+            this.$refs.forms.validate(flag => {
+                if (flag) {
+                    that.dialogVisible = false
+                    let D = new Date()
+                    let time = D.toLocaleDateString()
+                    let content = that.ruleForms.content
+                    let url = that.url
+                    that.tableData.unshift({ time:time, content: content, url: url, live: '', edit: true })
+                }
+            })
+            
         }
     },
 }
@@ -338,21 +367,6 @@ export default {
         width: 23px;
         height: 23px;
         margin-right: 5px;
-    }
-    .liveContent {
-        height: 200px;
-        border: solid 1px rgb(196, 196, 196);
-        border-radius: 7px;
-        overflow: hidden;
-        margin-top: 15px;
-        padding: 5px;
-        textarea {
-            width: 99%;
-            height: 100%;
-            border: none;
-            outline: none;
-            resize: none;
-        }
     }
     .px {
         font-size: 12px;

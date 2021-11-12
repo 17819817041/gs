@@ -15,7 +15,7 @@
                     :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
                     :data="tableData"
                     style="width: 100%"
-                    height="95%"
+                    :max-height="tableHeight"
                     >
                     <el-table-column
                         fixed
@@ -145,6 +145,18 @@
                         </template>
                     </el-table-column>
                 </el-table>
+                <div class="footpage flexEnd">
+                    <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        small
+                        :pager-count="5"
+                        :current-page="1"
+                        :page-size="10"
+                        layout=" jumper, prev, pager, next"
+                        :total="tableData.length">
+                    </el-pagination>
+                </div>
             </div>
         </div>
     </div>
@@ -154,6 +166,7 @@
 export default {
     data () {
         return {
+            tableHeight:0,
             type: '',
             outtype: '',
             area: '',
@@ -164,10 +177,41 @@ export default {
                 {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},gtype: '美食，生活', detail: ''},
                 {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '繁忙時段(9am - 9pm)', unbusy: ''},gtype: '美食，生活', detail: ''},
                 {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '', unbusy: '非繁忙時段(9pm - 9am)'},gtype: '美食，生活', detail: ''},
+                {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},gtype: '美食，生活', detail: ''},
+                {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '繁忙時段(9am - 9pm)', unbusy: ''},gtype: '美食，生活', detail: ''},
+                {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '', unbusy: '非繁忙時段(9pm - 9am)'},gtype: '美食，生活', detail: ''},
+                {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},gtype: '美食，生活', detail: ''},
+                {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '繁忙時段(9am - 9pm)', unbusy: ''},gtype: '美食，生活', detail: ''},
+                {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '', unbusy: '非繁忙時段(9pm - 9am)'},gtype: '美食，生活', detail: ''},
+                {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},gtype: '美食，生活', detail: ''},
+                {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '繁忙時段(9am - 9pm)', unbusy: ''},gtype: '美食，生活', detail: ''},
+                {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '', unbusy: '非繁忙時段(9pm - 9am)'},gtype: '美食，生活', detail: ''},
+                {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},gtype: '美食，生活', detail: ''},
+                {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '繁忙時段(9am - 9pm)', unbusy: ''},gtype: '美食，生活', detail: ''},
+                {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '', unbusy: '非繁忙時段(9pm - 9am)'},gtype: '美食，生活', detail: ''},
             ],
         }
     },
+    mounted () {
+        let that = this
+        window.addEventListener("resize",function(){
+            that.resi()
+        });
+        this.resi()
+    },
     methods: {
+        resi () {
+            let that = this
+            this.$nextTick(() => {
+                that.tableHeight = window.innerHeight - 207
+            })
+        },
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+        },
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+        },
         back () {
             this.$router.back()
         },
@@ -214,7 +258,7 @@ export default {
     .StoreAdministrator_content {
         width: 98%;
         overflow: auto;
-        height: calc(100% - 37px);
+        height: calc(100% - 34px);
         box-shadow: 0 0 5px #acacac inset;
         padding: 4px;
         margin-top: 15px;

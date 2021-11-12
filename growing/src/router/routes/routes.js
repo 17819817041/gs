@@ -142,7 +142,12 @@ export default [
                 path:"/TradingRecord",
                 name: "TradingRecord",
                 component: () => import("@/view/AdminIndex/TradingRecord.vue")
-            }
+            },  
+            {
+                path:"/Combo",
+                name: "Combo",
+                component: () => import("@/view/Combo/Combo.vue")
+            },
         ] 
     },
 ]

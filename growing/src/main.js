@@ -20,6 +20,17 @@ import 'element-ui/lib/theme-chalk/index.css';
 // Vue.use(element,{locale})
 Vue.use(element)
 
+import VueI18n from 'vue-i18n'
+Vue.use(VueI18n)
+const i18n = new VueI18n({
+  locale: localStorage.getItem('locale') || 'zh-CN', // 通过切换locale的值来实现语言切换,this.$i18n.locale
+//   locale: localStorage.getItem('locale') || 'en-US', // 通过切换locale的值来实现语言切换,this.$i18n.locale
+  messages: {
+    'zh-CN': require('@/assets/lang/zh.js'), // 中文语言包
+    'en-US': require('@/assets/lang/en.js') // 英文语言包
+  }
+})
+
 // Vue.prototype.dealImg = function (file, success, error) {
 // 	// 图片小于0.5M不压缩
 // 	if (file.size < Math.pow(512, 2)) {
@@ -123,5 +134,6 @@ Vue.directive("drag", function(el) {
 new Vue({
   router,
   store,
+  i18n,
   render: h => h(App),
 }).$mount('#app')

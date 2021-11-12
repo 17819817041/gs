@@ -1,107 +1,139 @@
 <template>
     <div class="AdvertisingOperation">
         <div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="back">廣告管理
+            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" 
+            @click="back">{{$t("lang.admanagement")}}
         </div>
-        <div class="table mg">
-            <el-table :row-class-name="tableRowClassName" 
-            :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
+        <div class="table mg bar" ref="tabl">
+            <el-table :row-class-name="tableRowClassName"
+                :max-height="tableHeight"
+                :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
                 :data="tableData"
                 style="width: 100%"
                 >
                 <el-table-column
                     fixed
                     prop="name"
-                    label="廣告計劃名稱"
-                    min-width="120"
+                    :label="$t('lang.planName')"
+                    min-width="145"
                     >
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.name == '食品會'">{{$t("lang.foodclient")}}</span>
+                        <span v-if="scope.row.name == '車展會'">{{$t("lang.carclient")}}</span>
+                        <span v-if="scope.row.name == '售藥'">{{$t("lang.medicalclient")}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="category"
-                    label="廣告類型"
+                    :label="$t('lang.ad_adType')"
                     min-width="170"
                     >
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.category == 1">{{$t("lang.food")}}</span>
+                        <span v-if="scope.row.category == 2">{{$t("lang.car")}}</span>
+                        <span v-if="scope.row.category == 3">{{$t("lang.medical")}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="area"
-                    label="廣告區域"
-                    min-width="120"
+                    :label="$t('lang.ad_adarea')"
+                    min-width="140"
                     >
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.area == '九龍'">{{$t("lang.Kowloon")}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="time"
-                    label="廣告投放時段"
-                    min-width="300"
+                    :label="$t('lang.adserving')"
+                    min-width="250"
                     >
+                    <template>
+                        <div class="tc">{{$t("lang.busyhour")}}</div>
+                        <div class="tc">{{$t("lang.unbusyhour")}}</div>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="outTime"
-                    label="廣告投放過期"
+                    :label="$t('lang.expired')"
                     min-width="220"
                     >
                 </el-table-column>
                 <el-table-column
                     prop="price"
-                    label="廣告投放總價"
-                    min-width="110"
+                    :label="$t('lang.ad_total')"
+                    min-width="140"
                     >
                 </el-table-column>
                 <el-table-column
                     prop="state"
-                    label="廣告計劃狀態"
-                    min-width="120"
+                    :label="$t('lang.ad_status')"
+                    min-width="190"
                     >
                     <template slot-scope="scope">
                     <div :class="['cursor toufang ju', {'sure_state': scope.row.state == 1, 'no_state': scope.row.state == 2}]">
-                        <span v-if="scope.row.state == 1" >已投放</span>
-                        <span v-else-if="scope.row.state == 2">未投放(未付款)</span>
-                        <span :class="[{ 'no_state': scope.row.state == 3}]" v-else-if="scope.row.state == 3">未投放(已付款)</span>
+                        <span v-if="scope.row.state == 1" >{{$t("lang.status1")}}</span>
+                        <span v-else-if="scope.row.state == 2">{{$t("lang.status2")}}</span>
+                        <span :class="[{ 'no_state': scope.row.state == 3}]" 
+                        v-else-if="scope.row.state == 3">{{$t("lang.status3")}}</span>
                     </div>
                 </template>
                 </el-table-column>
                 <el-table-column
                     prop="content"
-                    label="廣告媒體內容"
-                    min-width="120"
+                    :label="$t('lang.adcontent')"
+                    min-width="150"
                     >
                     <template>
                         <div class="preview cursor">
                             <div class="ju"><img src="@/assets/img/eye.png" alt=""></div>
-                            <div class="tc">查看預覽</div>
+                            <div class="tc">{{$t("lang.preview")}}</div>
                         </div>
                     </template>
                 </el-table-column>
                 <el-table-column
                     prop="edit"
-                    label="操作"
-                    min-width="200"
+                    :label="$t('lang.operate')"
+                    min-width="220"
                     >
                     <template slot-scope="scope">
                         <div class="putaway sa al">
                             <div class="putaway_logo" v-if="scope.row.edit == 2 || scope.row.edit == 3">
                                 <div class="ju"><img src="@/assets/img/edit.png" alt=""></div>
-                                <div class="tc">編輯計劃</div>
+                                <div class="tc">{{$t("lang.editplan")}}</div>
                             </div>
                             <!-- <div v-else></div> -->
                             <div class="putaway_logo centerL" v-if="scope.row.edit == 3 || scope.row.edit == 2">
                                 <div class="ju "><img src="@/assets/img/up.png" alt=""></div>
-                                <div class="tc">上架計劃</div>
+                                <div class="tc">{{$t("lang.shelfplan")}}</div>
                             </div>
                             <!-- <div v-else></div> -->
                             <div class="putaway_logo centerL" v-if="scope.row.edit == 1">
                                 <div class="ju"><img src="@/assets/img/down.png" alt=""></div>
-                                <div class="tc">下架計劃</div>
+                                <div class="tc">{{$t("lang.downplan")}}</div>
                             </div>
                             <!-- <div v-else></div> -->
                             <div class="putaway_logo" v-if="scope.row.edit == 2">
                                 <div class="ju"><img src="@/assets/img/delete.png" alt=""></div>
-                                <div class="tc">刪除計劃</div>
+                                <div class="tc">{{$t("lang.deleteplan")}}</div>
                             </div>
                             <!-- <div v-else></div> -->
                         </div>
                     </template>
                 </el-table-column>
             </el-table>
+            <div class="footpage flexEnd">
+                <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    small
+                    :pager-count="5"
+                    :current-page="1"
+                    :page-size="10"
+                    layout=" jumper, prev, pager, next"
+                    :total="tableData.length">
+                </el-pagination>
+            </div>
         </div>
     </div>
 </template>
@@ -110,17 +142,37 @@
 export default {
     data () {
         return {
+            tableHeight:0,
             tableData: [
-                {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
+                {name:'食品會',category: 1,area: '九龍', time: '',
                 outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 1, content: '查看預覽', edit: 1},
-                {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
+                {name:'車展會',category: 2, area: '九龍', time: '',
                 outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 2, content: '查看預覽', edit: 2},
-                {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
-                outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 3, content: '查看預覽', edit: 3}
+                {name:'售藥',category: 3,area: '九龍', time: '',
+                outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 3, content: '查看預覽', edit: 3},
             ]
         }
     },
+    mounted () {
+        let that = this
+        window.addEventListener("resize",function(){
+            that.resi()
+        });
+        this.resi()
+    },
     methods: {
+        resi () {
+            let that = this
+            this.$nextTick(() => {
+                that.tableHeight = window.innerHeight - 165
+            })
+        },
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+        },
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+        },
         tableRowClassName ({ row,rowIndex }) {
             if (rowIndex%2 == 1) {
                 return 'el_color'
@@ -144,10 +196,9 @@ export default {
             text-align: center;
         }
     }
-    
     .AdvertisingOperation {
         margin-top: 20px;
-        height: calc(100% - 23px);
+        height: calc(100% - 10px);
     }
     .AdvertisingOperation_back {
         width: 98%;
@@ -177,8 +228,9 @@ export default {
     .table {
         width: 97%;
         background: #F7F7F7;
-        height: 100%;
+        height: calc(100% - 23px);
         margin-top: 15px;
+        overflow: auto;
     }
     .red {
         background: #DC3545;

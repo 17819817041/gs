@@ -1,20 +1,20 @@
 <template>
     <div class="Settingadvertising">
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">外來廣告設定
+            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">{{$t("lang.Foreign")}}
         </div>
         <div class="Settingadvertising_content_wrap bar">
             <div class="Settingadvertising_content mg">
                 <div class="divider_wrap">
                     <div class="flex divider_message_title">
                         <div class="divider"></div>
-                        <div class="divider_text">店鋪廣告比例設定</div>
+                        <div class="divider_text">{{$t("lang.set_adset")}}</div>
                     </div>
                     <ModuleMin :columns="columns" :arr="arr" ref="child">
                         <template slot="set">
                             <div class="setText cursor">
                                 <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
-                                <div class="size12">編輯比例</div>
+                                <div class="size12">{{$t("lang.set_radio")}}</div>
                             </div>
                         </template>
                     </ModuleMin>
@@ -24,13 +24,13 @@
                 <div class="divider_wrap">
                     <div class="flex divider_message_title">
                         <div class="divider"></div>
-                        <div class="divider_text">接受外來廣告時段</div>
+                        <div class="divider_text">{{$t("lang.set_acc")}}</div>
                     </div>
                     <ModuleMin :columns="columns1" :arr="arr1" ref="child">
                         <template slot="set">
                             <div class="setText cursor">
                                 <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
-                                <div class="size12">編輯比例</div>
+                                <div class="size12">{{$t("lang.set_per")}}</div>
                             </div>
                         </template>
                     </ModuleMin>
@@ -40,13 +40,13 @@
                 <div class="divider_wrap">
                     <div class="flex divider_message_title">
                         <div class="divider"></div>
-                        <div class="divider_text">接受外來廣告類型</div>
+                        <div class="divider_text">{{$t("lang.set_type")}}</div>
                     </div>
                     <ModuleMin :columns="columns2" :arr="arr2" ref="child">
                         <template slot="set">
                             <div class="setText cursor">
                                 <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
-                                <div class="size12">編輯比例</div>
+                                <div class="size12">{{$t("lang.set_type_t")}}</div>
                             </div>
                         </template>
                     </ModuleMin>

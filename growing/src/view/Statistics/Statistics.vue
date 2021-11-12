@@ -5,10 +5,27 @@
         </div>
         <div class="Statistics_content">
             <div class="clear echarts_wrap mg">
-                <div class="float echarts" id="main"></div>
+                <div class="float echarts">
+                    <div class="e_title bold">{{$t("lang.Production")}}</div>
+                    <div class="show " id="main" v-if="active"></div>
+                </div>
+                <div class="float echarts">
+                    <div class="e_title bold">{{$t("lang.num")}}</div>
+                    <div class="show " id="main1" v-if="active"></div>
+                </div>
+                <div class="float echarts">
+                    <div class="e_title bold">{{$t("lang.lastnum")}}</div>
+                    <div class="show " id="main2" v-if="active"></div>
+                </div>
+                <div class="float echarts">
+                    <div class="e_title bold">{{$t("lang.Cumulative")}}</div>
+                    <div class="show " id="main3" v-if="active"></div>
+                </div>
+
+                <!-- <div class="float echarts" id="main"></div>
                 <div class="float echarts" id="main1"></div>
                 <div class="float echarts" id="main2"></div>
-                <div class="float echarts" id="main3"></div>
+                <div class="float echarts" id="main3"></div> -->
             </div>
         </div>
     </div>
@@ -19,10 +36,11 @@ import * as echarts from 'echarts';
 export default {
     data () {
         return {
+            active: true,
             option: {
                 title: [
                     {
-                    text: '生產情況圖'
+                    text: ''
                     }
                 ],
                 tooltip: {
@@ -53,11 +71,11 @@ export default {
                             show: false
                         },
                         data: [
-                            { value: 1048, name: '九龍' },
-                            { value: 735, name: '旺角' },
-                            { value: 580, name: '黃大仙' },
-                            { value: 484, name: '深水埗' },
-                            { value: 300, name: '中環' }
+                            { value: 1048, name: this.$t("lang.Kowloon") },
+                            { value: 735, name: this.$t("lang.MongKok") },
+                            { value: 580, name: this.$t("lang.huangdaxian") },
+                            { value: 484, name: this.$t("lang.shenshuibu") },
+                            { value: 300, name: this.$t("lang.Central") }
                         ]
                     }
                 ]
@@ -65,7 +83,7 @@ export default {
             option1: {
                 title: [
                     {
-                    text: '每個區域的投放天數'
+                    text: ''
                     }
                 ],
                 tooltip: {
@@ -82,11 +100,12 @@ export default {
                 },
                 xAxis: [
                     {
-                    type: 'category',
-                    data: ['九龍', '旺角', '黃大仙', '深水埗', '中環'],
-                    axisTick: {
-                        alignWithLabel: true
-                    }
+                        type: 'category',
+                        data: [ this.$t("lang.Kowloon") , this.$t("lang.MongKok"), this.$t("lang.huangdaxian"),
+                        this.$t("lang.shenshuibu") , this.$t("lang.Central")],
+                        axisTick: {
+                            alignWithLabel: true
+                        }
                     }
                 ],
                 yAxis: [
@@ -106,7 +125,7 @@ export default {
             option2: {
                 title: [
                     {
-                    text: '每個區域投放的剩餘天數'
+                    text: ''
                     }
                 ],
                 polar: {
@@ -135,7 +154,7 @@ export default {
             option3: {
                 title: [
                     {
-                    text: '累計投放廣告天數'
+                    text: ''
                     }
                 ],
                 xAxis: {
@@ -154,31 +173,85 @@ export default {
             }
         }
     },
+    mounted () {
+        this.echart()
+    },
+    watch: {
+        index: {
+            handler (val) {
+                if (val) {
+                    this.$forceUpdate()
+                    let data = [
+                        { value: 1048, name: this.$t("lang.Kowloon") },
+                        { value: 735, name: this.$t("lang.MongKok") },
+                        { value: 580, name: this.$t("lang.huangdaxian") },
+                        { value: 484, name: this.$t("lang.shenshuibu") },
+                        { value: 300, name: this.$t("lang.Central") }
+                    ]
+                    let data1 = [
+                        this.$t("lang.Kowloon") , 
+                        this.$t("lang.MongKok"), 
+                        this.$t("lang.huangdaxian"),
+                        this.$t("lang.shenshuibu"), 
+                        this.$t("lang.Central")
+                    ]
+                    this.option.series[0].data = data
+                    this.option1.xAxis[0].data = data1
+                    let that = this
+                    this.index = val
+                    this.active = false
+                    this.$nextTick(() => {
+                        that.echart()
+                    })
+                    
+                }
+            },
+            deep: true
+        }
+    },
+    computed: {
+        index: {
+            get () {
+                return this.$i18n.locale
+            },
+            set (val) {
+                // index = val
+            }
+        }
+    },
     methods: {
         back () {
             this.$router.back()
+        },
+        change () {
+
+        },
+        echart () {
+            let that = this
+            that.active = true
+            this.$nextTick(() => {
+                var myChart = echarts.init(document.getElementById('main'));
+                myChart.setOption(that.option);
+
+                var myChart1 = echarts.init(document.getElementById('main1'));
+                myChart1.setOption(that.option1);
+
+                var myChart2 = echarts.init(document.getElementById('main2'));
+                myChart2.setOption(that.option2);
+
+                var myChart3 = echarts.init(document.getElementById('main3'));
+                myChart3.setOption(that.option3);
+
+                window.addEventListener("resize",function(){
+                    myChart.resize();
+                    myChart1.resize();
+                    myChart2.resize();
+                    myChart3.resize();
+                });
+            })
         }
     },
-    mounted () {
-        var myChart = echarts.init(document.getElementById('main'));
-        myChart.setOption(this.option);
-
-        var myChart1 = echarts.init(document.getElementById('main1'));
-        myChart1.setOption(this.option1);
-
-        var myChart2 = echarts.init(document.getElementById('main2'));
-        myChart2.setOption(this.option2);
-
-        var myChart3 = echarts.init(document.getElementById('main3'));
-        myChart3.setOption(this.option3);
-
-        window.addEventListener("resize",function(){
-            myChart.resize();
-            myChart1.resize();
-            myChart2.resize();
-            myChart3.resize();
-        });
-    }
+    
 }
 </script>
 
@@ -227,7 +300,10 @@ export default {
         width: 40%;
         min-width: 345px;
         padding: 30px;
-        height: 400px;
+        height: 500px;
+        .show {
+            height: 100%;
+        }
         @media screen and (max-width: 960px) {
             width: 80%;
             margin: 20px 10%;
@@ -237,5 +313,9 @@ export default {
             margin: 0px 0%;
             transform: scale(0.9);
         }
+    }
+    .e_title {
+        color: rgb(88, 87, 87);
+        font-size: 17px;
     }
 </style>

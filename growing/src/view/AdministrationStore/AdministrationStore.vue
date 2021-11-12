@@ -6,7 +6,7 @@
         </div>
         <div class="content mg bar">
             <!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div> -->
-            <div class="noBar" style="height: calc(100% - 36px); overflow:auto">
+            <div class="noBar" style="height: calc(100% - 27px); overflow:auto">
                 <div class="basicsMsg boxs theme" v-show="submit">
                 <div class="flex divider_message_title">
                     <div class="divider"></div>
@@ -506,7 +506,7 @@ export default {
     }
     .content {
         width: 85%;
-        height: 100%;
+        height: calc(100% - 11px);
         padding: 0px 20px;
         overflow: auto;
 		margin-top: 15px;
@@ -525,16 +525,11 @@ export default {
     }
     .basicsMsg {
         margin-bottom: 15px;
-        padding: 0 4px 0px 4px;
+        padding: 0 2px 0px 2px;
     }
     .detailPlan {
         margin-bottom: 15px;
-        padding: 0 4px 20px 4px;
-    }
-    .detailPlan {
-        // height: 1000px;
-		padding-bottom: 30px;
-		margin-bottom: 20px;
+        padding: 0 2px 2px 2px;
     }
     .addCate {
         border: solid 1px rgb(206, 206, 206);
@@ -654,7 +649,7 @@ export default {
 		}
     }
     .divider_message_title {
-        padding: 15px 0px;
+        padding: 15px 15px;
     }
     .divider {
         width: 0;

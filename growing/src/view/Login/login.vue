@@ -7,34 +7,56 @@
                     <div class="Logo ju">
                         <img src="@/assets/img/logo.png" alt="">
                     </div>
-                    <div class="guanggao tc">XXX廣告平台</div>
+                    <div class="guanggao tc">XXX{{$t("lang.plat")}}</div>
                     <div class="welcome_text tc">Welcome</div>
                 </div>
                 <div class="i_form">
-                    <div class="login_text">登入</div>
+                    <div class="login_text sb al">
+                        <div>{{$t("lang.login")}}</div>
+                        <div class="lang bold al">
+                            <div class="al cursor lang_item" @click="active = !active">
+                                <div class="al" v-if="$i18n.locale == 'zh-CN'">
+                                    <img src="@/assets/img/hk.gif" alt=""><span style="margin: 0 29px 0 5px;">中文</span> 
+                                    <img :class="['l_arrow', { 'rota': active } ]" src="@/assets/img/arrow_up.png" alt="">
+                                </div>
+                                <div class="al" v-else-if="$i18n.locale == 'en-US'">
+                                    <img src="@/assets/img/us.gif" alt=""><span style="margin: 0 10px 0 5px;">English</span> 
+                                    <img :class="['l_arrow', { 'rota': active } ]" src="@/assets/img/arrow_up.png" alt="">
+                                </div>
+                            </div>
+                            <div :class="['changeLang',{ 'height': !active }]">
+                                <div class="al cursor" @click="$i18n.locale = 'zh-CN',active = false">
+                                    <img src="@/assets/img/hk.gif" alt=""><span style="margin: 0 25px 0 5px;">中文</span>
+                                </div>
+                                <div class="al cursor" @click="$i18n.locale = 'en-US',active = false">
+                                    <img src="@/assets/img/us.gif" alt=""><span style="margin: 0 18px 0 5px;">English</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="input_form">
-                        <div class="user_title">用戶名</div>
+                        <div class="user_title">{{$t("lang.user")}}</div>
                         <div class="user">
                             <input type="text" class="width100" v-model="userName">
                         </div>
                     </div>
                     <div class="input_form pwd_inp">
-                        <div class="user_title">密碼</div>
+                        <div class="user_title">{{$t("lang.pwd")}}</div>
                         <div class="user">
                             <input type="password" class="width100" v-model="password">
                         </div>
                     </div>
-                    <div class="login_btn tc cursor" @click="login">登入</div>
-                    <div class="sign_btn tc cursor" @click="sign">註冊</div>
+                    <div class="login_btn tc cursor" @click="login">{{$t("lang.login")}}</div>
+                    <div class="sign_btn tc cursor" @click="sign">{{$t("lang.register")}}</div>
                 </div>
             </div>
         </div>
         <div class="welcome al ju">
             <div style="margin-bottom: 70px;">
-                <div class="Logo1">
+                <div class="Logo1 ju">
                     <img src="@/assets/img/logo.png" alt="">
                 </div>
-                <div class="guanggao tc">XXX廣告平台</div>
+                <div class="guanggao tc">XXX{{$t("lang.plat")}}</div>
                 <div class="welcome_text tc">Welcome</div>
             </div>
         </div>
@@ -49,6 +71,7 @@
 export default {
     data () {
         return {
+            active: false,
             lists: [],
             userName: '',
             password: ''
@@ -85,6 +108,48 @@ export default {
 </script>
 
 <style lang='less' scoped>
+    .lang {
+        width: 100px;
+        height: 30px;
+        background: white;
+        font-size: 12px !important;
+        // border: solid 1px rgb(231, 231, 231);
+        color: gray;
+        position: relative;
+        .lang_item {
+            padding: 5px;
+        }
+    }
+    .changeLang {
+        position: absolute;
+        left: 0px;
+        top: 30px;
+        width: 100px;
+        overflow: hidden;
+        font-size: 12px !important;
+        color: gray;
+        // border-top: none;
+        // border: solid 1px rgb(231, 231, 231);
+        background: white;
+        transition: 0.2s;
+        max-height: 60px;
+        div {
+            padding: 5px;
+        }
+    }
+    .rota {
+        transform: rotateZ(0deg) !important;
+    }
+    .height {
+        max-height: 0 !important;
+        // border: solid 1px #ffffff;
+    }
+    .l_arrow {
+        width: 16px;
+        height: 16px;
+        transition: 0.2s;
+        transform: rotateZ(180deg);
+    }
     .Login {
         width: 100%;
         height: 100%;

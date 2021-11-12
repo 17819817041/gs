@@ -1,28 +1,29 @@
 <template>
     <div class="Index">
+        <div class="wrap_addPlat" v-show="showadd" @click="showadd = false"></div>
         <div class="content ju">
             <div class="content_item flex">
-                <div class="item_child clear bar">
+                <div class="item_child clear noBar">
                     <div class="flexEnd category_button_wrap">
                         <div class="category_button cursor" @click="category_list = !category_list">
                             <img style="height: 100%;" v-show="!category_list" src="@/assets/img/category.png" alt="">
                             <img style="height: 100%;" v-show="category_list" src="@/assets/img/close.png" alt="">
                         </div>
                     </div>
-                    <div :class="['child_message1']" v-show="category_list">
+                    <div :class="['child_message1',{ minwidth: $i18n.locale == 'en-US' }]" v-show="category_list">
                         <div class="child_message_title">
                             <div class="tc cursor" @click="showadd = !showadd">
-                                (九龍店)
+                                {{$t("lang.jiulong")}}
                                 <img class="t_arrow" src="@/assets/img/arrow.png" alt="">
                             </div>
 
                             <div class="addPlat_wrap boxs" v-show="showadd">
                                 <div class="input_msg cursor tc">
-                                    九龍店
+                                    {{$t("lang.jiulong")}}
                                 </div>
 
                                 <div class="addPlat al ju cursor mg" @click="AddStore">
-                                    <img src="@/assets/img/plat.png" alt="">新增店鋪
+                                    <img src="@/assets/img/plat.png" alt="">{{$t("lang.addstore")}}
                                 </div>
                             </div>
                         </div>
@@ -31,49 +32,52 @@
                         <div class="child_message_content">
                             <div class="child_message_content_item sb">
                                 <div class="al">
-                                    <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">外來廣告數
+                                    <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.foreignnum")}}
                                 </div>
                                 <div class="al">4</div>
                             </div>
                             <div class="child_message_content_item sb">
                                 <div class="al">
-                                    <img class="child_message_content_item_logo" src="@/assets/img/area.png" alt="">接受時間
+                                    <img class="child_message_content_item_logo" src="@/assets/img/area.png" alt="">{{$t("lang.Acceptancetime")}}
                                 </div>
-                                <div class="al">非繁忙9am-9pm</div>
+                                <div class="al">{{$t("lang.unbusyhour")}}</div>
                             </div>
                             <div class="child_message_content_item sb">
                                 <div class="al">
-                                    <img class="child_message_content_item_logo" src="@/assets/img/add-address.png" alt="">店鋪區域
+                                    <img class="child_message_content_item_logo" src="@/assets/img/add-address.png" alt="">{{$t("lang.storeArea")}}
                                 </div>
-                                <div class="al">九龍</div>
+                                <div class="al">{{$t("lang.jiulong")}}</div>
                             </div>
                             <div class="child_message_content_item sb">
                                 <div class="al">
-                                    <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">本店廣告數
+                                    <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.mynum")}}
                                 </div>
                                 <div class="al">1</div>
                             </div>
                             <div class="child_message_content_item sb">
                                 <div class="al">
-                                    <img class="child_message_content_item_logo" src="@/assets/img/bili.png" alt="">外來廣告比例
+                                    <img class="child_message_content_item_logo" src="@/assets/img/bili.png" alt="">{{$t("lang.ads")}}
                                 </div>
                                 <div class="al">80%</div>
                             </div>
                             <div class="moreMsg flexEnd al">
-                                <img class="cursor" @click="PlatSetting" src="@/assets/img/more.png" alt=""><span @click="PlatSetting" class="cursor">店鋪詳細設定</span>
+                                <img class="cursor" @click="PlatSetting" src="@/assets/img/more.png" 
+                                alt=""><span @click="PlatSetting" class="cursor">{{$t("lang.storeset")}}</span>
                             </div>
                         </div>
                     </div>
                     <div class="child float">
                         <div class="child_title al">
                             <div class="logo_wrap ju al"><img style="height: 70%;" src="@/assets/img/logo_ie.png" alt=""></div>
-                            <div class="text_title bold">外來廣告設定</div>
+                            <div class="text_title al bold">
+                                {{$t("lang.Foreign")}}
+                            </div>
                         </div>
                         <div class="jieshao">
-                            为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
+                            {{$t("lang.jieshao")}}
                         </div>
                         <div class="detailBtn tc cursor" @click="Settingadvertising">
-                            了解详情
+                            {{$t("lang.detail")}}
                             <div class="arrow_r ju al">
                                 <img style="height: 100%;" src="@/assets/img/arrow_r.png" alt="">
                             </div>
@@ -82,13 +86,17 @@
                     <div class="child float">
                         <div class="child_title al">
                             <div class="logo_wrap ju al"><img style="height: 70%;" src="@/assets/img/logo_ie.png" alt=""></div>
-                            <div class="text_title bold">廣告收入統計</div>
+                            <div class="text_title bold">
+                                <div class="text_title al bold">
+                                    {{$t("lang.revenue")}}
+                                </div>
+                            </div>
                         </div>
                         <div class="jieshao">
-                            为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
+                            {{$t("lang.jieshao")}}
                         </div>
                         <div class="detailBtn tc cursor" @click="Income">
-                            了解详情
+                            {{$t("lang.detail")}}
                             <div class="arrow_r ju al">
                                 <img style="height: 100%;" src="@/assets/img/arrow_r.png" alt="">
                             </div>
@@ -97,33 +105,38 @@
                     <div class="child float">
                         <div class="child_title al">
                             <div class="logo_wrap ju al"><img style="height: 70%;" src="@/assets/img/logo_ie.png" alt=""></div>
-                            <div class="text_title bold">店鋪管理</div>
+                            <div class="text_title al bold">
+                                {{$t("lang.Storemanagement")}}
+                            </div>
                         </div>
                         <div class="jieshao">
-                            为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
+                            {{$t("lang.jieshao")}}
                         </div>
                         <div class="detailBtn tc cursor" @click="AdministrationStore">
-                            了解详情
+                            {{$t("lang.detail")}}
                             <div class="arrow_r ju al">
                                 <img style="height: 100%;" src="@/assets/img/arrow_r.png" alt="">
                             </div>
                         </div>
                     </div>
                 </div>
-                <div :class="['child_message']">
+                <div :class="['child_message',{ minwidth: $i18n.locale == 'en-US' }]">
                     <div class="child_message_title">
                         <div class="tc cursor" @click="showadd = !showadd">
-                            (九龍店)
+                            {{$t("lang.jiulong")}}
                             <img class="t_arrow" src="@/assets/img/arrow.png" alt="">
                         </div>
-
-                        <div class="addPlat_wrap boxs" v-show="showadd">
+                        <div class="addPlat_wrap" v-show="showadd">
                             <div class="input_msg cursor tc">
-                                九龍店
+                                {{$t("lang.jiulong")}}
+                            </div>
+                            <div class="input_msg cursor tc">
+                                {{$t("lang.wangjiao")}}
                             </div>
 
+                            <div class="line"></div>
                             <div class="addPlat al ju cursor mg" @click="AddStore">
-                                <img src="@/assets/img/plat.png" alt="">新增店鋪
+                                <img src="@/assets/img/plat.png" alt="">{{$t("lang.addstore")}}
                             </div>
                         </div>
                     </div>
@@ -132,36 +145,37 @@
                     <div class="child_message_content">
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">外來廣告數
+                                <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.foreignnum")}}
                             </div>
                             <div class="al">4</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/area.png" alt="">接受時間
+                                <img class="child_message_content_item_logo" src="@/assets/img/area.png" alt="">{{$t("lang.Acceptancetime")}}
                             </div>
-                            <div class="al">非繁忙9am-9pm</div>
+                            <div class="al">{{$t("lang.unbusyhour")}}</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/add-address.png" alt="">店鋪區域
+                                <img class="child_message_content_item_logo" src="@/assets/img/add-address.png" alt="">{{$t("lang.storeArea")}}
                             </div>
-                            <div class="al">九龍</div>
+                            <div class="al">{{$t("lang.jiulong")}}</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">本店廣告數
+                                <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.mynum")}}
                             </div>
                             <div class="al">1</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
-                                <img class="child_message_content_item_logo" src="@/assets/img/bili.png" alt="">外來廣告比例
+                                <img class="child_message_content_item_logo" src="@/assets/img/bili.png" alt="">{{$t("lang.ads")}}
                             </div>
                             <div class="al">80%</div>
                         </div>
                         <div class="moreMsg flexEnd al">
-                            <img class="cursor" @click="PlatSetting" src="@/assets/img/more.png" alt=""><span @click="PlatSetting" class="cursor">店鋪詳細設定</span>
+                            <img class="cursor" @click="PlatSetting" src="@/assets/img/more.png" 
+                            alt=""><span @click="PlatSetting" class="cursor">{{$t("lang.storeset")}}</span>
                         </div>
                     </div>
                 </div>
@@ -178,7 +192,20 @@ export default {
             category_list: false
         }
     },
+    mounted () {
+        let that = this
+        window.addEventListener('resize', (e) => {
+            that.getResize()
+        })
+		this.getResize()
+    },
     methods: {
+        getResize () {
+            if (document.getElementsByClassName('wrap_addPlat')[0] != undefined) {
+                document.getElementsByClassName('wrap_addPlat')[0].style.width = window.innerWidth + 'px'
+                document.getElementsByClassName('wrap_addPlat')[0].style.height = window.innerHeight -30 + 'px'
+            }
+        },
         Income () {
             this.$router.push('/Income')
         },
@@ -202,6 +229,13 @@ export default {
     .Index {
         height: 100%;
         margin-top: 20px;
+        position: relative;
+        .wrap_addPlat {
+            position: absolute;
+            top: -75px;
+            left: 0;
+            z-index: 10;
+        }
     }
     .content {
         margin-top: 28px;
@@ -262,7 +296,7 @@ export default {
     }
     .child_message {
         width: 30%;
-        min-width: 255px;
+        min-width: 272px;
         padding: 23px 17px;
         height: 298px;
         background: #F7F8FB;
@@ -275,6 +309,12 @@ export default {
             margin-bottom: 20px;
             width: 50%;
         }
+    }
+    .minwidth {
+        min-width: 340px !important;
+    }
+    .line {
+        border-bottom: solid 1px rgb(190, 190, 190);
     }
     .child_message1 {
         width: 25%;
@@ -309,19 +349,29 @@ export default {
     }
     .logo_wrap {
         width: 40px;
+        min-width: 40px;
         height: 40px;
         border-radius: 12px;
         box-shadow: 0 0 5px gray;
         margin-right: 15px;
     }
     .text_title {
+        min-height: 48px;
+        height: 48px;
         font-size: 18px;
+        max-height: 48px;
     }
     .jieshao {
         font-size: 15px;
         color: #919B9D;
-        height: 70px;
+        height: 62px;
         margin: 20px 0;
+        text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+        display: -webkit-box;
+        -webkit-line-clamp: 3;/*规定超过两行的部分截断*/
+        -webkit-box-orient: vertical;
+        overflow : hidden; 
+        word-break: normal;/*在任何地方换行*/
     }
     .detailBtn {
         background: #3F4F9F;
@@ -358,18 +408,24 @@ export default {
             position: absolute;
             right: 0;
             top: 40px;
-            width: 70%;
-            padding: 5px 17px;
+            width: 100%;
+            color: gray;
+            font-size: 13px;
             background: white;
+            z-index: 11;
+            border-radius: 3px;
+            border: solid 1px #b9b9b9;
+            box-shadow: 0 3px 15px #b6b6b6;
         }
     }
     .addPlat {
-        margin-top: 20px;
-        margin-bottom: 20px;
-        // width: 70%;
-        box-shadow: 0 0 5px gray;
-        padding: 5px 0;
-        font-size: 12px;
+        // margin: 15px 0;
+        // width: 100%;
+        // box-shadow: 0 0 5px gray;
+        // padding: 5px 0;
+        // font-size: 12px;
+            padding: 12px 0;
+            font-size: 12px;
         img {
             width: 20px;
             height: 20px;
@@ -397,9 +453,7 @@ export default {
         }  
     }
     .input_msg {
-        margin-top: 30px;
-        border-bottom: solid 1px;
-        padding: 15px 0 5px 0;
+        padding: 10px 0 13px 0;
         font-size: 12px;
     }
 </style>

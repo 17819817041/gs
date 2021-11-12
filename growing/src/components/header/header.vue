@@ -4,7 +4,26 @@
         <div class="header_item sb">
             <div class="al"><img class="LOGO" @click="home" src="@/assets/img/logo.png" alt=""></div>
             <div class="ju al">
-                <!-- <div class="al"><img style="height: 20px;width: 17px;" src="@/assets/img/save.png" alt=""></div> -->
+                <div class="lang bold al">
+                    <div class="al cursor lang_item" @click="active = !active">
+                        <div class="al" v-if="$i18n.locale == 'zh-CN'">
+                            <img src="@/assets/img/hk.gif" alt=""><span class="media564" style="margin: 0 27px 0 5px;">中文</span> 
+                            <img :class="['l_arrow', { 'rota': active } ]" src="@/assets/img/arrow_up.png" alt="">
+                        </div>
+                        <div class="al" v-else-if="$i18n.locale == 'en-US'">
+                            <img src="@/assets/img/us.gif" alt=""><span class="media564" style="margin: 0 8px 0 5px;">English</span> 
+                            <img :class="['l_arrow', { 'rota': active } ]" src="@/assets/img/arrow_up.png" alt="">
+                        </div>
+                    </div>
+                    <div :class="['changeLang',{ 'height': !active }]">
+                        <div class="al cursor" @click="$i18n.locale = 'zh-CN',active = false">
+                            <img src="@/assets/img/hk.gif" alt=""><span style="margin: 0 25px 0 5px;">中文</span>
+                        </div>
+                        <div class="al cursor" @click="$i18n.locale = 'en-US',active = false">
+                            <img src="@/assets/img/us.gif" alt=""><span style="margin: 0 18px 0 5px;">English</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="headImg radius ju al">
                     <img style="height: 100%;" src="@/assets/img/growing.jpg" alt="">
                 </div>
@@ -25,13 +44,23 @@ export default {
     data () {
         return {
             visible: false,
+            active: false,
         }
     },
     mounted () {
-        document.getElementsByClassName('Back')[0].style.width = window.innerWidth + 'px'
-        document.getElementsByClassName('Back')[0].style.height = window.innerHeight + 'px'
+        let that = this
+        window.addEventListener('resize', (e) => {
+            that.getResize()
+        })
+		this.getResize()
     },
     methods: {
+        getResize () {
+            if (document.getElementsByClassName('Back')[0] != undefined) {
+                document.getElementsByClassName('Back')[0].style.width = window.innerWidth + 'px'
+                document.getElementsByClassName('Back')[0].style.height = window.innerHeight + 'px'
+            }
+        },
         home () {
             if (localStorage.getItem('platform') == 1) {
                 this.$router.push('/Index')
@@ -107,6 +136,63 @@ export default {
         }
         .userMsg>div:hover {
             background: #F5F5F5;
+        }
+    }
+    .lang {
+        width: 100px;
+        height: 30px;
+        background: rgb(255, 255, 255);
+        font-size: 12px !important;
+        border: solid 1px rgb(231, 231, 231);
+        border-radius: 2px;
+        color: gray;
+        position: relative;
+        @media screen and (max-width: 564px) {
+            width: 40px;
+        }
+        .lang_item {
+            padding: 5px;
+        }
+    }
+    .changeLang {
+        position: absolute;
+        z-index: 10;
+        left: -1px;
+        top: 28px;
+        width: 100px;
+        overflow: hidden;
+        font-size: 12px !important;
+        color: gray;
+        border-top: none;
+        border: solid 1px rgb(231, 231, 231);
+        border-radius: 0 0 2px 2px;
+        background: white;
+        transition: 0.2s;
+        max-height: 60px;
+        div {
+            padding: 5px;
+        }
+    }
+    .rota {
+        transform: rotateZ(0deg) !important;
+    }
+    .height {
+        max-height: 0 !important;
+        transition: 0.2s;
+        border: none;
+        div {
+            padding: 6px;
+        }
+    }
+    .l_arrow {
+        width: 16px;
+        height: 16px;
+        transition: 0.2s;
+        transform: rotateZ(180deg);
+    }
+    .media564 {
+        @media screen and (max-width: 564px) {
+            display: none;
         }
     }
 </style>

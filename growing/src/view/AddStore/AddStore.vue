@@ -2,46 +2,48 @@
     <div class="AddStore">
 		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
 		<div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">新增店鋪
+            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">{{$t("lang.addstore")}}
         </div>
         <div class="content mg bar">
             <!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增店鋪</div> -->
-            <div class="noBar" style="height: calc(100% - 36px); overflow:auto">
+            <div class="noBar" style="height: calc(100% - 27px); overflow:auto">
             <div class="basicsMsg boxs theme" v-show="submit">
                 <div class="flex divider_message_title">
                     <div class="divider"></div>
-                    <div class="divider_text">新增店鋪信息</div>
+                    <div class="divider_text">{{$t("lang.storemessage")}}</div>
                 </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="135px" class="demo-ruleForm">
-                    <el-form-item label="店鋪名" prop="name" class="bcolor">
+                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
+				:label-width="$i18n.locale == 'zh-CN'? '135px': '175px'" class="demo-ruleForm">
+                    <el-form-item :label='$t("lang.storeName")' prop="name" class="bcolor">
                         <div class="elinput width30">
                             <el-input class="width100" v-model="ruleForm.name"></el-input>
                         </div>
                     </el-form-item>
-                    <el-form-item label="店鋪所屬類型" prop="storeType">
+                    <el-form-item :label="$t('lang.storeType')" prop="storeType">
                         <div class="al br">
                             <div class="al width30">
-								<el-select v-model="ruleForm.storeType" class="width100" placeholder="請選擇類型">
-									<el-option label="食品" value="食品"></el-option>
-									<el-option label="科技" value="科技"></el-option>
-									<el-option label="醫療" value="醫療"></el-option>
-									<el-option label="汽車" value="汽車"></el-option>
+								<el-select v-model="ruleForm.storeType" class="width100" 
+								:placeholder="$t('lang.pldselecttype')" >
+									<el-option :label="$t('lang.food')" :value="$t('lang.food')"></el-option>
+									<el-option :label="$t('lang.Technology')" :value="$t('lang.Technology')"></el-option>
+									<el-option :label="$t('lang.medical')" :value="$t('lang.medical')"></el-option>
+									<el-option :label="$t('lang.car')" :value="$t('lang.car')"></el-option>
 								</el-select>
 							</div>
                         </div>
                     </el-form-item>
-                    <el-form-item label="店鋪所在區域" prop="area" class="bcolor">
+                    <el-form-item :label="$t('lang.storeArea1')" prop="area" class="bcolor">
                         <div class="al br">
                             <div class="al width30">
-								<el-select v-model="ruleForm.area" class="width100" placeholder="請選擇區域">
-									<el-option label="九龍區" value="九龍區"></el-option>
-									<el-option label="旺角區" value="2旺角區"></el-option>
-									<el-option label="中環區" value="中環區"></el-option>
+								<el-select v-model="ruleForm.area" class="width100" :placeholder="$t('lang.pldselectarea')">
+									<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
+									<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
+									<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
 								</el-select>
 							</div>
                         </div>
                     </el-form-item>
-                    <el-form-item label="店鋪詳細位置地址" prop="address">
+                    <el-form-item :label="$t('lang.storeAddress')" prop="address">
                         <div class="al">
                             <div class="al width30" style='min-width: 217px;'>
 								<div class="elinput width100">
@@ -50,7 +52,7 @@
 							</div>
                         </div>
                     </el-form-item>
-                    <el-form-item label="店鋪描述" prop="message" class="bcolor">
+                    <el-form-item :label="$t('lang.description')" prop="message" class="bcolor">
                         <div class="al">
                             <div class="al textarea">
                                 <textarea v-model="ruleForm.message" id="" cols="60" rows="8"></textarea>
@@ -62,27 +64,30 @@
             <div class="detailPlan boxs theme" v-show="submit">
                 <div class="flex divider_message_title">
                     <div class="divider"></div>
-                    <div class="divider_text">接受外來廣告設定</div>
+                    <div class="divider_text">{{$t("lang.ac_adset")}}</div>
                 </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="145px" class="demo-ruleForm">
-                    <el-form-item label="接受外來廣告比例" prop="ratio"  class="bcolor">
+                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
+				:label-width="$i18n.locale == 'zh-CN'? '135px': '245px'" class="demo-ruleForm">
+                    <el-form-item :label="$t('lang.ac_ads')" prop="ratio"  class="bcolor">
                         <div class="width30">
 							<!-- <el-input v-model="ruleForm.ratio "></el-input> -->
-                            <el-select v-model="ruleForm.ratio" class="width100" placeholder="請選擇比例">
+                            <el-select v-model="ruleForm.ratio" class="width100" 
+							:placeholder="$t('lang.seleads')">
                                 <el-option label="80%" value="1"></el-option>
                                 <el-option label="50%" value="2"></el-option>
                             </el-select>
 						</div>
                     </el-form-item>
-                    <el-form-item label="接收外來廣告時段" prop="time">
+                    <el-form-item :label="$t('lang.receivingad')" prop="time">
                         <div class="flex br">
                             <div class="flex width30">
-								<el-select class="width100" style="height: 38px;" v-model="ruleForm.time" placeholder="請選擇時間段">
-									<el-option label="繁忙时段(9am-9pm)" value="繁忙时段(9am-9pm)"></el-option>
-									<el-option label="非繁忙时段(9pm-9am)" value="非繁忙时段(9pm-9am)"></el-option>
+								<el-select class="width100" style="height: 38px;" v-model="ruleForm.time" 
+									:placeholder="$t('lang.pldselecttime')">
+									<el-option :label="$t('lang.busyhour')" :value="$t('lang.busyhour')"></el-option>
+									<el-option :label="$t('lang.unbusyhour')" :value="$t('lang.unbusyhour')"></el-option>
 								</el-select>
 								<div class="addCate al" @click="addTime(ruleForm.time)">
-									添加
+									{{$t("lang.addbtn")}}
 								</div>
 							</div>
 							<div class="list clear">
@@ -93,17 +98,18 @@
                         </div>
                     </el-form-item>
                     
-                    <el-form-item label="可接收外來廣告類型" prop="type" class="bcolor">
+                    <el-form-item :label="$t('lang.ac_type')" prop="type" class="bcolor">
                         <div class="flex br">
                             <div class="flex width30">
-								<el-select class="width100" style="height: 38px;" v-model="ruleForm.type" placeholder="請選擇類型">
-									<el-option label="食品" value="食品"></el-option>
-									<el-option label="科技" value="科技"></el-option>
-									<el-option label="醫療" value="醫療"></el-option>
-									<el-option label="汽車" value="汽車"></el-option>
+								<el-select class="width100" style="height: 38px;" v-model="ruleForm.type" 
+									:placeholder="$t('lang.pldselecttype')">
+									<el-option :label="$t('lang.food')" :value="$t('lang.food')"></el-option>
+									<el-option :label="$t('lang.Technology')" :value="$t('lang.Technology')"></el-option>
+									<el-option :label="$t('lang.medical')" :value="$t('lang.medical')"></el-option>
+									<el-option :label="$t('lang.car')" :value="$t('lang.car')"></el-option>
 								</el-select>
 								<div class="addCate al" @click="addType(ruleForm.type)">
-									添加
+									{{$t("lang.addbtn")}}
 								</div>
 							</div>
 							<div class="list clear">
@@ -119,28 +125,32 @@
             <div class="detailPlan boxs theme" v-show="submit">
                 <div class="flex divider_message_title">
                     <div class="divider"></div>
-                    <div class="divider_text">店鋪廣告媒體內容信息</div>
+                    <div class="divider_text">{{$t("lang.storemediamsg")}}</div>
                 </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                    <el-form-item label="廣告媒體類型" prop="mediaType" class="bcolor">
+                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" 
+				ref="ruleForm" :label-width="$i18n.locale == 'zh-CN'? '135px': '175px'" class="demo-ruleForm">
+                    <el-form-item :label="$t('lang.admediatype')" prop="mediaType" class="bcolor">
                         <div class="al">
-                            <el-select v-model="ruleForm.cmediaType" placeholder="請選擇類型" @change="getType">
-                                <el-option label="圖片" value="1"></el-option>
-                                <el-option label="視頻" value="2"></el-option>
+                            <el-select v-model="ruleForm.cmediaType" :placeholder="$t('lang.pldselecttype')" @change="getType">
+                                <el-option :label="$t('lang.image')" value="1"></el-option>
+								<el-option :label="$t('lang.video')" value="2"></el-option>
                             </el-select>
                         </div>
                     </el-form-item>
-                    <el-form-item label="廣告媒體時長" prop="inp">
-                        <div class="al block">
+                    <el-form-item :label="$t('lang.duration')" prop="inp">
+                        <div class="al block775">
                             <div class="al inp_time ju">
-									<!-- <input type="text" class="tc"> -->
-									<el-input class="width100"
-									oninput ="value=value.replace(/[^0-9.]/g,'')" :disabled="video" v-model="ruleForm.inp"></el-input>
+								<!-- <input type="text" class="tc"> -->
+								<el-input class="width100"
+								oninput ="value=value.replace(/[^0-9.]/g,'')" 
+								:disabled="video" v-model="ruleForm.inp"></el-input>
                             </div>
-                            <div class="al">分鐘 <span style="color: gray;margin-left: 5px;">(請輸入整數)</span></div>
+                            <div class="al">
+								{{$t('lang.minute')}} <span style="color: gray;margin-left: 5px;">{{$t('lang.int')}}</span>
+							</div>
                         </div>
                     </el-form-item>
-                    <el-form-item label="廣告媒體內容" prop="content" class="bcolor">
+                    <el-form-item :label="$t('lang.adcontent')" prop="content" class="bcolor">
                         <div class="textarea_wrap clear">
 							<label for="img">
 								<div class="addImg ju al cursor float">
@@ -161,25 +171,26 @@
 							</div>
 						</div>
 						<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
-							圖片格式限制PNG \JPG \JPEG \GIF，数量限制10張，大小限制3M。視頻格式限制 MP4，大小限制100M(媒體建議尺寸1920*1080)。
+							{{$t('lang.becare')}}
 						</div>
-						<div style='font-size: 12px; line-height: 15px;'>媒體時長按每分鐘针数。不足1分鐘按1分鐘計算.</div>
+						<div style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
                     </el-form-item>
                 </el-form>
             </div>
 
             <div class="addorcancel tc ju al" v-show="submit">
-                <div class="addorcancel_btn cursor" style="margin-right: 30px;" @click="submitG">確認新增</div>
-                <div class="addorcancel_btn cursor" @click="goBack">取消</div>
+                <div class="addorcancel_btn cursor" style="margin-right: 30px;" @click="submitG">{{$t('lang.sureadd')}}</div>
+                <div class="addorcancel_btn cursor" @click="goBack">{{$t('lang.cancel')}}</div>
             </div>  
 
 			<div class="basicsMsg boxs padding backWhite" v-show="!submit">
-				<div class="true_title al ju">
-					<img src="@/assets/img/success_sign.png" alt="">確認提交新增店鋪成功 ！
+				<div :class="['true_title mg al ju',
+					{ size27: $i18n.locale=='zh-CN',size15: $i18n.locale=='en-US' }]">
+					<img src="@/assets/img/success_sign.png" alt="">{{$t('lang.suretext')}} ！
 				</div>
-				<div class="ju">您的新增店铺信息已提交至後台，管理夤将蛊快蜜核您的店铺信息.</div>
+				<div class="ju size_13 mg">{{$t('lang.suretext1')}}.</div>
                 <div class="iknow ju al">
-                    <div class="cursor" @click="goBack">確定</div>
+                    <div class="cursor" @click="goBack">{{$t('lang.sure')}}</div>
                 </div>
 			</div>
             </div>
@@ -507,7 +518,7 @@ export default {
     }
     .content {
         width: 85%;
-        height: 100%;
+        height: calc(100% - 11px);
         padding: 0px 20px;
         overflow: auto;
 		margin-top: 15px;
@@ -526,16 +537,11 @@ export default {
     }
     .basicsMsg {
         margin-bottom: 15px;
-        padding: 0 2px 20px 2px;
+        padding: 0 2px 0px 2px;
     }
     .detailPlan {
         margin-bottom: 15px;
         padding: 0 2px 0px 2px;
-    }
-    .detailPlan {
-        // height: 1000px;
-		// padding-bottom: 30px;
-		margin-bottom: 20px;
     }
     .addCate {
         border: solid 1px rgb(206, 206, 206);
@@ -611,10 +617,20 @@ export default {
 		}
 	}
 	.true_title {
-		font-size: 27px;
+		width: 80%;
 		padding-bottom: 50px;
 		img {
+			margin-right: 5px;
 			width: 35px;
+		}
+	}
+	.size27 {
+		font-size: 27px;
+	}
+	.size15 {
+		font-size: 27px;
+		@media screen and (max-width: 870px) {
+			font-size: 17px;
 		}
 	}
 	.padding {
@@ -653,6 +669,11 @@ export default {
 			display: block !important;
 		}
     }
+	.block775 {
+        @media screen and (max-width: 775px) {
+			display: block !important;
+		}
+    }
     .divider_message_title {
         padding: 15px 30px;
     }
@@ -678,6 +699,13 @@ export default {
             resize: none;
         }
     }
+	.size_13 {
+		width: 90%;
+		font-size: 15px;
+		@media screen and (max-width: 870px) {
+			font-size: 12px;
+		}
+	}
     .addorcancel {
         margin-top: 30px;
     }
