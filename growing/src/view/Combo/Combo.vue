@@ -264,7 +264,7 @@
                             </div>
                         </div>
                         <div class="ju">
-                            <div class="start cursor bold" @click="AdvertisingAdd">開始計劃</div>
+                            <div class="start cursor bold" @click="AdvertisingAddPro">開始計劃</div>
                         </div>
                     </div>
                     <div class="combo_item">
@@ -309,7 +309,7 @@
                             </div>
                         </div>
                         <div class="ju">
-                            <div class="start cursor bold" @click="AdvertisingAdd">開始計劃</div>
+                            <div class="start cursor bold" @click="AdvertisingAddPlus">開始計劃</div>
                         </div>
                     </div>
                 </div>
@@ -373,7 +373,7 @@
                 </div>
                 <div class="call_us">
                     <div class="ju">
-                        <div class="start cursor bold">聯絡我們獲取專業技術</div>
+                        <div class="start cursor bold" @click="technology">聯絡我們獲取專業技術</div>
                     </div>
                 </div>
             </div>
@@ -411,6 +411,15 @@ export default {
         AdvertisingAdd () {
             this.$router.push('/AdvertisingAdd')         //新增廣告
         },
+        AdvertisingAddPro () {
+            this.$router.push('/AdvertisingAddPro')
+        },
+        AdvertisingAddPlus () {
+            this.$router.push('/AdvertisingAddPlus')
+        },
+        technology () {
+            this.$router.push('/technology')
+        }
     }
 }
 </script>

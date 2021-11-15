@@ -48,6 +48,8 @@ export const lang = {
 	huangdaxian: 'Wong Tai Sin',
 	shenshuibu: 'Sham Shui Po',
 	Central: 'Central',
+
+	street: 'street',
 	
 	busy: 'Busy',
 	nobusy: 'Not busy',
@@ -60,6 +62,8 @@ export const lang = {
 	pldselecttype: 'Please choose the type',
 	pldselectarea: 'Please select a region',
 	AdvertisingArea: 'Advertising area',
+	addTime: 'Ad serving time',
+	addTime1: 'Ad schedule',
 	jiulong: 'Kowloon District',
 	wangjiao: 'Mong Kok District',
 	zhonghuan: 'Central District',
@@ -67,6 +71,8 @@ export const lang = {
 	adserving: 'Ad serving time',
 	pldselecttime: 'Please select a time period',
 	cycle: 'Ad delivery cycle',
+	pldselectstore: 'Please select a store',
+	pldselectstreet: 'Please select the street',
 	busyhour: 'Busy hour(9am-9pm)',
 	unbusyhour: 'Off-peak hours(9pm-9am)',
 	sdate: 'Start date',
@@ -90,6 +96,12 @@ export const lang = {
 	adconfirm: 'Confirm advertising plan',
 	adconfirmsucc: 'Confirm the success of the advertising plan',
 	adconfirmsucc1: 'Your advertising plan has been submitted to the background, and the administrator will review your advertising plan as soon as possible',
+	chooseStore: 'Designated store',
+	ks: 'Kowloon Store',
+	mks: 'Mong Kok Store',
+	cs: 'Central Store',
+
+
 
 
 	//AdvertisingOperation

@@ -49,6 +49,16 @@ export default [
                 component: () => import("@/view/AdvertisingAdd/AdvertisingAdd.vue")
             },  
             {
+                path:"/AdvertisingAddPro",
+                name: "AdvertisingAddPro",
+                component: () => import("@/view/AdvertisingAdd/AdvertisingAddPro.vue")
+            },  
+            {
+                path:"/AdvertisingAddPlus",
+                name: "AdvertisingAddPlus",
+                component: () => import("@/view/AdvertisingAdd/AdvertisingAddPlus.vue")
+            },  
+            {
                 path:"/Statistics",
                 name: "Statistics",
                 component: () => import("@/view/Statistics/Statistics.vue")
@@ -147,6 +157,11 @@ export default [
                 path:"/Combo",
                 name: "Combo",
                 component: () => import("@/view/Combo/Combo.vue")
+            },    
+            {
+                path:"/technology",
+                name: "technology",
+                component: () => import("@/view/technology/technology.vue")
             },
         ] 
     },

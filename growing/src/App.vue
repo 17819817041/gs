@@ -189,6 +189,19 @@ export default {
 		border: none;
 		outline: none;
 	}  
+	.AdvertisingAdd .el-radio-group {
+		margin-left: -90px;
+		@media screen and (max-width: 564px) {
+			margin-left: 10px !important;
+			margin-top: 10px;
+		}
+	}
+	.AdvertisingAdd .el-radio-group .el-radio {
+		margin-right: 0px !important;
+	}
+
+
+
 	.el-popover {
 		max-width: 800px;
 		@media screen and (max-width: 888px) {

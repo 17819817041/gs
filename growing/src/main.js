@@ -13,6 +13,20 @@ import Header from "@/components/header/header.vue"
 Vue.component("Header",Header)
 
 
+
+import * as VueGoogleMaps from 'vue2-google-maps'
+ 
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: 'AIzaSyCPsFd1_OQSPP76jQ72gIAId-3t45xhR1o',
+    libraries: 'places',
+    region: 'HK', // 这个地区自己定
+    language: 'zh' // 这个语言自己定
+  },
+  installComponents: true
+})
+
+
 import element from "element-ui"
 // import "@/assets/theme/index.css"
 import 'element-ui/lib/theme-chalk/index.css'; 

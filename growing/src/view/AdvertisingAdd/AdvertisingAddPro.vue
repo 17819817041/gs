@@ -25,7 +25,7 @@
 										<el-option :label="$t('lang.medical')" :value="$t('lang.medical')"></el-option>
 										<el-option :label="$t('lang.car')" :value="$t('lang.car')"></el-option>
 									</el-select>
-									<div class="addCate al" @click="addType(ruleForm.type)">
+									<div class="addCate cursor al" @click="addType(ruleForm.type)">
 										{{$t("lang.addbtn")}}
 									</div>
 								</div>
@@ -36,7 +36,42 @@
 								</div>
 							</div>
 						</el-form-item>
-						<!-- <el-form-item :label="$t('lang.AdvertisingArea')" prop="area">
+                        <el-form-item>
+							<el-radio-group v-model="radio" size="small">
+                                <el-radio label="1" border>指定店鋪</el-radio>
+                                <el-radio label="2" border>指定區域</el-radio>
+                                <el-radio label="3" border>指定街道</el-radio>
+                            </el-radio-group>
+						</el-form-item>
+                        <el-form-item :label="$t('lang.chooseStore')" prop="store" v-show="radio == 1">
+							<div class="flex br">
+								<div class="flex">
+									<el-select v-model="ruleForm.store" :placeholder="$t('lang.pldselectstore')">
+										<el-option :label="$t('lang.ks')" :value="$t('lang.ks')"></el-option>
+										<el-option :label="$t('lang.mks')" :value="$t('lang.mks')"></el-option>
+										<el-option :label="$t('lang.cs')" :value="$t('lang.cs')"></el-option>
+									</el-select>
+									<div class="addCate cursor al" @click="addStore(ruleForm.store)">
+										{{$t("lang.addbtn")}}
+									</div>
+								</div>
+								<div class="list clear">
+									<div style="color: #B0B0B0;" class="list_item float al" 
+									v-for="(item,i) in storeList" :key="i">
+										{{item}} <span class="al" style="margin-left: 5px">
+											<img class="cursor" @click="addStore(i)" src="@/assets/img/cha.png" alt="">
+										</span>
+									</div>
+								</div>
+							</div>
+                            <div class="map_wrap">
+                                <gmap-map :center="centers" :zoom="11" class="gooleMap" 
+                                    @click="updateMaker">
+                                    <gmap-marker :position="positionse" :draggable="true" @dragend="updateMaker"/>
+                                </gmap-map>
+                            </div>
+						</el-form-item>
+						<el-form-item :label="$t('lang.AdvertisingArea')" prop="area" v-show="radio == 2">
 							<div class="flex br">
 								<div class="flex">
 									<el-select v-model="ruleForm.area" :placeholder="$t('lang.pldselectarea')">
@@ -44,7 +79,7 @@
 										<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
 										<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
 									</el-select>
-									<div class="addCate al" @click="addArea(ruleForm.area)">
+									<div class="addCate cursor al" @click="addArea(ruleForm.area)">
 										{{$t("lang.addbtn")}}
 									</div>
 								</div>
@@ -57,7 +92,38 @@
 									</div>
 								</div>
 							</div>
-						</el-form-item> -->
+						</el-form-item>
+                        <el-form-item :label="$t('lang.AdvertisingArea')" prop="street" v-show="radio == 3">
+							<div class="flex br">
+								<div class="flex">
+									<el-select v-model="ruleForm.area" 
+                                    :placeholder="$t('lang.pldselectarea')" style="margin-right: 10px;">
+										<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
+										<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
+										<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
+									</el-select>
+                                    <el-select v-model="ruleForm.street" :placeholder="$t('lang.pldselectstreet')">
+										<el-option :label="$t('lang.Kowloon') + $t('lang.street')" 
+                                        v-if="ruleForm.area == $t('lang.jiulong')" :value="$t('lang.Kowloon') + $t('lang.street')"></el-option>
+										<el-option :label="$t('lang.MongKok') + $t('lang.street')" 
+                                        v-if="ruleForm.area == $t('lang.wangjiao')" :value="$t('lang.MongKok') + $t('lang.street')"></el-option>
+										<el-option :label="$t('lang.Central') + $t('lang.street')" 
+                                        v-if="ruleForm.area == $t('lang.zhonghuan')" :value="$t('lang.Central') + $t('lang.street')"></el-option>
+									</el-select>
+									<div class="addCate cursor al" @click="addStreet(ruleForm.street)">
+										{{$t("lang.addbtn")}}
+									</div>
+								</div>
+								<div class="list clear">
+									<div style="color: #B0B0B0;" class="list_item float al" 
+									v-for="(item,i) in streetList" :key="i">
+										{{item}} <span class="al" style="margin-left: 5px">
+											<img class="cursor" @click="deleStreet(i)" src="@/assets/img/cha.png" alt="">
+										</span>
+									</div>
+								</div>
+							</div>
+						</el-form-item>
 					</el-form>
 				</div>
 				<div class="detailPlan theme" v-show="submit">
@@ -65,15 +131,15 @@
 						<div class="iden radius"></div> {{$t("lang.DetailedPlan")}}
 					</div>
 					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
-						:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" class="demo-ruleForm">
-						<!-- <el-form-item :label="$t('lang.adserving')" prop="time">
+					:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" class="demo-ruleForm">
+						<el-form-item :label="$t('lang.adserving')" prop="time">
 							<div class="flex br">
 								<div class="flex">
 									<el-select v-model="ruleForm.time" :placeholder="$t('lang.pldselecttime')">
 										<el-option :label="$t('lang.busyhour')" :value="$t('lang.busyhour')"></el-option>
 										<el-option :label="$t('lang.unbusyhour')" :value="$t('lang.unbusyhour')"></el-option>
 									</el-select>
-									<div class="addCate al" @click="addTime(ruleForm.time)">
+									<div class="addCate cursor al" @click="addTime(ruleForm.time)">
 										{{$t("lang.addbtn")}}
 									</div>
 								</div>
@@ -83,7 +149,7 @@
 									</div>
 								</div>
 							</div>
-						</el-form-item> -->
+						</el-form-item>
 						<el-form-item :label="$t('lang.cycle')" prop="date">
 							<div style="min-width: 200px;width: 100%" class='clear'>
 								<div class="float" style="margin-right: 15px;width: 140px;">
@@ -170,7 +236,7 @@
 							<div class="total_price_item">{{$t('lang.unphprice')}}: $2000 HKD</div>
 							<!-- <div class="price_plan flex cursor" @click="drawer = !drawer"> -->
 							<el-popover
-								:placement="position"
+								:placement="position1"
 								trigger="click"
 								v-model="visible">
 								<div>
@@ -219,18 +285,24 @@
 </template>
 
 <script>
+
+import { gmapApi } from 'vue2-google-maps'
+
 export default {
     data() {
         return {
-			position: 'left-end',
+			position1: 'left-end',
 			visible: false,
 			drawer: false,
 			submit: true,
 			video: true,
+            radio: '1',
             ruleForm: {
                 name: '',
-                // area: '',
-                // time: '',
+                area: '',
+                store: '',
+                street: '',
+                time: '',
                 type: '',
 				date: '',
                 startDate: '',
@@ -246,12 +318,18 @@ export default {
                     { required: true, message: '請輸入廣告名稱', trigger: 'blur' },
                     { min: 3, max: 5, message: '長度需3 到 5 個字符', trigger: 'blur' }
                 ],
-                // area: [
-                //     { required: true, message: '請選擇投放區域', trigger: 'blur' }
-                // ],
-                // time: [
-                //     { required: true, message: '請選擇时间段', trigger: 'blur' }
-                // ],
+                area: [
+                    { required: true, message: '請選擇投放區域', trigger: 'blur' }
+                ], 
+                store: [
+                    { required: true, message: '請選擇店鋪', trigger: 'blur' }
+                ],
+                street: [
+                    { required: true, message: '請選擇街道', trigger: 'blur' }
+                ],
+                time: [
+                    { required: true, message: '請選擇时间段', trigger: 'blur' }
+                ],
                 type: [
                     { required: true, message: '請選擇媒體類型', trigger: 'blur' }
                 ], 
@@ -322,8 +400,37 @@ export default {
 			areaList: [],
 			timeList: [],
 			imageList: [],
-			minute: []
+			minute: [],
+            storeList: [],
+            streetList: [],
+            map: '',
+            place: null,
+            positionse: {
+                lat: 43.648509660046656,
+                lng: -79.3789402652274
+                }
+
         };
+    },
+    props: {
+        // position: {
+        //     type: Object,
+        //     default: () => {
+        //         return {
+        //         lat: 43.648509660046656,
+        //         lng: -79.3789402652274
+        //         }
+        //     }
+        // }
+    },
+    computed: {
+        google: gmapApi, // 获取官方的OBject 使用官方API的时候可以用
+        centers() {
+            return {
+                lat: this.positionse.lat,
+                lng: this.positionse.lng
+            }
+        }
     },
 	beforeMount() {
 		let that = this
@@ -335,7 +442,33 @@ export default {
 	created () {
 		
 	},
+    mounted () {
+        
+    },
     methods: {
+        updateMaker (event) {
+            console.log('updateMaker, ', event.latLng.lat(), event.latLng.lng());
+            this.positionse = {
+                lat: event.latLng.lat(),
+                lng: event.latLng.lng()
+            }
+            this.pointToAddress(this.positionse.lat, this.positionse.lng, this.pushAddress)
+        },
+        pushAddress(res) {
+            this.$emit('mark', res, this.positionse)
+        },
+        pointToAddress(lat, lng, backcall) {
+            // 实例化Geocoder服务用于解析地址
+            var geocoder = new this.google.maps.Geocoder();
+            // 地理反解析
+            geocoder.geocode({ location: new this.google.maps.LatLng(lat, lng) }, function geoResults(results, status) {
+                if (status === this.google.maps.GeocoderStatus.OK) {
+                backcall(results[0].formatted_address);
+                } else {
+                console.log('：error ' + status);
+                }
+            });
+        },
 		fun () {
 			if (window.innerWidth <= 564) {
                 this.labelPosition = 'top'
@@ -390,8 +523,28 @@ export default {
 				this.areaList = Array.from(arr)
 			}
 		},
+        addStore (item) {
+			if (item) {
+				this.storeList.push(item)
+				let arr = new Set(this.storeList)
+				this.storeList = Array.from(arr)
+			}
+		},
+        addStreet (item) {
+			if (item) {
+				this.streetList.push(item)
+				let arr = new Set(this.streetList)
+				this.streetList = Array.from(arr)
+			}
+		},
 		deleType (i) {
 			this.typeList.splice(i,1)
+		},
+        deleStore (i) {
+			this.storeList.splice(i,1)
+		},
+        deleStreet (i) {
+			this.streetList.splice(i,1)
 		},
 		deleArea (i) {
 			this.areaList.splice(i,1)
@@ -518,7 +671,7 @@ export default {
 									} else {
 										this.$message({
 											type: 'error',
-											message: '單個圖片最大限制3M !'
+											message: '單個圖片最大限制3M!'
 										})
 									}
 								} else { }
@@ -881,4 +1034,21 @@ export default {
             padding: 15px 40px;
         }
     } 
+    .map_wrap {
+        margin-left: -90px;
+        margin-top: 10px;
+		@media screen and (max-width: 564px) {
+            margin-left: 1px;
+        }
+    }
+    .gooleMap {
+        width: 60%; 
+        height: 400px;
+        min-width: 500px;
+        @media screen and (max-width: 564px) {
+            min-width: 300px;
+            width: 100%;
+            height: 300px;
+        }
+    }
 </style>

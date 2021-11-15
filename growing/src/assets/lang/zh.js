@@ -49,6 +49,8 @@ export const lang = {
 	huangdaxian: '黃大仙',
 	shenshuibu: '深水埗',
 	Central: '中環',
+
+	street: '街道',
 	
 	busy: '繁忙',
 	nobusy: '非繁忙',
@@ -58,9 +60,14 @@ export const lang = {
 	message: '基礎信息',
 	adname: '廣告計劃名稱',
 	adtype: '廣告投放類型',
+	addTime: '廣告投放時段',
+	addTime1: '廣告投放時間',
 	pldselecttype: '請選擇類型',
 	pldselectarea: '請選擇區域',
 	AdvertisingArea: '廣告投放區域',
+	pldselectstore: '請選擇店鋪',
+	pldselectstreet: '請選擇街道',
+
 	jiulong: '九龍區',
 	wangjiao: '旺角區',
 	zhonghuan: '中環區',
@@ -91,6 +98,11 @@ export const lang = {
 	adconfirm: '確認廣告計劃',
 	adconfirmsucc: '確認廣告計劃成功',
 	adconfirmsucc1: '您的廣告計劃已提交至後台，管理員将盡快審核您的廣告計劃',
+	chooseStore: '指定投放店鋪',
+	ks: '九龍店',
+	mks: '旺角店',
+	cs: '中環店',
+
 
 
 	//AdvertisingOperation
