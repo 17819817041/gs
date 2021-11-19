@@ -2,7 +2,7 @@ module.exports = {
     publicPath:"./",
     lintOnSave: false,
     devServer: {
-        https: true,
+        // https: true,
 		hot:true,
         proxy: {
 			"api": {

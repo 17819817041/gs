@@ -199,6 +199,18 @@ export default {
             },
         }
     },
+    // watch: {
+    //     columns: {
+    //         handler (val) {
+    //             this.columns = val
+    //         }
+    //     },
+    //     arr: {
+    //         handler (val) {
+    //             this.arr = val
+    //         }
+    //     }
+    // },
     props: {
         columns: {
             type: Array,

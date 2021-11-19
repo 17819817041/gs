@@ -83,6 +83,7 @@ export const lang = {
 	duration: 'Advertising media duration',
 	minute: 'Minute',
 	int: '(Please enter an integer)',
+	int1: 'Within 3 minutes',
 	adcontent: 'Advertising media content',
 	becare: 'The picture format is limited to PNG \JPG \JPEG \GIF, the number is limited to 10, and the size is limited to 3M. The video format is limited to MP4, and the size is limited to 100M (recommended media size is 1920*1080).',
 	becare1: 'Media duration is counted per minute. Less than 1 minute is calculated as 1 minute.',
@@ -167,15 +168,20 @@ export const lang = {
 	
 
 	//Settingadvertising
+	set_price: 'Expected advertising revenue',
+	set_p: 'Edit expected income',
 	set_adset: 'Foreign advertisement ratio setting',
 	set_radio: 'Edit ratio',
 	set_acc: 'Accept foreign advertising slots',
 	set_per: 'Edit period',
 	set_type: 'Accept external advertising types',
 	set_type_t: 'Edit type',
-	
-
-
+	set_edit: 'Edit',
+	set_title: 'Percentage of foreign ads',
+	set_title1: 'Foreign advertising period',
+	set_title2: 'Types of foreign ads',
+	set_bili: 'Percentage of foreign advertisements received',
+	nodata: 'No data'
 
 }
   

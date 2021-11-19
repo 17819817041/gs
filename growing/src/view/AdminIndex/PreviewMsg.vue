@@ -342,16 +342,6 @@ export default {
         height: 20px;
         // opacity: 0.9;
     }
-	.addImg {
-		border: dashed 2px rgb(201, 201, 201);
-		width: 100px;
-		height: 100px;
-        margin: 5px;
-		@media screen and (max-width: 564px) {
-			width: 70px;
-			height: 70px;
-		}
-	}
 	.footer_w {
 		height: 50px;
 	}

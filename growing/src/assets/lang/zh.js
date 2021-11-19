@@ -85,6 +85,7 @@ export const lang = {
 	duration: '廣告媒體時長',
 	minute: '分鐘',
 	int: '(請輸入整數)',
+	int1: '(廣告媒體內容時長請限制在3分鐘內)',
 	adcontent: '廣告媒體內容',
 	becare: '圖片格式限制PNG \JPG \JPEG \GIF，数量限制10張，大小限制3M。視頻格式限制 MP4，大小限制100M(媒體建議尺寸1920*1080)。',
 	becare1: '媒體時長按每分鐘計數。不足1分鐘按1分鐘計算.',
@@ -170,12 +171,18 @@ export const lang = {
 
 
 	//Settingadvertising
+	set_price: '期望廣告收入',
+	set_p: '編輯期望收入',
 	set_adset: '外来廣告比例設定',
 	set_radio: '編輯比例',
 	set_acc: '接受外來廣告時段',
 	set_per: '編輯時段',
 	set_type: '接受外來廣告類型',
 	set_type_t: '編輯類型',
-	
-
+	set_edit: '操作',
+	set_title: '外來廣告比例',
+	set_title1: '外來廣告時段',
+	set_title2: '外來廣告類型',
+	set_bili: '接收外来廣告比例',
+	nodata: '暂无数据',
 }

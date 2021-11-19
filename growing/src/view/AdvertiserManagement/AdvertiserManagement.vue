@@ -106,8 +106,6 @@
                 </el-table>
                 <div class="footpage flexEnd">
                     <el-pagination
-                        @size-change="handleSizeChange"
-                        @current-change="handleCurrentChange"
                         small
                         :pager-count="5"
                         :current-page="tableData.length"

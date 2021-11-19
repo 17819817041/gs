@@ -319,35 +319,8 @@ export default {
         height: 100%;
         overflow: hidden;
     }
-    .deleImg {
-        background: rgb(224, 224, 224);
-        position: absolute;
-        top: -5px;
-        right: -5px;
-        width: 20px;
-        height: 20px;
-        // opacity: 0.9;
-    }
-	.addImg {
-		border: dashed 2px rgb(201, 201, 201);
-		width: 100px;
-		height: 100px;
-        margin: 5px;
-		@media screen and (max-width: 564px) {
-			width: 70px;
-			height: 70px;
-		}
-	}
 	.footer_w {
 		height: 50px;
-	}
-
-	.true_title {
-		font-size: 27px;
-		padding-bottom: 50px;
-		img {
-			width: 35px;
-		}
 	}
 	.padding {
 		padding: 125px 0;

@@ -45,7 +45,13 @@
 						</el-form-item>
                         <el-form-item :label="$t('lang.chooseStore')" prop="store" v-show="radio == 1">
 							<div class="flex br">
-								<div class="flex">
+								<div style="color: #B0B0B0;" class="list_item float al" 
+									v-for="(item,i) in storeList" :key="i">
+									{{item}} <span class="al" style="margin-left: 5px">
+										<img class="cursor" @click="deleStore(i)" src="@/assets/img/cha.png" alt="">
+									</span>
+								</div>
+								<!-- <div class="flex">
 									<el-select v-model="ruleForm.store" :placeholder="$t('lang.pldselectstore')">
 										<el-option :label="$t('lang.ks')" :value="$t('lang.ks')"></el-option>
 										<el-option :label="$t('lang.mks')" :value="$t('lang.mks')"></el-option>
@@ -59,17 +65,12 @@
 									<div style="color: #B0B0B0;" class="list_item float al" 
 									v-for="(item,i) in storeList" :key="i">
 										{{item}} <span class="al" style="margin-left: 5px">
-											<img class="cursor" @click="addStore(i)" src="@/assets/img/cha.png" alt="">
+											<img class="cursor" @click="deleStore(i)" src="@/assets/img/cha.png" alt="">
 										</span>
 									</div>
-								</div>
+								</div> -->
 							</div>
-                            <div class="map_wrap">
-                                <gmap-map :center="centers" :zoom="11" class="gooleMap" 
-                                    @click="updateMaker">
-                                    <gmap-marker :position="positionse" :draggable="true" @dragend="updateMaker"/>
-                                </gmap-map>
-                            </div>
+                            
 						</el-form-item>
 						<el-form-item :label="$t('lang.AdvertisingArea')" prop="area" v-show="radio == 2">
 							<div class="flex br">
@@ -122,6 +123,17 @@
 										</span>
 									</div>
 								</div>
+							</div>
+						</el-form-item>
+						<el-form-item>
+							<div class="map_wrap">
+								<input
+								id="pac-input"
+								class="controls"
+								type="text"
+								placeholder="Search Box"
+								/>
+								<div id="map"></div>
 							</div>
 						</el-form-item>
 					</el-form>
@@ -200,10 +212,31 @@
 								</div>
 							</el-form-item>
 						</div>
+						<el-form-item label="廣告媒體投放時間">
+							<div class="">
+								<el-radio-group v-model="radio1" size="small">
+									<el-radio label="1" border>均分廣告時間</el-radio>
+									<el-radio label="2" border>自定義廣告時間</el-radio>
+								</el-radio-group> 
+								<el-button type="primary" size="small" @click="openDra(radio1)"
+								class="elbtn" v-show="radio1">選擇時間</el-button>
+							</div>
+							<div class="list1 clear" v-show="radio1 == '1'">
+								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in adList" :key="i">
+									{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleItem(i)" src="@/assets/img/cha.png" alt=""></span>
+								</div>
+							</div>
+							<div class="list1 clear" v-show="radio1 == '2'">
+								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in adList1" :key="i">
+									{{item.time}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleItem1(i)" src="@/assets/img/cha.png" alt=""></span>
+								</div>
+							</div>
+						</el-form-item>
+
 						<el-form-item :label="$t('lang.adcontent')" prop="content">
 							<div class="textarea_wrap clear">
 								<label for="img">
-									<div class="addImg ju al cursor float">
+									<div class="addImg ju al float">
 										<img style="height: 70%;" src="@/assets/img/add.png" alt="">
 									</div>
 									<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
@@ -281,22 +314,132 @@
                 </div>
 			</div>
         </div>
+		<el-drawer
+			title="請選擇您需要投放的時間段"
+			:visible.sync="drawer1"
+			:direction="direction"
+			:before-close="handleClose">
+			<div class="dra_content noBar">
+				<div>
+					<el-form :label-position="labelPosition"  ref="ruleForm" 
+						:label-width="$i18n.locale == 'zh-CN'? '80px': '205px'" class="demo-ruleForm">
+						<el-form-item label="繁忙時段">
+							<el-checkbox-group v-model="checkedCities" @change="adListadd">
+								<el-checkbox v-for="item in busyTimeList" :label="item" :key="item">{{item}}</el-checkbox>
+							</el-checkbox-group>
+						</el-form-item>
+						<el-form-item label="超繁忙時段">
+							<el-checkbox-group v-model="checkedCities1" @change="adsListadd">
+								<el-checkbox v-for="item in sbusyTimeList" :label="item" :key="item">{{item}}</el-checkbox>
+							</el-checkbox-group>
+						</el-form-item>
+						<el-form-item label="繁忙時段">
+							<el-checkbox-group v-model="checkedCities2" @change="adunListadd">
+								<el-checkbox v-for="item in unbusyTimeList" :label="item" :key="item">{{item}}</el-checkbox>
+							</el-checkbox-group>
+						</el-form-item>
+					</el-form>
+					<div class="footer_text tc">將會把廣告投放時長平均分配於選中時間段播放</div>
+					<div class="footer_text tc" style="margin-bottom: 100px;">
+						如需指定時間端廣告播放時長，請切換至<span class="sfooter_text">自定義廣告時間</span>選項
+					</div>
+				</div>
+				<div class="dra_footer">
+					<div class="flexEnd">
+						<el-button size="small" @click="drawer1 = false">取消</el-button>
+  						<el-button size="small" type="primary" @click="sureaddadList">確定</el-button>
+					</div>
+				</div>
+			</div>
+		</el-drawer>
+		<el-drawer
+			title="請選擇您需要投放的時間段及廣告播放時長:"
+			:visible.sync="drawer2"
+			:direction="direction"
+			:before-close="handleClose">
+			<div class="dra_content noBar">
+				<div class="list_wrap">
+					<div class="al size12 ju" v-for="(item,i) in addTimeList" :key="i" style="margin-bottom: 15px;">
+						<span class="l_time">{{item.time}}</span> <el-input-number @change="handleChange" 
+						style="margin: 0 5px;width: 107px;" v-model="item.num"
+						:min="1" :max="100" label="描述文字" size="mini"></el-input-number> 分鐘
+					</div>
+					
+					<div class="ju" style="margin-top: 20px;">
+						<!-- <el-button size="small" style="margin-right: 10px;" type="primary">確定</el-button> -->
+						<el-popover
+							style="width: 80px;"
+							placement="right"
+							width="260"
+							trigger="click">
+							<el-form label-position="top">
+								<el-form-item label="請選擇時間:">
+									<el-checkbox-group v-model="checkedCities" @change="group">
+										<el-checkbox v-for="item in fList"
+											:label="item" :key="item.time">{{item.time}}
+										</el-checkbox>
+									</el-checkbox-group>
+								</el-form-item>
+							</el-form>
+							<div slot="reference"><el-button type="" size="small">新增時間</el-button></div>
+						</el-popover>
+						<el-popconfirm
+							style="width: 56px;"
+							title="確定重置嗎？"
+							@confirm='reset'>
+							<div slot="reference"><el-button size="small" style="margin-left: 10px;">重置</el-button></div>
+						</el-popconfirm>
+					</div>
+					<div class="size12 ju" style="margin-top: 20px;">
+						請確認選擇的<span style="color: red">廣告播放時長(分鐘)總數</span>與<span style="color: red">廣告媒體投放時長</span>一致
+					</div>
+				</div>
+				<div class="dra_footer">
+					<div class="flexEnd">
+						<el-button size="small" @click="drawer2 = false">取消</el-button>
+  						<el-button size="small" type="primary" @click="sueraddList1">確定</el-button>
+					</div>
+				</div>
+			</div>
+		</el-drawer>
     </div>
 </template>
 
 <script>
-
-import { gmapApi } from 'vue2-google-maps'
-
 export default {
     data() {
         return {
+			adList: [],
+			adList1: [],
+			copy1: [],
+			copy2: [],
+			copy3: [],
+
+			addTimeList: [],
+
+			checkedCities: [],
+			busyTimeList: [],
+
+			checkedCities1: [],
+			sbusyTimeList: ['12:00~13:00','18:00~19:00'],
+
+			checkedCities2: [],
+			unbusyTimeList: [],
+
+			fList: [],
+
+
 			position1: 'left-end',
 			visible: false,
 			drawer: false,
+			drawer1: false,
+			drawer2: false,
+			direction: 'rtl',
 			submit: true,
 			video: true,
             radio: '1',
+            radio1: '',
+			labelPosition: 'left',
             ruleForm: {
                 name: '',
                 area: '',
@@ -312,7 +455,6 @@ export default {
 				cmediaType: '',
 				inp: '',
             },
-			labelPosition: 'left',
             rules: {
                 name: [
                     { required: true, message: '請輸入廣告名稱', trigger: 'blur' },
@@ -405,32 +547,7 @@ export default {
             streetList: [],
             map: '',
             place: null,
-            positionse: {
-                lat: 43.648509660046656,
-                lng: -79.3789402652274
-                }
-
-        };
-    },
-    props: {
-        // position: {
-        //     type: Object,
-        //     default: () => {
-        //         return {
-        //         lat: 43.648509660046656,
-        //         lng: -79.3789402652274
-        //         }
-        //     }
-        // }
-    },
-    computed: {
-        google: gmapApi, // 获取官方的OBject 使用官方API的时候可以用
-        centers() {
-            return {
-                lat: this.positionse.lat,
-                lng: this.positionse.lng
-            }
-        }
+		}
     },
 	beforeMount() {
 		let that = this
@@ -440,35 +557,331 @@ export default {
 		this.fun()
     },
 	created () {
-		
+		let h = 9
+		let s = 10
+		for (let i=0;i<11;i++) {
+			s += 1
+			h += 1
+			this.busyTimeList.push(h + ':00~' + s + ':00')
+		}
+
+		let hour = -1
+		let second = 0
+		for (let i=0;i<24;i++) {
+			hour += 1
+			second += 1
+			this.fList.push( {time: hour + ':00~' + second + ':00', num: 1} )
+		}
+
+		let unh = 22
+		let uns = 23
+		for (let i=0;i<11;i++) {
+			uns -= 1
+			unh -= 1
+			this.unbusyTimeList.push(unh + ':00~' + uns + ':00')
+		}
 	},
     mounted () {
-        
+        this.initMap()
+		window.shopadd = this.shopadd;
+		window.closewin = this.closewin;
     },
     methods: {
-        updateMaker (event) {
-            console.log('updateMaker, ', event.latLng.lat(), event.latLng.lng());
-            this.positionse = {
-                lat: event.latLng.lat(),
-                lng: event.latLng.lng()
-            }
-            this.pointToAddress(this.positionse.lat, this.positionse.lng, this.pushAddress)
-        },
-        pushAddress(res) {
-            this.$emit('mark', res, this.positionse)
-        },
-        pointToAddress(lat, lng, backcall) {
-            // 实例化Geocoder服务用于解析地址
-            var geocoder = new this.google.maps.Geocoder();
-            // 地理反解析
-            geocoder.geocode({ location: new this.google.maps.LatLng(lat, lng) }, function geoResults(results, status) {
-                if (status === this.google.maps.GeocoderStatus.OK) {
-                backcall(results[0].formatted_address);
-                } else {
-                console.log('：error ' + status);
-                }
-            });
-        },
+		adListadd (val) {
+			this.copy1 = Array.from(val)
+		},
+		adsListadd (val) {
+			this.copy2 = Array.from(val)
+		},
+		adunListadd (val) {
+			this.copy3 = Array.from(val)
+		},
+		deleItem (i) {
+			this.adList.splice(i,1)
+		},
+		deleItem1 (i) {
+			this.adList1.splice(i,1)
+		},
+		sureaddadList () {
+			this.adList = this.copy1.concat(this.copy2.concat(this.copy3))
+			this.drawer1 = false
+		},
+		sueraddList1 () {
+			this.adList1 = this.addTimeList
+			this.drawer2 = false
+		},
+
+		initMap () {
+			let that = this
+			let boolean = true
+			let map = new google.maps.Map(document.getElementById('map'), {
+				center: {lat: 22.6, lng: 114.1},
+				zoom: 8,
+				mapTypeId: "roadmap",
+				disableDefaultUI: true,
+				zoomControl: boolean,
+				mapTypeControl: boolean,
+				scaleControl: boolean,
+				streetViewControl: boolean,
+				rotateControl: boolean,
+				fullscreenControl: boolean,
+			});
+
+			const myLatLng = {lat: 22.6, lng: 114.1}
+			new google.maps.Marker({
+				position: myLatLng,
+				map,
+				title: "Hello World!",
+			});
+
+			let msg = this.msg
+			var data = [
+				{id:1,name:'小李'},
+			]
+			this.$nextTick(() => {
+				const contentString = `
+					<div>
+						${data.map((item) => {
+							return `<div><span>${item.name}</span></div>`
+						}).join('')}
+					</div>
+				`
+				const infowindow = new google.maps.InfoWindow({
+					content: contentString,
+				});
+				const marker = new google.maps.Marker({
+					position: myLatLng,
+					map,
+					title: "Uluru (Ayers Rock)",
+				});
+				marker.addListener("click", () => {
+					infowindow.open({
+						anchor: marker,
+						map,
+						shouldFocus: false,
+					});
+				})
+				const triangleCoords = [
+					{ lat: 22.27, lng: 113.46 },
+					{ lat: 22.28, lng: 113.50 },
+					{ lat: 22.30, lng: 113.55 },
+					{ lat: 22.32, lng: 113.57 },
+					{ lat: 22.35, lng: 113.59 },
+					{ lat: 22.37, lng: 113.60 },
+					{ lat: 22.40, lng: 113.62 },
+				];
+				// Construct the polygon.
+				const bermudaTriangle = new google.maps.Polygon({
+					paths: triangleCoords,
+					strokeColor: "#FF0000",
+					strokeOpacity: 0.8,
+					strokeWeight: 2,
+					fillColor: "#FF0000",
+					fillOpacity: 0.35,
+				});
+				bermudaTriangle.setMap(map);
+			})
+			const input = document.getElementById("pac-input");
+			const searchBox = new google.maps.places.SearchBox(input);
+			console.log(searchBox)
+			map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+			map.addListener("bounds_changed", () => {
+				searchBox.setBounds(map.getBounds());
+			});
+			let markers = [];
+			searchBox.addListener("places_changed", () => {
+				const places = searchBox.getPlaces();
+
+				if (places.length == 0) {
+				return;
+				}
+
+				// Clear out the old markers.
+				markers.forEach((marker) => {
+				marker.setMap(null);
+				});
+				markers = [];
+
+				// For each place, get the icon, name and location.
+				const bounds = new google.maps.LatLngBounds();
+
+				places.forEach((place) => {
+				if (!place.geometry || !place.geometry.location) {
+					console.log("Returned place contains no geometry");
+					return;
+				}
+
+				const icon = {
+					url: place.icon,
+					size: new google.maps.Size(71, 71),
+					origin: new google.maps.Point(0, 0),
+					anchor: new google.maps.Point(17, 34),
+					scaledSize: new google.maps.Size(25, 25),
+				};
+
+				// Create a marker for each place.
+				markers.push(
+					new google.maps.Marker({
+					map,
+					icon,
+					title: place.name,
+					position: place.geometry.location,
+					})
+				);
+				if (place.geometry.viewport) {
+					// Only geocodes have viewport.
+					bounds.union(place.geometry.viewport);
+				} else {
+					bounds.extend(place.geometry.location);
+				}
+				});
+				map.fitBounds(bounds);
+			});
+
+
+			const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
+			const icons = {
+				parking: {
+				icon: iconBase + "parking_lot_maps.png",
+				},
+				library: {
+				icon: iconBase + "library_maps.png",
+				},
+				info: {
+				icon: iconBase + "info-i_maps.png",
+				},
+			};
+			const features = [
+				{
+				position: new google.maps.LatLng(22.7, 114.1),
+				type: "info",
+				msg: '美食店'
+				},
+				{
+				position: new google.maps.LatLng(22.79, 114.16),
+				type: "info",
+				msg: '車展會'
+				},
+				{
+				position: new google.maps.LatLng(22.87, 114.13),
+				type: "info",
+				msg: '科技大廈'
+				},
+				{
+				position: new google.maps.LatLng(22.66, 114.10),
+				type: "info",
+				msg: '醫院'
+				},
+				{
+				position: new google.maps.LatLng(22.8, 114.1),
+				type: "info",
+				msg: '時尚大廳'
+				},
+				{
+				position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
+				type: "library",
+				},
+			];
+			// Create markers.
+			for (let i = 0; i < features.length; i++) {
+				const marker1 = new google.maps.Marker({
+					position: features[i].position,
+					icon: icons[features[i].type].icon,
+					map: map,
+				});
+
+				const contentString1 = `
+					<div class='bold tc'>${features[i].msg}</div>` + 
+					`<div style='margin-top: 10px;' class='ju al'>
+						<div onclick="closewin()" class='cursor close'
+						style='padding: 5px 20px;
+						color: gray;
+						font-size: 12px;
+						border: solid 1px rgb(201, 201, 201);
+						border-radius: 4px;
+						margin-right: 5px;'>取消</div>
+
+						<div onclick="shopadd('${features[i].msg}')"
+						class='cursor' style='padding: 5px 20px;
+						color: rgb(253, 253, 253);
+						background: rgb(0, 153, 255);
+						font-size: 12px;
+						border-radius: 4px;'>添加</div>
+					</div>
+				`
+				const infowindow1 = new google.maps.InfoWindow({
+					content: contentString1,
+				});
+				window.infowindow1 = infowindow1
+				marker1.addListener("click", () => {
+					infowindow1.open({
+						anchor: marker1,
+						map,
+						shouldFocus: false,
+					});
+				});
+			}
+		},
+		shopadd (val) {
+			this.addStore(val)
+		},
+		closewin (val) {
+			console.log(window.infowindow1)
+		},
+
+
+		reset () {
+			this.addTimeList = []
+			this.checkedCities = []
+		},
+		group (val) {
+			this.addTimeList = Array.from(val)
+		},
+		handleChange(value) {
+			console.log(value);
+		},
+		openDra (i) {
+			if (i == 1) {
+				this.drawer1 = true
+			} else if (i == 2) {
+				this.drawer2 = true
+			}
+		},
+		handleClose(done) {
+			this.$confirm('确认关闭？')
+			.then(_ => {
+				done();
+			})
+			.catch(_ => {});
+		},
 		fun () {
 			if (window.innerWidth <= 564) {
                 this.labelPosition = 'top'
@@ -710,7 +1123,40 @@ export default {
 
 <style lang='less' scoped>
 @import "@/less/style.less";
-.AdvertisingOperation_back {
+	.elbtn {
+		margin-left: 20px;
+		@media screen and (max-width: 564px) {
+			margin-left: 0;
+		}
+	}
+	.l_time {
+		width: 72px;
+		text-align: end;
+	}
+	.footer_text {
+		font-size: 12px;
+		color: gray;
+	}
+	.sfooter_text {
+		color: rgb(13, 219, 255);
+		font-size: 12px;
+	}
+	.dra_content {
+		height: 100%;
+		overflow: auto;
+		padding: 0 20px;
+	}
+	.dra_footer {
+		position: absolute;
+		padding: 30px 20px;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		background: white;
+		box-shadow: 0 0 5px gray;
+		z-index: 10;
+	}
+	.AdvertisingOperation_back {
         width: 98%;
         font-size: 20px;
         img {
@@ -810,14 +1256,17 @@ export default {
 		}
     }
 	.addImg {
-		border: dashed 2px rgb(201, 201, 201);
+		border: dashed 1px rgb(201, 201, 201);
 		width: 100px;
 		height: 100px;
 		margin: 5px;
 		@media screen and (max-width: 564px) {
-			width: 50px;
-			height: 50px;
+			width: 70px;
+			height: 70px;
 		}
+	}
+	.addImg:hover {
+		border: dashed 1px rgb(148, 148, 148);
 	}
 	.textarea_wrap_item {
 		width: 100px;
@@ -1005,6 +1454,14 @@ export default {
 			margin-top: 10px !important;
 		}
 	}
+	.list1 {
+		margin-left: 10px;
+		margin-top: 10px;
+		@media screen and (max-width: 870px) {
+			margin-left: -10px !important;
+			margin-top: 10px !important;
+		}
+	}
 	.list_item {
 		border: dashed 2px #d3d3d3;
 		margin-left: 10px;
@@ -1050,5 +1507,88 @@ export default {
             width: 100%;
             height: 300px;
         }
+    }
+
+	#map {
+        height: 400px;
+        width: 100%;
+		max-width: 900px;
+    }
+    #description {
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    }
+
+    #infowindow-content .title {
+    font-weight: bold;
+    }
+
+    #infowindow-content {
+    display: none;
+    }
+
+    #map #infowindow-content {
+    display: inline;
+    }
+
+    .pac-card {
+    background-color: #fff;
+    border: 0;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
+    margin: 10px;
+    padding: 0 0.5em;
+    font: 400 18px Roboto, Arial, sans-serif;
+    overflow: hidden;
+    font-family: Roboto;
+    padding: 0;
+    }
+
+    #pac-container {
+    padding-bottom: 12px;
+    margin-right: 12px;
+    }
+
+    .pac-controls {
+    display: inline-block;
+    padding: 5px 11px;
+    }
+
+    .pac-controls label {
+    font-family: Roboto;
+    font-size: 13px;
+    font-weight: 300;
+    }
+
+    #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 250px;
+        top: 66px !important;
+        left: -3px !important;
+        border-radius: 3px;
+        height: 25px;
+    }
+
+    #pac-input:focus {
+    border-color: #4d90fe;
+    }
+
+    #title {
+    color: #fff;
+    background-color: #4d90fe;
+    font-size: 25px;
+    font-weight: 500;
+    padding: 6px 12px;
+    }
+
+    #target {
+    width: 345px;
     }
 </style>

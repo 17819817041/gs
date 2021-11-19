@@ -2,7 +2,7 @@
     <div class="Index">
         <div class="content ju">
             <div class="content_item flex">
-                <div class="item_child clear bar">
+                <div class="item_child clear noBar">
                     <div class="child float">
                         <div class="child_title al">
                             <div class="logo_wrap ju al"><img style="height: 70%;" src="@/assets/img/logo_ie.png" alt=""></div>
@@ -22,6 +22,21 @@
                         <div class="child_title al">
                             <div class="logo_wrap ju al"><img style="height: 70%;" src="@/assets/img/logo_ie.png" alt=""></div>
                             <div class="text_title bold">店鋪管理</div>
+                        </div>
+                        <div class="jieshao">
+                            为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
+                        </div>
+                        <div class="detailBtn tc cursor" @click="StoreAdministrator">
+                            了解详情
+                            <div class="arrow_r ju al">
+                                <img style="height: 100%;" src="@/assets/img/arrow_r.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="child float">
+                        <div class="child_title al">
+                            <div class="logo_wrap ju al"><img style="height: 70%;" src="@/assets/img/logo_ie.png" alt=""></div>
+                            <div class="text_title bold">廣告套餐管理</div>
                         </div>
                         <div class="jieshao">
                             为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品

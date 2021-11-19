@@ -142,7 +142,7 @@
                     <el-form-item label="廣告媒體內容" prop="content" class="bcolor">
                         <div class="textarea_wrap clear">
 							<label for="img">
-								<div class="addImg ju al cursor float">
+								<div class="addImg ju al float">
 									<img src="@/assets/img/add.png" alt="">
 								</div>
 								<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
@@ -601,14 +601,17 @@ export default {
         // opacity: 0.9;
     }
 	.addImg {
-		border: dashed 2px rgb(201, 201, 201);
+		border: dashed 1px rgb(201, 201, 201);
 		width: 100px;
 		height: 100px;
-        margin: 5px;
+		margin: 5px;
 		@media screen and (max-width: 564px) {
 			width: 70px;
 			height: 70px;
 		}
+	}
+	.addImg:hover {
+		border: dashed 1px rgb(148, 148, 148);
 	}
 	.footer_w {
 		height: 50px;

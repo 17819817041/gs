@@ -189,15 +189,47 @@ export default {
 		border: none;
 		outline: none;
 	}  
-	.AdvertisingAdd .el-radio-group {
+	.AdvertisingAdd .basicsMsg .el-radio-group {
 		margin-left: -90px;
 		@media screen and (max-width: 564px) {
 			margin-left: 10px !important;
 			margin-top: 10px;
 		}
 	}
-	.AdvertisingAdd .el-radio-group .el-radio {
+	.AdvertisingAdd .basicsMsg .el-radio-group .el-radio {
 		margin-right: 0px !important;
+	}  
+	.AdvertisingAdd .detailPlan .el-radio-group {
+		margin-left: 20px !important;
+		@media screen and (max-width: 564px) {
+			// margin-top: 10px;
+			margin-left: 0px !important;
+		}
+	}
+	.AdvertisingAdd .detailPlan .el-radio-group .el-radio {
+		margin-right: 0px !important;
+	}
+	.AdvertisingAdd .el-drawer {
+		width: 90% !important;
+		max-width: 500px !important;
+	}
+	.el-checkbox__label {
+		font-size: 12px !important;
+	}
+	.el-checkbox {
+		margin-right: 20px !important;
+		@media screen and (max-width: 564px) {
+			margin-right: 8px;
+		}
+	}
+
+
+
+	.technology .el-form .el-form-item__label {
+		height: 40px;
+		line-height: 15px;
+		display: flex;
+		align-items: center;
 	}
 
 
@@ -456,7 +488,12 @@ export default {
 		padding: 20px 0;
 	}
 
-
+	.Settingadvertising .el-dialog {
+		min-width: 300px !important;
+	}
+	.el-message-box {
+		width: 300px !important;
+	}
 
 
 

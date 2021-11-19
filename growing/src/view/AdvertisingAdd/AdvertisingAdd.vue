@@ -66,24 +66,6 @@
 					</div>
 					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
 						:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" class="demo-ruleForm">
-						<!-- <el-form-item :label="$t('lang.adserving')" prop="time">
-							<div class="flex br">
-								<div class="flex">
-									<el-select v-model="ruleForm.time" :placeholder="$t('lang.pldselecttime')">
-										<el-option :label="$t('lang.busyhour')" :value="$t('lang.busyhour')"></el-option>
-										<el-option :label="$t('lang.unbusyhour')" :value="$t('lang.unbusyhour')"></el-option>
-									</el-select>
-									<div class="addCate al" @click="addTime(ruleForm.time)">
-										{{$t("lang.addbtn")}}
-									</div>
-								</div>
-								<div class="list clear">
-									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in timeList" :key="i">
-										{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleTime(i)" src="@/assets/img/cha.png" alt=""></span>
-									</div>
-								</div>
-							</div>
-						</el-form-item> -->
 						<el-form-item :label="$t('lang.cycle')" prop="date">
 							<div style="min-width: 200px;width: 100%" class='clear'>
 								<div class="float" style="margin-right: 15px;width: 140px;">
@@ -137,8 +119,8 @@
 						<el-form-item :label="$t('lang.adcontent')" prop="content">
 							<div class="textarea_wrap clear">
 								<label for="img">
-									<div class="addImg ju al cursor float">
-										<img style="height: 70%;" src="@/assets/img/add.png" alt="">
+									<div class="addImg ju al float">
+										<img style="height: 30%;" src="@/assets/img/add.png" alt="">
 									</div>
 									<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
 								</label>
@@ -657,14 +639,17 @@ export default {
 		}
     }
 	.addImg {
-		border: dashed 2px rgb(201, 201, 201);
+		border: dashed 1px rgb(201, 201, 201);
 		width: 100px;
 		height: 100px;
 		margin: 5px;
 		@media screen and (max-width: 564px) {
-			width: 50px;
-			height: 50px;
+			width: 70px;
+			height: 70px;
 		}
+	}
+	.addImg:hover {
+		border: dashed 1px rgb(148, 148, 148);
 	}
 	.textarea_wrap_item {
 		width: 100px;
