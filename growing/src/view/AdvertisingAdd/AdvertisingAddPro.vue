@@ -406,6 +406,7 @@
 </template>
 
 <script>
+var abc = null
 export default {
     data() {
         return {
@@ -547,6 +548,7 @@ export default {
             streetList: [],
             map: '',
             place: null,
+			infowindow: null
 		}
     },
 	beforeMount() {
@@ -639,28 +641,28 @@ export default {
 				{id:1,name:'小李'},
 			]
 			this.$nextTick(() => {
-				const contentString = `
-					<div>
-						${data.map((item) => {
-							return `<div><span>${item.name}</span></div>`
-						}).join('')}
-					</div>
-				`
-				const infowindow = new google.maps.InfoWindow({
-					content: contentString,
-				});
-				const marker = new google.maps.Marker({
-					position: myLatLng,
-					map,
-					title: "Uluru (Ayers Rock)",
-				});
-				marker.addListener("click", () => {
-					infowindow.open({
-						anchor: marker,
-						map,
-						shouldFocus: false,
-					});
-				})
+				// const contentString = `
+				// 	<div>
+				// 		${data.map((item) => {
+				// 			return `<div><span>${item.name}</span></div>`
+				// 		}).join('')}
+				// 	</div>
+				// `
+				// const infowindow = new google.maps.InfoWindow({
+				// 	content: contentString,
+				// });
+				// const marker = new google.maps.Marker({
+				// 	position: myLatLng,
+				// 	map,
+				// 	title: "Uluru (Ayers Rock)",
+				// });
+				// marker.addListener("click", () => {
+				// 	infowindow.open({
+				// 		anchor: marker,
+				// 		map,
+				// 		shouldFocus: false,
+				// 	});
+				// })
 				const triangleCoords = [
 					{ lat: 22.27, lng: 113.46 },
 					{ lat: 22.28, lng: 113.50 },
@@ -837,24 +839,32 @@ export default {
 						border-radius: 4px;'>添加</div>
 					</div>
 				`
-				const infowindow1 = new google.maps.InfoWindow({
-					content: contentString1,
-				});
-				window.infowindow1 = infowindow1
+	
 				marker1.addListener("click", () => {
-					infowindow1.open({
-						anchor: marker1,
-						map,
-						shouldFocus: false,
-					});
+					that.openwin(contentString1,marker1,map)
+					
 				});
 			}
+
 		},
 		shopadd (val) {
 			this.addStore(val)
 		},
+		openwin (contentString1,marker1,map) {
+			if (this.infowindow) {
+				this.infowindow.close()
+			}
+			this.infowindow = new google.maps.InfoWindow({
+				content: contentString1,
+			});
+			this.infowindow.open({
+				anchor: marker1,
+				map,
+				shouldFocus: false,
+			});
+		},
 		closewin (val) {
-			console.log(window.infowindow1)
+			this.infowindow.close()
 		},
 
 

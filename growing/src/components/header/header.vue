@@ -7,7 +7,7 @@
                 <div class="lang bold al">
                     <div class="al cursor lang_item" @click="active = !active">
                         <div class="al" v-if="$i18n.locale == 'zh-CN'">
-                            <img src="@/assets/img/hk.gif" alt=""><span class="media564" style="margin: 0 27px 0 5px;">中文</span> 
+                            <img src="@/assets/img/hk.gif" alt=""><span class="media564" style="margin: 0 27px 0 5px;white-space: nowrap;">中文</span> 
                             <img :class="['l_arrow', { 'rota': active } ]" src="@/assets/img/arrow_up.png" alt="">
                         </div>
                         <div class="al" v-else-if="$i18n.locale == 'en-US'">
@@ -16,10 +16,10 @@
                         </div>
                     </div>
                     <div :class="['changeLang',{ 'height': !active }]">
-                        <div class="al cursor" @click="$i18n.locale = 'zh-CN',active = false">
+                        <div class="al cursor" @click="zh">
                             <img src="@/assets/img/hk.gif" alt=""><span style="margin: 0 25px 0 5px;">中文</span>
                         </div>
-                        <div class="al cursor" @click="$i18n.locale = 'en-US',active = false">
+                        <div class="al cursor" @click="en">
                             <img src="@/assets/img/us.gif" alt=""><span style="margin: 0 18px 0 5px;">English</span>
                         </div>
                     </div>
@@ -76,6 +76,16 @@ export default {
         },
         outLogin () {
             this.$router.push('/Login')
+        },
+        zh () {
+            localStorage.setItem('locale','zh-CN')
+            this.$i18n.locale = 'zh-CN'
+            this.active = false
+        },
+        en () {
+            localStorage.setItem('locale','en-US')
+            this.$i18n.locale = 'en-US'
+            this.active = false
         }
     }
 }

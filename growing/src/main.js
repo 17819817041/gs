@@ -20,7 +20,10 @@ import 'element-ui/lib/theme-chalk/index.css';
 // Vue.use(element,{locale})
 Vue.use(element)
 
+
+
 import VueI18n from 'vue-i18n'
+import { locale } from 'core-js'
 Vue.use(VueI18n)
 const i18n = new VueI18n({
   locale: localStorage.getItem('locale') || 'zh-CN', // 通过切换locale的值来实现语言切换,this.$i18n.locale
