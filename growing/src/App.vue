@@ -190,10 +190,11 @@ export default {
 		outline: none;
 	}  
 	.AdvertisingAdd .basicsMsg .el-radio-group {
-		margin-left: -90px;
+		margin-left: 20px;
+		margin-right: 10px;
 		@media screen and (max-width: 564px) {
-			margin-left: 10px !important;
-			margin-top: 10px;
+			margin-left: 0px !important;
+			margin-top: 0px;
 		}
 	}
 	.AdvertisingAdd .basicsMsg .el-radio-group .el-radio {
@@ -202,12 +203,16 @@ export default {
 	.AdvertisingAdd .detailPlan .el-radio-group {
 		margin-left: 20px !important;
 		@media screen and (max-width: 564px) {
-			// margin-top: 10px;
+			margin-top: -10px;
 			margin-left: 0px !important;
 		}
 	}
 	.AdvertisingAdd .detailPlan .el-radio-group .el-radio {
-		margin-right: 0px !important;
+		margin-right: 10px !important;
+		@media screen and (max-width: 564px) {
+			margin-top: 7px;
+			margin-left: 0px !important;
+		}
 	}
 	.AdvertisingAdd .el-drawer {
 		width: 90% !important;

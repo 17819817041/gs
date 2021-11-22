@@ -36,132 +36,6 @@
 								</div>
 							</div>
 						</el-form-item>
-                        <el-form-item>
-							<el-radio-group v-model="radio" size="small">
-                                <el-radio label="1" border>指定店鋪</el-radio>
-                                <el-radio label="2" border>指定區域</el-radio>
-                                <el-radio label="3" border>指定街道</el-radio>
-                            </el-radio-group>
-						</el-form-item>
-                        <el-form-item :label="$t('lang.chooseStore')" prop="store" v-show="radio == 1">
-							<div class="flex br">
-								<div style="color: #B0B0B0;" class="list_item float al" 
-									v-for="(item,i) in storeList" :key="i">
-									{{item}} <span class="al" style="margin-left: 5px">
-										<img class="cursor" @click="deleStore(i)" src="@/assets/img/cha.png" alt="">
-									</span>
-								</div>
-								<!-- <div class="flex">
-									<el-select v-model="ruleForm.store" :placeholder="$t('lang.pldselectstore')">
-										<el-option :label="$t('lang.ks')" :value="$t('lang.ks')"></el-option>
-										<el-option :label="$t('lang.mks')" :value="$t('lang.mks')"></el-option>
-										<el-option :label="$t('lang.cs')" :value="$t('lang.cs')"></el-option>
-									</el-select>
-									<div class="addCate cursor al" @click="addStore(ruleForm.store)">
-										{{$t("lang.addbtn")}}
-									</div>
-								</div>
-								<div class="list clear">
-									<div style="color: #B0B0B0;" class="list_item float al" 
-									v-for="(item,i) in storeList" :key="i">
-										{{item}} <span class="al" style="margin-left: 5px">
-											<img class="cursor" @click="deleStore(i)" src="@/assets/img/cha.png" alt="">
-										</span>
-									</div>
-								</div> -->
-							</div>
-                            
-						</el-form-item>
-						<el-form-item :label="$t('lang.AdvertisingArea')" prop="area" v-show="radio == 2">
-							<div class="flex br">
-								<div class="flex">
-									<el-select v-model="ruleForm.area" :placeholder="$t('lang.pldselectarea')">
-										<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
-										<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
-										<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
-									</el-select>
-									<div class="addCate cursor al" @click="addArea(ruleForm.area)">
-										{{$t("lang.addbtn")}}
-									</div>
-								</div>
-								<div class="list clear">
-									<div style="color: #B0B0B0;" class="list_item float al" 
-									v-for="(item,i) in areaList" :key="i">
-										{{item}} <span class="al" style="margin-left: 5px">
-											<img class="cursor" @click="deleArea(i)" src="@/assets/img/cha.png" alt="">
-										</span>
-									</div>
-								</div>
-							</div>
-						</el-form-item>
-                        <el-form-item :label="$t('lang.AdvertisingArea')" prop="street" v-show="radio == 3">
-							<div class="flex br">
-								<div class="flex">
-									<el-select v-model="ruleForm.area" 
-                                    :placeholder="$t('lang.pldselectarea')" style="margin-right: 10px;">
-										<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
-										<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
-										<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
-									</el-select>
-                                    <el-select v-model="ruleForm.street" :placeholder="$t('lang.pldselectstreet')">
-										<el-option :label="$t('lang.Kowloon') + $t('lang.street')" 
-                                        v-if="ruleForm.area == $t('lang.jiulong')" :value="$t('lang.Kowloon') + $t('lang.street')"></el-option>
-										<el-option :label="$t('lang.MongKok') + $t('lang.street')" 
-                                        v-if="ruleForm.area == $t('lang.wangjiao')" :value="$t('lang.MongKok') + $t('lang.street')"></el-option>
-										<el-option :label="$t('lang.Central') + $t('lang.street')" 
-                                        v-if="ruleForm.area == $t('lang.zhonghuan')" :value="$t('lang.Central') + $t('lang.street')"></el-option>
-									</el-select>
-									<div class="addCate cursor al" @click="addStreet(ruleForm.street)">
-										{{$t("lang.addbtn")}}
-									</div>
-								</div>
-								<div class="list clear">
-									<div style="color: #B0B0B0;" class="list_item float al" 
-									v-for="(item,i) in streetList" :key="i">
-										{{item}} <span class="al" style="margin-left: 5px">
-											<img class="cursor" @click="deleStreet(i)" src="@/assets/img/cha.png" alt="">
-										</span>
-									</div>
-								</div>
-							</div>
-						</el-form-item>
-						<el-form-item>
-							<div class="map_wrap">
-								<input
-								id="pac-input"
-								class="controls"
-								type="text"
-								placeholder="Search Box"
-								/>
-								<div id="map"></div>
-							</div>
-						</el-form-item>
-					</el-form>
-				</div>
-				<div class="detailPlan theme" v-show="submit">
-					<div class=" basicsMsg_item bold al">
-						<div class="iden radius"></div> {{$t("lang.DetailedPlan")}}
-					</div>
-					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
-					:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" class="demo-ruleForm">
-						<el-form-item :label="$t('lang.adserving')" prop="time">
-							<div class="flex br">
-								<div class="flex">
-									<el-select v-model="ruleForm.time" :placeholder="$t('lang.pldselecttime')">
-										<el-option :label="$t('lang.busyhour')" :value="$t('lang.busyhour')"></el-option>
-										<el-option :label="$t('lang.unbusyhour')" :value="$t('lang.unbusyhour')"></el-option>
-									</el-select>
-									<div class="addCate cursor al" @click="addTime(ruleForm.time)">
-										{{$t("lang.addbtn")}}
-									</div>
-								</div>
-								<div class="list clear">
-									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in timeList" :key="i">
-										{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleTime(i)" src="@/assets/img/cha.png" alt=""></span>
-									</div>
-								</div>
-							</div>
-						</el-form-item>
 						<el-form-item :label="$t('lang.cycle')" prop="date">
 							<div style="min-width: 200px;width: 100%" class='clear'>
 								<div class="float" style="margin-right: 15px;width: 140px;">
@@ -212,27 +86,6 @@
 								</div>
 							</el-form-item>
 						</div>
-						<el-form-item label="廣告媒體投放時間">
-							<div class="">
-								<el-radio-group v-model="radio1" size="small">
-									<el-radio label="1" border>均分廣告時間</el-radio>
-									<el-radio label="2" border>自定義廣告時間</el-radio>
-								</el-radio-group> 
-								<el-button type="primary" size="small" @click="openDra(radio1)"
-								class="elbtn" v-show="radio1">選擇時間</el-button>
-							</div>
-							<div class="list1 clear" v-show="radio1 == '1'">
-								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in adList" :key="i">
-									{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleItem(i)" src="@/assets/img/cha.png" alt=""></span>
-								</div>
-							</div>
-							<div class="list1 clear" v-show="radio1 == '2'">
-								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in adList1" :key="i">
-									{{item.time}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleItem1(i)" src="@/assets/img/cha.png" alt=""></span>
-								</div>
-							</div>
-						</el-form-item>
-
 						<el-form-item :label="$t('lang.adcontent')" prop="content">
 							<div class="textarea_wrap clear">
 								<label for="img">
@@ -257,6 +110,136 @@
 								{{$t('lang.becare')}}
 							</div>
 							<div style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
+						</el-form-item>
+						<el-form-item label="廣告媒體投放時間">
+							<div class="">
+								<el-radio-group v-model="radio1" size="small">
+									<el-radio label="1" border>均分廣告時間</el-radio>
+									<el-radio label="2" border>自定義廣告時間</el-radio>
+								</el-radio-group> 
+								<el-button type="primary" size="small" @click="openDra(radio1)"
+								class="elbtn" v-show="radio1">選擇時間</el-button>
+							</div>
+							<div class="list1 clear" v-show="radio1 == '1'">
+								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in adList" :key="i">
+									{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleItem(i)" src="@/assets/img/cha.png" alt=""></span>
+								</div>
+							</div>
+							<div class="list1 clear" v-show="radio1 == '2'">
+								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in adList1" :key="i">
+									{{item.time}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleItem1(i)" src="@/assets/img/cha.png" alt=""></span>
+								</div>
+							</div>
+						</el-form-item>
+
+                        
+					</el-form>
+				</div>
+				<div class="detailPlan theme" v-show="submit">
+					<div class=" basicsMsg_item bold al">
+						<div class="iden radius"></div> {{$t("lang.DetailedPlan")}}
+					</div>
+					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
+					:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" class="demo-ruleForm">
+						<!-- <el-form-item :label="$t('lang.adserving')" prop="time">
+							<div class="flex br">
+								<div class="flex">
+									<el-select v-model="ruleForm.time" :placeholder="$t('lang.pldselecttime')">
+										<el-option :label="$t('lang.busyhour')" :value="$t('lang.busyhour')"></el-option>
+										<el-option :label="$t('lang.unbusyhour')" :value="$t('lang.unbusyhour')"></el-option>
+									</el-select>
+									<div class="addCate cursor al" @click="addTime(ruleForm.time)">
+										{{$t("lang.addbtn")}}
+									</div>
+								</div>
+								<div class="list clear">
+									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in timeList" :key="i">
+										{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleTime(i)" src="@/assets/img/cha.png" alt=""></span>
+									</div>
+								</div>
+							</div>
+						</el-form-item> -->
+
+						<el-form-item label="廣告投放計劃">
+							<el-radio-group v-model="radio" size="small">
+                                <el-radio label="1" border>指定店鋪</el-radio>
+                                <el-radio label="2" border>指定區域</el-radio>
+                                <el-radio label="3" border>指定街道</el-radio>
+                            </el-radio-group>
+						</el-form-item>
+                        <el-form-item :label="$t('lang.chooseStore')" prop="store" v-show="radio == 1">
+							<div class="flex br">
+								<div style="color: #B0B0B0;" class="list_item float al" 
+									v-for="(item,i) in storeList" :key="i">
+									{{item}} <span class="al" style="margin-left: 5px">
+										<img class="cursor" @click="deleStore(i)" src="@/assets/img/cha.png" alt="">
+									</span>
+								</div>
+							</div>
+						</el-form-item>
+						<el-form-item :label="$t('lang.AdvertisingArea')" prop="area" v-show="radio == 2">
+							<div class="flex br">
+								<div class="flex">
+									<el-select v-model="ruleForm.area" :placeholder="$t('lang.pldselectarea')" @change="changeLight">
+										<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
+										<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
+										<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
+									</el-select>
+									<div class="addCate cursor al" @click="addArea(ruleForm.area)">
+										{{$t("lang.addbtn")}}
+									</div>
+								</div>
+								<div class="list clear">
+									<div style="color: #B0B0B0;" class="list_item float al" 
+									v-for="(item,i) in areaList" :key="i">
+										{{item}} <span class="al" style="margin-left: 5px">
+											<img class="cursor" @click="deleArea(i)" src="@/assets/img/cha.png" alt="">
+										</span>
+									</div>
+								</div>
+							</div>
+						</el-form-item>
+                        <el-form-item :label="$t('lang.AdvertisingArea')" prop="street" v-show="radio == 3">
+							<div class="flex br">
+								<div class="flex">
+									<el-select v-model="ruleForm.area" @change="changeArea"
+                                    	:placeholder="$t('lang.pldselectarea')" style="margin-right: 10px;">
+										<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
+										<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
+										<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
+									</el-select>
+                                    <el-select v-model="ruleForm.street" :placeholder="$t('lang.pldselectstreet')">
+										<el-option :label="$t('lang.Kowloon') + $t('lang.street')" @click.native="changeCen(22.8, 114.6)"
+                                        v-if="ruleForm.area == $t('lang.jiulong')" :value="$t('lang.Kowloon') + $t('lang.street')"></el-option>
+										<el-option :label="$t('lang.MongKok') + $t('lang.street')"  @click.native="changeCen(23.8, 114.6)"
+                                        v-if="ruleForm.area == $t('lang.wangjiao')" :value="$t('lang.MongKok') + $t('lang.street')"></el-option>
+										<el-option :label="$t('lang.Central') + $t('lang.street')"  @click.native="changeCen(22.8, 116.6)"
+                                        v-if="ruleForm.area == $t('lang.zhonghuan')" :value="$t('lang.Central') + $t('lang.street')"></el-option>
+									</el-select>
+									<div class="addCate cursor al" @click="addStreet(ruleForm.street)">
+										{{$t("lang.addbtn")}}
+									</div>
+								</div>
+								<div class="list clear">
+									<div style="color: #B0B0B0;" class="list_item float al" 
+									v-for="(item,i) in streetList" :key="i">
+										{{item}} <span class="al" style="margin-left: 5px">
+											<img class="cursor" @click="deleStreet(i)" src="@/assets/img/cha.png" alt="">
+										</span>
+									</div>
+								</div>
+							</div>
+						</el-form-item>
+						<el-form-item>
+							<div class="map_wrap">
+								<input
+								id="pac-input"
+								class="controls"
+								type="text"
+								placeholder="Search Box"
+								/>
+								<div id="map"></div>
+							</div>
 						</el-form-item>
 					</el-form>
 					<div class="total mg sb">
@@ -295,7 +278,6 @@
 									<div>{{$t('lang.scheme')}}</div>
 								</div>
 							</el-popover>
-							
 						</div>
 					</div>
 					<div class="sure_plan_wrap">
@@ -406,7 +388,6 @@
 </template>
 
 <script>
-var abc = null
 export default {
     data() {
         return {
@@ -446,7 +427,7 @@ export default {
                 area: '',
                 store: '',
                 street: '',
-                time: '',
+                // time: '',
                 type: '',
 				date: '',
                 startDate: '',
@@ -470,9 +451,9 @@ export default {
                 street: [
                     { required: true, message: '請選擇街道', trigger: 'blur' }
                 ],
-                time: [
-                    { required: true, message: '請選擇时间段', trigger: 'blur' }
-                ],
+                // time: [
+                //     { required: true, message: '請選擇时间段', trigger: 'blur' }
+                // ],
                 type: [
                     { required: true, message: '請選擇媒體類型', trigger: 'blur' }
                 ], 
@@ -548,7 +529,9 @@ export default {
             streetList: [],
             map: '',
             place: null,
-			infowindow: null
+			infowindow: null,
+			deLight: [],
+			last: []
 		}
     },
 	beforeMount() {
@@ -584,7 +567,7 @@ export default {
 		}
 	},
     mounted () {
-        this.initMap()
+        this.initMap(22.6,114.1)
 		window.shopadd = this.shopadd;
 		window.closewin = this.closewin;
     },
@@ -612,13 +595,19 @@ export default {
 			this.adList1 = this.addTimeList
 			this.drawer2 = false
 		},
-
-		initMap () {
+		changeArea (val) {
+			this.ruleForm.street = ''
+		},
+		
+		changeCen (lat,lng) {
+			this.map.panTo({ lat: lat,lng: lng });
+		},
+		initMap (lat,lng) {
 			let that = this
 			let boolean = true
 			let map = new google.maps.Map(document.getElementById('map'), {
-				center: {lat: 22.6, lng: 114.1},
-				zoom: 8,
+				center: {lat: lat, lng: lng},
+				zoom: 9,
 				mapTypeId: "roadmap",
 				disableDefaultUI: true,
 				zoomControl: boolean,
@@ -628,13 +617,24 @@ export default {
 				rotateControl: boolean,
 				fullscreenControl: boolean,
 			});
+			this.map = map
 
-			const myLatLng = {lat: 22.6, lng: 114.1}
-			new google.maps.Marker({
-				position: myLatLng,
-				map,
-				title: "Hello World!",
-			});
+			if (navigator.geolocation) {       //获取自身定位
+				navigator.geolocation.getCurrentPosition(function(position) {
+					var pos = {
+					lat: position.coords.latitude,
+					lng: position.coords.longitude
+					};
+					var marker = new google.maps.Marker({position: pos, map: map});
+					map.setCenter(pos);
+				})
+			}
+			// const myLatLng = {lat: 22.6, lng: 114.1}
+			// new google.maps.Marker({
+			// 	position: myLatLng,
+			// 	map,
+			// 	title: "Hello World!",
+			// });
 
 			let msg = this.msg
 			var data = [
@@ -663,26 +663,9 @@ export default {
 				// 		shouldFocus: false,
 				// 	});
 				// })
-				const triangleCoords = [
-					{ lat: 22.27, lng: 113.46 },
-					{ lat: 22.28, lng: 113.50 },
-					{ lat: 22.30, lng: 113.55 },
-					{ lat: 22.32, lng: 113.57 },
-					{ lat: 22.35, lng: 113.59 },
-					{ lat: 22.37, lng: 113.60 },
-					{ lat: 22.40, lng: 113.62 },
-				];
-				// Construct the polygon.
-				const bermudaTriangle = new google.maps.Polygon({
-					paths: triangleCoords,
-					strokeColor: "#FF0000",
-					strokeOpacity: 0.8,
-					strokeWeight: 2,
-					fillColor: "#FF0000",
-					fillOpacity: 0.35,
-				});
-				bermudaTriangle.setMap(map);
+				this.lightArea(map)
 			})
+
 			const input = document.getElementById("pac-input");
 			const searchBox = new google.maps.places.SearchBox(input);
 			console.log(searchBox)
@@ -845,7 +828,6 @@ export default {
 					
 				});
 			}
-
 		},
 		shopadd (val) {
 			this.addStore(val)
@@ -866,6 +848,61 @@ export default {
 		closewin (val) {
 			this.infowindow.close()
 		},
+		changeLight (val) {
+			this.last = JSON.parse(JSON.stringify(this.deLight))
+			if (val == this.$t('lang.jiulong')) {
+				this.deLight = [
+					{ lat: 22.27, lng: 113.46 },
+					{ lat: 22.28, lng: 113.50 },
+					{ lat: 22.30, lng: 113.55 },
+					{ lat: 22.32, lng: 113.57 },
+					{ lat: 22.35, lng: 113.59 },
+					{ lat: 22.37, lng: 113.60 },
+					{ lat: 22.40, lng: 113.62 },
+				]
+			} else if (val == this.$t('lang.wangjiao')) {
+				this.deLight = [
+					{ lat: 22.37, lng: 113.56 },
+					{ lat: 22.38, lng: 113.60 },
+					{ lat: 22.40, lng: 113.55 },
+					{ lat: 22.52, lng: 113.67 },
+					{ lat: 22.45, lng: 113.69 },
+					{ lat: 22.47, lng: 113.70 },
+					{ lat: 22.50, lng: 113.72 },
+				]
+			} else if (val == this.$t('lang.zhonghuan')) {
+				this.deLight = [
+					{ lat: 22.37, lng: 113.66 },
+					{ lat: 22.48, lng: 113.70 },
+					{ lat: 22.50, lng: 113.65 },
+					{ lat: 22.62, lng: 113.77 },
+					{ lat: 22.55, lng: 113.79 },
+					{ lat: 22.57, lng: 113.80 },
+					{ lat: 22.60, lng: 113.82 },
+				]
+			}
+			this.lightArea()
+			
+		},
+		lightArea () {
+			let that = this
+			let map = this.map
+			// Construct the polygon.
+			const bermudaTriangle = new google.maps.Polygon({
+				paths: that.deLight,
+				strokeColor: "#FF0000",
+				strokeOpacity: 0.8,
+				strokeWeight: 2,
+				fillColor: "#FF0000",
+				fillOpacity: 0.35,
+			})
+			this.delelightArea(bermudaTriangle)
+			bermudaTriangle.setMap(map);
+		},
+		delelightArea (bermudaTriangle) {
+			bermudaTriangle.setMap(null);
+		},
+
 
 
 		reset () {
@@ -947,6 +984,7 @@ export default {
 			}
 		},
         addStore (item) {
+			this.infowindow.close()
 			if (item) {
 				this.storeList.push(item)
 				let arr = new Set(this.storeList)
@@ -1522,6 +1560,7 @@ export default {
 	#map {
         height: 400px;
         width: 100%;
+		box-shadow: 0 0 3px gray;
 		max-width: 900px;
     }
     #description {
