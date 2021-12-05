@@ -4,193 +4,280 @@
 		<div class="AdvertisingOperation_back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">店鋪管理
         </div>
-        <div class="content mg bar">
-            <!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div> -->
-            <div class="noBar" style="height: calc(100% - 27px); overflow:auto">
-                <div class="basicsMsg boxs theme" v-show="submit">
-                <div class="flex divider_message_title">
-                    <div class="divider"></div>
-                    <div class="divider_text">店鋪信息管理</div>
-                </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="135px" class="demo-ruleForm">
-                    <el-form-item label="店鋪名" prop="name" class="bcolor">
-                        <div class="elinput boxs width30">
-                            <el-input class="width100" v-model="ruleForm.name"></el-input>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="店鋪所屬類型" prop="storeType">
-                        <div class="al br">
-                            <div class="al width30">
-								<el-select v-model="ruleForm.storeType" class="width100" placeholder="請選擇類型">
-									<el-option label="食品" value="食品"></el-option>
-									<el-option label="科技" value="科技"></el-option>
-									<el-option label="醫療" value="醫療"></el-option>
-									<el-option label="汽車" value="汽車"></el-option>
-								</el-select>
+		<div class="noBar" style="height: calc(100% - 11px);overflow: auto;padding-bottom: 30px;">
+			<div class="content mg bar">
+				<!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div> -->
+				<div class="noBar" style="height: calc(100% - 27px); overflow:auto">
+					<div class="basicsMsg boxs theme" v-show="submit">
+					<div class="flex divider_message_title">
+						<div class="divider"></div>
+						<div class="divider_text">店鋪信息管理</div>
+					</div>
+					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="135px" class="demo-ruleForm">
+						<el-form-item label="店鋪名" prop="name" class="bcolor">
+							<div class="elinput boxs width30">
+								<el-input class="width100" v-model="ruleForm.name"></el-input>
 							</div>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="店鋪所在區域" prop="area" class="bcolor">
-                        <div class="al br">
-                            <div class="al width30">
-								<el-select v-model="ruleForm.area" class="width100" placeholder="請選擇區域">
-									<el-option label="九龍區" value="九龍區"></el-option>
-									<el-option label="旺角區" value="2旺角區"></el-option>
-									<el-option label="中環區" value="中環區"></el-option>
-								</el-select>
-							</div>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="店鋪詳細位置地址" prop="address">
-                        <div class="al">
-                            <div class="al width30" style='min-width: 217px;'>
-								<div class="elinput width100">
-                                    <el-input class="width100" v-model="ruleForm.address"></el-input>
-                                </div>
-							</div>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="店鋪描述" prop="message" class="bcolor">
-                        <div class="al">
-                            <div class="al textarea">
-                                <textarea v-model="ruleForm.message" id="" cols="60" rows="8"></textarea>
-							</div>
-                        </div>
-                    </el-form-item>
-                </el-form>
-            </div>
-            <div class="detailPlan boxs theme" v-show="submit">
-                <div class="flex divider_message_title">
-                    <div class="divider"></div>
-                    <div class="divider_text">接受外來廣告設定</div>
-                </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="145px" class="demo-ruleForm">
-                    <el-form-item label="接受外來廣告比例" prop="ratio"  class="bcolor">
-                        <div class="width30">
-							<!-- <el-input v-model="ruleForm.ratio "></el-input> -->
-                            <el-select v-model="ruleForm.ratio" class="width100" placeholder="請選擇比例">
-                                <el-option label="80%" value="1"></el-option>
-                                <el-option label="50%" value="2"></el-option>
-                            </el-select>
-						</div>
-                    </el-form-item>
-                    <el-form-item label="接收外來廣告時段" prop="time">
-                        <div class="al br">
-                            <div class="al width30">
-								<el-select class="width100" v-model="ruleForm.time" placeholder="請選擇時間段">
-									<el-option label="繁忙时段(9am-9pm)" value="繁忙时段(9am-9pm)"></el-option>
-									<el-option label="非繁忙时段(9pm-9am)" value="非繁忙时段(9pm-9am)"></el-option>
-								</el-select>
-								<div class="addCate al" @click="addTime(ruleForm.time)">
-									添加
+						</el-form-item>
+						<el-form-item label="店鋪所屬類型" prop="storeType">
+							<div class="al br">
+								<div class="al width30">
+									<el-select v-model="ruleForm.storeType" class="width100" placeholder="請選擇類型">
+										<el-option label="食品" value="食品"></el-option>
+										<el-option label="科技" value="科技"></el-option>
+										<el-option label="醫療" value="醫療"></el-option>
+										<el-option label="汽車" value="汽車"></el-option>
+									</el-select>
 								</div>
 							</div>
-							<div class="list clear">
-								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in timeList" :key="i">
-									{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleTime(i)" src="@/assets/img/cha.png" alt=""></span>
-								</div>
-							</div>
-                        </div>
-                    </el-form-item>
-                    
-                    <el-form-item label="可接收外來廣告類型" prop="type" class="bcolor">
-                        <div class="al br">
-                            <div class="al width30">
-								<el-select class="width100" v-model="ruleForm.type" placeholder="請選擇類型">
-									<el-option label="食品" value="食品"></el-option>
-									<el-option label="科技" value="科技"></el-option>
-									<el-option label="醫療" value="醫療"></el-option>
-									<el-option label="汽車" value="汽車"></el-option>
-								</el-select>
-								<div class="addCate al" @click="addType(ruleForm.type)">
-									添加
-								</div>
-							</div>
-							<div class="list clear">
-								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
-									{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt=""></span>
-								</div>
-							</div>
-                        </div>
-                    </el-form-item>
-                </el-form>
-            </div>
-            
-            <div class="detailPlan boxs theme" v-show="submit">
-                <div class="flex divider_message_title">
-                    <div class="divider"></div>
-                    <div class="divider_text">店鋪廣告媒體內容信息</div>
-                </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                    <el-form-item label="廣告媒體類型" prop="mediaType" class="bcolor">
-                        <div class="al">
-                            <el-select v-model="ruleForm.cmediaType" placeholder="請選擇類型" @change="getType">
-                                <el-option label="圖片" value="1"></el-option>
-                                <el-option label="視頻" value="2"></el-option>
-                            </el-select>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="廣告媒體時長" prop="inp">
-                        <div class="al block">
-                            <div class="al inp_time ju">
-									<!-- <input type="text" class="tc"> -->
-									<el-input class="width100"
-									oninput ="value=value.replace(/[^0-9.]/g,'')" :disabled="video" v-model="ruleForm.inp"></el-input>
-                            </div>
-                            <div class="al">分鐘 <span style="color: gray;margin-left: 5px;">(請輸入整數)</span></div>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="廣告媒體內容" prop="content" class="bcolor">
-                        <div class="textarea_wrap mg clear">
-							<label for="img">
-								<div class="addImg ju al float">
-									<img src="@/assets/img/add.png" alt="">
-								</div>
-								<input type="file" id="img" v-show="false" multiple="multiple" @change="changeFile">
-							</label>
-							<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
-								<div class="imageList_wrap">
-									<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
-									<div class="textarea_wrap_item_child ju al">
-										<img v-if="ruleForm.mediaType == 'image'" style="height: 100%;" :src="item.url" alt="">
-										<img v-else-if="ruleForm.mediaType == 'video'" style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+						</el-form-item>
+						<el-form-item label="店鋪所在區域" prop="area" class="bcolor">
+							<div class="flex br">
+									<div class="flex">
+										<el-select v-model="ruleForm.area" @change="changeArea"
+											:placeholder="$t('lang.pldselectarea')" style="margin-right: 10px;">
+											<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
+											<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
+											<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
+										</el-select>
+										<el-select v-model="ruleForm.street" :placeholder="$t('lang.pldselectstreet')">
+											<el-option :label="$t('lang.Kowloon') + $t('lang.street')" @click.native="changeCen(22.8, 114.6)"
+											v-if="ruleForm.area == $t('lang.jiulong')" :value="$t('lang.Kowloon') + $t('lang.street')"></el-option>
+											<el-option :label="$t('lang.MongKok') + $t('lang.street')"  @click.native="changeCen(23.8, 114.6)"
+											v-if="ruleForm.area == $t('lang.wangjiao')" :value="$t('lang.MongKok') + $t('lang.street')"></el-option>
+											<el-option :label="$t('lang.Central') + $t('lang.street')"  @click.native="changeCen(22.8, 116.6)"
+											v-if="ruleForm.area == $t('lang.zhonghuan')" :value="$t('lang.Central') + $t('lang.street')"></el-option>
+										</el-select>
 									</div>
 								</div>
-								<div class="imageList_name tc">{{item.name}}</div>
-								<div class="imageList_size tc">{{item.size}}</div>
+						</el-form-item>
+						<el-form-item label="店鋪詳細位置地址" prop="address">
+							<div class="mapwrap_w">
+								<!-- <div class="al width30" style='min-width: 217px;'>
+									<div class="elinput width100">
+										<el-input class="width100" v-model="ruleForm.address"></el-input>
+									</div>
+								</div> -->
+								<div class="size12 streetText">{{ruleForm.street}}</div>
+								<div :class="['map_wrap']">
+									<img class="searchImg" src="@/assets/img/search.png" alt="">
+									<input
+									id="pac-input"
+									ref="pac"
+									class="controls"
+									type="text"
+									placeholder="Search"
+									/>
+									<div id="map"></div>
+								</div>
 							</div>
-						</div>
-						<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
-							圖片格式限制PNG \JPG \JPEG \GIF，数量限制10張，大小限制3M。視頻格式限制 MP4，大小限制100M(媒體建議尺寸1920*1080)。
-						</div>
-						<div style='font-size: 12px; line-height: 15px;'>媒體內容時長限制5分鐘.</div>
-                    </el-form-item>
-                </el-form>
-            </div>
-
-            <div class="addorcancel tc ju al" v-show="submit">
-                <div class="addorcancel_btn cursor" style="margin-right: 30px;" @click="submitG">確認新增</div>
-                <div class="addorcancel_btn cursor" @click="goBack">取消</div>
-            </div>  
-
-			<div class="basicsMsg boxs padding backWhite" v-show="!submit">
-				<div class="true_title al ju">
-					<img src="@/assets/img/success_sign.png" alt="">店鋪信息修改申請提交成功!
+						</el-form-item>
+						<el-form-item label="店鋪描述" prop="message" class="bcolor">
+							<div class="al">
+								<div class="al textarea">
+									<textarea v-model="ruleForm.message" id="" cols="60" rows="8"></textarea>
+								</div>
+							</div>
+						</el-form-item>
+						<el-form-item label="廣告顯示的尺寸" prop="message" class="bcolor" style="background: #F2F2F2;">
+							<div class="al">
+								<div class="inp_time1"><input type="text"></div>
+								<div> m(高)</div>
+								<div style="margin: 0 15px;"> × </div>
+								<div class="inp_time1"><input type="text"></div>
+								<div> m(寬)</div>
+							</div>
+						</el-form-item>
+						<el-form-item label="店鋪展示圖片" prop="type" class="bcolor">
+							<div class="textarea_wrap clear">
+								<label for="img1">
+									<div class="addImg ju al float">
+										<img src="@/assets/img/add.png" alt="">
+									</div>
+									<input type="file" id="img1" v-show="false" multiple="multiple" @change="changeFile1">
+								</label>
+								<div class="textarea_wrap_item float" v-for="(item,i) in imageList1" :key="i">
+									<div class="imageList_wrap">
+										<div class="deleImg radius ju al" @click.stop="deleImg1(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
+										<div class="textarea_wrap_item_child ju al"  @click="imgPreview(item.url)">
+											<img style="height: 100%;" :src="item.url" alt="">
+										</div>
+									</div>
+									<div class="imageList_name tc">{{item.name}}</div>
+									<div class="imageList_size tc">{{item.size}}</div>
+								</div>
+							</div>
+							<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
+								圖片格式限制PNG \JPG \JPEG \GIF，数量限制10張，大小限制3M。視頻格式限制 MP4，大小限制100M(媒體建議尺寸1920*1080)。
+							</div>
+						</el-form-item>
+					</el-form>
 				</div>
-				<div class="ju">您的店鋪信息修改申請已提交至後台，管理员将蛊快蕃核您的店鋪信息.</div>
-                <div class="iknow ju al">
-                    <div class="cursor" @click="goBack">確定</div>
-                </div>
+				<div class="detailPlan boxs theme" v-show="false">
+					<div class="flex divider_message_title">
+						<div class="divider"></div>
+						<div class="divider_text">接受外來廣告設定</div>
+					</div>
+					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="145px" class="demo-ruleForm">
+						<el-form-item label="接受外來廣告比例" prop="ratio"  class="bcolor">
+							<div class="width30">
+								<!-- <el-input v-model="ruleForm.ratio "></el-input> -->
+								<el-select v-model="ruleForm.ratio" class="width100" placeholder="請選擇比例">
+									<el-option label="80%" value="1"></el-option>
+									<el-option label="50%" value="2"></el-option>
+								</el-select>
+							</div>
+						</el-form-item>
+						<el-form-item label="接收外來廣告時段" prop="time">
+							<div class="al br">
+								<div class="al width30">
+									<el-select class="width100" v-model="ruleForm.time" placeholder="請選擇時間段">
+										<el-option label="繁忙时段(9am-9pm)" value="繁忙时段(9am-9pm)"></el-option>
+										<el-option label="非繁忙时段(9pm-9am)" value="非繁忙时段(9pm-9am)"></el-option>
+									</el-select>
+									<div class="addCate al" @click="addTime(ruleForm.time)">
+										添加
+									</div>
+								</div>
+								<div class="list clear">
+									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in timeList" :key="i">
+										{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleTime(i)" src="@/assets/img/cha.png" alt=""></span>
+									</div>
+								</div>
+							</div>
+						</el-form-item>
+						
+						<el-form-item label="可接收外來廣告類型" prop="type" class="bcolor">
+							<div class="al br">
+								<div class="al width30">
+									<el-select class="width100" v-model="ruleForm.type" placeholder="請選擇類型">
+										<el-option label="食品" value="食品"></el-option>
+										<el-option label="科技" value="科技"></el-option>
+										<el-option label="醫療" value="醫療"></el-option>
+										<el-option label="汽車" value="汽車"></el-option>
+									</el-select>
+									<div class="addCate al" @click="addType(ruleForm.type)">
+										添加
+									</div>
+								</div>
+								<div class="list clear">
+									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
+										{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt=""></span>
+									</div>
+								</div>
+							</div>
+						</el-form-item>
+					</el-form>
+				</div>
+				
+				<div class="detailPlan boxs theme" v-show="submit">
+					<div class="flex divider_message_title">
+						<div class="divider"></div>
+						<div class="divider_text">店鋪廣告媒體內容信息</div>
+					</div>
+					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
+					:label-width="$i18n.locale == 'zh-CN'? '125px': '165px'" class="demo-ruleForm">
+						<el-form-item label="廣告媒體類型" prop="mediaType" class="bcolor">
+							<div class="al">
+								<el-select v-model="ruleForm.cmediaType" placeholder="請選擇類型" @change="getType">
+									<el-option label="圖片" value="1"></el-option>
+									<el-option label="視頻" value="2"></el-option>
+								</el-select>
+							</div>
+						</el-form-item>
+						<el-form-item label="廣告媒體時長" prop="inp">
+							<div class="al">
+								<div class="al inp_time">
+										<!-- <input type="text" class="tc"> -->
+									<el-input-number v-model="ruleForm.inp" :step="1" size="small" 
+									:min="1" :max="5" label="描述文字"></el-input-number>
+								</div>
+								<div>{{$t('lang.minute')}}</div>
+							</div>
+						</el-form-item>
+						<el-form-item label="廣告媒體內容" prop="content" class="bcolor">
+							<div class="textarea_wrap clear">
+								<label for="img">
+									<div class="addImg ju al float">
+										<img src="@/assets/img/add.png" alt="">
+									</div>
+									<input type="file" id="img" v-show="false" multiple="multiple" @change="changeFile">
+								</label>
+								<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
+									<div class="imageList_wrap">
+										<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
+										<div class="textarea_wrap_item_child ju al">
+											<img v-if="ruleForm.mediaType == 'image'"  @click="imgPreview(item.url)"
+											style="height: 100%;" :src="item.url" alt="">
+											<img v-else-if="ruleForm.mediaType == 'video'" @click="previewVideo(item)"
+											style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+										</div>
+									</div>
+									<div class="imageList_name tc">{{item.name}}</div>
+									<div class="imageList_size tc">{{item.size}}</div>
+								</div>
+							</div>
+							<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
+								圖片格式限制PNG \JPG \JPEG \GIF，数量限制10張，大小限制3M。視頻格式限制 MP4，大小限制100M(媒體建議尺寸1920*1080)。
+							</div>
+							<div style='font-size: 12px; line-height: 15px;'>媒體內容時長限制5分鐘.</div>
+						</el-form-item>
+					</el-form>
+				</div>
+
+				<div class="addorcancel tc ju al" v-show="submit">
+					<div class="addorcancel_btn cursor" style="margin-right: 30px;" @click="submitG">確認修改</div>
+					<div class="addorcancel_btn cursor" @click="goBack">取消修改</div>
+				</div>  
+
+				<div class="basicsMsg boxs padding backWhite" v-show="!submit">
+					<div class="true_title al ju">
+						<img src="@/assets/img/success_sign.png" alt="">店鋪信息修改申請提交成功!
+					</div>
+					<div class="ju">您的店鋪信息修改申請已提交至後台，管理员将蛊快蕃核您的店鋪信息.</div>
+					<div class="iknow ju al">
+						<div class="cursor" @click="goBack">確定</div>
+					</div>
+				</div>
+				</div>
 			</div>
-            </div>
-        </div>
+		</div>
+		<el-dialog
+			:visible.sync="showVideo"
+			width="90%">
+			<video id="myVideo" class="video-js" :poster="Poster" v-if="videoWrap"
+				:controls="Controls">
+				<source :src="src" type="video/mp4">
+			</video>
+			<span slot="footer" class="dialog-footer">
+				<el-button type="primary" @click="closeVideo">确 定</el-button>
+			</span>
+		</el-dialog>
+		<el-image-viewer 
+		v-if="showViewer" 
+		:on-close="closeViewer" 
+		:url-list="[dimg]" />
+		<el-image-viewer v-if="showViewer1" :on-close="closeViewer1" :url-list="[dimg1]" />
     </div>
 </template>
 
 <script>
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+import dimg from "@/assets/img/growing.jpg"
+import mapPoint from "@/assets/img/marker.png"
 export default {
     data() {
         return {
+			videoWrap: false,
+			showVideo: false,
+			showViewer1: false,
+			showViewer: false,
+			preload: 'auto',  //  建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
+            src:'',               //视频的路径
+            type: '',                //视频的类型
+            Controls: true,              //确定播放器是否具有用户可以与之交互的控件
+            Autoplay: '',              //是否自动播放
+            Poster: '',         
             video: true,
 			submit: true,
             ruleForm: {
@@ -201,7 +288,8 @@ export default {
                 storeType: '',
                 mediaType: '',
                 cmediaType: '',
-                inp: '',
+                inp: 1,
+				street: '',
                 ratio: '',
                 date: '',
                 content: '',
@@ -252,7 +340,11 @@ export default {
 			areaList: [],
 			timeList: [],
             imageList: [],
-            minute: []
+            imageList1: [],
+            minute: [],
+			dimg1: '',
+			map: null,
+			marker: null
         };
     },
 	beforeMount () {
@@ -263,8 +355,9 @@ export default {
 		this.fun()
     },
     mounted () {
-        
+        this.initMap1(22.6,114.1,1)
     },
+	components: { ElImageViewer },
     methods: {
         fun () {
 			if (window.innerWidth <= 564) {
@@ -272,6 +365,384 @@ export default {
             } else {
                 this.labelPosition = 'left'
             }
+		},
+		previewVideo (item) {
+			this.src = item.url
+			this.showVideo = true
+			this.videoWrap = true
+		},
+		imgPreview (url) {
+			this.dimg1 = url
+			this.showViewer1 = true
+		},
+		closeViewer1() {
+          	this.showViewer1 = false
+        },
+		closeVideo () {
+			this.showVideo = false
+			this.videoWrap = false
+		},
+		changeArea (val) {
+			this.ruleForm.street = ''
+		},
+		changeCen (lat,lng) {
+			this.map.panTo({ lat: lat,lng: lng });
+		},
+		initMap1 (lat,lng,val) {
+			let that = this
+			let boolean = true
+			let map = new google.maps.Map(document.getElementById('map'), {
+				center: {lat: lat, lng: lng},
+				zoom: 8,
+				mapTypeId: "roadmap",
+				disableDefaultUI: true,
+				zoomControl: boolean,
+				// mapTypeControl: boolean,
+				scaleControl: boolean,
+				streetViewControl: boolean,
+				rotateControl: boolean,
+				fullscreenControl: boolean,
+			});
+			this.map = map
+
+			if (navigator.geolocation) {       //获取自身定位
+				navigator.geolocation.getCurrentPosition(function(position) {
+					var pos = {
+					lat: position.coords.latitude,
+					lng: position.coords.longitude
+					};
+					var marker = new google.maps.Marker({position: pos, map: map});
+					// that.marker = marker
+					map.setCenter(pos);
+				})
+			}
+			// const myLatLng = {lat: 22.6, lng: 114.1}
+			// new google.maps.Marker({
+			// 	position: myLatLng,
+			// 	map,
+			// 	title: "Hello World!",
+			// });
+			var pos = {
+				lat: 0,
+				lng: 0
+			}
+			var markerr = new google.maps.Marker({position: pos, map: map})
+			that.marker = markerr
+			map.addListener('click', function(e) {   //点击获取经纬度
+				// console.log(e.latLng.lat(),e.latLng.lng()); 
+				that.marker.setMap(null)
+
+				that.marker = new google.maps.Marker({
+					position: new google.maps.LatLng(e.latLng.lat(), e.latLng.lng()),
+					icon: mapPoint,
+					map: map,
+				})
+
+				// var pos = {
+				// 	lat: e.latLng.lat(),
+				// 	lng: e.latLng.lng()
+				// };
+				// var marker = new google.maps.Marker({position: pos, map: map});  //添加标记点
+
+				// marker.setMap(null)   //清除标记点
+				// map.setCenter(pos);  //修改中心点
+				
+			});
+
+			let msg = this.msg
+			var data = [
+				{id:1,name:'小李'},
+			]
+			// let input = document.getElementById("pac-input");
+			let input = this.$refs.pac
+			let searchBox = new google.maps.places.SearchBox(input);
+			map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+			map.addListener("bounds_changed", () => {
+				searchBox.setBounds(map.getBounds());
+			});
+			let markers = [];
+			searchBox.addListener("places_changed", () => {
+				let places = searchBox.getPlaces();
+
+				if (places.length == 0) {
+					return;
+				}
+
+				// Clear out the old markers.
+				markers.forEach((marker) => {
+				marker.setMap(null);
+				});
+				markers = [];
+
+				// For each place, get the icon, name and location.
+				const bounds = new google.maps.LatLngBounds();
+
+				places.forEach((place) => {
+				if (!place.geometry || !place.geometry.location) {
+					console.log("Returned place contains no geometry");
+					return;
+				}
+
+				const icon = {
+					url: place.icon,
+					size: new google.maps.Size(71, 71),
+					origin: new google.maps.Point(0, 0),
+					anchor: new google.maps.Point(17, 34),
+					scaledSize: new google.maps.Size(25, 25),
+				};
+
+				// Create a marker for each place.
+				markers.push(
+					new google.maps.Marker({
+					map,
+					icon,
+					title: place.name,
+					position: place.geometry.location,
+					})
+				);
+				if (place.geometry.viewport) {
+					// Only geocodes have viewport.
+					bounds.union(place.geometry.viewport);
+				} else {
+					bounds.extend(place.geometry.location);
+				}
+				});
+				map.fitBounds(bounds);
+			});
+			return
+			if (val == 1) {
+				const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
+				const icons = {
+					parking: {
+					icon: iconBase + "parking_lot_maps.png",
+					},
+					library: {
+					icon: iconBase + "library_maps.png",
+					},
+					info: {
+					icon: iconBase + "info-i_maps.png",
+					},
+				};
+				const features = [
+					{
+					position: new google.maps.LatLng(22.7, 114.1),
+					type: "info",
+					msg: this.$t("lang.ks")
+					},
+					{
+					position: new google.maps.LatLng(22.79, 114.16),
+					type: "info",
+					msg: this.$t("lang.car")
+					},
+					{
+					position: new google.maps.LatLng(22.87, 114.13),
+					type: "info",
+					msg: this.$t("lang.Technology")
+					},
+					{
+					position: new google.maps.LatLng(22.66, 114.10),
+					type: "info",
+					msg: this.$t("lang.medical")
+					},
+					{
+					position: new google.maps.LatLng(22.8, 114.1),
+					type: "info",
+					msg: this.$t("lang.foodclient")
+					},
+					{
+					position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
+					type: "library",
+					},
+				];
+				// Create markers.
+				if (that.$i18n.locale == 'zh-CN') {
+					console.log(that.$i18n.locale)
+					for (let i = 0; i < features.length; i++) {
+						const marker1 = new google.maps.Marker({
+							position: features[i].position,
+							icon: icons[features[i].type].icon,
+							map: map,
+						});
+						
+						const contentString1 = 
+							`
+								<div class="sb" style="height: 100px;">
+									<div style="width: 150px;height: 100px;overflow: hidden;">
+										<img style="height: 109%;" src= ${dimg} onclick="onPreview()">
+									</div>
+									<div style="width: 150px;height: 100px;overflow: hidden;
+										margin:0 7px;">
+										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+									</div>
+									<div style="width: 150px;height: 100px;overflow: hidden;">
+										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+									</div>
+								</div>
+							` +
+							`
+								<div class="sb" style="margin-top:5px;">
+									<div class='bold tc'>${features[i].msg}(旺角店)</div>
+									<div class="contentString1_address" 
+									style="text-decoration: underline;
+									font-size:12px;">香港旺角區旺角街道666號</div>
+								</div>
+							` + 
+							`
+								<div class="size12">
+									<div>
+										<span>廣告顯示的尺寸(高 × 寬):</span>
+										<span style="color: blue;">2m × 1m</span>
+									</div>
+									<div>
+										<span>為廣告商開放的可用時間:</span>
+										<span style="color: blue;">9am~23pm</span>
+									</div>
+									<div>
+										<span>廣告不接受的業務類型:</span>
+										<span style="color: blue;">食品</span>
+									</div>
+									<div>
+										<span>高峰/非高峰時段的每月價格:</span>
+										<span style="color: blue;">
+											<div>高峰(20000HKD/month)</div>
+											<div>非高峰(10000HKD/month)</div>
+										</span>
+									</div>
+								</div>
+							` +
+							`<div style='margin-top: 10px;' class='ju al'>
+								<div onclick="closewin()" class='cursor close'
+								style='padding: 5px 20px;
+								color: gray;
+								font-size: 12px;
+								border: solid 1px rgb(201, 201, 201);
+								border-radius: 4px;
+								margin-right: 5px;'>取消</div>
+
+								<div onclick="shopadd('${features[i].msg}')"
+								class='cursor' style='padding: 5px 20px;
+								color: rgb(253, 253, 253);
+								background: rgb(0, 153, 255);
+								font-size: 12px;
+								border-radius: 4px;'>添加</div>
+							</div>
+						`
+
+						marker1.addListener("click", () => {
+							that.openwin(contentString1,marker1,map)
+						});
+					}
+				} else if (that.$i18n.locale == 'en-US') {
+					console.log(that.$i18n.locale)
+					for (let i = 0; i < features.length; i++) {
+						const marker1 = new google.maps.Marker({
+							position: features[i].position,
+							icon: icons[features[i].type].icon,
+							map: map,
+						});
+						
+						const contentString1 = 
+							`
+								<div class="sb" style="height: 100px;">
+									<div style="width: 150px;height: 100px;overflow: hidden;">
+										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+									</div>
+									<div style="width: 150px;height: 100px;overflow: hidden;
+										margin:0 7px;">
+										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+									</div>
+									<div style="width: 150px;height: 100px;overflow: hidden;">
+										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+									</div>
+								</div>
+							` +
+							`
+								<div class="sb" style="margin-top:5px;">
+									<div class='bold tc'>${features[i].msg}(Mong Kok Store)</div>
+									<div class="contentString1_address" 
+									style="text-decoration: underline;
+									font-size:12px;">HongKong street at six</div>
+								</div>
+							` + 
+							`
+								<div class="size12">
+									<div>
+										<span>size (height x width) of adv display:</span>
+										<span style="color: blue;">2m × 1m</span>
+									</div>
+									<div>
+										<span>available hour opened for advertisers:</span>
+										<span style="color: blue;">9am~23pm</span>
+									</div>
+									<div>
+										<span>type of business unaccepted for adv:</span>
+										<span style="color: blue;">Food</span>
+									</div>
+									<div>
+										<span>monthly price at rush/non-rush hour:</span>
+										<span style="color: blue;">
+											<div>rush(20000HKD/month)</div>
+											<div>non-rush(10000HKD/month)</div>
+										</span>
+									</div>
+								</div>
+							` +
+							`<div style='margin-top: 10px;' class='ju al'>
+								<div onclick="closewin()" class='cursor close'
+								style='padding: 5px 20px;
+								color: gray;
+								font-size: 12px;
+								border: solid 1px rgb(201, 201, 201);
+								border-radius: 4px;
+								margin-right: 5px;'>Cancel</div>
+
+								<div onclick="shopadd('${features[i].msg}')"
+								class='cursor' style='padding: 5px 20px;
+								color: rgb(253, 253, 253);
+								background: rgb(0, 153, 255);
+								font-size: 12px;
+								border-radius: 4px;'>Add</div>
+							</div>
+						`
+
+						marker1.addListener("click", () => {
+							that.openwin(contentString1,marker1,map)
+						});
+					}
+				}
+			} else if (val == 2) {
+				this.lightArea(map)
+			} else if (val == 3) {
+				
+			}
 		},
 		submitForm(formName) {
 			this.$refs[formName].validate((valid) => {
@@ -450,6 +921,48 @@ export default {
 				})
 			}
 		},
+		changeFile1 (e) {
+			var files = e.target.files
+			let that = this
+			if (e.target.files.length<=10 && this.imageList1.length <= 10) {
+				for(var ff=0;ff<e.target.files.length;ff++){
+					let file = e.target.files[ff].type.split('/')[0]
+					let fileSize = e.target.files[ff].size
+					if (file == 'image') {
+						if (fileSize <= 3000000) {
+							let fileurl = URL.createObjectURL(e.target.files[ff])
+							let name = files[ff].name
+							let size
+							if (files[ff].size >= 1000000) {
+								var s = files[ff].size/1000000
+								size = s.toFixed(1) + 'M'
+								// size = Math.ceil(files[ff].size/1000000) + 'm'
+							} else {
+								var s = files[ff].size/1000
+								size = s.toFixed(0) + 'KB'
+								// size = Math.ceil(files[ff].size/1000) + 'kb'
+							}
+							that.imageList1.push({ url: fileurl, name: name, size: size })
+						} else {
+							this.$message({
+								type: 'error',
+								message: '單個圖片最大限制3M !'
+							})
+						}
+					} else { 
+						this.$message({
+							type: 'error',
+							message: '請選擇圖片類型'
+						})
+					}
+				}
+			} else {
+				this.$message({
+					type: 'error',
+					message: '最大限制10個圖片文件!'
+				})
+			}
+		},
 		deleImg (i) {
 			if (this.ruleForm.mediaType == 'video') {
 				this.minute.splice(i,1)
@@ -461,6 +974,19 @@ export default {
 				this.imageList.splice(i,1)
 			} else {
 				this.imageList.splice(i,1)
+			}
+		},
+		deleImg1 (i) {
+			if (this.ruleForm.mediaType == 'video') {
+				this.minute.splice(i,1)
+				this.ruleForm.inp = 0
+				for (let i=0;i<Array.from(this.minute).length;i++) {
+					this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
+					this.$forceUpdate()
+				}
+				this.imageList1.splice(i,1)
+			} else {
+				this.imageList1.splice(i,1)
 			}
 		},
     }
@@ -506,7 +1032,7 @@ export default {
     }
     .content {
         width: 85%;
-        height: calc(100% - 11px);
+        // height: calc(100% - 11px);
         padding: 0px 20px;
         overflow: auto;
 		margin-top: 15px;
@@ -540,13 +1066,13 @@ export default {
 		white-space: nowrap;
     }
     .inp_time {
-      width: 217px;
+    //   width: 217px;
       background: white;
       margin-right: 5px;
       overflow: hidden;
     }
     .textarea_wrap {
-		width: 95%;
+		width: 98%;
 		height: 300px;
 		background: white;
 		padding: 20px 27px;
@@ -665,16 +1191,33 @@ export default {
         font-size: 14px;
     }
     .textarea {
-        width: 100%;
+        width: 98%;
         height: 200px;
-        padding: 3px;
+        // padding: 3px;
         textarea {
+			padding: 3px;
             width: 100%;
             height: 97%;
             border: none;
             outline: none;
             resize: none;
         }
+    }
+	.inp_time1 {
+		width: 70px;
+		background: #F5F7FA;
+		border: solid 1px #E4E7ED;
+		color: rgb(168, 168, 168);
+		height: 37px;
+		// margin-left: 30px;
+		margin-right: 5px;
+		overflow: hidden;
+		input {
+			border: none;
+			outline: none;
+			width: 100%;
+			// height: 100%;
+		}
     }
     .addorcancel {
         margin-top: 30px;
@@ -684,7 +1227,8 @@ export default {
         font-size: 16px;
         padding: 15px;
         width: 150px;
-        background: @themeColor;
+        background: #409EFF;
+		border-radius: 5px;
     }
     .iknow {
         margin-top: 30px;
@@ -694,5 +1238,140 @@ export default {
             padding: 15px 40px;
         }
     } 
-    
+	.streetText {
+		color: gray;
+		height: 40px;
+		text-decoration: underline;
+		@media screen and (max-width: 564px) {
+            margin-left: 3px;
+			margin-top: -25px;
+        }
+	}
+	.mapwrap_w {
+		width: calc(100% + 120px);
+		@media screen and (max-width: 564px) {
+			width: 100%;
+        }
+	}
+    .map_wrap {
+		width: 100%;
+		position: relative;
+		margin-top: 5px;
+		margin-left: -125px;
+		@media screen and (max-width: 564px) {
+            margin-left: 3px;
+			margin-top: 0px;
+			width: 98%;
+        }
+		.searchImg {
+			position: absolute;
+			left: 15px;
+			top: 24px;
+			z-index: 200;
+			width: 23px;
+			height: 23px;
+		}
+    }
+	.map_wrap1 {
+		margin-left: 0 !important;
+		margin-top: -10px !important;
+	}
+	#map {
+        height: 500px;
+        width: 100%;
+		box-shadow: 0 0 3px gray;
+    }
+    #description {
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    }
+
+    #infowindow-content .title {
+    font-weight: bold;
+    }
+
+    #infowindow-content {
+    display: none;
+    }
+
+    #map #infowindow-content {
+    display: inline;
+    }
+
+    .pac-card {
+    background-color: #fff;
+    border: 0;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
+    margin: 10px;
+    padding: 0 0.5em;
+    font: 400 18px Roboto, Arial, sans-serif;
+    overflow: hidden;
+    font-family: Roboto;
+    padding: 0;
+    }
+
+    #pac-container {
+    padding-bottom: 12px;
+    margin-right: 12px;
+    }
+
+    .pac-controls {
+    display: inline-block;
+    padding: 5px 11px;
+    }
+
+    .pac-controls label {
+    font-family: Roboto;
+    font-size: 13px;
+    font-weight: 300;
+    }
+
+    #pac-input {
+		padding-left: 25px;
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 33px;
+        text-overflow: ellipsis;
+        width: 230px;
+        top: 16px !important;
+        left: -3px !important;
+        border-radius: 7px;
+        height: 35px;
+		// border: #5C48B7 solid 3px;
+		// border: #13dafd solid 3px;
+		border: rgb(165, 165, 165) solid 1px;
+		outline: none;
+    }
+	// #pac-input:hover {
+    //     border-color: #03e9f4;
+    //     box-shadow: 0 0 2px #03e9f4;
+    //     box-shadow: 0 0 4px #03e9f4;
+    //     box-shadow: 0 0 6px #03e9f4;
+    //     box-shadow: 0 0 8px #03e9f4;
+    // }
+
+    // #pac-input:focus {
+    // 	border-color: #03e9f4;
+	// 	box-shadow: 0 0 2px #03e9f4;
+    //     box-shadow: 0 0 4px #03e9f4;
+    //     box-shadow: 0 0 6px #03e9f4;
+    //     box-shadow: 0 0 8px #03e9f4;
+    // }
+
+    #title {
+    color: #fff;
+    background-color: #4d90fe;
+    font-size: 25px;
+    font-weight: 500;
+    padding: 6px 12px;
+    }
+
+    #target {
+    width: 345px;
+    }
 </style>

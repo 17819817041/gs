@@ -176,20 +176,31 @@ export default {
 		transform: translate(-50%, -50%);
 		overflow: hidden !important;
 	}
-	.AdvertisingAdd .el-form .el-form-item__label {
+	.AdvertisingAddPlus .el-select .el-input .el-select__caret::before {
+		content: "";
+		background: url('~@/assets/img/arrow_up.png') center center no-repeat;
+		position: absolute;
+		width: 23px;
+		height: 17px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		overflow: hidden !important;
+	}
+	.AdvertisingAdd .el-form .el-form-item__label, .AdvertisingAddPlus .el-form .el-form-item__label {
 		white-space: nowrap;
 	}
-	.AdvertisingAdd .el-date-editor {
+	.AdvertisingAdd .el-date-editor, .AdvertisingAddPlus .el-date-editor {
 		width: 100% !important;
 	} 
-	.AdvertisingAdd .el-popover__reference {
+	.AdvertisingAdd .el-popover__reference, .AdvertisingAddPlus .el-popover__reference {
 		// transform: translate(0px, 20px);
 		width: 140px;
 		// opacity: 0;
 		border: none;
 		outline: none;
 	}  
-	.AdvertisingAdd .basicsMsg .el-radio-group {
+	.AdvertisingAdd .basicsMsg .el-radio-group, .AdvertisingAddPlus .basicsMsg .el-radio-group {
 		margin-left: 20px;
 		margin-right: 10px;
 		@media screen and (max-width: 564px) {
@@ -197,17 +208,17 @@ export default {
 			margin-top: 0px;
 		}
 	}
-	.AdvertisingAdd .basicsMsg .el-radio-group .el-radio {
+	.AdvertisingAdd .basicsMsg .el-radio-group .el-radio, .AdvertisingAddPlus .basicsMsg .el-radio-group .el-radio {
 		margin-right: 0px !important;
 	}  
-	.AdvertisingAdd .detailPlan .el-radio-group {
-		margin-left: 20px !important;
+	.AdvertisingAdd .detailPlan .el-radio-group, .AdvertisingAddPlus .detailPlan .el-radio-group {
+		margin-left: 0px !important;
 		@media screen and (max-width: 564px) {
 			margin-top: -10px;
 			margin-left: 0px !important;
 		}
 	}
-	.AdvertisingAdd .detailPlan .el-radio-group .el-radio {
+	.AdvertisingAdd .detailPlan .el-radio-group .el-radio, .AdvertisingAddPlus .detailPlan .el-radio-group .el-radio {
 		margin-right: 10px !important;
 		@media screen and (max-width: 564px) {
 			margin-top: 7px;
@@ -218,6 +229,19 @@ export default {
 		width: 90% !important;
 		max-width: 500px !important;
 	}
+	.AdvertisingAddPlus .el-drawer {
+		width: 95% !important;
+		max-width: 1100px !important;
+	}
+	.AdvertisingAdd1 .el-input.is-disabled .el-input__inner {
+		color: rgb(170, 170, 170);
+	}
+
+	.AdvertisingAdd1 .el-dialog, .AddStore .el-dialog, .AdvertisingAddPlus .el-dialog{
+		max-width: 800px;
+	}
+
+
 	.el-checkbox__label {
 		font-size: 12px !important;
 	}
@@ -227,7 +251,10 @@ export default {
 			margin-right: 8px;
 		}
 	}
-
+	.gm-style .gm-style-iw-d, .gm-style .gm-style-iw {
+		height: auto !important;
+		max-height: 400px !important;
+	}
 
 
 	.technology .el-form .el-form-item__label {
@@ -350,14 +377,14 @@ export default {
 	}
 
 
-	.StoreAdministrator .el-select .el-input .el-input__inner {
+	.StoreAdministrator .el-select .el-input .el-input__inner, .AdvertiserManagement .el-select .el-input .el-input__inner {
 		border: none !important;
 		outline: none !important;
 		background: white !important;
 		height: 28px !important;
 		display: flex;
 	}
-	.StoreAdministrator .el-select .el-input .el-select__caret::before {
+	.StoreAdministrator .el-select .el-input .el-select__caret::before , .AdvertiserManagement .el-select .el-input .el-select__caret::before {
 		content: "";
 		background: url('~@/assets/img/arrow_up.png') center center no-repeat;
 		position: absolute;
@@ -388,22 +415,21 @@ export default {
 		transform: translate(-50%, -50%);
 		overflow: hidden !important;
 	}
-	.AuditList .el-dialog {
+	.AuditList .el-dialog, .AdAdmin .el-dialog {
 		border-radius: 7px;
 		min-width: 516px;
 		@media screen and (max-width: 600px) {
 			min-width: 285px;
 		}
 	}
-	.AuditList .el-dialog__wrapper .el-dialog__header {
+	.AuditList .el-dialog__wrapper .el-dialog__header, .AdAdmin .el-dialog__wrapper .el-dialog__header {
 		height: 0px !important;
 		padding: 0 !important;
 	}  
-	.AuditList .el-dialog__wrapper .el-dialog__body {
+	.AuditList .el-dialog__wrapper .el-dialog__body, .AdAdmin .el-dialog__wrapper .el-dialog__body {
 		padding: 0 !important;
 		height: 328px;
 	}
-
 
 	.PlatSetting .el-select .el-input .el-input__inner {
 		border: none !important;
@@ -424,6 +450,17 @@ export default {
 		overflow: hidden !important;
 	}
 
+
+	.el-collapse-item__content {
+		background: #F1F1F1;
+		min-height: 48px !important;
+		padding-bottom: 0 !important;
+		display: flex !important;
+		align-items: center !important;
+	}
+	.el-collapse-item__header,.el-collapse-item__content {
+		padding: 0 20px;
+	}
 	
 	.Setting .el-dialog {
 		border-radius: 7px;
@@ -496,6 +533,19 @@ export default {
 	.Settingadvertising .el-dialog {
 		min-width: 300px !important;
 	}
+	.Settingadvertising #delele .el-dialog {
+		min-width: 300px !important;
+		// max-height: 820px;
+		@media screen and (max-width: 1601px) {
+			max-height: 80% !important;
+			overflow: auto;
+		}
+		
+	}
+	.Settingadvertising .el-drawer, .AddStore .el-drawer {
+		width: 90% !important;
+		max-width: 500px !important;
+	}
 	.el-message-box {
 		width: 300px !important;
 	}
@@ -513,5 +563,30 @@ export default {
 		width: 80%;
 		max-width: 450px;
 		min-width: 275px !important;
+	}
+
+
+	.video-js {
+		width: 100% !important;
+		// height: 150px !important;
+	}
+
+
+	.video_outWrap {
+		position: relative;
+		z-index: 20;
+		.videoImage {
+			background: white;
+			position: absolute;
+			left: 0;
+			top: 0;
+			z-index: 21;
+			height: 100%;
+			img {
+				height: 100%;
+				width: 100%;
+				object-fit: cover;
+			}
+		}
 	}
 </style>

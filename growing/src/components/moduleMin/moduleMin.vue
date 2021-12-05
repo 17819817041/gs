@@ -113,6 +113,25 @@
         color: white;
         background: @themeColor;
     }
+    .list {
+		margin-left: 15px;
+		@media screen and (max-width: 870px) {
+			margin-left: 0px !important;
+			margin-top: 10px !important;
+		}
+	}
+	.list_item {
+        width: 165px;
+		border: dashed 2px #d3d3d3;
+		margin-right: 10px;
+		height: 36px;
+		padding: 0 15px;
+		white-space: nowrap;
+		// @media screen and (max-width: 870px) {
+		// 	margin-top: 5px;
+		// }
+		margin-bottom: 5px;
+	}
 </style>
 <template>
     <div class="All">
@@ -133,7 +152,8 @@
             </div>
             <div class="content">
                 <div class="check">
-                    <div :class="['check_child al',{ 'back_color': i%2 == 1 }]" v-for="(item,i) in arr" :key="i" style="display:flex;width:100%;" v-show="item.active ">                   
+                    <div :class="['check_child al',{ 'back_color': i%2 == 1 }]" v-for="(item,i) in arr" :key="i" style="display:flex;width:100%;" 
+                    v-show="item.active ">                   
                         <div :class="['content_item tc',{width40:child.type == 'checkbox'}]" 
                         v-for="(child,k) in columns" :key="k">
                             <div class="check_item width40" 
@@ -152,7 +172,25 @@
                             <div v-else-if="(child.slot == 'key')" class="slot">
                                 <slot name="key" :data="item.key"></slot>
                             </div>
-                            <div :class="['child_item']" v-else>{{item[child.key]}}</div>
+                            
+                            <div :class="['child_item']" v-else>
+                                <span v-if="!item.br">{{item[child.key]}}</span>
+                                <div class="" v-else-if="item.adList1.length == 0">
+                                    <div>接收外來廣告時段：全部時段</div>
+                                    <div class="">外來廣告比例：{{item.ids}}</div>
+                                </div>
+                                <div class="" v-else-if="item.adList1.length != 0">
+                                    <div class="list clear">
+										<div style="color: #B0B0B0;" class="list_item float al ju" 
+										v-for="(item1,i) in item.adList1" :key="i">
+											{{item1.time}} 
+                                            <!-- <span class="al" style="margin-left: 5px">({{item1.num}}%)</span> -->
+										</div>
+									</div>
+                                </div>
+
+                                <span v-if="item.nodv && item.adList1.length == 0">不接受外來廣告</span>
+                            </div>
                         </div>
                     </div>
                 </div>

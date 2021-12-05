@@ -2,201 +2,205 @@
     <div class="AdvertisingAdd">
 		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
 		<div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">{{$t("lang.newad")}}
+            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">Basic廣告計劃
         </div>
-        <div :class="['content mg bar',{ heigh: !submit }]">
-            <!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
-			<div class="noBar" style="height: calc(100% - 0px); overflow:auto" v-show="submit">
-				<div class="basicsMsg theme" v-show="submit">
-					<div class=" basicsMsg_item bold al">
-						<div class="iden radius"></div> {{$t("lang.message")}}
-					</div>
-					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
-					:label-width="$i18n.locale == 'zh-CN'? '100px': '165px'" class="demo-ruleForm">
-						<el-form-item :label="$t('lang.adname')" prop="name">
-							<el-input style="width: 40%;min-width: 200px;" v-model="ruleForm.name"></el-input>
-						</el-form-item>
-						<el-form-item :label="$t('lang.adtype')" prop="type">
-							<div class="flex br">
-								<div class="flex">
-									<el-select v-model="ruleForm.type" :placeholder="$t('lang.pldselecttype')">
-										<el-option :label="$t('lang.food')" :value="$t('lang.food')"></el-option>
-										<el-option :label="$t('lang.Technology')" :value="$t('lang.Technology')"></el-option>
-										<el-option :label="$t('lang.medical')" :value="$t('lang.medical')"></el-option>
-										<el-option :label="$t('lang.car')" :value="$t('lang.car')"></el-option>
-									</el-select>
-									<div class="addCate al" @click="addType(ruleForm.type)">
-										{{$t("lang.addbtn")}}
-									</div>
-								</div>
-								<div class="list clear">
-									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
-										{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt=""></span>
-									</div>
-								</div>
-							</div>
-						</el-form-item>
-						<!-- <el-form-item :label="$t('lang.AdvertisingArea')" prop="area">
-							<div class="flex br">
-								<div class="flex">
-									<el-select v-model="ruleForm.area" :placeholder="$t('lang.pldselectarea')">
-										<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
-										<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
-										<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
-									</el-select>
-									<div class="addCate al" @click="addArea(ruleForm.area)">
-										{{$t("lang.addbtn")}}
-									</div>
-								</div>
-								<div class="list clear">
-									<div style="color: #B0B0B0;" class="list_item float al" 
-									v-for="(item,i) in areaList" :key="i">
-										{{item}} <span class="al" style="margin-left: 5px">
-											<img class="cursor" @click="deleArea(i)" src="@/assets/img/cha.png" alt="">
-										</span>
-									</div>
-								</div>
-							</div>
-						</el-form-item> -->
-					</el-form>
-				</div>
-				<div class="detailPlan theme" v-show="submit">
-					<div class=" basicsMsg_item bold al">
-						<div class="iden radius"></div> {{$t("lang.DetailedPlan")}}
-					</div>
-					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
-						:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" class="demo-ruleForm">
-						<el-form-item :label="$t('lang.cycle')" prop="date">
-							<div style="min-width: 200px;width: 100%" class='clear'>
-								<div class="float" style="margin-right: 15px;width: 140px;">
-									<el-form-item prop="startDate">
-										<el-date-picker
-											@change="STIME"
-											class="width100"
-											v-model="ruleForm.startDate"
-											type="date"
-											:placeholder="$t('lang.sdate')"
-											:picker-options="pickerOptions1">
-										</el-date-picker>
-									</el-form-item>
-								</div>
-								<div class="float width384" style="width: 140px;">
-									<el-form-item prop="endDate">
-										<el-date-picker
-											class="width100"
-											v-model="ruleForm.endDate"
-											type="date"
-											:placeholder="$t('lang.enddate')"
-											:picker-options="pickerOptions2"
-											>
-										</el-date-picker>
-									</el-form-item>
-									
-								</div>
-							</div>
-						</el-form-item>
-						<div :class="['flex br',{ br1185: $i18n.locale == 'en-US' }]">
-							<el-form-item :label="$t('lang.admediatype')" prop="mediaType" style="margin-right: 30px;">
-								<div class="al">
-									<el-select v-model="ruleForm.cmediaType" :placeholder="$t('lang.pldselecttype')" 
-									@change="getType">
-										<el-option :label="$t('lang.image')" value="1"></el-option>
-										<el-option :label="$t('lang.video')" value="2"></el-option>
-									</el-select>
-								</div>
-							</el-form-item>
-							<el-form-item :label="$t('lang.duration')" prop="inp">
-								<div class="al">
-									<div class="al inp_time ju">
-										<!-- <input type="text" class="tc"> -->
-										<el-input class="width100"
-										oninput ="value=value.replace(/[^0-9]/g,'')" :disabled="video" v-model="ruleForm.inp"></el-input>
-									</div>
-									<div>{{$t('lang.minute')}} <span style="color: gray;margin-left: 5px;">{{$t('lang.int')}}</span></div>
-								</div>
-							</el-form-item>
+        <div class="noBar" style="height: calc(100% - 35px);overflow: auto;margin-top: 15px;">
+			<div :class="['content mg bar',{ heigh: !submit }]">
+				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
+				<div class="noBar" style="height: calc(100% - 0px); overflow:auto" v-show="submit">
+					<div class="basicsMsg theme" v-show="submit">
+						<div class=" basicsMsg_item bold al">
+							<div class="iden radius"></div> {{$t("lang.message")}}
 						</div>
-						<el-form-item :label="$t('lang.adcontent')" prop="content">
-							<div class="textarea_wrap clear">
-								<label for="img">
-									<div class="addImg ju al float">
-										<img style="height: 30%;" src="@/assets/img/add.png" alt="">
-									</div>
-									<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
-								</label>
-								<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
-									<div class="imageList_wrap">
-										<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
-										<div class="textarea_wrap_item_child ju al">
-											<img v-if="ruleForm.mediaType == 'image'" style="height: 100%;" :src="item.url" alt="">
-											<img v-else-if="ruleForm.mediaType == 'video'" style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+						<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
+						:label-width="$i18n.locale == 'zh-CN'? '100px': '165px'" class="demo-ruleForm">
+							<el-form-item :label="$t('lang.adname')" prop="name">
+								<el-input style="width: 40%;min-width: 200px;" v-model="ruleForm.name"></el-input>
+							</el-form-item>
+							<el-form-item :label="$t('lang.adtype')" prop="type">
+								<div class="flex br">
+									<div class="flex">
+										<el-select v-model="ruleForm.type" :placeholder="$t('lang.pldselecttype')">
+											<el-option :label="$t('lang.food')" :value="$t('lang.food')"></el-option>
+											<el-option :label="$t('lang.Technology')" :value="$t('lang.Technology')"></el-option>
+											<el-option :label="$t('lang.medical')" :value="$t('lang.medical')"></el-option>
+											<el-option :label="$t('lang.car')" :value="$t('lang.car')"></el-option>
+										</el-select>
+										<div class="addCate al" @click="addType(ruleForm.type)">
+											{{$t("lang.addbtn")}}
 										</div>
 									</div>
-									<div class="imageList_name tc">{{item.name}}</div>
-									<div class="imageList_size tc">{{item.size}}</div>
-								</div>
-							</div>
-							<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
-								{{$t('lang.becare')}}
-							</div>
-							<div style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
-						</el-form-item>
-					</el-form>
-					<div class="total mg sb">
-						<div></div>
-						<div class="total_price">
-							<div class="t_price bold">
-								<span>{{$t('lang.total')}}:</span><span class="math_price"> $ 6000 </span><span class="p_d">HKD</span>
-							</div>
-							<div class="total_price_item">{{$t('lang.phprice')}}: $4000 HKD</div>
-							<div class="total_price_item">{{$t('lang.unphprice')}}: $2000 HKD</div>
-							<!-- <div class="price_plan flex cursor" @click="drawer = !drawer"> -->
-							<el-popover
-								:placement="position"
-								trigger="click"
-								v-model="visible">
-								<div>
-									<div class="flex total_item">
-										<div class="l_msg">{{$t('lang.base')}}: </div>
-										<div class="r_msg">100{{$t('lang.hdk')}}</div>
-									</div>
-									<div class="flex total_item">
-										<div class="l_msg">{{$t('lang.phprice')}}: </div>
-										<div class="r_msg">{{$t('lang.base')}}*2/{{$t('lang.minute')}}</div>
-									</div>
-									<div class="flex total_item">
-										<div class="l_msg">{{$t('lang.unphprice')}}: </div>
-										<div class="r_msg">{{$t('lang.base')}}/{{$t('lang.minute')}}</div>
+									<div class="list clear">
+										<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
+											{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt=""></span>
+										</div>
 									</div>
 								</div>
-								<div>
-									{{$t('lang.detailgetprice')}}
+							</el-form-item>
+							<!-- <el-form-item :label="$t('lang.AdvertisingArea')" prop="area">
+								<div class="flex br">
+									<div class="flex">
+										<el-select v-model="ruleForm.area" :placeholder="$t('lang.pldselectarea')">
+											<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
+											<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
+											<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
+										</el-select>
+										<div class="addCate al" @click="addArea(ruleForm.area)">
+											{{$t("lang.addbtn")}}
+										</div>
+									</div>
+									<div class="list clear">
+										<div style="color: #B0B0B0;" class="list_item float al" 
+										v-for="(item,i) in areaList" :key="i">
+											{{item}} <span class="al" style="margin-left: 5px">
+												<img class="cursor" @click="deleArea(i)" src="@/assets/img/cha.png" alt="">
+											</span>
+										</div>
+									</div>
 								</div>
-								<div class="arrow_br"></div>
-								<div slot="reference" class="price_plan flex cursor">
-									<img src="@/assets/img/help.png" alt="">
-									<div>{{$t('lang.scheme')}}</div>
+							</el-form-item> -->
+						</el-form>
+					</div>
+					<div class="detailPlan theme" v-show="submit">
+						<div class=" basicsMsg_item bold al">
+							<div class="iden radius"></div> {{$t("lang.DetailedPlan")}}
+						</div>
+						<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
+							:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" class="demo-ruleForm">
+							<el-form-item :label="$t('lang.cycle')" prop="date">
+								<div style="min-width: 200px;width: 100%" class='clear'>
+									<div class="float" style="margin-right: 15px;width: 140px;">
+										<el-form-item prop="startDate">
+											<el-date-picker
+												@change="STIME"
+												class="width100"
+												v-model="ruleForm.startDate"
+												type="date"
+												:placeholder="$t('lang.sdate')"
+												:picker-options="pickerOptions1">
+											</el-date-picker>
+										</el-form-item>
+									</div>
+									<div class="float width384" style="width: 140px;">
+										<el-form-item prop="endDate">
+											<el-date-picker
+												class="width100"
+												v-model="ruleForm.endDate"
+												type="date"
+												:placeholder="$t('lang.enddate')"
+												:picker-options="pickerOptions2"
+												>
+											</el-date-picker>
+										</el-form-item>
+										
+									</div>
 								</div>
-							</el-popover>
-							
+							</el-form-item>
+							<div :class="['flex br',{ br1185: $i18n.locale == 'en-US' }]">
+								<el-form-item :label="$t('lang.admediatype')" prop="mediaType" style="margin-right: 30px;">
+									<div class="al">
+										<el-select v-model="ruleForm.cmediaType" :placeholder="$t('lang.pldselecttype')" 
+										@change="getType">
+											<el-option :label="$t('lang.image')" value="1"></el-option>
+											<el-option :label="$t('lang.video')" value="2"></el-option>
+										</el-select>
+									</div>
+								</el-form-item>
+								<el-form-item :label="$t('lang.duration')" prop="inp">
+									<div class="al">
+										<div class="al inp_time ju">
+											<!-- <input type="text" class="tc"> -->
+											<!-- <el-input class="width100"
+											oninput ="value=value.replace(/[^0-9]/g,'')" :disabled="video" v-model="ruleForm.inp"></el-input> -->
+											<el-input-number v-model="ruleForm.inp" :disabled="video" size="small" 
+											:min="60" :step="10" step-strictly :max="1000" label="描述文字"></el-input-number>
+										</div>
+										<div>{{$t('lang.minute')}} </div>
+									</div>
+								</el-form-item>
+							</div>
+							<el-form-item :label="$t('lang.adcontent')" prop="content">
+								<div class="textarea_wrap clear">
+									<label for="img">
+										<div class="addImg ju al float">
+											<img style="height: 30%;" src="@/assets/img/add.png" alt="">
+										</div>
+										<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
+									</label>
+									<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
+										<div class="imageList_wrap">
+											<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
+											<div class="textarea_wrap_item_child ju al">
+												<img v-if="ruleForm.mediaType == 'image'" style="height: 100%;" :src="item.url" alt="">
+												<img v-else-if="ruleForm.mediaType == 'video'" style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+											</div>
+										</div>
+										<div class="imageList_name tc">{{item.name}}</div>
+										<div class="imageList_size tc">{{item.size}}</div>
+									</div>
+								</div>
+								<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
+									{{$t('lang.becare')}}
+								</div>
+								<div style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
+							</el-form-item>
+						</el-form>
+						<div class="total mg sb">
+							<div></div>
+							<div class="total_price">
+								<div class="t_price bold">
+									<span>{{$t('lang.total')}}:</span><span class="math_price"> $ 6000 </span><span class="p_d">HKD</span>
+								</div>
+								<div class="total_price_item">{{$t('lang.phprice')}}: $4000 HKD</div>
+								<div class="total_price_item">{{$t('lang.unphprice')}}: $2000 HKD</div>
+								<!-- <div class="price_plan flex cursor" @click="drawer = !drawer"> -->
+								<el-popover
+									:placement="position"
+									trigger="click"
+									v-model="visible">
+									<div>
+										<div class="flex total_item">
+											<div class="l_msg">{{$t('lang.base')}}: </div>
+											<div class="r_msg">100{{$t('lang.hdk')}}</div>
+										</div>
+										<div class="flex total_item">
+											<div class="l_msg">{{$t('lang.phprice')}}: </div>
+											<div class="r_msg">{{$t('lang.base')}}*2/{{$t('lang.minute')}}</div>
+										</div>
+										<div class="flex total_item">
+											<div class="l_msg">{{$t('lang.unphprice')}}: </div>
+											<div class="r_msg">{{$t('lang.base')}}/{{$t('lang.minute')}}</div>
+										</div>
+									</div>
+									<div>
+										{{$t('lang.detailgetprice')}}
+									</div>
+									<div class="arrow_br"></div>
+									<div slot="reference" class="price_plan flex cursor">
+										<img src="@/assets/img/help.png" alt="">
+										<div>{{$t('lang.scheme')}}</div>
+									</div>
+								</el-popover>
+								
+							</div>
+						</div>
+						<div class="sure_plan_wrap">
+							<div class="sure_plan cursor" @click="submitG">{{$t('lang.adconfirm')}}</div>
 						</div>
 					</div>
-					<div class="sure_plan_wrap">
-						<div class="sure_plan cursor" @click="submitG">{{$t('lang.adconfirm')}}</div>
+				</div>
+				<div class="basicsMsg theme padding" style="margin-top: 15px" v-show="!submit">
+					<div :class="['true_title mg al ju',
+						{ size27: $i18n.locale=='zh-CN',size15: $i18n.locale=='en-US' }]">
+						<img src="@/assets/img/success_sign.png" alt="">{{$t('lang.adconfirmsucc')}} ！
+					</div>
+					<div class="ju size_13 mg" >{{$t('lang.adconfirmsucc1')}}.</div>
+					<div class="iknow ju al">
+						<div class="cursor" @click="goBack">{{$t('lang.sure')}}</div>
 					</div>
 				</div>
 			</div>
-			<div class="basicsMsg theme padding" style="margin-top: 15px" v-show="!submit">
-				<div :class="['true_title mg al ju',
-					{ size27: $i18n.locale=='zh-CN',size15: $i18n.locale=='en-US' }]">
-					<img src="@/assets/img/success_sign.png" alt="">{{$t('lang.adconfirmsucc')}} ！
-				</div>
-				<div class="ju size_13 mg" >{{$t('lang.adconfirmsucc1')}}.</div>
-				<div class="iknow ju al">
-                    <div class="cursor" @click="goBack">{{$t('lang.sure')}}</div>
-                </div>
-			</div>
-        </div>
+		</div>
     </div>
 </template>
 
@@ -220,7 +224,7 @@ export default {
                 content: '',
 				mediaType: '',
 				cmediaType: '',
-				inp: '',
+				inp: 60,
             },
 			labelPosition: 'left',
             rules: {
@@ -286,15 +290,15 @@ export default {
 			pickerOptions1: {
                 disabledDate: (time) => {
                     if (this.ruleForm.startDate != "") {
-                        return time.getTime() < Date.now() - 8.64e7 || time.getTime() < this.ruleForm.startDate;
+                        return time.getTime() < Date.now()  || time.getTime() < this.ruleForm.startDate;
                     } else {
-                        return time.getTime() < Date.now() - 8.64e7;
+                        return time.getTime() < Date.now();
                     }
                 }
             },
             pickerOptions2: {
                 disabledDate: (time) => {
-                    return time.getTime() < this.ruleForm.startDate || time.getTime() < Date.now();
+                    return time.getTime() < this.ruleForm.startDate || time.getTime() < Date.now() + 8.64e7;
                 }
             },
             startDate: '',
@@ -306,6 +310,30 @@ export default {
 			imageList: [],
 			minute: []
         };
+    },
+	watch: {
+        lang: {
+            handler (val) {
+                if (val) {
+					if (val == 'zh-CN') {
+						if (this.ruleForm.cmediaType == 'image') {
+							this.ruleForm.cmediaType = '圖片'
+						}else if (this.ruleForm.cmediaType == 'video') {
+							this.ruleForm.cmediaType = '視屏'
+						}
+					} else if (val == 'en-US') {
+						if (this.ruleForm.cmediaType == '圖片') {
+							this.ruleForm.cmediaType = 'image'
+						}else if (this.ruleForm.cmediaType == '視屏') {
+							this.ruleForm.cmediaType = 'video'
+						}
+					}
+                }
+            }
+        }
+    },
+	computed: {
+        lang () { return this.$i18n.locale }
     },
 	beforeMount() {
 		let that = this
@@ -395,11 +423,11 @@ export default {
 			if (e == 1) {
 				this.video = false
 				this.ruleForm.mediaType = 'image'
-				this.ruleForm.cmediaType = '圖片'
+				this.ruleForm.cmediaType = this.$t('lang.image')
 			} else if (e == 2) {
 				this.video = true
 				this.ruleForm.mediaType = 'video'
-				this.ruleForm.cmediaType = '視頻'
+				this.ruleForm.cmediaType = this.$t('lang.video')
 			}
 		},
 		cahngeFile (e) {
@@ -567,11 +595,11 @@ export default {
     }
     .content {
         width: 85%;
-        height: calc(100% - 35px);
+        // height: calc(100% - 35px);
         padding: 7px 7px;
         background: white;
-		margin-top: 15px;
-        overflow: auto;
+		// margin-top: 15px;
+        // overflow: auto;
 		@media screen and (max-width: 564px) {
 			width: 100%;
 		}
@@ -623,10 +651,14 @@ export default {
 		white-space: nowrap;
     }
     .inp_time {
-		width: 70px;
-		background: white;
+		width: 105px;
+		// background: rgb(97, 24, 24);
 		height: 37px;
 		margin-right: 5px;
+		margin-left: 30px;
+		@media screen and (max-width: 564px) {
+			margin-left: 0px;
+		}
     }
     .textarea_wrap {
 		width: 100%;

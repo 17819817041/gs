@@ -3,7 +3,7 @@
         @media screen and (max-width: 730px) {
             float: left;
         }
-        @media screen and (max-width: 730px) {
+        @media screen and (max-width: 564px) {
             float: none;
         }
     }
@@ -42,7 +42,7 @@
         }
     }
     .combo_item {
-        width: 25%;
+        width: 30%;
         background: white;
         border-radius: 7px;
         color: gray;
@@ -83,21 +83,18 @@
         margin-top: 30px;
         color: white;
         font-size: 13px;
-        padding: 7px 35px;
+        padding: 12px 45px;
         border-radius: 20px;
         background: #23D378;
     }
     .kong {
-        margin-top: 215px;
-        @media screen and (max-width: 730px) {
-            margin-top: 0px;
-        }
-    }
-    .kong1 {
-        margin-top: 99px;
-        @media screen and (max-width: 730px) {
-            margin-top: 0px;
-        }
+        height: 19px;
+        margin-left: 20px;
+        max-width: 136px;
+        min-width: 100px;
+        width: 20%;
+        border-bottom: solid 1px rgb(187, 187, 187);
+        margin-top: 20px;
     }
     .better {
         color: gray;
@@ -178,24 +175,20 @@
     }
     .footer_wrap {
         background: #F6F9FC;
-        padding: 20px;
+        // padding: 20px 0;
+        
     }
     .footer_title {
         padding: 40px 0;
         color: #343352;
         font-size: 20px;
     }
-    .wen {
-        font-size: 15px;
-        color: black;
-    }
-    .da {
-        color: gray;
-        font-size: 14px;
-        margin-top: 20px;
-    }
-    .question_wrap {
-        margin-top: 30px;
+    .skk {
+        width: 80%;
+        margin: auto;
+        @media screen and (max-width: 564px) {
+            width: 100%;
+        }
     }
 </style>
 <template>
@@ -217,7 +210,18 @@
                                     <img src="@/assets/img/check.png" alt=""> 自定媒體廣告
                                 </div>
                             </div>
-                            <div class="clear kong">
+                            <div class="clear">
+                                <div class="clear">
+                                    <div class="al float1 kong"></div>
+                                    <div class="al float1 kong"></div>
+                                </div>
+                                <div class="clear">
+                                    <div class="al float1 kong"></div>
+                                    <div class="al float1 kong"></div>
+                                    <div class="al float1 kong"></div>
+                                </div>
+                            </div>
+                            <div class="clear">
                                 <div class="al float1 combo_msg_item">
                                     <img src="@/assets/img/check.png" alt=""> 費用規矩透明
                                 </div>
@@ -249,7 +253,11 @@
                                     <img src="@/assets/img/check.png" alt=""> 精準區域/街道投放
                                 </div>
                             </div>
-                            <div class="clear kong1">
+                            <div class="clear">
+                                <div class="al float1 kong"></div>
+                                <div class="al float1 kong"></div>
+                            </div>
+                            <div class="clear">
                                 <div class="al float1 combo_msg_item">
                                     <img src="@/assets/img/check.png" alt=""> 指定準確時間投放
                                 </div>
@@ -324,50 +332,50 @@
                         </div>
                         <div class="flex table_item">
                             <div class="table_title al">廣告基礎選項</div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
                         </div>
                         <div class="flex table_item">
                             <div class="table_title al">自定媒體廣告</div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
                         </div><div class="flex table_item">
                             <div class="table_title al">多店鋪指定投放</div>
                             <div class="check1_wrap ju al"><img src="@/assets/img/close.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
                         </div><div class="flex table_item">
                             <div class="table_title al">精準區域/街道投放</div>
                             <div class="check1_wrap ju al"><img src="@/assets/img/close.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
                         </div><div class="flex table_item">
                             <div class="table_title al">指定準確時間投放</div>
                             <div class="check1_wrap ju al"><img src="@/assets/img/close.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
                         </div><div class="flex table_item">
                             <div class="table_title al">更加細緻廣告選項</div>
                             <div class="check1_wrap ju al"><img src="@/assets/img/close.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
                         </div><div class="flex table_item">
                             <div class="table_title al">可搜索目標位置投放</div>
                             <div class="check1_wrap ju al"><img src="@/assets/img/close.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
                         </div><div class="flex table_item">
                             <div class="table_title al">廣告同步播放效應</div>
                             <div class="check1_wrap ju al"><img src="@/assets/img/close.png" alt=""></div>
                             <div class="check1_wrap ju al"><img src="@/assets/img/close.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
                         </div><div class="flex table_item">
                             <div class="table_title al">價格更佳優惠划算！</div>
                             <div class="check1_wrap ju al"><img src="@/assets/img/close.png" alt=""></div>
                             <div class="check1_wrap ju al"><img src="@/assets/img/close.png" alt=""></div>
-                            <div class="check1_wrap ju al"><img src="@/assets/img/check1.png" alt=""></div>
+                            <div class="check1_wrap ju al"><img src="@/assets/img/check2.png" alt=""></div>
                         </div>
                     </div>
                 </div>
@@ -378,24 +386,23 @@
                 </div>
             </div>
             <div class="footer_wrap">
-                <div class="combo_content mg">
+                <div class=" mg skk">
                     <div class="footer_title bold tc">定價和許可常見問題解答</div>
                     <div class="question">
-                        <div class="question_wrap">
-                            <div class="wen">關於廣告計劃投放？</div>
-                            <div class="da">本廣告計劃投放由Compoundeyes平台所以，並且提供計數支持服務許可。</div>
-                        </div>
-                        <div class="question_wrap">
-                            <div class="wen">關於廣告計劃費用？</div>
-                            <div class="da">在您所選擇的廣告計劃中，在選擇廣告計劃的選擇之後，將會有各項費用總覽，您也可以使用我們的費用計算器進行查看。如果您有任何疑問，請直接聯繫我們！我們將不留餘力問你解答。</div>
-                        </div>
-                        <div class="question_wrap">
-                            <div class="wen">我可以在購買廣告計劃之前提出問題嗎？</div>
-                            <div class="da">當然可以，如果您對於Compoundeyes廣告平台有任何問題，可以直接聯繫我們！</div>
-                        </div>
+                        <el-collapse v-model="activeNames" @change="handleChange">
+                            <el-collapse-item title="關於廣告計劃投放？" name="1">   
+                                <div>本廣告計劃投放由Compoundeyes平台所以，並且提供計數支持服務許可。</div>
+                            </el-collapse-item>
+                            <el-collapse-item title="關於廣告計劃費用？" name="2">
+                                <div>在您所選擇的廣告計劃中，在選擇廣告計劃的選擇之後，將會有各項費用總覽，您也可以使用我們的費用計算器進行查看。如果您有任何疑問，請直接聯繫我們！我們將不留餘力問你解答。</div>
+                            </el-collapse-item>
+                            <el-collapse-item title="我可以在購買廣告計劃之前提出問題嗎？" name="3">
+                                <div>當然可以，如果您對於Compoundeyes廣告平台有任何問題，可以直接聯繫我們！</div>
+                            </el-collapse-item>
+                        </el-collapse>
+
                     </div>
                 </div>
-                
             </div>
         </div>
         
@@ -404,6 +411,11 @@
 
 <script>
 export default {
+    data() {
+      return {
+        activeNames: ['1']
+      };
+    },
     methods: {
         goBack () {
 			this.$router.back()
@@ -418,7 +430,10 @@ export default {
             this.$router.push('/AdvertisingAddPlus')
         },
         technology () {
-            this.$router.push('/technology')
+            // this.$router.push('/technology')
+        },
+        handleChange(val) {
+            console.log(val);
         }
     }
 }

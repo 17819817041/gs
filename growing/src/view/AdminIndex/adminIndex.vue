@@ -41,7 +41,7 @@
                         <div class="jieshao">
                             为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
                         </div>
-                        <div class="detailBtn tc cursor" @click="StoreAdministrator">
+                        <div class="detailBtn tc cursor" @click="AdAdmin">
                             了解详情
                             <div class="arrow_r ju al">
                                 <img style="height: 100%;" src="@/assets/img/arrow_r.png" alt="">
@@ -108,6 +108,21 @@
                             </div>
                         </div>
                     </div>
+                    <div class="child float">
+                        <div class="child_title al">
+                            <div class="logo_wrap ju al"><img style="height: 70%;" src="@/assets/img/logo_ie.png" alt=""></div>
+                            <div class="text_title bold">新增廣告套餐</div>
+                        </div>
+                        <div class="jieshao">
+                            为产品团队提供产品迭代所需的数据分析平台,快速迭代造好产品
+                        </div>
+                        <div class="detailBtn tc cursor" @click="AddAd">
+                            了解详情
+                            <div class="arrow_r ju al">
+                                <img style="height: 100%;" src="@/assets/img/arrow_r.png" alt="">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -139,7 +154,13 @@ export default {
         },
         TradingRecord () {
             this.$router.push('/TradingRecord')
-        }
+        },
+        AdAdmin () {
+            this.$router.push('/AdAdmin')
+        },  
+        AddAd () {
+            this.$router.push('/AddAd')
+        },
     }
 }
 </script>

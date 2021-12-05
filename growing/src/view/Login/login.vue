@@ -1,62 +1,65 @@
 <template>
     <div class="Login flex">
         <div class="growing"><img style="height: 148%" src="@/assets/img/growing.jpg" alt=""></div>
-        <div class="form_item ju al">
+        <div class="form_item">
+            <div class="Logo1 ju">
+                <img src="@/assets/img/logo.png" alt="">
+            </div>
             <div class="width100 form_item_c_wrap">
                 <div class="mobile_title">
                     <div class="Logo ju">
                         <img src="@/assets/img/logo.png" alt="">
                     </div>
-                    <div class="guanggao tc">XXX{{$t("lang.plat")}}</div>
+                    <div class="guanggao tc">SMART WINDOW ADVERTISEMENT PLATFORM 智能櫥窗{{$t("lang.plat")}}</div>
                     <div class="welcome_text tc">Welcome</div>
                 </div>
                 <div class="i_form">
-                    <div class="login_text sb al">
-                        <div>{{$t("lang.login")}}</div>
-                        <div class="lang bold al">
-                            <div class="al cursor lang_item" @click="active = !active">
-                                <div class="al" v-if="$i18n.locale == 'zh-CN'">
-                                    <img src="@/assets/img/hk.gif" alt=""><span style="margin: 0 29px 0 5px;">中文</span> 
-                                    <img :class="['l_arrow', { 'rota': active } ]" src="@/assets/img/arrow_up.png" alt="">
+                    <div class="msg_input">
+                        <div class="login_text sb al">
+                            <div>{{$t("lang.login")}}</div>
+                            <div class="lang bold al">
+                                <div class="al cursor lang_item" @click="active = !active">
+                                    <div class="al" v-if="$i18n.locale == 'zh-CN'">
+                                        <img src="@/assets/img/hk.gif" alt=""><span style="margin: 0 29px 0 5px;">中文</span> 
+                                        <img :class="['l_arrow', { 'rota': active } ]" src="@/assets/img/arrow_up.png" alt="">
+                                    </div>
+                                    <div class="al" v-else-if="$i18n.locale == 'en-US'">
+                                        <img src="@/assets/img/us.gif" alt=""><span style="margin: 0 10px 0 5px;">English</span> 
+                                        <img :class="['l_arrow', { 'rota': active } ]" src="@/assets/img/arrow_up.png" alt="">
+                                    </div>
                                 </div>
-                                <div class="al" v-else-if="$i18n.locale == 'en-US'">
-                                    <img src="@/assets/img/us.gif" alt=""><span style="margin: 0 10px 0 5px;">English</span> 
-                                    <img :class="['l_arrow', { 'rota': active } ]" src="@/assets/img/arrow_up.png" alt="">
+                                <div :class="['changeLang',{ 'height': !active }]">
+                                    <div class="al cursor" @click="zh">
+                                        <img src="@/assets/img/hk.gif" alt=""><span style="margin: 0 25px 0 5px;">中文</span>
+                                    </div>
+                                    <div class="al cursor" @click="en">
+                                        <img src="@/assets/img/us.gif" alt=""><span style="margin: 0 18px 0 5px;">English</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div :class="['changeLang',{ 'height': !active }]">
-                                <div class="al cursor" @click="$i18n.locale = 'zh-CN',active = false">
-                                    <img src="@/assets/img/hk.gif" alt=""><span style="margin: 0 25px 0 5px;">中文</span>
-                                </div>
-                                <div class="al cursor" @click="$i18n.locale = 'en-US',active = false">
-                                    <img src="@/assets/img/us.gif" alt=""><span style="margin: 0 18px 0 5px;">English</span>
-                                </div>
+                        </div>
+                        <div class="input_form">
+                            <div class="user_title">{{$t("lang.user")}}</div>
+                            <div class="user">
+                                <input type="text" class="width100" v-model="userName">
                             </div>
                         </div>
-                    </div>
-                    <div class="input_form">
-                        <div class="user_title">{{$t("lang.user")}}</div>
-                        <div class="user">
-                            <input type="text" class="width100" v-model="userName">
+                        <div class="input_form pwd_inp">
+                            <div class="user_title">{{$t("lang.pwd")}}</div>
+                            <div class="user">
+                                <input type="password" class="width100" v-model="password">
+                            </div>
                         </div>
+                        <div class="login_btn tc cursor" @click="login">{{$t("lang.login")}}</div>
+                        <div class="sign_btn tc cursor" @click="sign">{{$t("lang.register")}}</div>
                     </div>
-                    <div class="input_form pwd_inp">
-                        <div class="user_title">{{$t("lang.pwd")}}</div>
-                        <div class="user">
-                            <input type="password" class="width100" v-model="password">
-                        </div>
-                    </div>
-                    <div class="login_btn tc cursor" @click="login">{{$t("lang.login")}}</div>
-                    <div class="sign_btn tc cursor" @click="sign">{{$t("lang.register")}}</div>
                 </div>
             </div>
         </div>
         <div class="welcome al ju">
             <div style="margin-bottom: 70px;">
-                <div class="Logo1 ju">
-                    <img src="@/assets/img/logo.png" alt="">
-                </div>
-                <div class="guanggao tc">XXX{{$t("lang.plat")}}</div>
+                <div class="guanggao tc">SMART WINDOW ADVERTISEMENT PLATFORM </div>
+                <div class="guanggao tc">智能櫥窗{{$t("lang.plat")}}</div>
                 <div class="welcome_text tc">Welcome</div>
             </div>
         </div>
@@ -83,6 +86,16 @@ export default {
     methods: {
         sign () {
             this.$router.push('/Sign')
+        },
+        zh () {
+            localStorage.setItem('locale','zh-CN')
+            this.$i18n.locale = 'zh-CN'
+            this.active = false
+        },
+        en () {
+            localStorage.setItem('locale','en-US')
+            this.$i18n.locale = 'en-US'
+            this.active = false
         },
         login () {
             if (this.userName == 1) {
@@ -166,10 +179,6 @@ export default {
             color: white;
             z-index: 100;
             min-height: 295px;
-            // overflow: auto;
-            @media screen and (max-width: 800px) {
-                height: 100%;
-            }
             @media screen and (max-width: 564px) {
                 left: 50%;
                 top: 45%;
@@ -198,11 +207,16 @@ export default {
         }
     }
     .Logo1 {
-        height: 80px;
-        margin-bottom: 40px;
-        margin-left: 14px;
+        // margin-bottom: -20px;
+        width: 100%;
         img {
-            height: 130px;
+            width: 60%;
+        }
+        @media screen and (max-width: 1100px) {
+            margin-bottom: -30px;
+        }
+        @media screen and (max-width: 564px) {
+            display: none;
         }
     }
     .form_item_c_wrap {
@@ -220,7 +234,7 @@ export default {
         height: 80%;
         background: #5C48B7;
         // background: #0c46a3;
-        padding: 60px;
+        padding: 35px 15px;
         margin-top: 20px;
         overflow: auto;
         box-shadow: rgb(0, 0, 0) 30px 30px 60px;
@@ -232,49 +246,50 @@ export default {
             height: 450px;
         }
         @media screen and (max-height: 500px) {
-            height: 90%;
+            height: 80%;
             padding: 10px 30px;
         }
         .login_text {
-            font-size: 60px;
-            padding-bottom: 65px;
+            font-size: 35px;
+            padding-bottom: 45px;
             color: rgb(255, 255, 255);
-            @media screen and (max-width: 1680px) {
-                font-size: 50px;
-                padding-bottom: 35px;
-            }
             @media screen and (max-width: 1400px) {
-                font-size: 45px;
+                font-size: 35px;
                 padding-bottom: 30px;
             }
-            @media screen and (max-width: 1200px) {
-                font-size: 36px;
+            @media screen and (max-width: 1300px) {
+                font-size: 30px;
                 padding-bottom: 20px;
             }
             @media screen and (max-width: 800px) {
                 font-size: 25px;
-                padding: 25px 0 20px 0;
+                padding: 3px 0;
             }
-            @media screen and (max-height: 500px) {
+            @media screen and (max-height: 360px) {
                 font-size: 20px;
             }
         }
     }
+    .msg_input {
+        width: calc(80% + 32px);
+        margin: auto;
+        padding-bottom: 15px;
+    }
     .user_title, .pwd {
         color: #BA97EE;
         font-size: 20px;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         @media screen and (max-width: 1680px) {
             font-size: 17px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         @media screen and (max-width: 1400px) {
             font-size: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         @media screen and (max-width: 1200px) {
             font-size: 14px;
-            margin-bottom: 10px;
+            margin-bottom: 7px;
         }
         @media screen and (max-height: 500px) {
             margin-bottom: 5px;
@@ -345,11 +360,12 @@ export default {
         
     }
     .login_btn, .sign_btn {
-        font-size: 25px;
+        font-size: 22px;
         color: #604EB9;
         background: white;
-        border: solid 3px #8268D5;
-        padding: 10px 0;
+        // border: solid 3px #8268D5;
+        border: solid 3px #ffffff;
+        padding: 5px 0;
         @media screen and (max-width: 1400px) {
             font-size: 20px;
             padding: 6px 0;
@@ -367,7 +383,7 @@ export default {
         }
     }
     .login_btn {
-        margin-top: 80px;
+        margin-top: 60px;
         margin-bottom: 30px;
         @media screen and (max-width: 1680px) {
             margin-top: 60px;
@@ -396,21 +412,29 @@ export default {
     }
 
     .guanggao {
-        font-size: 70px;
+        width: 80%;
+        margin: auto;
+        font-size: 36px;
         color: #D3ACFF;
         @media screen and (max-width: 1200px) {
-            font-size: 50px;
-        }
-        @media screen and (max-width: 800px) {
             font-size: 30px;
+        }
+        @media screen and (max-width: 1200px) {
+            font-size: 16px;
+        }
+        @media screen and (max-width: 564px) {
+            font-size: 12px;
+        }
+        @media screen and (max-width: 1000px) and (max-height: 500px) {
+            font-size: 12px;
         }
     }
     .welcome_text {
-        font-size: 55px;
+        font-size: 50px;
         font-weight: 100;
         color: white;
         @media screen and (max-width: 1200px) {
-            font-size: 40px;
+            font-size: 30px;
         }
         @media screen and (max-width: 800px) {
             font-size: 23px;

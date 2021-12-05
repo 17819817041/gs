@@ -14,6 +14,11 @@ export default [
         component: () => import("@/view/Sign/Sign.vue")
     },
     {
+        path:"/Sign1",
+        name: "Sign1",
+        component: () => import("@/view/Sign/Sign1.vue")
+    },
+    {
         path:"/Home",
         name: "Home",
         component: () => import("@/view/Home/home.vue"),
@@ -162,6 +167,26 @@ export default [
                 path:"/technology",
                 name: "technology",
                 component: () => import("@/view/technology/technology.vue")
+            }, 
+            {
+                path:"/dvPreview",
+                name: "dvPreview",
+                component: () => import("@/view/dvPreview/dvPreview.vue")
+            }, 
+            {
+                path:"/dvPreviewPlus",
+                name: "dvPreviewPlus",
+                component: () => import("@/view/dvPreview/dvPreviewPlus.vue")
+            }, 
+            {
+                path:"/AdAdmin",
+                name: "AdAdmin",
+                component: () => import("@/view/AdAdmin/AdAdmin.vue")
+            },  
+            {
+                path:"/AddAd",
+                name: "AddAd",
+                component: () => import("@/view/AdminIndex/AddAd.vue")
             },
         ] 
     },

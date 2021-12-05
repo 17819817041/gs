@@ -12,15 +12,17 @@
                     </div>
                     <ModuleMin :columns="columns3" :arr="arr3" ref="child">
                         <template slot="set">
-                            <div class="setText cursor" @click="dialogVisible = true">
-                                <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
-                                <div class="size12">{{$t("lang.set_p")}}</div>
+                            <div class="setText ju">
+                                <div class="cursor" @click="dialogVisible = true">
+                                    <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
+                                    <div class="size12">{{$t("lang.set_p")}}</div>
+                                </div>
                             </div>
                         </template>
                     </ModuleMin>
                 </div>
             </div>
-            <div class="Settingadvertising_content mg">
+            <!-- <div class="Settingadvertising_content mg">
                 <div class="divider_wrap">
                     <div class="flex divider_message_title">
                         <div class="divider"></div>
@@ -28,14 +30,16 @@
                     </div>
                     <ModuleMin :columns="columns" :arr="arr" ref="child">
                         <template slot="set">
-                            <div class="setText cursor" @click="dialogVisible1 = true">
-                                <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
-                                <div class="size12">{{$t("lang.set_radio")}}</div>
+                            <div class="setText ju">
+                                <div class="cursor" @click="dialogVisible1 = true">
+                                    <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
+                                    <div class="size12">{{$t("lang.set_radio")}}</div>
+                                </div>
                             </div>
                         </template>
                     </ModuleMin>
                 </div>
-            </div>
+            </div> -->
             <div class="Settingadvertising_content mg">
                 <div class="divider_wrap">
                     <div class="flex divider_message_title">
@@ -44,9 +48,11 @@
                     </div>
                     <ModuleMin :columns="columns2" :arr="arr2" ref="child">
                         <template slot="set">
-                            <div class="setText cursor" @click="dialogVisible2 = true">
-                                <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
-                                <div class="size12">{{$t("lang.set_type_t")}}</div>
+                            <div class="setText ju">
+                                <div class="cursor" @click="dialogVisible2 = true">
+                                    <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
+                                    <div class="size12">{{$t("lang.set_type_t")}}</div>
+                                </div>
                             </div>
                         </template>
                     </ModuleMin>
@@ -60,9 +66,11 @@
                     </div>
                     <ModuleMin :columns="columns1" :arr="arr1" ref="child">
                         <template slot="set">
-                            <div class="setText cursor" @click="dialogVisible3 = true">
-                                <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
-                                <div class="size12">{{$t("lang.set_per")}}</div>
+                            <div class="setText ju">
+                                <div class="cursor" @click="dialogVisible3 = true,radio4='1'">
+                                    <div class="setImg"><img src="@/assets/img/edit.png" alt=""></div>
+                                    <div class="size12">{{$t("lang.set_per")}}</div>
+                                </div>
                             </div>
                         </template>
                     </ModuleMin>
@@ -76,11 +84,11 @@
             :before-close="handleClose">
             <div class="">
                 <div class="size12">(*店鋪接入每分鐘廣告收入=期望廣告收入/30天/24小時/60分鐘)</div>
-                <div>
+                <div style="margin-top: 20px;">
                     <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
 					 class="demo-ruleForm">
 						<el-form-item :label="$t('lang.set_price')" prop="name">
-                            <el-select v-model="ruleForm.name" :placeholder="$t('lang.pldselecttype')" @change="changeP">
+                            <el-select v-model="ruleForm.name" :placeholder="$t('lang.pldselecttype')">
                                 <el-option v-for="(item,i) in price_list" :key="i" 
                                 :label="'$ ' + item.price + ' HKD'" :value="'$ ' + item.price + ' HKD'">
                                 </el-option>
@@ -91,7 +99,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                <el-button type="primary" @click="changemoney">确 定</el-button>
             </span>
         </el-dialog>
         <el-dialog
@@ -103,7 +111,7 @@
                     <el-form :model="ruleForm1" :label-position="labelPosition" :rules="rules1" ref="ruleForm" 
 					 class="demo-ruleForm">
 						<el-form-item :label="$t('lang.set_price')" prop="name">
-                            <el-select v-model="ruleForm1.name" :placeholder="$t('lang.pldselecttype')" @change="changeP1">
+                            <el-select v-model="ruleForm1.name" :placeholder="$t('lang.pldselecttype')">
                                 <el-option v-for="(item,i) in idsList" :key="i" 
                                 :label="item.val + '%'" :value="item.val + '%'">
                                 </el-option>
@@ -114,7 +122,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible1 = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
+                <el-button type="primary" @click="bilisure">确 定</el-button>
             </span>
         </el-dialog>
         <el-dialog
@@ -125,8 +133,12 @@
                 <div>
                     <el-form :model="ruleForm2" label-position="top" :rules="rules2" ref="ruleForm" 
 					 class="demo-ruleForm">
-						<el-form-item :label="$t('lang.set_price')" prop="name">
-                            <div class="flex" style="margin-top: -15px">
+						<el-form-item :label="$t('lang.set_type')" prop="name">
+                            <el-radio-group v-model="radio3" size="small">
+                                <el-radio label="1" border style="margin-right: 0;">接收全部行業廣告</el-radio>
+                                <el-radio label="2" border>自定義接收外來廣告行業</el-radio>
+                            </el-radio-group>
+                            <div class="flex" style="margin-top: 5px" v-if="radio3 == '2'">
                                 <el-select v-model="ruleForm2.name" :placeholder="$t('lang.pldselecttype')">
                                     <el-option :label="$t('lang.food')" :value="$t('lang.food')"></el-option>
                                     <el-option :label="$t('lang.Technology')" :value="$t('lang.Technology')"></el-option>
@@ -137,7 +149,7 @@
                                     {{$t("lang.addbtn")}}
                                 </div>
                             </div>
-                            <div class="list clear">
+                            <div class="list clear" v-if="radio3 == '2'">
                                 <div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
                                     {{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt=""></span>
                                 </div>
@@ -148,16 +160,19 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible2 = false">取 消</el-button>
-                <el-button type="primary" @click="changeType,dialogVisible2 = false">确 定</el-button>
+                <el-button type="primary" @click="changeType">确 定</el-button>
             </span>
         </el-dialog>
         <el-dialog
             :visible.sync="dialogVisible3"
-            width="30%"
+            id="delele"
+            width="40%"
+            style="min-width: 350px;"
+            title="接收外來廣告時段及時間比例"
             :before-close="handleClose">
             <div class="">
                 <div>
-                    <el-form :model="ruleForm3" label-position="top" :rules="rules3" ref="ruleForm" 
+                    <!-- <el-form :model="ruleForm3" label-position="top" :rules="rules3" ref="ruleForm" 
 					 class="demo-ruleForm">
 						<el-form-item :label="$t('lang.set_price')" prop="name">
                             <div class="flex" style="margin-top: -15px">
@@ -175,14 +190,151 @@
                                 </div>
                             </div>
 						</el-form-item>
+                    </el-form> -->
+                    <el-radio-group v-model="radio4" size="small">
+                        <el-radio label="1" border style="margin-right: 0;">接收全部時段</el-radio>
+                        <el-radio label="2" border style="margin-right: 0;" @click.native="drawers = true">自定義接收的廣告時間</el-radio>
+                        <el-radio label="3" border>不接受外來廣告</el-radio>
+                    </el-radio-group>
+                    <el-form v-show="radio4 == '1'" :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'"
+						:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" style="margin-top: 15px;">
+                        <!-- <el-form-item label="外來廣告比例">
+                            <el-select v-model="ggbili" style="margin-right: 10px;">
+                                <el-option v-for="item in 9" :key="item" :label="110 - (item*10) + '%'" :value="110 - (item*10) + '%' "></el-option>
+                            </el-select>
+						</el-form-item> -->
                     </el-form>
+                    <el-form ref="ruleForm" v-show="radio4 == '22'" style="margin-top: 15px;"
+                        :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'"
+						:label-width="$i18n.locale == 'zh-CN'? '90px': '205px'" class="demo-ruleForm">
+						<el-form-item label="繁忙時段">
+                            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" 
+                            @change="handleCheckAllChange">全选</el-checkbox>
+                            <div style="margin: 15px 0;"></div>
+							<el-checkbox-group v-model="checkedCities" @change="adListadd">
+								<el-checkbox v-for="(item,i) in busyTimeList" :label="item" :key="i">{{item}}</el-checkbox>
+							</el-checkbox-group>
+						</el-form-item>
+						<el-form-item label="超繁忙時段">
+                            <el-checkbox :indeterminate="isIndeterminate1" v-model="checkAll1" 
+                            @change="handleCheckAllChange1">全选</el-checkbox>
+                            <div style="margin: 15px 0;"></div>
+							<el-checkbox-group v-model="checkedCities12" @change="adsListadd">
+								<el-checkbox v-for="(item,i) in sbusyTimeList" :label="item" :key="i">{{item}}</el-checkbox>
+							</el-checkbox-group>
+						</el-form-item>
+						<el-form-item label="非繁忙時段">
+                            <el-checkbox :indeterminate="isIndeterminate2" v-model="checkAll2" 
+                            @change="handleCheckAllChange2">全选</el-checkbox>
+                            <div style="margin: 15px 0;"></div>
+							<el-checkbox-group v-model="checkedCities2" @change="adunListadd">
+								<el-checkbox v-for="(item,i) in unbusyTimeList" :label="item" :key="i">{{item}}</el-checkbox>
+							</el-checkbox-group>
+						</el-form-item>
+					</el-form>
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible3 = false">取 消</el-button>
-                <el-button type="primary" @click="changeTime,dialogVisible3 = false">确 定</el-button>
+                <el-button type="primary" @click="sureaddadList">确 定</el-button>
             </span>
         </el-dialog>
+
+
+        <el-drawer
+			title="請選擇您需要投放的時間段及廣告播放時長:"
+			:visible.sync="drawers"
+			:direction="direction"
+			:before-close="handleClose">
+			<div class="dra_content noBar">
+				<div class="list_wrap">
+					<el-form label-position="top"
+						:label-width="$i18n.locale == 'zh-CN'? '80px': '205px'" class="demo-ruleForm">
+						<el-form-item label="繁忙時段:">
+							<div class="clear">
+                                <div class="al size12 ju float" v-for="(item,i) in addTimeList" :key="i+11" style="margin-left: 15px;">
+                                    <span class="l_time">{{item.time}}</span> 
+                                    <!-- <el-input-number @change="handleChange" 
+                                    style="margin: 0 5px;width: 107px;" v-model="item.num"
+                                    :min="20" :step="10" :max="100" label="描述文字" size="mini"></el-input-number> % -->
+                                    <el-button plain size="mini" style="margin-left: 7px;" @click.native="deleList(i)">刪除</el-button>
+                                </div>
+                            </div>
+						</el-form-item>
+						<el-form-item label="超繁忙時段:">
+							<div class="clear">
+                                <div class="al size12 ju float" v-for="(item,i) in addTimeList1" :key="i+16" style="margin-left: 15px;">
+                                    <span class="l_time">{{item.time}}</span> 
+                                    <!-- <el-input-number @change="handleChange" 
+                                    style="margin: 0 5px;width: 107px;" v-model="item.num"
+                                    :min="20" :step="10" :max="100" label="描述文字" size="mini"></el-input-number> % -->
+                                    <el-button plain size="mini" style="margin-left: 7px;" @click.native="deleList1(i)">刪除</el-button>
+                                </div>
+                            </div>
+						</el-form-item>
+						<el-form-item label="非繁忙時段:">
+							<div class="clear">
+                                <div class="al size12 ju float" v-for="(item,i) in addTimeList2" :key="i+30" style="margin-left: 15px;">
+                                    <span class="l_time">{{item.time}}</span> 
+                                    <!-- <el-input-number @change="handleChange" 
+                                    style="margin: 0 5px;width: 107px;" v-model="item.num"
+                                    :min="20" :step="10" :max="100" label="描述文字" size="mini"></el-input-number> % -->
+                                    <el-button plain size="mini" style="margin-left: 7px;" @click.native="deleList2(i)">刪除</el-button>
+                                </div>
+                            </div>
+						</el-form-item>
+					</el-form>
+
+					
+					<div class="ju" style="margin-top: 20px;">
+						<el-popover
+							style="width: 80px;"
+							placement="right"
+							width="270"
+							trigger="click">
+							<div class="popover_item noBar" ref='popover'>
+								<el-form label-position="top"  ref="ruleForm" 
+									:label-width="$i18n.locale == 'zh-CN'? '80px': '205px'" class="demo-ruleForm">
+									<el-form-item label="繁忙時段">
+										<el-checkbox-group v-model="checkedCities1" @change="group">
+											<el-checkbox v-for="(item,i) in busyTimeList1" :label="item" :key="i+1">{{item.time}}</el-checkbox>
+										</el-checkbox-group>
+									</el-form-item>
+									<el-form-item label="超繁忙時段">
+										<el-checkbox-group v-model="checkedCities11" @change="group1">
+											<el-checkbox v-for="(item,i) in sbusyTimeList1" :label="item" :key="i+2">{{item.time}}</el-checkbox>
+										</el-checkbox-group>
+									</el-form-item>
+									<el-form-item label="繁忙時段">
+										<el-checkbox-group v-model="checkedCities21" @change="group2">
+											<el-checkbox v-for="(item,i) in unbusyTimeList1" :label="item" :key="i">{{item.time}}</el-checkbox>
+										</el-checkbox-group>
+									</el-form-item>
+								</el-form>
+							</div>
+							<div slot="reference"><el-button type="" size="small">新增時間</el-button></div>
+						</el-popover>
+						<el-popconfirm
+							style="width: 56px;"
+							title="確定重置嗎？"
+							@confirm='reset'>
+							<div slot="reference"><el-button size="small" style="margin-left: 10px;">重置</el-button></div>
+						</el-popconfirm>
+					</div>
+					<div class="ju" style="margin-top: 20px;">
+						<div class="size12" style="display: inline-block;">
+							<span>沒有選中的時間</span><span style="color: red">則代表不接受外來廣告</span>
+						</div>
+					</div>
+				</div>
+				<div class="dra_footer">
+					<div class="flexEnd">
+						<el-button size="small" @click="drawers = false">取消</el-button>
+  						<el-button size="small" type="primary" @click="sueraddList1">確定</el-button>
+					</div>
+				</div>
+			</div>
+		</el-drawer>
     </div>
 </template>
 
@@ -190,11 +342,31 @@
 export default {
     data () {
         return {
+            addTimeList: [],
+            addTimeList1: [],
+            addTimeList2: [],
+            
+            direction: 'rtl',
+            drawers: false,
+            radio4: '1',
+
+            checkedCities1: [],
+			busyTimeList1: [],
+
+            checkedCities11: [],
+			sbusyTimeList1: [{ time: '12:00~13:00', num: 1 },{ time:'18:00~19:00', num: 1 }],
+
+            checkedCities21: [],
+			unbusyTimeList1: [],
+
+
+
             dialogVisible:  false,
             dialogVisible1: false,
             dialogVisible2: false,
             dialogVisible3: false,
             labelPosition: 'left',
+            ggbili: '',
             ruleForm: {
                 name: '',
             },
@@ -244,24 +416,60 @@ export default {
                 {title:this.$t("lang.set_edit"),slot:'set'},
             ],
             arr:[
-                {name:this.$t("lang.set_bili") + ': 80%',set: 'set',active: true},
+                {name:this.$t("lang.set_bili") + ': 80%',set: 'set',active: true,adList1: [],},
             ],
             arr1:[
-                {name:this.$t("lang.set_acc") + ': ' + this.$t("lang.busyhour"),set: 'set',active: true},
+                {name:'',set: 'set',active: true,br: true,nodv: false,adList1: [],ids: '100%'},
             ],
             arr2:[
-                {name:this.$t("lang.set_type") + ': ' + this.$t("lang.food"),set: 'set',active: true},
+                {name:this.$t("lang.set_type") + ': ' + this.$t("lang.food"),set: 'set',active: true,adList1: [],},
             ],
             arr3:[
-                {name:'$ 80000 HKD',set: 'set',active: true},
+                {name:'$ 80000 HKD',set: 'set',active: true,adList1: [],},
             ],
             price_list: [],
             idsList: [],
 
             typeList: [this.$t("lang.food"), this.$t("lang.car")],
 
-            timeList: [this.$t("lang.busyhour")]
+            timeList: [this.$t("lang.busyhour")],
+
+
+            adList: ['8:00~9:.00'],
+            copy1: [],
+			copy2: [],
+			copy3: [],
+			checkedCities: [],
+			busyTimeList: [],
+
+			checkedCities12: [],
+			sbusyTimeList: ['12:00~13:00','18:00~19:00'],
+
+			sbusyTimeList1: [{ time: '12:00~13:00', num: 1 },{ time:'18:00~19:00', num: 1 }],
+
+			checkedCities2: [],
+			unbusyTimeList: [],
+
+            cityOptions: [],
+            checkAll: false,
+            isIndeterminate: false,
+
+            cityOptions1: ['12:00~13:00','18:00~19:00'],
+            checkAll1: false,
+            isIndeterminate1: false,
+
+            cityOptions2: [],
+            checkAll2: false,
+            isIndeterminate2: false,
+            radio3: '1'
         }
+    },
+    beforeMount() {
+		let that = this
+        window.addEventListener('resize', (e) => {
+            that.fun()
+        })
+		this.fun()
     },
     created () {
         let num = 10000
@@ -274,6 +482,40 @@ export default {
             num1 -= 10
             this.idsList.push({val: num1})
         }
+        let that = this
+		let h = 8
+		let s = 9
+		for (let i=0;i<12;i++) {
+			s += 1
+			h += 1
+			this.busyTimeList.push(h + ':00~' + s + ':00')
+			this.busyTimeList1.push( {time: h + ':00~' + s + ':00', num: 1} )
+		}
+		this.$nextTick(() => {
+			that.busyTimeList.splice(3,1)
+			that.busyTimeList.splice(8,1)
+			that.busyTimeList1.splice(3,1)
+			that.busyTimeList1.splice(8,1)
+		})
+
+		let unh = 20
+		let uns = 21
+		for (let i=0;i<2;i++) {
+			uns += 1
+			unh += 1
+			this.unbusyTimeList.push(unh + ':00~' + uns + ':00')
+			this.unbusyTimeList1.push( {time: unh + ':00~' + uns + ':00', num: 1} )
+		}
+		this.unbusyTimeList.push('23:00~00:00')
+		this.unbusyTimeList1.push( { time: '23:00~00:00', num: 1 } )
+		let unh1 = -1
+		let uns1 = 0
+		for (let i=0;i<9;i++) {
+			uns1 += 1
+			unh1 += 1
+			this.unbusyTimeList.push(unh1 + ':00~' + uns1 + ':00')
+			this.unbusyTimeList1.push( {time: unh1 + ':00~' + uns1 + ':00', num: 1} )
+		}
     },
     watch: {
         lang: {
@@ -290,7 +532,7 @@ export default {
                     this.arr[0].name = this.$t("lang.set_bili") + ': 80%'
 
                     this.timeList = [this.$t("lang.busyhour")]
-                    this.changeTime()
+                    // this.changeTime()
 
                     this.typeList = [this.$t("lang.food"), this.$t("lang.car")]
                     this.changeType()
@@ -308,6 +550,114 @@ export default {
         lang () { return this.$i18n.locale }
     },
     methods: {
+        reset () {
+			this.checkedCities21 = []
+			this.checkedCities11 = []
+			this.checkedCities1 = []
+			this.adList1 = []
+			this.addTimeList = []
+			this.addTimeList1 = []
+			this.addTimeList2 = []
+			this.checkedCities = []
+		},
+        handleChange(value) {
+			console.log(value);
+		},
+        group (val) {
+			this.addTimeList = Array.from(val)
+		},
+		group1 (val) {
+			this.addTimeList1 = Array.from(val)
+		},
+		group2 (val) {
+			this.addTimeList2 = Array.from(val)
+		},
+        deleList (i) {
+			this.addTimeList.splice(i,1)
+		},
+		deleList1 (i) {
+			this.addTimeList1.splice(i,1)
+		},
+		deleList2 (i) {
+			this.addTimeList2.splice(i,1)
+			this.checkedCities21.splice(i,1)
+		},
+        sueraddList1 () {
+			let i = 0
+			let arr = this.addTimeList.concat(this.addTimeList1.concat(this.addTimeList2))
+			arr.forEach(item => {
+				i = i + item.num
+			})
+            this.arr1[0].adList1 = this.addTimeList.concat(this.addTimeList1.concat(this.addTimeList2))
+            this.drawers = false
+            // this.ruleForm.inp = i
+		},
+        handleCheckAllChange(val) {
+            this.checkedCities = val ? this.cityOptions : [];
+            this.isIndeterminate = false;
+        },
+        handleCheckAllChange1(val) {
+            this.checkedCities12 = val ? this.cityOptions1 : [];
+            this.isIndeterminate1 = false;
+        },
+        handleCheckAllChange2(val) {
+            this.checkedCities2 = val ? this.cityOptions2 : [];
+            this.isIndeterminate2 = false;
+        },
+        changemoney () {
+            this.dialogVisible = false
+            this.arr3[0].name = this.ruleForm.name
+        },
+        bilisure () {
+            this.dialogVisible1 = false
+            this.arr[0].name = this.$t("lang.set_bili") + ': ' + this.ruleForm1.name
+        },
+        adListadd (val) {
+            let checkedCount = val.length;
+            this.checkAll = checkedCount === this.cityOptions.length;
+            this.isIndeterminate = checkedCount > 0 && checkedCount < this.cityOptions.length;
+			this.copy1 = Array.from(val)
+		},
+		adsListadd (val) {
+            let checkedCount = val.length;
+            this.checkAll1 = checkedCount === this.cityOptions1.length;
+            this.isIndeterminate1 = checkedCount > 0 && checkedCount < this.cityOptions1.length;
+			this.copy2 = Array.from(val)
+		},
+		adunListadd (val) {
+            let checkedCount = val.length;
+            this.checkAll2 = checkedCount === this.cityOptions2.length;
+            this.isIndeterminate2 = checkedCount > 0 && checkedCount < this.cityOptions2.length;
+            this.copy3 = Array.from(val)
+		},
+        sureaddadList () {
+            if (this.radio4 == '1') {
+                this.arr1[0].ids = this.ggbili
+            } else if (this.radio4 == '3') {
+                this.arr1[0].nodv = true
+                this.arr1[0].br = false
+            } else {
+                this.adList = this.copy1.concat(this.copy2.concat(this.copy3))
+                if (this.adList.length != 0) {
+                    let obj = this.adList[0]
+                    for (let i=0;i<this.adList.length-1;i++) {
+                        obj = obj + ',' + this.adList[i+1]
+                    }
+                    this.arr1[0].name = this.$t("lang.set_acc") + ': ' + obj
+                } else {
+                    this.arr1[0].name = this.$t("lang.nodata")
+                }
+            }
+            
+			this.dialogVisible3 = false
+		},
+        fun () {
+			if (window.innerWidth <= 1304) {
+                this.labelPosition = 'top'
+            } else {
+                this.labelPosition = 'left'
+            }
+		},
         back () {
             this.$router.back()
         },
@@ -318,25 +668,20 @@ export default {
             })
             .catch(_ => {});
         },
-        changeP (val) {
-            this.arr3[0].name = val
-        },
-        changeP1 (val) {
-            this.arr[0].name = this.$t("lang.set_bili") + ': ' + val
-        },
         addType (item) {
 			if (item) {
 				this.typeList.push(item)
 				let arr = new Set(this.typeList)
 				this.typeList = Array.from(arr)
-                this.changeType()
+                // this.changeType()
 			}
 		},
 		deleType (i) {
 			this.typeList.splice(i,1)
-            this.changeType()
+            // this.changeType()
 		},
         changeType () {
+            this.dialogVisible2 = false
             if (this.typeList.length != 0) {
                 let obj = this.typeList[0]
                 for (let i=0;i<this.typeList.length-1;i++) {
@@ -353,20 +698,24 @@ export default {
 				this.timeList.push(item)
 				let arr = new Set(this.timeList)
 				this.timeList = Array.from(arr)
-                this.changeTime()
+                // this.changeTime()
 			}
 		},
 		deleTime (i) {
 			this.timeList.splice(i,1)
-            this.changeTime()
+            // this.changeTime()
 		},
+
+
+
         changeTime () {
-            if (this.timeList.length != 0) {
-                let obj = this.timeList[0]
-                for (let i=0;i<this.timeList.length-1;i++) {
-                    obj = obj + ',' + this.timeList[i+1]
+            this.dialogVisible3 = false
+            if (this.adList.length != 0) {
+                let obj = this.adList[0]
+                for (let i=0;i<this.adList.length-1;i++) {
+                    obj = obj + ',' + this.adList[i+1]
                 }
-                this.arr1[0].name = this.$t("lang.set_type") + ': ' + obj
+                this.arr1[0].name = this.$t("lang.set_acc") + ': ' + obj
             } else {
                 this.arr1[0].name = this.$t("lang.nodata")
             }
@@ -417,6 +766,16 @@ export default {
         margin-top: 15px;
 		margin-left: 0px;
 	}
+    .dra_footer {
+		position: absolute;
+		padding: 15px 20px;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		background: white;
+		box-shadow: 0 0 5px gray;
+		z-index: 10;
+	}
 	.list_item {
 		border: dashed 2px #d3d3d3;
 		margin-right: 10px;
@@ -445,6 +804,11 @@ export default {
         color: @themeColor;
         font-size: 14px;
     }
+    .dra_content {
+		height: calc(100% - 98px);
+		overflow: auto;
+		padding: 0 20px;
+	}
     .setImg {
         img {
             width: 20px;

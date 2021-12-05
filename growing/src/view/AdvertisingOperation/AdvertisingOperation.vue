@@ -25,7 +25,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="category"
-                    :label="$t('lang.ad_adType')"
+                    :label="$t('lang.industry')"
                     min-width="170"
                     >
                     <template slot-scope="scope">
@@ -37,20 +37,51 @@
                 <el-table-column
                     prop="area"
                     :label="$t('lang.ad_adarea')"
-                    min-width="140"
+                    min-width="150"
                     >
                     <template slot-scope="scope">
-                        <span v-if="scope.row.area == '九龍'">{{$t("lang.Kowloon")}}</span>
+                        <span v-if="scope.row.area == '九龍'">{{$t("lang.jiulong")}}</span>
+                        <span v-if="scope.row.area == '旺角'">{{$t("lang.wangjiao")}} - 旺角街道</span>
+                        <span v-if="scope.row.area == '中環'">{{$t("lang.zhonghuan")}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                     prop="time"
-                    :label="$t('lang.adserving')"
+                    :label="$t('lang.amt')"
                     min-width="250"
                     >
-                    <template>
-                        <div class="tc">{{$t("lang.busyhour")}}</div>
-                        <div class="tc">{{$t("lang.unbusyhour")}}</div>
+                    <template slot-scope="scope">
+                        <!-- <div class="tc">{{$t("lang.busyhour")}}</div>
+                        <div class="tc">{{$t("lang.unbusyhour")}}</div> -->
+                        <div v-if="scope.row.time == 1">
+                            <div>
+                                <div class="tc">({{$t("lang.sate")}})</div>
+                                <div class="tc">9:00~10:00</div>
+                                <div class="tc">10:00~11:00</div>
+                            </div>
+                            <div class="ju">
+                                <div class="cursor" style="padding: 0 20px;">...</div>
+                            </div>
+                        </div>
+                        <div v-else-if="scope.row.time == 2">
+                            <div>
+                                <div class="tc">({{$t("lang.sate")}})</div>
+                                <div class="tc">9:00~10:00</div>
+                            </div>
+                            <div class="ju">
+                                <div class="cursor" style="padding: 0 20px;">...</div>
+                            </div>
+                        </div>
+                        <div v-else-if="scope.row.time == 3">
+                            <div>
+                                <div class="tc">({{$t("lang.cat")}})</div>
+                                <div class="tc">9:00~10:00(10分鐘)</div>
+                                <div class="tc">10:00~11:00(20分鐘)</div>
+                            </div>
+                            <div class="ju">
+                                <div class="cursor" style="padding: 0 20px;">...</div>
+                            </div>
+                        </div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -58,6 +89,10 @@
                     :label="$t('lang.expired')"
                     min-width="220"
                     >
+                    <template>
+                        <div class="tc">2021-06-21~2021-06-28</div>
+                        <div class="tc">(7天)</div>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="price"
@@ -84,10 +119,12 @@
                     :label="$t('lang.adcontent')"
                     min-width="150"
                     >
-                    <template>
-                        <div class="preview cursor">
-                            <div class="ju"><img src="@/assets/img/eye.png" alt=""></div>
-                            <div class="tc">{{$t("lang.preview")}}</div>
+                    <template slot-scope="scope">
+                        <div class="preview ju">
+                            <div class="cursor" style="width: 65%; padding: 12px 0" @click="toPreview(scope.row.dv)">
+                                <div class="ju"><img src="@/assets/img/eye.png" alt=""></div>
+                                <div class="tc">{{$t("lang.preview")}}</div>
+                            </div>
                         </div>
                     </template>
                 </el-table-column>
@@ -98,7 +135,7 @@
                     >
                     <template slot-scope="scope">
                         <div class="putaway sa al">
-                            <div class="putaway_logo" v-if="scope.row.edit == 2 || scope.row.edit == 3">
+                            <div class="putaway_logo" v-if="scope.row.edit == 2">
                                 <div class="ju"><img src="@/assets/img/edit.png" alt=""></div>
                                 <div class="tc">{{$t("lang.editplan")}}</div>
                             </div>
@@ -144,11 +181,11 @@ export default {
         return {
             tableHeight:0,
             tableData: [
-                {name:'食品會',category: 1,area: '九龍', time: '',
+                {name:'食品會',category: 1,area: '九龍', time: 1, dv: 'pro',
                 outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 1, content: '查看預覽', edit: 1},
-                {name:'車展會',category: 2, area: '九龍', time: '',
+                {name:'車展會',category: 2, area: '旺角', time: 2, dv: 'plus',
                 outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 2, content: '查看預覽', edit: 2},
-                {name:'售藥',category: 3,area: '九龍', time: '',
+                {name:'售藥',category: 3,area: '中環', time: 3, dv: 'pro',
                 outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 3, content: '查看預覽', edit: 3},
             ]
         }
@@ -161,6 +198,13 @@ export default {
         this.resi()
     },
     methods: {
+        toPreview (val) {
+            if (val == 'pro') {
+                this.$router.push('/dvPreview')
+            } else if (val == 'plus') {
+                this.$router.push('/dvPreviewPlus')
+            }
+        },
         resi () {
             let that = this
             this.$nextTick(() => {

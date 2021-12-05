@@ -10,19 +10,24 @@
                     <div class="divider_text">店鋪廣告收入統計</div>
                 </div>
                 <div class="al Income_content_btn">
-                    <div class="selectBtn" style="margin-right: 15px;">
-                        <el-date-picker
-                        class="width100"
-                        v-model="value1"
-                        type="date"
-                        placeholder="选择日期">
-                        </el-date-picker>
+                    <div class="selectBtn al" style="margin-right: 15px;padding: 5px;position:relative;">
+                        <i class="el-icon-date" style="color: white;margin-right: 4px;"></i>
+                        <div class="" style="color: white;font-size: 15px;">{{value1? value1: '選擇日期'}}</div>
+                        <div class="dataselect">
+                            <el-date-picker
+                            class="width100"
+                            v-model="value1"
+                            type="date"
+                            @change="getDate"
+                            placeholder="选择日期">
+                            </el-date-picker>
+                        </div>
                     </div>
                     <div class="selectBtn">
                         <el-select v-model="value" class="width100 height40">
-                            <el-option label="店鋪" value="1"></el-option>
-                            <el-option label="廣告商" value="2"></el-option>
-                            <el-option label="廣告後台" value="3"></el-option>
+                            <el-option :label="$t('lang.jiulong')" value="1"></el-option>
+                            <el-option :label="$t('lang.wangjiao')" value="2"></el-option>
+                            <el-option :label="$t('lang.zhonghuan')" value="3"></el-option>
                             <el-option label="全部店鋪" value="4"></el-option>
                         </el-select>
                     </div>
@@ -33,7 +38,7 @@
                     :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
                     :data="tableData"
                     style="width: 100%"
-                    max-height="350"
+                    max-height="650"
                     >
                     <el-table-column
                         fixed
@@ -47,6 +52,10 @@
                         label="繁忙時段(9am - 9pm)收入"
                         min-width="200"
                         >
+                        <template slot="header">
+                            <div>繁忙時段(9am - 9pm)收入</div>
+                            <div class="size12 tc" style="color: gray;">[不包含(12am~1pm,6pm~7pm)]</div>
+                        </template>
                         <template>
                             <div class="timeIncome ju">
                                 <!-- <div class="busyTime"> -->
@@ -80,6 +89,7 @@
                                         <div class="type_n">食品</div>
                                         <div class="busyTime">
                                             <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
+                                            <div class="i_busy">-超繁忙时段: 30分鐘 900HKD</div>
                                             <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
                                         </div>
                                     </div>
@@ -87,6 +97,7 @@
                                         <div class="type_n">運動</div>
                                         <div class="busyTime">
                                             <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
+                                            <div class="i_busy">-超繁忙时段: 0分鐘 0HKD</div>
                                             <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
                                         </div>
                                     </div>
@@ -94,6 +105,7 @@
                                         <div class="type_n">醫療</div>
                                         <div class="busyTime">
                                             <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
+                                            <div class="i_busy">-超繁忙时段: 10分鐘 300HKD</div>
                                             <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
                                         </div>
                                     </div>
@@ -101,6 +113,7 @@
                                         <div class="type_n">服裝</div>
                                         <div class="busyTime">
                                             <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
+                                            <div class="i_busy">-超繁忙时段: 100分鐘 3000HKD</div>
                                             <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
                                         </div>
                                     </div>
@@ -108,6 +121,7 @@
                                         <div class="type_n">設計</div>
                                         <div class="busyTime">
                                             <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
+                                            <div class="i_busy">-超繁忙时段: 30分鐘 900HKD</div>
                                             <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
                                         </div>
                                     </div>
@@ -148,7 +162,7 @@
                 </div>
             </div>
 
-            <div class="Income_content_title sb al" style="margin-top: 60px;">
+            <div class="Income_content_title sb al" style="margin-top: 60px;position:relative;">
                 <div class="flex">
                     <div class="divider"></div>
                     <div class="divider_text">店鋪廣告收入分析</div>
@@ -162,18 +176,23 @@
                             <div :class="['select_date_item cursor', { background: index == 4 }]" @click="index = 4">最近30天</div>
                         </div>
                     </div>
-                    <div class="selectBtn">
-                        <el-select v-model="value1" class="width100" placeholder="選擇時間">
-                            <el-option label="店鋪" value="1"></el-option>
+                    <div class="selectBtn al" style="margin-right: 15px;padding: 5px;position:relative;">
+                        <i class="el-icon-date" style="color: white;margin-right: 4px;"></i>
+                        <div class="" 
+                        style="color: white;font-size: 15px;">{{value3? value3: '選擇時間'}}</div>
+                        <el-select v-model="value3" class="width100 timeselect" placeholder="選擇時間">
+                            <!-- <el-option label="店鋪" value="1"></el-option>
                             <el-option label="廣告商" value="2"></el-option>
-                            <el-option label="廣告後台" value="3"></el-option>
+                            <el-option label="廣告後台" value="3"></el-option> -->
+                            <el-option v-for="(item,i) in timeList" :key="i" 
+                            :label="item" :value="i"></el-option>
                         </el-select>
                     </div>
                 </div>
             </div>
 
             <div class="income_detail flex">
-                <div class="al" style="margin-right: 25px;margin-top: 5px">
+                <div class="al storetongji">
                     <div class="income_detail_title">選擇店鋪</div>
                     <div class="select_store">
                         <el-select v-model="value2" class="width100">
@@ -190,6 +209,13 @@
                         <div>
                             <div class="income_detail_title">繁忙時段(9am - 9pm)收入</div>
                             <div class="showMsg">$15000HKD</div>
+                        </div>
+                    </div>
+                    <div class="flex float statistics_msg" style="margin-right: 25px;">
+                        <div class="sbusy_divider"></div>
+                        <div>
+                            <div class="income_detail_title">超繁忙時段(12am - 1pm，6pm~7pm)收入</div>
+                            <div class="showMsg">$50000HKD</div>
                         </div>
                     </div>
                     <div class="flex float statistics_msg" style="margin-right: 25px;">
@@ -213,6 +239,9 @@
                             <div class="showMsg">$30000HKD</div>
                         </div>
                     </div>
+                    <div class="flex float statistics_msg size12" style="color: gray;margin-top: 25px;">
+                        注：繁忙時段不包含(12ma~1pm，6pm~7pm)
+                    </div>
                 </div>
             </div>
             <div class="echarts_wrap_f">
@@ -229,6 +258,7 @@ export default {
         return {
             value: '全部店鋪',
             value1: '',
+            value3: '',
             tableHeight:0,
             value2: '4',
             index: 3,
@@ -308,7 +338,35 @@ export default {
                     }
                 }]
             },
+            timeList: []
         }
+    },
+    created () {
+        let h = 8
+		let s = 9
+        let unh = 20
+		let uns = 21
+        let unh1 = -1
+		let uns1 = 0
+        for (let i=0;i<12;i++) {
+			s += 1
+			h += 1
+			this.timeList.push(h + ':00~' + s + ':00')
+		}
+			this.timeList.splice(3,1)
+			this.timeList.splice(8,1)
+        for (let i=0;i<2;i++) {
+			uns += 1
+			unh += 1
+			this.timeList.push(unh + ':00~' + uns + ':00')
+		}
+		this.timeList.push('23:00~00:00')
+		this.timeList.push('23:00~00:00')
+        for (let i=0;i<9;i++) {
+			uns1 += 1
+			unh1 += 1
+			this.timeList.push(unh1 + ':00~' + uns1 + ':00')
+		}
     },
     mounted () {
         let that = this
@@ -333,6 +391,13 @@ export default {
         })
     },
     methods: {
+        getDate (val) {
+            console.log(val)
+            let D = new Date(val).toLocaleDateString()
+            let arr = D.split('/')
+            D = arr[0] + '-' + arr[1] + '-' + arr[2]
+            this.value1 = D
+        },
         resi () {
             let that = this
             this.$nextTick(() => {
@@ -360,6 +425,12 @@ export default {
 
 <style lang='less' scoped>
     @import "@/less/style.less";
+    .dataselect, .timeselect {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+    }
     .Income {
         height: 100%;
         margin-top: 20px;
@@ -443,7 +514,17 @@ export default {
             margin: 8px 0;
         }
     }
+    .storetongji {
+        margin-right: 25px;
+        margin-top: 5px;
+        @media screen and (max-width: 1192px ) {
+            margin-bottom: 13px;
+        }
+    }
     .statistics_msg {
+        @media screen and (max-width: 1192px ) {
+            margin-bottom: 7px;
+        }
         @media screen and (max-width: 677px) {
             margin: 8px 0;
         }
@@ -479,6 +560,7 @@ export default {
         }
     }
     .income_detail_title {
+        min-width: 50px;
         font-size: 12px;
     }
     .showMsg {
@@ -494,6 +576,11 @@ export default {
     }
     .busy_divider {
         border: solid 2px #FF0000;
+        width: 0;
+        margin-right: 3px;
+    }
+    .sbusy_divider {
+        border: solid 2px orange;
         width: 0;
         margin-right: 3px;
     }

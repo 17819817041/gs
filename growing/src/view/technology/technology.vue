@@ -1,322 +1,443 @@
 <template>
-    <div class="technology">
-        <div class="technology_content mg noBar">
-            <div :class="['technology_content_item',{ mgb: active, 'technology_content_item_border': choose == 1 }]" v-show="submit">
-                <div class="drawer_arrow" @click="active = !active">
-                    <img style="height: 90%;" :class="[{'rotate': active}]" src="@/assets/img/pull_down.png" alt="">
-                </div>
-                <div class="taocan_title bold">旺角街道高流量商鋪廣告套餐</div>
-                <div class="clear">
-                    <div class="float title_p sa al">
-                        <div>
-                            <div class="technology_bold">繁忙時段</div>
-                            <div class="technology_size12">9am-9pm廣告高曝光時間</div>
-                        </div>
-                        <div>
-                            <div class="technology_bold">旺角街道高流量商鋪</div>
-                            <div class="technology_size12">由多加旺角街道中人流量集中店鋪組成</div>
-                        </div>
-                    </div>
-                    <div class="float title_p1 sa al">
-                        <div>
-                            <div class="technology_bold_red">計劃原價</div>
-                            <div class="technology_bold_red1" style="text-decoration: line-through;">
-                                $49999 HKD
-                            </div>
-                        </div>
-                        <div>
-                            <div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
-                        </div>
-                        <div class="flex al">
-                            <div class="technology_bold dor radius ju al">$</div>
-                            <div class="technology_bold technology_price">39999</div>
-                            <div class="hkd">HKD</div>
-                            <div :class="['choose_btn cursor technology_bold',
-                            { 'choose_btn_background':choose == 1 }]" @click="choose = 1,allprice = '39999'">選中</div>
-                        </div>
-                    </div>
-                </div>
-                <div :class="['content_msg',{ maxheight: !active }]">
-                    <div class="bold">套餐內容</div>
-                    <div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
-                    <div class="msg_item">精確投放到指定旺角街道店鋪，由高人流量店鋪組成</div>
-                    <div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
-                    <div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
-                </div>
-            </div>
-            <div :class="['technology_content_item',{ mgb: active1, 'technology_content_item_border': choose == 2 }]" v-show="submit">
-                <div class="drawer_arrow" @click="active1 = !active1">
-                    <img style="height: 90%;" :class="[{'rotate': active1}]" src="@/assets/img/pull_down.png" alt="">
-                </div>
-                <div class="taocan_title bold">中環街道高流量商鋪廣告套餐</div>
-                <div class="clear">
-                    <div class="float title_p sa al">
-                        <div>
-                            <div class="technology_bold">非繁忙時段</div>
-                            <div class="technology_size12">9pm-9am廣告播放時間</div>
-                        </div>
-                        <div>
-                            <div class="technology_bold">中環街道高流量商鋪</div>
-                            <div class="technology_size12">由多加中環街道中人流量集中店鋪組成</div>
-                        </div>
-                    </div>
-                    <div class="float title_p1 sa al">
-                        <div>
-                            <div class="technology_bold_red">計劃原價</div>
-                            <div class="technology_bold_red1" style="text-decoration: line-through;">
-                                $69999 HKD
-                            </div>
-                        </div>
-                        <div>
-                            <div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
-                        </div>
-                        <div class="flex al">
-                            <div class="technology_bold dor radius ju al">$</div>
-                            <div class="technology_bold technology_price">59999</div>
-                            <div class="hkd">HKD</div>
-                            <div :class="['choose_btn cursor technology_bold',
-                            { 'choose_btn_background':choose == 2 }]" @click="choose = 2,allprice='59999'">選中</div>
-                        </div>
-                    </div>
-                </div>
-                <div :class="['content_msg',{ maxheight: !active1 }]">
-                    <div class="bold">套餐內容</div>
-                    <div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
-                    <div class="msg_item">精確投放到指定中環街道店鋪，由高人流量店鋪組成</div>
-                    <div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
-                    <div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
-                </div>
-            </div>
-            <div :class="['technology_content_item',{ mgb: active2, 'technology_content_item_border': choose == 3 }]" v-show="submit">
-                <div class="drawer_arrow" @click="active2 = !active2">
-                    <img style="height: 90%;" :class="[{'rotate': active2}]" src="@/assets/img/pull_down.png" alt="">
-                </div>
-                <div class="taocan_title bold">黃大仙街道高流量商鋪廣告套餐</div>
-                <div class="clear">
-                    <div class="float title_p sa al">
-                        <div>
-                            <div class="technology_bold">繁忙時段</div>
-                            <div class="technology_size12">9am-9pm廣告高曝光時間</div>
-                        </div>
-                        <div>
-                            <div class="technology_bold">黃大仙街道高流量商鋪</div>
-                            <div class="technology_size12">由多加黃大仙街道中人流量集中店鋪組成</div>
-                        </div>
-                    </div>
-                    <div class="float title_p1 sa al">
-                        <div>
-                            <div class="technology_bold_red">計劃原價</div>
-                            <div class="technology_bold_red1" style="text-decoration: line-through;">
-                                $79999 HKD
-                            </div>
-                        </div>
-                        <div>
-                            <div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
-                        </div>
-                        <div class="flex al">
-                            <div class="technology_bold dor radius ju al">$</div>
-                            <div class="technology_bold technology_price">69999</div>
-                            <div class="hkd">HKD</div>
-                            <div :class="['choose_btn cursor technology_bold',
-                            { 'choose_btn_background':choose == 3 }]" @click="choose = 3,allprice = '69999'">選中</div>
-                        </div>
-                    </div>
-                </div>
-                <div :class="['content_msg',{ maxheight: !active2 }]">
-                    <div class="bold">套餐內容</div>
-                    <div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
-                    <div class="msg_item">精確投放到指定黃大仙街道店鋪，由高人流量店鋪組成</div>
-                    <div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
-                    <div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
-                </div>
-            </div>
-
-            <div v-show="submit">
-				<div class="basicsMsg" v-show="submit">
-					<div class=" basicsMsg_item bold al">
-						<div class="iden radius"></div> {{$t("lang.message")}}
-					</div>
-					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
-					:label-width="$i18n.locale == 'zh-CN'? '115px': '145px'" class="demo-ruleForm">
-						<el-form-item :label="$t('lang.adname')" prop="name">
-							<el-input style="width: 40%;min-width: 200px;" v-model="ruleForm.name"></el-input>
-						</el-form-item>
-						<el-form-item :label="$t('lang.adtype')" prop="type">
-							<div class="flex br">
-								<div class="flex">
-									<el-select v-model="ruleForm.type" :placeholder="$t('lang.pldselecttype')">
-										<el-option :label="$t('lang.food')" :value="$t('lang.food')"></el-option>
-										<el-option :label="$t('lang.Technology')" :value="$t('lang.Technology')"></el-option>
-										<el-option :label="$t('lang.medical')" :value="$t('lang.medical')"></el-option>
-										<el-option :label="$t('lang.car')" :value="$t('lang.car')"></el-option>
-									</el-select>
-									<div class="addCate al" @click="addType(ruleForm.type)">
-										{{$t("lang.addbtn")}}
-									</div>
-								</div>
-								<div class="list clear">
-									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
-										{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt=""></span>
-									</div>
-								</div>
-							</div>
-						</el-form-item>
-					</el-form>
-				</div>
-				<div class="detailPlan" v-show="submit">
-					<div class=" basicsMsg_item bold al">
-						<div class="iden radius"></div> {{$t("lang.DetailedPlan")}}
-					</div>
-					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
-						:label-width="$i18n.locale == 'zh-CN'? '125px': '165px'" class="demo-ruleForm">
-						<el-form-item :label="$t('lang.cycle')" prop="date">
-							<div style="min-width: 200px;width: 100%" class='clear'>
-								<div class="float" style="margin-right: 15px;width: 140px;">
-									<el-form-item prop="startDate">
-										<el-date-picker
-											@change="STIME"
-											class="width100"
-											v-model="ruleForm.startDate"
-											type="date"
-											:placeholder="$t('lang.sdate')"
-											:picker-options="pickerOptions1">
-										</el-date-picker>
-									</el-form-item>
-								</div>
-								<div class="float width384" style="width: 140px;">
-									<el-form-item prop="endDate">
-										<el-date-picker
-											class="width100"
-											v-model="ruleForm.endDate"
-											type="date"
-											:placeholder="$t('lang.enddate')"
-											:picker-options="pickerOptions2"
-											>
-										</el-date-picker>
-									</el-form-item>
-								</div>
-							</div>
-						</el-form-item>
-						<div :class="['flex br',{ br1185: $i18n.locale == 'en-US' }]">
-							<el-form-item :label="$t('lang.admediatype')" prop="mediaType" style="margin-right: 30px;">
-								<div class="al">
-									<el-select v-model="ruleForm.cmediaType" :placeholder="$t('lang.pldselecttype')" 
-									@change="getType">
-										<el-option :label="$t('lang.image')" value="1"></el-option>
-										<el-option :label="$t('lang.video')" value="2"></el-option>
-									</el-select>
-								</div>
-							</el-form-item>
-							<el-form-item :label="$t('lang.duration')" prop="inp">
-								<div class="al">
-									<div class="al inp_time ju">
-										<!-- <input type="text" class="tc"> -->
-										<el-input class="width100"
-										oninput ="value=value.replace(/[^0-9]/g,'')" :disabled="video" v-model="ruleForm.inp"></el-input>
-									</div>
-									<div>{{$t('lang.minute')}} <span style="color: gray;margin-left: 5px;">{{$t('lang.int1')}}</span></div>
-								</div>
-							</el-form-item>
+    <div class="AdvertisingAddPlus">
+		<div class="AdvertisingOperation_back mg al">
+            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">套餐預覽
+        </div>
+		<div class="noBar" style="height: calc(100% - 35px);overflow: auto;margin-top: 15px;">
+			<div :class="['content mg bar',{ heigh: !submit }]">
+				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
+				<div class="noBar" style="height: calc(100% - 0px); overflow:auto" v-show="submit">
+					<div class="basicsMsg theme" v-show="submit">
+						<!-- <div class=" basicsMsg_item bold al">
+							<div class="iden radius"></div> {{$t("lang.message")}}
 						</div>
-						<el-form-item :label="$t('lang.adcontent')" prop="content">
-							<div class="textarea_wrap clear">
-								<label for="img">
-									<div class="addImg ju al float">
-										<img style="height: 70%;" src="@/assets/img/add.png" alt="">
+						<el-form :model="ruleForm" ref="ruleForm" 
+						 :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'" 
+						:label-width="$i18n.locale == 'zh-CN'? '100px': '165px'" class="demo-ruleForm">
+							<el-form-item :label="$t('lang.adname')" prop="name">
+								<el-input style="width: 40%;min-width: 200px;" v-model="ruleForm.name" disabled></el-input>
+							</el-form-item>
+							<el-form-item label="廣告所屬類型" prop="type">
+								<div class="flex br">
+									<div class="flex" style="margin-right: 10px;">
+                                        <el-input style="width: 40%;min-width: 200px;" :value="$t('lang.Technology')" disabled></el-input>
 									</div>
-									<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
-								</label>
-								<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
-									<div class="imageList_wrap">
-										<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
-										<div class="textarea_wrap_item_child ju al">
-											<img v-if="ruleForm.mediaType == 'image'" style="height: 100%;" :src="item.url" alt="">
-											<img v-else-if="ruleForm.mediaType == 'video'" style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+									<div class="list clear">
+										<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
+											{{item}}
 										</div>
 									</div>
-									<div class="imageList_name tc">{{item.name}}</div>
-									<div class="imageList_size tc">{{item.size}}</div>
+								</div>
+							</el-form-item>
+							<el-form-item :label="$t('lang.cycle')" prop="date">
+								<div style="min-width: 200px;width: 100%" class='clear'>
+									<div class="float" style="margin-right: 15px;width: 140px;">
+										<el-form-item prop="startDate">
+											<el-date-picker disabled
+												@change="STIME"
+												class="width100"
+												v-model="ruleForm.startDate"
+												type="date"
+												:placeholder="$t('lang.sdate')">
+											</el-date-picker>
+										</el-form-item>
+									</div>
+									<div class="float width384" style="width: 140px;">
+										<el-form-item prop="endDate">
+											<el-date-picker disabled
+												class="width100"
+												v-model="ruleForm.endDate"
+												type="date"
+												:placeholder="$t('lang.enddate')">
+											</el-date-picker>
+										</el-form-item>
+										
+									</div>
+								</div>
+							</el-form-item>
+							<div :class="['flex br',{ br1185: $i18n.locale == 'en-US' }]">
+								<el-form-item :label="$t('lang.admediatype')" prop="mediaType" style="margin-right: 30px;">
+									<div class="al">
+                                        <el-input style="width: 40%;min-width: 200px;" :value="$t('lang.image')" disabled></el-input>
+									</div>
+								</el-form-item>
+							</div>
+							<el-form-item :label="$t('lang.adcontent')" prop="content">
+								<div class="textarea_wrap clear">
+									<div class="textarea_wrap_item float cursor" v-for="(item,i) in imageList" :key="i">
+										<div class="imageList_wrap">
+											<div class="textarea_wrap_item_child ju al" @click="imgPreview(item.url)">
+												<img style="height: 100%;" :src="item.url" alt="">
+											</div>
+										</div>
+										<div class="imageList_name tc">{{item.name}}</div>
+										<div class="imageList_size tc">{{item.size}}</div>
+									</div>
+								</div>
+								<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
+									{{$t('lang.becare')}}
+								</div>
+								<div style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
+							</el-form-item>
+						</el-form> -->
+						<div
+							:class="['technology_content_item cursor']" 
+							>
+							<div class="taocan_title bold">旺角街道高流量商鋪廣告套餐</div>
+							<div class="clear">
+								<div class="float title_p sa al">
+									<div>
+										<div class="technology_bold">繁忙時段</div>
+										<div class="technology_size12">9am-9pm廣告高曝光時間</div>
+									</div>
+									<div>
+										<div class="technology_bold">旺角街道高流量商鋪</div>
+										<div class="technology_size12">由多加旺角街道中人流量集中店鋪組成</div>
+									</div>
+								</div>
+								<div class="float title_p1 sa al">
+									<div>
+										<div class="technology_bold_red">計劃原價</div>
+										<div class="technology_bold_red1" style="text-decoration: line-through;">
+											$49999 HKD
+										</div>
+									</div>
+									<div>
+										<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
+									</div>
+									<div class="flex al">
+										<div class="technology_bold dor radius ju al">$</div>
+										<div class="technology_bold technology_price">39999</div>
+										<div class="hkd">HKD</div>
+									</div>
 								</div>
 							</div>
-							<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
-								{{$t('lang.becare')}}
-							</div>
-							<div style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
-						</el-form-item>
-					</el-form>
-					<div class="total mg sb">
-						<div></div>
-						<div class="total_price">
-							<div class="t_price bold">
-								<span>{{$t('lang.total')}}:</span><span class="math_price"> $ {{allprice}} </span><span class="p_d">HKD</span>
-							</div>
-							<el-popover
-								:placement="position"
-								trigger="click"
-								v-model="visible">
-								套餐價格是按照原有廣告計劃所選擇選項的價格總價，並由本平台進行優惠折扣銷售
-								<div slot="reference" class="price_plan flex cursor">
-									<img src="@/assets/img/help.png" alt="">
-									<div>{{$t('lang.scheme')}}</div>
-								</div>
-							</el-popover>
+						</div>
+						<div :class="['content_msg1']">
+							<div class="bold">套餐內容</div>
+							<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
+							<div class="msg_item">精確投放到指定旺角街道店鋪，由高人流量店鋪組成</div>
+							<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
+							<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
 						</div>
 					</div>
-					<div class="sure_plan_wrap">
-						<div class="sure_plan cursor" @click="submitG">{{$t('lang.adconfirm')}}</div>
+					<div class="detailPlan theme">
+						<div class=" basicsMsg_item bold al">
+							<div class="iden radius"></div> 套餐包含信息
+						</div>
+						<div v-show="taocanDetail">
+							<el-form :label-position="labelPosition"
+								:label-width="$i18n.locale == 'zh-CN'? '129px': '175px'" class="demo-ruleForm">
+								<el-form-item :label="$t('lang.duration')" prop="inp">
+									<div class="al">
+										<div class="al inp_time ju">
+											{{ruleForm.inp}}
+										</div>
+										<div style="font-size: 13px;margin-left: 5px; color: gray;">
+											{{$t('lang.minute')}}
+										</div>
+									</div>
+								</el-form-item>
+							</el-form>
+
+							<el-form label-position="top"
+							:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" class="demo-ruleForm">
+								<el-form-item label="廣告媒體投放時段">
+									<div class="time_duan">
+										<div class="clear">
+											<div class="float" style="width: 70px;min-width: 70px;">繁忙時段</div>
+											<div class="float float320"><el-checkbox v-model="checked2" disabled>10:00~11:00(15分鐘)</el-checkbox></div>
+											<div class="float"><el-checkbox v-model="checked2" disabled>11:00~12:00(15分鐘)</el-checkbox></div>
+										</div>
+										<div class="clear" style="margin: 15px 0;">
+											<div class="float" style="width: 70px;min-width: 70px;">超繁忙時段</div>
+											<div class="float float320"><el-checkbox v-model="checked2" disabled>12:00~13:00(20分鐘)</el-checkbox></div>
+											<div class="float"><el-checkbox v-model="checked2" disabled>18:00~19:00(20分鐘)</el-checkbox></div>
+										</div>
+										<div class="clear">
+											<div class="float" style="width: 70px;min-width: 70px;">非繁忙時段</div>
+											<div class="float float320"><el-checkbox v-model="checked2" disabled>19:00~20:00(10分鐘)</el-checkbox></div>
+											<div class="float"><el-checkbox v-model="checked2" disabled>20:00~21:00(10分鐘)</el-checkbox></div>
+											<div class="float"><el-checkbox v-model="checked2" disabled>21:00~22:00(10分鐘)</el-checkbox></div>
+										</div>
+									</div>
+								</el-form-item>
+
+								<el-form-item label="套餐指定(店鋪/街道/區域)">
+									<div class="list clear">
+										<div style="color: #B0B0B0;" class="list_item float al cursor" 
+										@click="storehit(i)"
+										v-for="(item,i) in tc_storeList" :key="i">
+											{{item}} <span class="al" style="margin-left: 5px"></span>
+										</div>
+									</div>
+									<div class="map_wrap">
+										<!-- <input
+										id="pac-input"
+										class="controls"
+										type="text"
+										placeholder="Search Box"
+										/> -->
+										<div id="map"></div>
+									</div>
+								</el-form-item>
+							</el-form>
+							<div class="total mg sb">
+								<div></div>
+								<div class="total_price">
+									<div class="t_price bold">
+										<span>{{$t('lang.total')}}:</span><span class="math_price"> $ 6000 </span><span class="p_d">HKD</span>
+									</div>
+									<div class="total_price_item">{{$t('lang.ppotd')}}: <span style="color: red;">$ 1000 HKD</span></div>
+									<div class="total_price_item">{{$t('lang.days')}}: <span style="color: red;">6天</span></div>
+									<!-- <div class="price_plan flex cursor" @click="drawer = !drawer"> -->
+									<el-popover
+										:placement="position1"
+										trigger="click"
+										v-model="visible">
+										套餐價格是按照原有廣告計劃所選擇選項的價格總價，並由本平台進行優惠折扣銷售
+										<div slot="reference" class="price_plan flex cursor">
+											<img src="@/assets/img/help.png" alt="">
+											<div>{{$t('lang.scheme')}}</div>
+										</div>
+									</el-popover>
+								</div>
+							</div>
+							<div class="sure_plan_wrap ju">
+                                <el-button type="primary" @click.native="goBack">返回</el-button>
+							</div>
+						</div>
+						<div v-show="!taocanDetail">請先選擇廣告所屬類型</div>
 					</div>
 				</div>
 			</div>
-			<div class="basicsMsg theme padding" style="margin-top: 15px" v-show="!submit">
-				<div :class="['true_title mg al ju',
-					{ size27: $i18n.locale=='zh-CN',size15: $i18n.locale=='en-US' }]">
-					<img src="@/assets/img/success_sign.png" alt="">{{$t('lang.adconfirmsucc')}} ！
+		</div>
+		<el-drawer
+			title="請選擇您需要的套餐內容"
+			:visible.sync="drawer_tc"
+			:direction="direction">
+			<div style="padding: 0 20px;overflw:auto;" class="noBar scale">
+				<div @click="active = !active" 
+				:class="['technology_content_item cursor',{ mgb: active, 'technology_content_item_border': choose == 1 }]" v-show="technologysubmit">
+					<div class="drawer_arrow" @click.stop="active = !active">
+						<img style="height: 90%;" :class="[{'rotate': active}]" src="@/assets/img/pull_down.png" alt="">
+					</div>
+					<div class="taocan_title bold">旺角街道高流量商鋪廣告套餐</div>
+					<div class="clear">
+						<div class="float title_p sa al">
+							<div>
+								<div class="technology_bold">繁忙時段</div>
+								<div class="technology_size12">9am-9pm廣告高曝光時間</div>
+							</div>
+							<div>
+								<div class="technology_bold">旺角街道高流量商鋪</div>
+								<div class="technology_size12">由多加旺角街道中人流量集中店鋪組成</div>
+							</div>
+						</div>
+						<div class="float title_p1 sa al">
+							<div>
+								<div class="technology_bold_red">計劃原價</div>
+								<div class="technology_bold_red1" style="text-decoration: line-through;">
+									$49999 HKD
+								</div>
+							</div>
+							<div>
+								<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
+							</div>
+							<div class="flex al">
+								<div class="technology_bold dor radius ju al">$</div>
+								<div class="technology_bold technology_price">39999</div>
+								<div class="hkd">HKD</div>
+								<div :class="['choose_btn cursor technology_bold',
+								{ 'choose_btn_background':choose == 1 }]" 
+								@click.stop='choosetaocan(1,"39999",5)'>選中</div>
+							</div>
+						</div>
+					</div>
+					<div :class="['content_msg',{ maxheight: !active }]">
+						<div class="bold">套餐內容</div>
+						<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
+						<div class="msg_item">精確投放到指定旺角街道店鋪，由高人流量店鋪組成</div>
+						<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
+						<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
+					</div>
 				</div>
-				<div class="ju size_13 mg" >{{$t('lang.adconfirmsucc1')}}.</div>
-				<div class="iknow ju al">
-                    <div class="cursor" @click="goBack">{{$t('lang.sure')}}</div>
-                </div>
+				<div @click="active1 = !active1" 
+				:class="['technology_content_item cursor',{ mgb: active1, 'technology_content_item_border': choose == 2 }]" v-show="technologysubmit">
+					<div class="drawer_arrow" @click.stop="active1 = !active1">
+						<img style="height: 90%;" :class="[{'rotate': active1}]" src="@/assets/img/pull_down.png" alt="">
+					</div>
+					<div class="taocan_title bold">中環街道高流量商鋪廣告套餐</div>
+					<div class="clear">
+						<div class="float title_p sa al">
+							<div>
+								<div class="technology_bold">非繁忙時段</div>
+								<div class="technology_size12">9pm-9am廣告播放時間</div>
+							</div>
+							<div>
+								<div class="technology_bold">中環街道高流量商鋪</div>
+								<div class="technology_size12">由多加中環街道中人流量集中店鋪組成</div>
+							</div>
+						</div>
+						<div class="float title_p1 sa al">
+							<div>
+								<div class="technology_bold_red">計劃原價</div>
+								<div class="technology_bold_red1" style="text-decoration: line-through;">
+									$69999 HKD
+								</div>
+							</div>
+							<div>
+								<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
+							</div>
+							<div class="flex al">
+								<div class="technology_bold dor radius ju al">$</div>
+								<div class="technology_bold technology_price">59999</div>
+								<div class="hkd">HKD</div>
+								<div :class="['choose_btn cursor technology_bold',
+								{ 'choose_btn_background':choose == 2 }]" 
+								@click.stop='choosetaocan(2,"59999",7)'>選中</div>
+							</div>
+						</div>
+					</div>
+					<div :class="['content_msg',{ maxheight: !active1 }]">
+						<div class="bold">套餐內容</div>
+						<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
+						<div class="msg_item">精確投放到指定中環街道店鋪，由高人流量店鋪組成</div>
+						<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
+						<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
+					</div>
+				</div>
+				<div @click="active2 = !active2" 
+				:class="['technology_content_item cursor',{ mgb: active2, 'technology_content_item_border': choose == 3 }]" v-show="technologysubmit">
+					<div class="drawer_arrow" @click.stop="active2 = !active2">
+						<img style="height: 90%;" :class="[{'rotate': active2}]" src="@/assets/img/pull_down.png" alt="">
+					</div>
+					<div class="taocan_title bold">黃大仙街道高流量商鋪廣告套餐</div>
+					<div class="clear">
+						<div class="float title_p sa al">
+							<div>
+								<div class="technology_bold">繁忙時段</div>
+								<div class="technology_size12">9am-9pm廣告高曝光時間</div>
+							</div>
+							<div>
+								<div class="technology_bold">黃大仙街道高流量商鋪</div>
+								<div class="technology_size12">由多加黃大仙街道中人流量集中店鋪組成</div>
+							</div>
+						</div>
+						<div class="float title_p1 sa al">
+							<div>
+								<div class="technology_bold_red">計劃原價</div>
+								<div class="technology_bold_red1" style="text-decoration: line-through;">
+									$79999 HKD
+								</div>
+							</div>
+							<div>
+								<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
+							</div>
+							<div class="flex al">
+								<div class="technology_bold dor radius ju al">$</div>
+								<div class="technology_bold technology_price">69999</div>
+								<div class="hkd">HKD</div>
+								<div :class="['choose_btn cursor technology_bold',
+								{ 'choose_btn_background':choose == 3 }]" 
+								@click.stop='choosetaocan(3,"69999",10)'>選中</div>
+							</div>
+						</div>
+					</div>
+					<div :class="['content_msg',{ maxheight: !active2 }]">
+						<div class="bold">套餐內容</div>
+						<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
+						<div class="msg_item">精確投放到指定黃大仙街道店鋪，由高人流量店鋪組成</div>
+						<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
+						<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
+					</div>
+				</div>
 			</div>
-        </div>
+		</el-drawer>
+		<el-dialog
+			:visible.sync="showVideo"
+			width="90%">
+			<video id="myVideo" class="video-js" :poster="Poster" v-if="videoWrap"
+				:controls="Controls">
+				<source :src="src" type="video/mp4">
+			</video>
+			<span slot="footer" class="dialog-footer">
+				<el-button type="primary" @click="closeVideo">确 定</el-button>
+			</span>
+		</el-dialog>
+		<el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="[dimg]" />
+		<el-image-viewer v-if="showViewer1" :on-close="closeViewer1" :url-list="[dimg1]" />
     </div>
 </template>
 
 <script>
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+import dimg from "@/assets/img/growing.jpg"
+import img1 from "@/assets/img/backimg.png"
 export default {
-    data () {
+    data() {
         return {
-            allprice: '39999',
-            active: false,
-            active1: false,
-            active2: false,
-            choose: 1,
-            position: 'left-end',
+			previewMP: {},
+			videoWrap: false,
+			showVideo: false,
+			preload: 'auto',  //  建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
+            src:'',               //视频的路径
+            type: '',                //视频的类型
+            Controls: true,              //确定播放器是否具有用户可以与之交互的控件
+            Autoplay: '',              //是否自动播放
+            Poster: '',                    //设置视频的封面
+
+			showViewer: false, 
+			showViewer1: false, 
+			dimg: '',
+			dimg1: '',
+			taocanDetail: true,
+			checked2: true,
+			tc_storeList: ['九龍店', '車展會','科技大廈', '醫院', '時尚大廳'],
+
+			copy1: [],
+			copy2: [],
+			copy3: [],
+
+
+			position1: 'left-end',
 			visible: false,
 			drawer: false,
+			drawer_tc: false,
+			direction: 'rtl',
+			submit: true,
 			video: true,
-            submit: true,
+            radio: '1',
+			labelPosition: 'left',
             ruleForm: {
-                name: '',
-                // area: '',
+                name: '食品會投放',
+                area: '',
+                store: '',
+                street: '',
                 // time: '',
                 type: '',
 				date: '',
-                startDate: '',
-				endtDate: '',
+                startDate: '2021-12-06',
+				endDate: '2021-12-07',
                 content: '',
 				mediaType: '',
 				cmediaType: '',
-				inp: '',
+				inp: 5,
             },
-			labelPosition: 'left',
             rules: {
                 name: [
                     { required: true, message: '請輸入廣告名稱', trigger: 'blur' },
-                    { min: 3, max: 5, message: '長度需3 到 5 個字符', trigger: 'blur' }
+                    { min: 3, max: 15, message: '長度需3 到 15 個字符', trigger: 'blur' }
                 ],
-                // area: [
-                //     { required: true, message: '請選擇投放區域', trigger: 'blur' }
-                // ],
+                area: [
+                    { required: true, message: '請選擇投放區域', trigger: 'blur' }
+                ], 
+                store: [
+                    { required: true, message: '請選擇店鋪', trigger: 'blur' }
+                ],
+                street: [
+                    { required: true, message: '請選擇街道', trigger: 'blur' }
+                ],
                 // time: [
                 //     { required: true, message: '請選擇时间段', trigger: 'blur' }
                 // ],
@@ -342,58 +463,50 @@ export default {
                     { required: true, message: '請選擇媒體內容', trigger: 'blur' }
                 ]
             },
-            pickerOptions: {
-              shortcuts: [{
-                  text: '最近一周',
-                  onClick(picker) {
-                    const end = new Date();
-                    const start = new Date();
-                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                    picker.$emit('pick', [start, end]);
-                  }
-                  }, {
-                    text: '最近一个月',
-                    onClick(picker) {
-                      const end = new Date();
-                      const start = new Date();
-                      start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                      picker.$emit('pick', [start, end]);
-                    }
-                  }, {
-                    text: '最近三个月',
-                    onClick(picker) {
-                      const end = new Date();
-                      const start = new Date();
-                      start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                      picker.$emit('pick', [start, end]);
-                    }
-                }]
-            },
-			pickerOptions1: {
-                disabledDate: (time) => {
-                    if (this.ruleForm.startDate != "") {
-                        return time.getTime() < Date.now() - 8.64e7 || time.getTime() < this.ruleForm.startDate;
-                    } else {
-                        return time.getTime() < Date.now() - 8.64e7;
-                    }
-                }
-            },
-            pickerOptions2: {
-                disabledDate: (time) => {
-                    return time.getTime() < this.ruleForm.startDate || time.getTime() < Date.now() + 8.64e7*4;
-                }
-            },
             startDate: '',
 			endDate: '',
             value2: '',
-			typeList: [],
+			typeList: ['旺角街道高流量商鋪廣告套餐($10000HKD/day)/旺角區域店鋪/廣告100分鐘'],
 			areaList: [],
 			timeList: [],
-			imageList: [],
-			minute: []
-        }
+			imageList: [{url: img1,name: 'image1',size: '13KB'}, {url: dimg,name: 'image2',size: '500KB'}],
+			minute: [],         //时长
+            storeList: [],
+            streetList: [],
+            map: '',
+            place: null,
+			infowindow: null,
+			deLight: [],
+			last: [],
+
+			allprice: '39999',
+            active: false,
+            active1: false,
+            active2: false,
+			choose: null,
+			technologysubmit: true,
+		}
     },
-    beforeMount() {
+	components: { ElImageViewer },
+	props: {
+		urlList: {
+		type: Array,
+		default: () => []
+		},
+		zIndex: {
+		type: Number,
+		default: 2000
+		},
+		onSwitch: {
+		type: Function,
+		default: () => {}
+		},
+		onClose: {
+		type: Function,
+		default: () => {}
+		}
+	},
+	beforeMount() {
 		let that = this
         window.addEventListener('resize', (e) => {
             that.fun()
@@ -401,9 +514,586 @@ export default {
 		this.fun()
     },
 	created () {
-		
+		this.dimg = dimg
 	},
+    mounted () {
+        this.initMap(22.6,114.1,1)
+		window.shopadd = this.shopadd;
+		window.onPreview = this.onPreview;
+		window.closewin = this.closewin;
+    },
     methods: {
+		previewVideo (item) {
+			this.src = item.url
+			this.showVideo = true
+			this.videoWrap = true
+		},
+		closeVideo () {
+			this.showVideo = false
+			this.videoWrap = false
+		},
+
+		imgPreview (url) {
+			this.dimg1 = url
+			this.showViewer1 = true
+		},
+		onPreview() {         //地圖店鋪預覽圖
+			this.showViewer = true
+        },
+        // 关闭查看器
+        closeViewer() {
+          this.showViewer = false
+        },
+		closeViewer1() {
+          this.showViewer1 = false
+        },
+		choosetaocan (i,val,minute) {
+			this.ruleForm.inp = minute
+			this.taocanDetail = true
+			this.typeList = []
+			this.drawer_tc = false
+			this.choose = i
+			this.allprice = val
+			if (i == 1) {
+				this.typeList.push('旺角街道高流量商鋪廣告套餐($10000HKD/day)/旺角區域店鋪/廣告100分鐘')
+				let arr = new Set(this.typeList)
+				this.typeList = Array.from(arr)
+			} else if (i == 2) {
+				this.typeList.push('中環街道高流量商鋪廣告套餐($10000HKD/day)/旺角區域店鋪/廣告100分鐘')
+				let arr = new Set(this.typeList)
+				this.typeList = Array.from(arr)
+			} else if (i == 3) {
+				this.typeList.push('黃大仙街道高流量商鋪廣告套餐($10000HKD/day)/旺角區域店鋪/廣告100分鐘')
+				let arr = new Set(this.typeList)
+				this.typeList = Array.from(arr)
+			}
+		},
+		storehit (i) {
+			let that = this
+			let map = this.map
+			const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
+			const icons = {
+				parking: {
+				icon: iconBase + "parking_lot_maps.png",
+				},
+				library: {
+				icon: iconBase + "library_maps.png",
+				},
+				info: {
+				icon: iconBase + "info-i_maps.png",
+				},
+			};
+			const features = [
+				{
+				position: new google.maps.LatLng(22.7, 114.1),
+				type: "info",
+				msg: this.$t("lang.ks")
+				},
+				{
+				position: new google.maps.LatLng(22.79, 114.16),
+				type: "info",
+				msg: '車展會'
+				},
+				{
+				position: new google.maps.LatLng(22.87, 114.13),
+				type: "info",
+				msg: '科技大廈'
+				},
+				{
+				position: new google.maps.LatLng(22.66, 114.10),
+				type: "info",
+				msg: '醫院'
+				},
+				{
+				position: new google.maps.LatLng(22.8, 114.1),
+				type: "info",
+				msg: '時尚大廳'
+				},
+				{
+				position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
+				type: "parking",
+				},
+				{
+				position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
+				type: "library",
+				},
+			];
+			// Create markers.
+			if (that.$i18n.locale == 'zh-CN') {
+				// for (let i = 0; i < features.length; i++) {
+					const marker1 = new google.maps.Marker({
+						position: features[i].position,
+						icon: icons[features[i].type].icon,
+						map: map,
+					});
+					
+					const contentString1 = 
+						`
+							<div class="sb" style="height: 100px;">
+								<div style="width: 150px;height: 100px;overflow: hidden;">
+									<img style="height: 109%;" src= ${dimg} onclick="onPreview()">
+								</div>
+								<div style="width: 150px;height: 100px;overflow: hidden;
+									margin:0 7px;">
+									<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+								</div>
+								<div style="width: 150px;height: 100px;overflow: hidden;">
+									<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+								</div>
+							</div>
+						` +
+						`
+							<div class="sb" style="margin-top:5px;">
+								<div class='bold tc'>${features[i].msg}(旺角店)</div>
+								<div class="contentString1_address" 
+								style="text-decoration: underline;
+								font-size:12px;">香港旺角區旺角街道666號</div>
+							</div>
+						` + 
+						`
+							<div class="size12">
+								<div>
+									<span>廣告顯示的尺寸(高 × 寬):</span>
+									<span style="color: blue;">2m × 1m</span>
+								</div>
+								<div>
+									<span>為廣告商開放的可用時間:</span>
+									<span style="color: blue;">9am~23pm</span>
+								</div>
+								<div>
+									<span>廣告不接受的業務類型:</span>
+									<span style="color: blue;">食品</span>
+								</div>
+								<div>
+									<span>高峰/非高峰時段的每月價格:</span>
+									<span style="color: blue;">
+										<div>高峰(20000HKD/month)</div>
+										<div>非高峰(10000HKD/month)</div>
+									</span>
+								</div>
+							</div>
+						` 
+					
+					that.openwin(contentString1,marker1,map)
+				// }
+			} else if (that.$i18n.locale == 'en-US') {
+				console.log(that.$i18n.locale)
+				// for (let i = 0; i < features.length; i++) {
+					const marker1 = new google.maps.Marker({
+						position: features[i].position,
+						icon: icons[features[i].type].icon,
+						map: map,
+					});
+					
+					const contentString1 = 
+						`
+							<div class="sb" style="height: 100px;">
+								<div style="width: 150px;height: 100px;overflow: hidden;">
+									<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+								</div>
+								<div style="width: 150px;height: 100px;overflow: hidden;
+									margin:0 7px;">
+									<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+								</div>
+								<div style="width: 150px;height: 100px;overflow: hidden;">
+									<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+								</div>
+							</div>
+						` +
+						`
+							<div class="sb" style="margin-top:5px;">
+								<div class='bold tc'>${features[i].msg}(Mong Kok Store)</div>
+								<div class="contentString1_address" 
+								style="text-decoration: underline;
+								font-size:12px;">HongKong street at six</div>
+							</div>
+						` + 
+						`
+							<div class="size12">
+								<div>
+									<span>size (height x width) of adv display:</span>
+									<span style="color: blue;">2m × 1m</span>
+								</div>
+								<div>
+									<span>available hour opened for advertisers:</span>
+									<span style="color: blue;">9am~23pm</span>
+								</div>
+								<div>
+									<span>type of business unaccepted for adv:</span>
+									<span style="color: blue;">Food</span>
+								</div>
+								<div>
+									<span>monthly price at rush/non-rush hour:</span>
+									<span style="color: blue;">
+										<div>rush(20000HKD/month)</div>
+										<div>non-rush(10000HKD/month)</div>
+									</span>
+								</div>
+							</div>
+						` 
+
+					// marker1.addListener("click", () => {
+						that.openwin(contentString1,marker1,map)
+					// });
+				// }
+			}
+		},
+		initMap (lat,lng,val) {
+			let that = this
+			let boolean = true
+			let map = new google.maps.Map(document.getElementById('map'), {
+				center: {lat: lat, lng: lng},
+				zoom: 8,
+				mapTypeId: "roadmap",
+				disableDefaultUI: true,
+				zoomControl: boolean,
+				// mapTypeControl: boolean,
+				scaleControl: boolean,
+				streetViewControl: boolean,
+				rotateControl: boolean,
+				fullscreenControl: boolean,
+			});
+			this.map = map
+
+			if (navigator.geolocation) {       //获取自身定位
+				navigator.geolocation.getCurrentPosition(function(position) {
+					var pos = {
+					lat: position.coords.latitude,
+					lng: position.coords.longitude
+					};
+					var marker = new google.maps.Marker({position: pos, map: map});
+					map.setCenter(pos);
+				})
+			}
+			// const myLatLng = {lat: 22.6, lng: 114.1}
+			// new google.maps.Marker({
+			// 	position: myLatLng,
+			// 	map,
+			// 	title: "Hello World!",
+			// });
+
+			let msg = this.msg
+			var data = [
+				{id:1,name:'小李'},
+			]
+			this.$nextTick(() => {
+				// const contentString = `
+				// 	<div>
+				// 		${data.map((item) => {
+				// 			return `<div><span>${item.name}</span></div>`
+				// 		}).join('')}
+				// 	</div>
+				// `
+				// const infowindow = new google.maps.InfoWindow({
+				// 	content: contentString,
+				// });
+				// const marker = new google.maps.Marker({
+				// 	position: myLatLng,
+				// 	map,
+				// 	title: "Uluru (Ayers Rock)",
+				// });
+				// marker.addListener("click", () => {
+				// 	infowindow.open({
+				// 		anchor: marker,
+				// 		map,
+				// 		shouldFocus: false,
+				// 	});
+				// })
+				// this.lightArea(map)
+			})
+
+			if (val == 1) {
+				const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
+				const icons = {
+					parking: {
+					icon: iconBase + "parking_lot_maps.png",
+					},
+					library: {
+					icon: iconBase + "library_maps.png",
+					},
+					info: {
+					icon: iconBase + "info-i_maps.png",
+					},
+				};
+				const features = [
+					{
+					position: new google.maps.LatLng(22.7, 114.1),
+					type: "info",
+					msg: this.$t("lang.ks")
+					},
+					{
+					position: new google.maps.LatLng(22.79, 114.16),
+					type: "info",
+					msg: '車展會'
+					},
+					{
+					position: new google.maps.LatLng(22.87, 114.13),
+					type: "info",
+					msg: '科技大廈'
+					},
+					{
+					position: new google.maps.LatLng(22.66, 114.10),
+					type: "info",
+					msg: '醫院'
+					},
+					{
+					position: new google.maps.LatLng(22.8, 114.1),
+					type: "info",
+					msg: '時尚大廳'
+					},
+					{
+					position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
+					type: "parking",
+					},
+					{
+					position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
+					type: "library",
+					},
+				];
+				// Create markers.
+				if (that.$i18n.locale == 'zh-CN') {
+					console.log(that.$i18n.locale)
+					for (let i = 0; i < features.length; i++) {
+						const marker1 = new google.maps.Marker({
+							position: features[i].position,
+							icon: icons[features[i].type].icon,
+							map: map,
+						});
+						
+						const contentString1 = 
+							`
+								<div class="sb" style="height: 100px;">
+									<div style="width: 150px;height: 100px;overflow: hidden;">
+										<img style="height: 109%;" src= ${dimg} onclick="onPreview()">
+									</div>
+									<div style="width: 150px;height: 100px;overflow: hidden;
+										margin:0 7px;">
+										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+									</div>
+									<div style="width: 150px;height: 100px;overflow: hidden;">
+										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+									</div>
+								</div>
+							` +
+							`
+								<div class="sb" style="margin-top:5px;">
+									<div class='bold tc'>${features[i].msg}(旺角店)</div>
+									<div class="contentString1_address" 
+									style="text-decoration: underline;
+									font-size:12px;">香港旺角區旺角街道666號</div>
+								</div>
+							` + 
+							`
+								<div class="size12">
+									<div>
+										<span>廣告顯示的尺寸(高 × 寬):</span>
+										<span style="color: blue;">2m × 1m</span>
+									</div>
+									<div>
+										<span>為廣告商開放的可用時間:</span>
+										<span style="color: blue;">9am~23pm</span>
+									</div>
+									<div>
+										<span>廣告不接受的業務類型:</span>
+										<span style="color: blue;">食品</span>
+									</div>
+									<div>
+										<span>高峰/非高峰時段的每月價格:</span>
+										<span style="color: blue;">
+											<div>高峰(20000HKD/month)</div>
+											<div>非高峰(10000HKD/month)</div>
+										</span>
+									</div>
+								</div>
+							` 
+						// 	+
+						// 	`<div style='margin-top: 10px;' class='ju al'>
+						// 		<div onclick="closewin()" class='cursor close'
+						// 		style='padding: 5px 20px;
+						// 		color: gray;
+						// 		font-size: 12px;
+						// 		border: solid 1px rgb(201, 201, 201);
+						// 		border-radius: 4px;
+						// 		margin-right: 5px;'>取消</div>
+
+						// 		<div onclick="shopadd('${features[i].msg}')"
+						// 		class='cursor' style='padding: 5px 20px;
+						// 		color: rgb(253, 253, 253);
+						// 		background: rgb(0, 153, 255);
+						// 		font-size: 12px;
+						// 		border-radius: 4px;'>添加</div>
+						// 	</div>
+						// `
+
+						marker1.addListener("click", () => {
+							that.openwin(contentString1,marker1,map)
+						});
+					}
+				} else if (that.$i18n.locale == 'en-US') {
+					console.log(that.$i18n.locale)
+					for (let i = 0; i < features.length; i++) {
+						const marker1 = new google.maps.Marker({
+							position: features[i].position,
+							icon: icons[features[i].type].icon,
+							map: map,
+						});
+						
+						const contentString1 = 
+							`
+								<div class="sb" style="height: 100px;">
+									<div style="width: 150px;height: 100px;overflow: hidden;">
+										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+									</div>
+									<div style="width: 150px;height: 100px;overflow: hidden;
+										margin:0 7px;">
+										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+									</div>
+									<div style="width: 150px;height: 100px;overflow: hidden;">
+										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+									</div>
+								</div>
+							` +
+							`
+								<div class="sb" style="margin-top:5px;">
+									<div class='bold tc'>${features[i].msg}(Mong Kok Store)</div>
+									<div class="contentString1_address" 
+									style="text-decoration: underline;
+									font-size:12px;">HongKong street at six</div>
+								</div>
+							` + 
+							`
+								<div class="size12">
+									<div>
+										<span>size (height x width) of adv display:</span>
+										<span style="color: blue;">2m × 1m</span>
+									</div>
+									<div>
+										<span>available hour opened for advertisers:</span>
+										<span style="color: blue;">9am~23pm</span>
+									</div>
+									<div>
+										<span>type of business unaccepted for adv:</span>
+										<span style="color: blue;">Food</span>
+									</div>
+									<div>
+										<span>monthly price at rush/non-rush hour:</span>
+										<span style="color: blue;">
+											<div>rush(20000HKD/month)</div>
+											<div>non-rush(10000HKD/month)</div>
+										</span>
+									</div>
+								</div>
+							` 
+						// 	+ `<div style='margin-top: 10px;' class='ju al'>
+						// 		<div onclick="closewin()" class='cursor close'
+						// 		style='padding: 5px 20px;
+						// 		color: gray;
+						// 		font-size: 12px;
+						// 		border: solid 1px rgb(201, 201, 201);
+						// 		border-radius: 4px;
+						// 		margin-right: 5px;'>Cancel</div>
+
+						// 		<div onclick="shopadd('${features[i].msg}')"
+						// 		class='cursor' style='padding: 5px 20px;
+						// 		color: rgb(253, 253, 253);
+						// 		background: rgb(0, 153, 255);
+						// 		font-size: 12px;
+						// 		border-radius: 4px;'>Add</div>
+						// 	</div>
+						// `
+
+						marker1.addListener("click", () => {
+							that.openwin(contentString1,marker1,map)
+						});
+					}
+				}
+			}
+		},
+		shopadd (val) {
+			this.addStore(val)
+		},
+		openwin (contentString1,marker1,map) {
+			if (this.infowindow) {
+				this.infowindow.close()
+			}
+			this.infowindow = new google.maps.InfoWindow({
+				content: contentString1,
+			});
+			this.infowindow.open({
+				anchor: marker1,
+				map,
+				shouldFocus: false,
+			});
+		},
+		closewin (val) {
+			this.infowindow.close()
+		},
+		lightArea () {
+			let that = this
+			let map = this.map
+			// Construct the polygon.
+			const bermudaTriangle = new google.maps.Polygon({
+				paths: that.deLight,
+				strokeColor: "#FF0000",
+				strokeOpacity: 0.8,
+				strokeWeight: 2,
+				fillColor: "#FF0000",
+				fillOpacity: 0.35,
+			})
+			this.delelightArea(bermudaTriangle)
+			bermudaTriangle.setMap(map);
+		},
+		delelightArea (bermudaTriangle) {
+			bermudaTriangle.setMap(null);
+		},
 		fun () {
 			if (window.innerWidth <= 564) {
                 this.labelPosition = 'top'
@@ -458,8 +1148,30 @@ export default {
 				this.areaList = Array.from(arr)
 			}
 		},
+        addStore (item) {
+			this.infowindow.close()
+			if (item) {
+				this.storeList.push(item)
+				let arr = new Set(this.storeList)
+				this.storeList = Array.from(arr)
+			}
+		},
+        addStreet (item) {
+			if (item) {
+				this.streetList.push(item)
+				let arr = new Set(this.streetList)
+				this.streetList = Array.from(arr)
+			}
+		},
 		deleType (i) {
+			this.taocanDetail = false
 			this.typeList.splice(i,1)
+		},
+        deleStore (i) {
+			this.storeList.splice(i,1)
+		},
+        deleStreet (i) {
+			this.streetList.splice(i,1)
 		},
 		deleArea (i) {
 			this.areaList.splice(i,1)
@@ -476,7 +1188,7 @@ export default {
 		},
 		getType (e) {
 			this.imageList = []
-			this.ruleForm.inp = ''
+			// this.ruleForm.inp = ''
 			this.minute = []
 			if (e == 1) {
 				this.video = false
@@ -486,124 +1198,6 @@ export default {
 				this.video = true
 				this.ruleForm.mediaType = 'video'
 				this.ruleForm.cmediaType = '視頻'
-			}
-		},
-		cahngeFile (e) {
-			var files = e.target.files
-			let that = this
-			if (this.ruleForm.mediaType) {
-				if (this.video) {
-					if (this.ruleForm.mediaType == 'video') {
-						if (e.target.files.length<=5 && this.imageList.length <= 5) {
-							for(var ff=0;ff<e.target.files.length;ff++){
-								let file = e.target.files[ff].type.split('/')[0]
-								let fileSize = e.target.files[ff].size
-								if (file == 'video') {
-									if (fileSize <= 100000000) {
-										let fileurl = URL.createObjectURL(e.target.files[ff])
-										let name = files[ff].name
-										let size
-										if (files[ff].size >= 1000000) {
-											var s = files[ff].size/1000000
-											size = s.toFixed(1) + 'M'
-											// size = Math.ceil(files[ff].size/1000000) + 'm'
-										} else {
-											var s = files[ff].size/1000
-											size = s.toFixed(0) + 'KB'
-											// size = Math.ceil(files[ff].size/1000) + 'kb'
-										}
-										that.imageList.push({ url: fileurl, name: name, size: size })
-										let audioElement = new Audio(fileurl);
-										audioElement.addEventListener("loadedmetadata", function (_event) {
-											var time = Math.ceil(audioElement.duration)
-											if (null != time && "" != time) {
-												if (time > 60 && time < 60 * 60) {
-													time = parseInt(time / 60.0)
-												}
-												// else if (time >= 60 * 60 && time < 60 * 60 * 24) {
-												// 	time = parseInt(time / 3600.0) + "小时" + parseInt((parseFloat(time / 3600.0) -
-												// 	parseInt(time / 3600.0)) * 60) + "分钟" +
-												// 	parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
-												// 	parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60) + "秒";
-												// }
-												else {
-													// time = parseInt(time) + "秒";
-													time =	1;
-												}
-											}
-											// that.minute.push(Math.ceil(audioElement.duration))
-											that.minute.push(time)
-											that.$forceUpdate()
-											// that.ruleForm.inp = that.ruleForm.inp*1 +  Math.ceil(audioElement.duration)                   //时长为秒，小数，182.36   / 向上取整
-											// console.log(audioElement.duration)
-										});
-									} else {
-										this.$message({
-											type: 'error',
-											message: '單個視頻最大限制100M !'
-										})
-									}
-								} else {}
-							}
-							setTimeout(() => {
-								this.$nextTick(() => {
-									this.ruleForm.inp = 0
-									for (let i=0;i<Array.from(this.minute).length;i++) {
-										this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
-										this.$forceUpdate()
-									}
-								})
-							},100)
-						} else {
-							this.$message({
-								type: 'error',
-								message: '最大限制5個視頻文件!'
-							})
-						}
-					} else {}
-				}
-				if (!this.video) {
-					if (this.ruleForm.mediaType == 'image') {
-						if (e.target.files.length<=10 && this.imageList.length <= 10) {
-							for(var ff=0;ff<e.target.files.length;ff++){
-								let file = e.target.files[ff].type.split('/')[0]
-								let fileSize = e.target.files[ff].size
-								if (file == 'image') {
-									if (fileSize <= 3000000) {
-										let fileurl = URL.createObjectURL(e.target.files[ff])
-										let name = files[ff].name
-										let size
-										if (files[ff].size >= 1000000) {
-											var s = files[ff].size/1000000
-											size = s.toFixed(1) + 'M'
-											// size = Math.ceil(files[ff].size/1000000) + 'm'
-										} else {
-											var s = files[ff].size/1000
-											size = s.toFixed(0) + 'KB'
-											// size = Math.ceil(files[ff].size/1000) + 'kb'
-										}
-										that.imageList.push({ url: fileurl, name: name, size: size })
-									} else {
-										this.$message({
-											type: 'error',
-											message: '單個圖片最大限制3M !'
-										})
-									}
-								} else { }
-							}
-						} else {
-							this.$message({
-								type: 'error',
-								message: '最大限制10個圖片文件!'
-							})
-						}
-					} else { }
-				}
-			} else {
-				this.$message({
-					type: 'warning',
-					message: '請選擇文件類型!'
-				})
 			}
 		},
 		deleImg (i) {
@@ -625,16 +1219,37 @@ export default {
 
 <style lang='less' scoped>
 @import "@/less/style.less";
-    .technology_price {
+.scale {
+	@media screen and (max-width: 564px) {
+		margin-top: -50px;
+		transform: scale(0.8);
+		width: calc(100% + 100px);
+		margin-left: -50px;
+	}
+}
+.float320 {
+	margin-left: 15px;
+	@media screen and (max-width: 315px) {
+		margin-left: 0px;
+	}
+}
+	.time_duan {
+		background: white;
+		padding: 17px 10px;
+	}
+	.technology_price {
         // width: 70px;
         min-width: 60px;
         display: inline-block;
     }
     .taocan_title {
-        font-size: 15px;
+        font-size: 16px;
         color: gray;
         padding: 0 15px;
         height: 0;
+		@media screen and (max-width: 402px) {
+			height: 10px;
+		}
     }
     .technology {
         height: 102%;
@@ -642,26 +1257,37 @@ export default {
         background: white;
     }
     .technology_content_item {
-        border: solid 2px #f7f7f7;
+		// min-width: 530px;
+        border: solid 2px #e9e8e8;
         position: relative;
         border-radius: 5px;
-        margin-bottom: 15px;
+        // margin-top: 15px;
+		min-height: 125px;
+		padding-top: 20px;
         transition: 0.2s;
+		@media screen and (max-width: 970px) {
+			padding-top: 15px;
+			padding-bottom: 10px;
+		}
         .drawer_arrow {
             position: absolute;
+			z-index: 100;
             width: 20px;
             height: 20px;
             right: 10px;
             top: 50%;
-            transform: translate(0,-50%);
+            transform: translate(0,-20%);
             img {
                 transition: 0.2s; 
+            }
+			@media screen and (max-width: 970px) {
+                top: 20px;
             }
         }
         .content_msg {
             position: absolute;
             left: 0;
-            top: 100px;
+            top: 121px;
             font-size: 13px;
             width: 100%;
             padding: 10px 20px 20px 20px;
@@ -670,13 +1296,25 @@ export default {
             transition: 0.2s;
             overflow: hidden;
             border: solid 1px rgb(230, 230, 230);
-            @media screen and (max-width: 753px) {
-                top: 130px;
+            @media screen and (max-width: 970px) {
+                top: 155px;
             }
         }
     }
+	.content_msg1 {
+		margin-top: 5px;
+		font-size: 13px;
+		width: 100%;
+		padding: 10px 20px 20px 20px;
+		border-radius: 4px;
+		max-height: 300px;
+		transition: 0.2s;
+		overflow: hidden;
+		border: solid 1px rgb(230, 230, 230);
+	}
     .technology_content_item_border {
-        border: solid 2px #3DFFFC;
+        // border: solid 2px #3DFFFC;
+		border: solid 2px #e9e8e8;
     }
     .mgb {
         margin-bottom: 285px;
@@ -705,7 +1343,7 @@ export default {
         min-width: 300px;
         width: 43%;
         height: 100px;
-        @media screen and (max-width: 753px) {
+        @media screen and (max-width: 970px) {
             height: 75px;
             width: 100%;
         }
@@ -714,7 +1352,7 @@ export default {
         min-width: 300px;
         width: 53%;
         height: 100px;
-        @media screen and (max-width: 753px) {
+        @media screen and (max-width: 970px) {
             height: 55px;
             width: 100%;
         }
@@ -727,7 +1365,7 @@ export default {
     }
     .youhui {
         width: 95px;
-        @media screen and (max-width: 753px) {
+        @media screen and (max-width: 970px) {
             width: 55px;
         }
         img {
@@ -788,11 +1426,11 @@ export default {
     }
     .content {
         width: 85%;
-        height: calc(100% - 35px);
+        // height: calc(100% - 35px);
         padding: 7px 7px;
         background: white;
-		margin-top: 15px;
-        overflow: auto;
+		// margin-top: 15px;
+        // overflow: auto;
 		@media screen and (max-width: 564px) {
 			width: 100%;
 		}
@@ -800,6 +1438,56 @@ export default {
 	.heigh {
 		height: auto !important;
 	}
+
+	.elbtn {
+		margin-left: 20px;
+		@media screen and (max-width: 564px) {
+			margin-left: 0;
+		}
+	}
+	.l_time {
+		width: 72px;
+		text-align: end;
+	}
+	.footer_text {
+		font-size: 12px;
+		color: gray;
+	}
+	.sfooter_text {
+		color: rgb(13, 219, 255);
+		font-size: 12px;
+	}
+	.dra_content {
+		height: calc(100% - 98px);
+		overflow: auto;
+		padding: 0 20px;
+	}
+	.AdvertisingOperation_back {
+        width: 98%;
+        font-size: 20px;
+        img {
+            width: 20px;
+            height: 20px;
+            @media screen and (max-width: 960px) {
+                width: 15px;
+                height: 15px;
+            }
+        }
+        @media screen and (max-width: 960px) {
+            font-size: 15px;
+        }
+    }
+    .AdvertisingAddPlus {
+        margin-top: 20px;
+        height: 100%;
+		position: relative;
+		.back_a {
+			position: absolute;
+			top: 5px;
+			left: 20px;
+			width: 30px;
+		}
+    }
     .content_title {
         font-size: 22px;
         font-weight: 500;
@@ -813,7 +1501,10 @@ export default {
 	}
     .basicsMsg {
         margin-bottom: 15px;
-        padding: 0 20px 20px 20px;
+        padding: 10px 20px 20px 20px;
+		@media screen and (max-width: 564px) {
+			padding: 10px 5px 20px 5px;
+		}
     }
     .basicsMsg_item {
         padding: 20px 0;
@@ -845,7 +1536,9 @@ export default {
     }
     .inp_time {
 		width: 70px;
-		background: white;
+		background: #F5F7FA;
+		border: solid 1px #E4E7ED;
+		color: rgb(168, 168, 168);
 		height: 37px;
 		margin-right: 5px;
     }
@@ -859,28 +1552,15 @@ export default {
 			padding: 10px 17px;
 		}
     }
-	.addImg {
-		border: dashed 1px rgb(201, 201, 201);
-		width: 100px;
-		height: 100px;
-		margin: 5px;
-		@media screen and (max-width: 564px) {
-			width: 70px;
-			height: 70px;
-		}
-	}
-	.addImg:hover {
-		border: dashed 1px rgb(148, 148, 148);
-	}
 	.textarea_wrap_item {
-		width: 80px;
-		height: 90px;
+		width: 100px;
+		height: 110px;
 		margin: 5px;
 		position: relative;
 		.imageList_wrap {
 			border: solid 1px rgb(230, 230, 230);
-			width: 80px;
-			height: 80px;
+			width: 100px;
+			height: 100px;
 			@media screen and (max-width: 564px) {
 				width: 70px;
 				height: 70px;
@@ -966,6 +1646,7 @@ export default {
 			display: block;
 		}
 	}
+	
 	.l_msg {
 		width: 200px;
 		@media screen and (max-width: 564px) {
@@ -1002,13 +1683,8 @@ export default {
 		}
 	}
 	.sure_plan_wrap {
-		width: 85%;
-		display: flex;
-		justify-content: flex-end;
-		@media screen and (max-width: 564px) {
-			width: 100%;
-			justify-content: center;
-		}
+		width: 100%;
+        margin-top: 25px;
 	}
 	.sure_plan {
 		color: rgb(250, 25, 25);
@@ -1021,6 +1697,12 @@ export default {
 			white-space: nowrap;
 			font-size: 14px;
 			padding: 18px 40px;
+			margin-top: 30px;
+		}
+	}
+	.elbtnsure {
+		margin-top: 50px;
+		@media screen and (max-width: 564px) {
 			margin-top: 30px;
 		}
 	}
@@ -1052,7 +1734,13 @@ export default {
 		padding: 85px 0;
 	}
 	.list {
-		margin-left: 15px;
+		@media screen and (max-width: 870px) {
+			margin-top: 10px !important;
+		}
+	}
+	.list1 {
+		margin-left: 10px;
+		margin-top: 10px;
 		@media screen and (max-width: 870px) {
 			margin-left: -10px !important;
 			margin-top: 10px !important;
@@ -1060,14 +1748,28 @@ export default {
 	}
 	.list_item {
 		border: dashed 2px #d3d3d3;
-		margin-left: 10px;
-		height: 36px;
+		margin-right: 10px;
+		height: 38px;
 		padding: 0 15px;
-		white-space: nowrap;
-		// @media screen and (max-width: 870px) {
-		// 	margin-top: 5px;
-		// }
-		margin-bottom: 5px;
+		// white-space: nowrap;
+		@media screen and (max-width: 870px) {
+			margin-top: 5px;
+		}
+	}
+	.list_item1 {
+		border: dashed 2px #d3d3d3;
+		margin-right: 10px;
+		// height: 36px;
+		min-width: 36px;
+		line-height: 15px;
+		padding: 9px 15px;
+		// white-space: nowrap;
+		@media screen and (max-width: 1090px) {
+			padding: 0px 15px;
+		}
+		@media screen and (max-width: 870px) {
+			margin-top: 5px;
+		}
 	}
 	.br {
 		@media screen and (max-width: 870px) {
@@ -1087,4 +1789,105 @@ export default {
             padding: 15px 40px;
         }
     } 
+    .map_wrap {
+        margin-left: 1px;
+        margin-top: 10px;
+		@media screen and (max-width: 564px) {
+            margin-left: 1px;
+        }
+    }
+    .gooleMap {
+        width: 60%; 
+        height: 400px;
+        min-width: 500px;
+        @media screen and (max-width: 564px) {
+            min-width: 300px;
+            width: 100%;
+            height: 300px;
+        }
+    }
+
+	#map {
+        height: 500px;
+        width: 100%;
+		box-shadow: 0 0 3px gray;
+    }
+    #description {
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    }
+
+    #infowindow-content .title {
+    font-weight: bold;
+    }
+
+    #infowindow-content {
+    display: none;
+    }
+
+    #map #infowindow-content {
+    display: inline;
+    }
+
+    .pac-card {
+    background-color: #fff;
+    border: 0;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
+    margin: 10px;
+    padding: 0 0.5em;
+    font: 400 18px Roboto, Arial, sans-serif;
+    overflow: hidden;
+    font-family: Roboto;
+    padding: 0;
+    }
+
+    #pac-container {
+    padding-bottom: 12px;
+    margin-right: 12px;
+    }
+
+    .pac-controls {
+    display: inline-block;
+    padding: 5px 11px;
+    }
+
+    .pac-controls label {
+    font-family: Roboto;
+    font-size: 13px;
+    font-weight: 300;
+    }
+
+    #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 250px;
+        top: 16px !important;
+        left: -3px !important;
+        border-radius: 3px;
+        height: 25px;
+		border: black solid 2px;
+    }
+
+    #pac-input:focus {
+    border-color: #4d90fe;
+    }
+
+    #title {
+    color: #fff;
+    background-color: #4d90fe;
+    font-size: 25px;
+    font-weight: 500;
+    padding: 6px 12px;
+    }
+
+    #target {
+    width: 345px;
+    }
 </style>

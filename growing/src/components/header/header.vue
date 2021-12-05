@@ -1,6 +1,7 @@
 <template>
     <div class="header">
         <div class="Back" v-show="visible" @click="visible = false"></div>
+        <div class="Back1" v-show="active" @click="active = false"></div>
         <div class="header_item sb">
             <div class="al"><img class="LOGO" @click="home" src="@/assets/img/logo.png" alt=""></div>
             <div class="ju al">
@@ -60,6 +61,10 @@ export default {
                 document.getElementsByClassName('Back')[0].style.width = window.innerWidth + 'px'
                 document.getElementsByClassName('Back')[0].style.height = window.innerHeight + 'px'
             }
+            if (document.getElementsByClassName('Back1')[0] != undefined) {
+                document.getElementsByClassName('Back1')[0].style.width = window.innerWidth + 'px'
+                document.getElementsByClassName('Back1')[0].style.height = window.innerHeight + 'px'
+            }
         },
         home () {
             if (localStorage.getItem('platform') == 1) {
@@ -96,6 +101,12 @@ export default {
         position: relative;
         height: 50px;
         .Back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 9;
+        }
+        .Back1 {
             position: absolute;
             top: 0;
             left: 0;
