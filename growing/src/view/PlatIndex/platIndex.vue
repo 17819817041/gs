@@ -1,5 +1,5 @@
 <template>
-    <div class="Index">
+    <div class="Index" v-loading='loading'>
         <div class="wrap_addPlat" v-show="showadd" @click="showadd = false"></div>
         <div class="content ju">
             <div class="content_item flex">
@@ -127,13 +127,9 @@
                             <img class="t_arrow" src="@/assets/img/arrow.png" alt="">
                         </div>
                         <div class="addPlat_wrap" v-show="showadd">
-                            <div class="input_msg cursor tc">
-                                {{$t("lang.jiulong")}}
+                            <div class="input_msg cursor tc" v-for="(item) in storeList" :key="item.id">
+                                {{item.name}}
                             </div>
-                            <div class="input_msg cursor tc">
-                                {{$t("lang.wangjiao")}}
-                            </div>
-
                             <div class="line"></div>
                             <div class="addPlat al ju cursor mg" @click="AddStore">
                                 <img src="@/assets/img/plat.png" alt="">{{$t("lang.addstore")}}
@@ -185,11 +181,14 @@
 </template>
 
 <script>
+import { getShopHomeDetails, getShopListByUser } from '@/axios/request.js'
 export default {
     data () {
         return {
             showadd: false,
-            category_list: false
+            category_list: false,
+            storeList: [],
+            loading: false
         }
     },
     mounted () {
@@ -199,7 +198,41 @@ export default {
         })
 		this.getResize()
     },
+    created () {
+        // this.getShopHomeDetails()
+        this.getShopListByUser()
+    },
     methods: {
+        getShopHomeDetails () {      //根据用户id获取店铺首页数据
+            let data = {
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            getShopHomeDetails(data).then(res => {
+                console.log(res)
+            })
+        },
+        getShopListByUser () {       //获取用户下所有店铺
+            this.loading = true
+            let data = { userId: localStorage.getItem('compoundeyesUserId') }
+            getShopListByUser(data).then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.storeList = res.data.data
+                } else {
+                    this.$message({
+                    type: 'error',
+                        message: '請求失敗'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '請求失敗'
+                })
+            })
+        },
         getResize () {
             if (document.getElementsByClassName('wrap_addPlat')[0] != undefined) {
                 document.getElementsByClassName('wrap_addPlat')[0].style.width = window.innerWidth + 'px'
@@ -220,7 +253,8 @@ export default {
         },
         AdministrationStore () {
             this.$router.push('/AdministrationStore')
-        }
+        },
+        
     }
 }
 </script>

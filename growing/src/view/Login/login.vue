@@ -1,5 +1,5 @@
 <template>
-    <div class="Login flex">
+    <div class="Login flex" v-loading="loading">
         <div class="growing"><img style="height: 148%" src="@/assets/img/growing.jpg" alt=""></div>
         <div class="form_item">
             <div class="Logo1 ju">
@@ -71,19 +71,73 @@
 </template>
 
 <script>
+import { Login } from "@/axios/request.js"
 export default {
     data () {
         return {
             active: false,
             lists: [],
-            userName: '',
-            password: ''
+            userName: '雾里看花',
+            password: '123',
+            
+            // userName: '666666',
+            // password: '123',
+
+            // userName: '123',
+            // password: '123',
+
+            // userName: '',
+            // password: '',
+            loading: false,
         }
     },
     mounted () {
         
     },
     methods: {
+        login () {
+            this.loading = true
+            let data = {
+                userName: this.userName,
+                pwd: this.password
+            }
+            Login(data).then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    localStorage.setItem('compoundeyesToken',res.data.data.token)
+                    localStorage.setItem('compoundeyesUserId',res.data.data.userId)
+                    if (res.data.data.mainUrl == '1') {
+                        this.$router.push('/Index')
+                        localStorage.setItem('plat','廣告商')
+                        localStorage.setItem('platform',1)
+                    } else if (res.data.data.mainUrl == '2') {
+                        localStorage.setItem('plat','店鋪')
+                        this.$router.push('/PlatIndex')
+                        localStorage.setItem('platform',2)
+                    } else if (res.data.data.mainUrl == '3') {
+                        localStorage.setItem('plat','廣告後台')
+                        this.$router.push('/AdminIndex')
+                        localStorage.setItem('platform',3)
+                    } else {
+                        localStorage.setItem('plat','廣告商')
+                        this.$router.push('/Index')
+                        localStorage.setItem('platform',1)
+                    }
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.$message({
+                    type: 'error',
+                    message: '登錄失敗!'
+                })
+                this.loading = false
+            })
+        },
         sign () {
             this.$router.push('/Sign')
         },
@@ -97,25 +151,25 @@ export default {
             this.$i18n.locale = 'en-US'
             this.active = false
         },
-        login () {
-            if (this.userName == 1) {
-                this.$router.push('/Index')
-                localStorage.setItem('plat','廣告商')
-                localStorage.setItem('platform',1)
-            } else if (this.userName == 2) {
-                localStorage.setItem('plat','店鋪')
-                this.$router.push('/PlatIndex')
-                localStorage.setItem('platform',2)
-            } else if (this.userName == 3) {
-                localStorage.setItem('plat','廣告後台')
-                this.$router.push('/AdminIndex')
-                localStorage.setItem('platform',3)
-            } else {
-                localStorage.setItem('plat','廣告商')
-                this.$router.push('/Index')
-                localStorage.setItem('platform',1)
-            }
-        }
+        // login () {
+        //     if (this.userName == 1) {
+        //         this.$router.push('/Index')
+        //         localStorage.setItem('plat','廣告商')
+        //         localStorage.setItem('platform',1)
+        //     } else if (this.userName == 2) {
+        //         localStorage.setItem('plat','店鋪')
+        //         this.$router.push('/PlatIndex')
+        //         localStorage.setItem('platform',2)
+        //     } else if (this.userName == 3) {
+        //         localStorage.setItem('plat','廣告後台')
+        //         this.$router.push('/AdminIndex')
+        //         localStorage.setItem('platform',3)
+        //     } else {
+        //         localStorage.setItem('plat','廣告商')
+        //         this.$router.push('/Index')
+        //         localStorage.setItem('platform',1)
+        //     }
+        // }
     }
 }
 </script>

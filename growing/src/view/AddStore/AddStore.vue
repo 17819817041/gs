@@ -8,25 +8,28 @@
 			<div class="content mg bar">
 				<!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div> -->
 				<div class="noBar" style="height: calc(100% - 27px); overflow:auto">
-					<div class="basicsMsg boxs theme" v-show="submit">
+					<div class="basicsMsg theme" v-show="submit">
 					<div class="flex divider_message_title">
 						<div class="divider"></div>
 						<div class="divider_text">店鋪信息管理</div>
 					</div>
 					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="135px" class="demo-ruleForm">
 						<el-form-item label="店鋪名" prop="name" class="bcolor">
-							<div class="elinput boxs width30">
+							<div class="elinput width30">
 								<el-input class="width100" v-model="ruleForm.name"></el-input>
 							</div>
 						</el-form-item>
 						<el-form-item label="店鋪所屬類型" prop="storeType">
 							<div class="al br">
 								<div class="al width30">
-									<el-select v-model="ruleForm.storeType" class="width100" placeholder="請選擇類型">
-										<el-option label="食品" value="食品"></el-option>
-										<el-option label="科技" value="科技"></el-option>
-										<el-option label="醫療" value="醫療"></el-option>
-										<el-option label="汽車" value="汽車"></el-option>
+									<el-select v-model="ruleForm.storeType" class="width100" placeholder="請選擇類型" @change="addType">
+										<el-option v-for="(item,i) in getTypeList" :key="i"
+											:label='item.find(child => { 
+												child.language == "zh-TW" && $i18n.locale == "zh-CN"? 
+												"child.guangGaoTypeName" : "123"
+											})'
+											:value="1">
+										</el-option>
 									</el-select>
 								</div>
 							</div>
@@ -487,6 +490,7 @@
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import dimg from "@/assets/img/growing.jpg"
 import mapPoint from "@/assets/img/marker.png"
+import { AddStore } from '@/axios/request.js'
 export default {
     data() {
         return {
@@ -508,7 +512,7 @@ export default {
 			ggbili: '',
 			typeList: [],
 			typeList1: [],
-
+			storeTypeList: [],
 
 			checkedCities1: [],
 			busyTimeList1: [],
@@ -634,6 +638,8 @@ export default {
         };
     },
 	created () {
+		this.$store.dispatch('getAddress',this) 
+        this.$store.dispatch('getTypeList',this)
         let num = 10000
         for (let i=0;i<10;i++) {
             num += 5000
@@ -689,8 +695,110 @@ export default {
     mounted () {
         this.initMap1(22.6,114.1,1)
     },
+	watch: {
+		addressList (val) {
+			if (val) {
+				this.addressList = val
+			}
+		},
+        getTypeList (val) {
+			if (val) {
+				this.getTypeList = val
+			}
+		},
+        loading (val) {
+			if (val) {
+				this.loading = val
+			}
+		}
+	},
+	computed: {
+		addressList: {           //地址列表
+			get () { return this.$store.state.user.addressList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'addressList',
+					value: val
+				})
+			}
+		},
+        getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		},
+        loading: {
+			get () { return this.$store.state.user.loading },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'loading',
+					value: val
+				})
+			}
+		}
+	},
 	components: { ElImageViewer },
     methods: {
+		AddStore () {       //添加店鋪
+			let that = this
+            this.$refs.forms.validate(flag => {
+                if (flag) {
+					let data = {
+						shopDtoJson: {
+							"shopName": that.ruleForm.name,
+							"addressParentId": 1,
+							"shopAddressId": 5,
+							"addressName": "地址",
+							"longitude": "95.65",
+							"latitude": "30.15",
+							"content": "内容",
+							"types": that.storeTypeList,
+							"shopTypeId": 2,
+							"userId": 6,
+							"shopDiscountDtos": [{
+								"timeIntervalId": 1,
+								"discount": 70,
+								"timeIntervalDetailsDtos": [{
+									"timeIntervalDetailsId": 1,
+									"discount": 70,
+									"receiving": true
+								}],
+								"receiving": true,
+								"unified": true
+							}],
+							"shopGuangGaoDto": {
+								"shopGuangGaoTitle": "广告标题",
+								"shopGuangGaoLength": 6,
+								"shopGuangGaoContents": [{
+									"id": null,
+									"fileUrl": "www.baidu.com",
+									"step": 1,
+									"type": 1,
+									"shopGuangGaoId": 1
+								}]
+							},
+							"width": "12",
+							"heigth": "12",
+							"shopImages": ["12313513032"],
+							"incomePriceId": 3
+						}
+					}
+					let str = JSON.stringify(data.shopDtoJson)
+					const qs = require('qs')
+					let data1 = qs.stringify({
+						shopDtoJson: str
+					})
+					AddStore(data1).then(res => {
+						console.log(res)
+					})
+                }
+            })
+            
+        },
         fun () {
 			if (window.innerWidth <= 564) {
                 this.labelPosition = 'top'
@@ -1111,6 +1219,8 @@ export default {
 			this.$refs[formName].resetFields();
 		},
 		submitG () {
+			this.AddStore()
+			return
 			this.submit = false
 		},
 		handleCheckAllChange(val) {
@@ -1129,11 +1239,12 @@ export default {
 			this.$router.back()
 		},
 		addType (item) {
-			if (item) {
-				this.outTimeList.push(item)
-				let arr = new Set(this.outTimeList)
-				this.outTimeList = Array.from(arr)
-			}
+			// if (item) {
+				this.storeTypeList = []
+				this.storeTypeList.push(item)
+				// let arr = new Set(this.storeTypeList)
+				// this.storeTypeList = Array.from(arr)
+			// }
 		},
 		addArea (item) {
 			this.areaList.push(item)
@@ -1476,7 +1587,7 @@ export default {
         width: 35%;
         min-width: 275px;
         padding: 3px;
-        box-shadow: 0 0 5px rgb(199, 199, 199) inset !important;
+        // box-shadow: 0 0 5px rgb(199, 199, 199) inset !important;
     }
     .content {
         width: 85%;

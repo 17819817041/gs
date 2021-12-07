@@ -15,6 +15,11 @@ export const lang = {
 	thank: 'Thank you for your support and understanding!',
 	sure: 'Sure',
 	plat: 'Advertising platform',
+	loading: 'Failed to load',
+	addSuccess: 'Added successfully',
+	addFail: 'Add failed',
+	delSuccess: 'Successfully deleted',
+	delFail: 'Failed to delete',
 
 
 	addbtn: 'Add',
@@ -22,6 +27,8 @@ export const lang = {
 	Technology: 'Technology',
 	medical: 'Medical treatment',
 	car: 'Car',
+	addressLoadFail: 'Failed to load address',
+	typeLoadFail: 'Type load failed',
 
 
 	//登錄
@@ -192,7 +199,12 @@ export const lang = {
 	set_title1: 'Foreign advertising period',
 	set_title2: 'Foreign advertising industry',
 	set_bili: 'Percentage of foreign advertisements received',
-	nodata: 'No data'
+	nodata: 'No data',
+
+
+
+	//setting
+	setting_del: 'confirm to delete',
 
 }
   

@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { setLang } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -86,11 +87,21 @@ export default {
             localStorage.setItem('locale','zh-CN')
             this.$i18n.locale = 'zh-CN'
             this.active = false
+            this.setLang('zh-TW')
         },
         en () {
             localStorage.setItem('locale','en-US')
             this.$i18n.locale = 'en-US'
             this.active = false
+            this.setLang('en-US')
+        },
+        setLang (val) {           //修改語言
+            let data = {
+                lang: val
+            }
+            setLang(data).then(res => {
+                // console.log(res)
+            })
         }
     }
 }

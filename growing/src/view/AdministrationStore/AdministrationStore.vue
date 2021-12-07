@@ -263,8 +263,8 @@
 
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
-import dimg from "@/assets/img/growing.jpg"
 import mapPoint from "@/assets/img/marker.png"
+
 export default {
     data() {
         return {
@@ -416,12 +416,6 @@ export default {
 					map.setCenter(pos);
 				})
 			}
-			// const myLatLng = {lat: 22.6, lng: 114.1}
-			// new google.maps.Marker({
-			// 	position: myLatLng,
-			// 	map,
-			// 	title: "Hello World!",
-			// });
 			var pos = {
 				lat: 0,
 				lng: 0
@@ -437,6 +431,23 @@ export default {
 					icon: mapPoint,
 					map: map,
 				})
+
+
+				var axios = require('axios');
+
+				var config = {
+					method: 'get',
+					url: 'https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJN1t_tDeuEmsRUsoyG83frY4&fields=name%2Crating%2Cformatted_phone_number&key=AIzaSyC4UE1P5tLy0aSibmA0WzZq-yFi9cpyrW0',
+					headers: { }
+				};
+
+				axios(config).then(function (response) {
+					console.log(JSON.stringify(response.data));
+					console.log(response);
+				})
+				.catch(function (error) {
+					onsole.log(error);
+				});
 
 				// var pos = {
 				// 	lat: e.latLng.lat(),
@@ -509,240 +520,6 @@ export default {
 				});
 				map.fitBounds(bounds);
 			});
-			return
-			if (val == 1) {
-				const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
-				const icons = {
-					parking: {
-					icon: iconBase + "parking_lot_maps.png",
-					},
-					library: {
-					icon: iconBase + "library_maps.png",
-					},
-					info: {
-					icon: iconBase + "info-i_maps.png",
-					},
-				};
-				const features = [
-					{
-					position: new google.maps.LatLng(22.7, 114.1),
-					type: "info",
-					msg: this.$t("lang.ks")
-					},
-					{
-					position: new google.maps.LatLng(22.79, 114.16),
-					type: "info",
-					msg: this.$t("lang.car")
-					},
-					{
-					position: new google.maps.LatLng(22.87, 114.13),
-					type: "info",
-					msg: this.$t("lang.Technology")
-					},
-					{
-					position: new google.maps.LatLng(22.66, 114.10),
-					type: "info",
-					msg: this.$t("lang.medical")
-					},
-					{
-					position: new google.maps.LatLng(22.8, 114.1),
-					type: "info",
-					msg: this.$t("lang.foodclient")
-					},
-					{
-					position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
-					type: "library",
-					},
-				];
-				// Create markers.
-				if (that.$i18n.locale == 'zh-CN') {
-					console.log(that.$i18n.locale)
-					for (let i = 0; i < features.length; i++) {
-						const marker1 = new google.maps.Marker({
-							position: features[i].position,
-							icon: icons[features[i].type].icon,
-							map: map,
-						});
-						
-						const contentString1 = 
-							`
-								<div class="sb" style="height: 100px;">
-									<div style="width: 150px;height: 100px;overflow: hidden;">
-										<img style="height: 109%;" src= ${dimg} onclick="onPreview()">
-									</div>
-									<div style="width: 150px;height: 100px;overflow: hidden;
-										margin:0 7px;">
-										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
-									</div>
-									<div style="width: 150px;height: 100px;overflow: hidden;">
-										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
-									</div>
-								</div>
-							` +
-							`
-								<div class="sb" style="margin-top:5px;">
-									<div class='bold tc'>${features[i].msg}(旺角店)</div>
-									<div class="contentString1_address" 
-									style="text-decoration: underline;
-									font-size:12px;">香港旺角區旺角街道666號</div>
-								</div>
-							` + 
-							`
-								<div class="size12">
-									<div>
-										<span>廣告顯示的尺寸(高 × 寬):</span>
-										<span style="color: blue;">2m × 1m</span>
-									</div>
-									<div>
-										<span>為廣告商開放的可用時間:</span>
-										<span style="color: blue;">9am~23pm</span>
-									</div>
-									<div>
-										<span>廣告不接受的業務類型:</span>
-										<span style="color: blue;">食品</span>
-									</div>
-									<div>
-										<span>高峰/非高峰時段的每月價格:</span>
-										<span style="color: blue;">
-											<div>高峰(20000HKD/month)</div>
-											<div>非高峰(10000HKD/month)</div>
-										</span>
-									</div>
-								</div>
-							` +
-							`<div style='margin-top: 10px;' class='ju al'>
-								<div onclick="closewin()" class='cursor close'
-								style='padding: 5px 20px;
-								color: gray;
-								font-size: 12px;
-								border: solid 1px rgb(201, 201, 201);
-								border-radius: 4px;
-								margin-right: 5px;'>取消</div>
-
-								<div onclick="shopadd('${features[i].msg}')"
-								class='cursor' style='padding: 5px 20px;
-								color: rgb(253, 253, 253);
-								background: rgb(0, 153, 255);
-								font-size: 12px;
-								border-radius: 4px;'>添加</div>
-							</div>
-						`
-
-						marker1.addListener("click", () => {
-							that.openwin(contentString1,marker1,map)
-						});
-					}
-				} else if (that.$i18n.locale == 'en-US') {
-					console.log(that.$i18n.locale)
-					for (let i = 0; i < features.length; i++) {
-						const marker1 = new google.maps.Marker({
-							position: features[i].position,
-							icon: icons[features[i].type].icon,
-							map: map,
-						});
-						
-						const contentString1 = 
-							`
-								<div class="sb" style="height: 100px;">
-									<div style="width: 150px;height: 100px;overflow: hidden;">
-										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
-									</div>
-									<div style="width: 150px;height: 100px;overflow: hidden;
-										margin:0 7px;">
-										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
-									</div>
-									<div style="width: 150px;height: 100px;overflow: hidden;">
-										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
-									</div>
-								</div>
-							` +
-							`
-								<div class="sb" style="margin-top:5px;">
-									<div class='bold tc'>${features[i].msg}(Mong Kok Store)</div>
-									<div class="contentString1_address" 
-									style="text-decoration: underline;
-									font-size:12px;">HongKong street at six</div>
-								</div>
-							` + 
-							`
-								<div class="size12">
-									<div>
-										<span>size (height x width) of adv display:</span>
-										<span style="color: blue;">2m × 1m</span>
-									</div>
-									<div>
-										<span>available hour opened for advertisers:</span>
-										<span style="color: blue;">9am~23pm</span>
-									</div>
-									<div>
-										<span>type of business unaccepted for adv:</span>
-										<span style="color: blue;">Food</span>
-									</div>
-									<div>
-										<span>monthly price at rush/non-rush hour:</span>
-										<span style="color: blue;">
-											<div>rush(20000HKD/month)</div>
-											<div>non-rush(10000HKD/month)</div>
-										</span>
-									</div>
-								</div>
-							` +
-							`<div style='margin-top: 10px;' class='ju al'>
-								<div onclick="closewin()" class='cursor close'
-								style='padding: 5px 20px;
-								color: gray;
-								font-size: 12px;
-								border: solid 1px rgb(201, 201, 201);
-								border-radius: 4px;
-								margin-right: 5px;'>Cancel</div>
-
-								<div onclick="shopadd('${features[i].msg}')"
-								class='cursor' style='padding: 5px 20px;
-								color: rgb(253, 253, 253);
-								background: rgb(0, 153, 255);
-								font-size: 12px;
-								border-radius: 4px;'>Add</div>
-							</div>
-						`
-
-						marker1.addListener("click", () => {
-							that.openwin(contentString1,marker1,map)
-						});
-					}
-				}
-			} else if (val == 2) {
-				this.lightArea(map)
-			} else if (val == 3) {
-				
-			}
 		},
 		submitForm(formName) {
 			this.$refs[formName].validate((valid) => {

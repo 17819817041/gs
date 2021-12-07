@@ -15,6 +15,11 @@ export const lang = {
 	thank: '感謝您的支持與理解！',
 	sure: '確定',
 	plat: '廣告平台',
+	loading: '加載失敗',
+	addSuccess: '添加成功',
+	addFail: '添加失敗',
+	delSuccess: '刪除成功',
+	delFail: '刪除失敗',
 
 
 	addbtn: '添加',
@@ -22,6 +27,8 @@ export const lang = {
 	Technology: '科技',
 	medical: '醫療',
 	car: '汽車',
+	addressLoadFail: '地址加載失敗',
+	typeLoadFail: '類型加載失敗',
 
 
 
@@ -197,4 +204,11 @@ export const lang = {
 	set_title2: '外來廣告行業',
 	set_bili: '接受的外来廣告比例',
 	nodata: '暂无数据',
+
+
+
+
+	//setting
+	setting_del: '確定刪除嗎',
+
 }

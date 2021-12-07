@@ -1,5 +1,5 @@
 <template>
-    <div class="Setting">
+    <div class="Setting" v-loading='loading'>
         <div class="back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">系統設定
         </div>
@@ -34,10 +34,10 @@
                                             </el-form-item>
                                         </el-form>
                                         <div class="sb">
-                                            <div class="addCate cursor al" @click="addArea(ruleForm.area)">
-                                                添加
+                                            <div class="addCate cursor al" @click="addArea(ruleForm.area,ruleForm.Einp)">
+                                                {{$t('lang.addbtn')}}
                                             </div>
-                                            <div class="addCate cursor al" @click='visible = false'>取消</div>
+                                            <div class="addCate cursor al" @click='visible = false'>{{$t('lang.cancel')}}</div>
                                         </div>
                                     </div>
                                     <div class="addArea tc cursor" slot="reference" @click="visible = true">新增地區</div>
@@ -45,16 +45,31 @@
                             </div>
                         </div>
                         <div class="area_content clear">
-                            <div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in areaList" :key="i">
-                                {{item}} 
-                                <span class="al" style="margin-left: 5px">
-                                    <el-popconfirm
-                                        title="確定刪除嗎？"
-                                        @confirm='deleArea(i)'
-                                        >
-                                        <img style="margin-top: 5px;" class="cursor" slot="reference" src="@/assets/img/cha.png" alt="">
-                                    </el-popconfirm>
-                                </span>
+                            <div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in addressList" :key="i">
+                                <div v-for="(child,i) in item.addressLanguageDtos" :key="i" class="al">
+                                    <div v-if="child.language == 'zh-TW' && $i18n.locale == 'zh-CN'" class="al">
+                                        {{child.addressName}} 
+                                        <span class="al" style="margin-left: 5px">
+                                            <el-popconfirm
+                                                :title="$t('lang.setting_del') + '？'"
+                                                @confirm='deleArea(item.id)'
+                                                >
+                                                <img style="margin-top: 5px;" class="cursor" slot="reference" src="@/assets/img/cha.png" alt="">
+                                            </el-popconfirm>
+                                        </span>
+                                    </div>
+                                    <div v-if="child.language == 'en-US' && $i18n.locale == 'en-US'" class="al">
+                                        {{child.addressName}} 
+                                        <span class="al" style="margin-left: 5px">
+                                            <el-popconfirm
+                                                :title="$t('lang.setting_del') + '？'"
+                                                @confirm='deleArea(item.id)'
+                                                >
+                                                <img style="margin-top: 5px;" class="cursor" slot="reference" src="@/assets/img/cha.png" alt="">
+                                            </el-popconfirm>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -90,10 +105,10 @@
                                             </el-form-item>
                                         </el-form>
                                         <div class="sb">
-                                            <div class="addCate cursor al" @click="addType(ruleForm.type)">
-                                                添加
+                                            <div class="addCate cursor al" @click="addType(ruleForm.type,ruleForm.Etype)">
+                                                {{$t('lang.addbtn')}}
                                             </div>
-                                            <div class="addCate cursor al" @click='visible1 = false'>取消</div>
+                                            <div class="addCate cursor al" @click='visible1 = false'>{{$t('lang.cancel')}}</div>
                                         </div>
                                     </div>
                                     <div class="addArea tc cursor" slot="reference" @click="visible1 = true">新增類型</div>
@@ -102,15 +117,30 @@
                         </div>
                         <div class="area_content clear">
                             <div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
-                                {{item}} 
-                                <span class="al" style="margin-left: 5px">
-                                    <el-popconfirm
-                                        title="確定刪除嗎？"
-                                        @confirm='deleType(i)'
-                                        >
-                                        <img style="margin-top: 5px;" class="cursor" slot="reference" src="@/assets/img/cha.png" alt="">
-                                    </el-popconfirm>
-                                </span>
+                                <div v-for="(child,i) in item" :key="i" class="al">
+                                    <div v-if="child.language == 'zh-TW' && $i18n.locale == 'zh-CN'" class="al">
+                                        {{child.guangGaoTypeName}} 
+                                        <span class="al" style="margin-left: 5px">
+                                            <el-popconfirm
+                                                title="確定刪除嗎？"
+                                                @confirm='deleType(i)'
+                                                >
+                                                <img style="margin-top: 5px;" class="cursor" slot="reference" src="@/assets/img/cha.png" alt="">
+                                            </el-popconfirm>
+                                        </span>
+                                    </div>
+                                    <div v-if="child.language == 'en-US' && $i18n.locale == 'en-US'" class="al">
+                                        {{child.guangGaoTypeName}} 
+                                        <span class="al" style="margin-left: 5px">
+                                            <el-popconfirm
+                                                title="確定刪除嗎？"
+                                                @confirm='deleType(i)'
+                                                >
+                                                <img style="margin-top: 5px;" class="cursor" slot="reference" src="@/assets/img/cha.png" alt="">
+                                            </el-popconfirm>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -121,7 +151,7 @@
                     <div class="sb al divider_message_title">
                         <div class="flex">
                             <div class="divider"></div>
-                            <div class="divider_text">醫療九龍店</div>
+                            <div class="divider_text">廣告電台文字Live</div>
                         </div>
                         <div class="flex">
                             <div :class="['arrow_m al']" @click="drawer2 = !drawer2"><img :class="[{ rotate: drawer2 }]" src="@/assets/img/pull_down.png" alt=""></div>
@@ -228,6 +258,7 @@
 </template>
 
 <script>
+import { addressAdd, addressDel, adTypeAdd } from '@/axios/request.js'
 export default {
     data () {
         return {
@@ -239,8 +270,6 @@ export default {
             drawer: false,
             drawer2: false,
             drawer1: false,
-            areaList: ['旺角','九龍', '黃大仙'],
-            typeList: ['美食','科技'],
             tableData:[
                 {live:'1',time: '221/06/06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
                 {live:'2',time: '221/06/06', content: 'AAC3M53Z-vphf4s',edit: true,url: ''},
@@ -285,6 +314,56 @@ export default {
     mounted () {
         // location.reload();
     },
+    created () {
+        this.$store.dispatch('getAddress',this) 
+        this.$store.dispatch('getTypeList',this)
+    },
+    watch: {
+		addressList (val) {
+			if (val) {
+				this.addressList = val
+			}
+		},
+        typeList (val) {
+			if (val) {
+				this.typeList = val
+			}
+		},
+        loading (val) {
+			if (val) {
+				this.loading = val
+			}
+		}
+	},
+	computed: {
+		addressList: {
+			get () { return this.$store.state.user.addressList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'addressList',
+					value: val
+				})
+			}
+		},
+        typeList:{
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		},
+        loading: {
+			get () { return this.$store.state.user.loading },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'loading',
+					value: val
+				})
+			}
+		}
+	},
     methods: {
         tableRowClassName ({ row,rowIndex }) {
             if (rowIndex%2 == 1) {
@@ -295,51 +374,134 @@ export default {
         back () {
             this.$router.back()
         },
-        addType (item) {
+        addType (type,Etype) {         //添加類型
             let that = this
             this.$refs.form.validate(flag => {
                 if (flag) {
-                    that.ruleForm.area = ''
-                    that.visible1 = false
-                    if (item) {
-                        that.typeList.push(item)
-                        let arr = new Set(that.typeList)
-                        that.typeList = Array.from(arr)
+                    let data = {
+                        guangGaoTypeDtoJson: [{
+                            "guangGaoTypeName": type,
+                            "id": 0,
+                            "language": "zh-TW"
+                        }, {
+                            "guangGaoTypeName": Etype,
+                            "id": 0,
+                            "language": "en-US"
+                        }]
                     }
+                    let str = JSON.stringify(data.guangGaoTypeDtoJson)
+                    const qs = require('qs')
+                    let data1 = qs.stringify({
+                        guangGaoTypeDtoJson: str
+                    })
+                    adTypeAdd(data1).then(res =>{
+                        if (res.data.rtnCode == 200) {
+                            that.$store.dispatch('getTypeList',that)
+                            that.ruleForm.type = ''
+                            that.ruleForm.Etype = ''
+                            that.visible1 = false
+                            that.$message({
+                                type: 'success',
+                                message: that.$t('lang.addSuccess')
+                            })
+                        } else {
+                            that.$message({
+                                type: 'error',
+                                message: that.$t('lang.addFail')
+                            })
+                        }
+                    }).catch(e => {
+                        that.$message({
+                            type: 'error',
+                            message: that.$t('lang.addFail')
+                        })
+                    })
                 }
             })
 		},
-		addArea (item) {
+		addArea (area, Einp) {               //添加地址
             let that = this
             this.$refs.form1.validate(flag => {
                 if (flag) {
-                    that.ruleForm.area = ''
-                    that.visible = false
-                    if (item) {
-                        that.areaList.push(item)
-                        let arr = new Set(that.areaList)
-                        that.areaList = Array.from(arr)
+                    let data = {
+                        addressDtoJson: {
+                            "addressLangaugeDtos": [{
+                                "addressName": area,
+                                "id": 0,
+                                "language": "zh-TW"
+                            }, {
+                                "addressName": Einp,
+                                "id": 0,
+                                "language": "en-US"
+                            }],
+                            "id": 0,
+                            "latitude": "",
+                            "longitude": "",
+                            "parentId": 0
+                        }
                     }
+                    let str = JSON.stringify(data.addressDtoJson)
+                    const qs = require('qs')
+                    let data1 = qs.stringify({
+                        addressDtoJson: str
+                    })
+                    addressAdd(data1).then(res =>{
+                        if (res.data.rtnCode == 200) {
+                            that.$store.dispatch('getAddress',that)
+                            that.ruleForm.area = ''
+                            that.ruleForm.Einp = ''
+                            that.visible = false
+                            that.$message({
+                                type: 'success',
+                                message: that.$t('lang.addSuccess')
+                            })
+                        } else {
+                            that.$message({
+                                type: 'error',
+                                message: that.$t('lang.addFail')
+                            })
+                        }
+                    }).catch(e => {
+                        that.$message({
+                            type: 'error',
+                            message: that.$t('lang.addFail')
+                        })
+                    })
                 }
             })
 		},
 		deleType (i) {
 			this.typeList.splice(i,1)
 		},
-		deleArea (i) {
-			this.areaList.splice(i,1)
+		deleArea (id) {                 //刪除地址
+            this.loading = true
+            let data = { addressId: id }
+            addressDel(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.$store.dispatch('getAddress', this)
+                    this.$message({
+                        type: 'success',
+                        message: this.$t('lang.delSuccess')
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: this.$t('lang.delFail')
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.delFail')
+                })
+            })
 		},
         getLiveLogo (e) {
             let url = URL.createObjectURL(e.target.files[0])
             this.url = url
         },
-        // deleLive (i) {
-        //     this.tableData.splice(i,1)
-        //     let arr = this.tableData
-        //     this.tableData = []
-        //     this.tableData = Array.from(arr)
-        //     // this.$forceUpdate()
-        // },
         deleteRow(index, rows) {
             rows.splice(index, 1);
         },
@@ -355,7 +517,6 @@ export default {
                     that.tableData.unshift({ time:time, content: content, url: url, live: '', edit: true })
                 }
             })
-            
         }
     },
 }
@@ -405,9 +566,8 @@ export default {
 		height: 36px;
 		padding: 0 15px;
 		white-space: nowrap;
-		@media screen and (max-width: 870px) {
-			margin-top: 5px;
-		}
+        font-size: 13px;
+		margin-top: 5px;
 	}
     .addCate {
         border: solid 1px rgb(206, 206, 206);

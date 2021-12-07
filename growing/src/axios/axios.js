@@ -1,15 +1,15 @@
 import axios from "axios"
 // window.baseURL = 'https://petavi.top/api'
-window.baseURL = '/api'
-// window.baseURL = 'http://192.168.9.27:9011/api'
+// window.baseURL = '/api'
+window.baseURL = 'http://192.168.9.27:9017'
 
 const service = axios.create({
     baseURL: window.baseURL
 })
 service.interceptors.request.use(config => {
-    if (!config.url.includes('register')) { 
-        // config.headers.token = localStorage.getItem("Token")
-        // config.headers.userId = localStorage.getItem("userId")
+    if (!config.url.includes('register') && !config.url.includes('/shop/add')) { 
+        config.headers.token = localStorage.getItem("compoundeyesToken")
+        config.headers.userId = localStorage.getItem("compoundeyesUserId")
     }
     
     return config

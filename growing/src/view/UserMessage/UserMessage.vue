@@ -170,6 +170,7 @@
         }
         .getVerify {
             width: 65%;
+            min-width: 107px;
             font-size: 12px;
             line-height: 30px !important;
             color: rgb(250, 20, 20);
@@ -181,7 +182,7 @@
     }
 </style>
 <template>
-    <div class="UserMessage noBar">
+    <div class="UserMessage noBar" v-loading='loading'>
         <div class="back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">個人中心
         </div>
@@ -199,14 +200,14 @@
                                 <input type="file" id="url" @change="getUrl" v-show="false">
                             </label>
                         </div>
-                        <div class="name bold">User Name</div>
+                        <div class="name bold tc">{{user.username}}</div>
                     </div>
                 </div>
                 <div class="message">
                     <div class="message_index">
                         <div class="message_title bold">電郵地址</div>
                         <div class="message_msg sb al">
-                            <div class="message_text">{{email}}</div>
+                            <div class="message_text">{{user.email}}</div>
                             <el-popover
                                 placement="bottom"
                                 trigger="manual"
@@ -218,13 +219,13 @@
                                     </div>
                                     <el-form :model="ruleForm" status-icon label-position='right' :rules="rules" ref="form" label-width="65px">
                                         <el-form-item label="電郵" style="margin-bottom: 0">
-                                            <div class="message_text">{{email}}</div>
+                                            <div class="message_text">{{user.email}}</div>
                                         </el-form-item>
                                         <el-form-item prop="veri" label="驗證碼">
                                             <div class="al">
                                                 <div class="verify al">
                                                     <input type="text" @keyup.enter="sure" v-model="ruleForm.veri" oninput="value=value.replace(/[^\d]/g,'')">
-                                                    <div class="getVerify cursor tc" @click="getVerify">點擊獲取驗證碼</div>
+                                                    <div class="getVerify cursor tc" @click="getVerify">點擊獲取驗證碼<span v-if="sixty != 0">({{sixty}})</span></div>
                                                 </div>
                                             </div>
                                         </el-form-item>
@@ -261,7 +262,7 @@
                     <div class="message_index">
                         <div class="message_title bold">聯繫電話</div>
                         <div class="message_msg sb al">
-                            <div class="message_text">+852 {{phone}}</div>
+                            <div class="message_text">+852 {{user.phone}}</div>
                             <el-popover
                                 placement="bottom"
                                 trigger="manual"
@@ -273,13 +274,13 @@
                                     </div>
                                     <el-form :model="ruleForm2" status-icon label-position='right' :rules="rules2" ref="form2" label-width="75px">
                                         <el-form-item label="電郵" style="margin-bottom: 0">
-                                            <div class="message_text">{{email}}</div>
+                                            <div class="message_text">{{user.email}}</div>
                                         </el-form-item>
                                         <el-form-item prop="veri" label="驗證碼">
                                             <div class="al">
                                                 <div class="verify al">
                                                     <input type="text" @keyup.enter="sure2" v-model="ruleForm2.veri" oninput="value=value.replace(/[^\d]/g,'')">
-                                                    <div class="getVerify cursor tc" @click="getVerify1">點擊獲取驗證碼</div>
+                                                    <div class="getVerify cursor tc" @click="getVerify">點擊獲取驗證碼<span v-if="sixty != 0">({{sixty}})</span></div>
                                                 </div>
                                             </div>
                                         </el-form-item>
@@ -328,13 +329,13 @@
                                     </div>
                                     <el-form :model="ruleForm6" status-icon label-position='right' :rules="rules6" ref="form4" label-width="75px">
                                         <el-form-item label="電郵" style="margin-bottom: 0">
-                                            <div class="message_text">{{email}}</div>
+                                            <div class="message_text">{{user.email}}</div>
                                         </el-form-item>
                                         <el-form-item prop="veri" label="驗證碼">
                                             <div class="al">
                                                 <div class="verify al">
                                                     <input type="text" @keyup.enter="sure4" v-model="ruleForm6.veri" oninput="value=value.replace(/[^\d]/g,'')">
-                                                    <div class="getVerify cursor tc" @click="getVerify2">點擊獲取驗證碼</div>
+                                                    <div class="getVerify cursor tc" @click="getVerify">點擊獲取驗證碼<span v-if="sixty != 0">({{sixty}})</span></div>
                                                 </div>
                                             </div>
                                         </el-form-item>
@@ -374,7 +375,7 @@
                     <div class="message_index">
                         <div class="message_title bold">賬戶啟用時間</div>
                         <div class="message_msg sb al">
-                            <div class="message_text">2021-11-05</div>
+                            <div class="message_text">{{user.createTime}}</div>
                         </div>
                     </div>
                 </div>
@@ -389,11 +390,11 @@
 </template>
 
 <script>
+import { generateCode, getUserById, verify, updateEmail, updatePhone, updatePwd, updateHead } from '@/axios/request.js'
 export default {
     data () {
         return {
             imgUrl: '',
-            email: 'wanderfull@gmail.com',
             phone: '12345678',
             password: '',
             visible: false,
@@ -457,14 +458,124 @@ export default {
                     { required:true, message:'請輸入驗證碼', trigger:"blur" }
                 ],
             },
+            loading: false,
+            user: {
+                company: "無",
+                createTime: "無",
+                email: "無",
+                id: 0,
+                phone: "無",
+                pwd: "無",
+                userHead: "",
+                userState: 0,
+                userType: 0,
+                username: "無",
+            },
+            sixty: 0,
+            time: null
         }
     },
+    created () {
+        this.getUser()
+    },
     methods: {
+        start () {
+            this.sixty = 60
+            let that = this
+            this.time=setInterval(function(){
+                that.sixty--
+                if (that.sixty == 0) {
+                    that.stop()
+                }
+            },1000)
+        },
+        stop () {
+            clearInterval(this.time)
+        },
+        getUser () {       //獲取賬戶信息
+            this.loading = true
+            let data = {
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            getUserById(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    let D = new Date(res.data.data.createTime)
+                    let T = D.toLocaleDateString()
+                    res.data.data.createTime = T.split('/').join('-')
+                    this.user = res.data.data
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: '登錄過期,請重新登錄'
+                    })
+                    this.$router.replace('/Login')
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '獲取信息失敗'
+                })
+                this.$router.replace('/Login')
+            })
+        },
         back () {
             this.$router.back()
         },
-        getVerify () {
-            this.ruleForm.veri = 324864  
+        getVerify () {             //獲取驗證碼
+            // this.ruleForm.veri = 324864  
+            this.start()
+            let data = {
+                email: this.user.email
+            }
+            generateCode(data).then(res => {
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: '發送成功，請注意查收郵箱'
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '發送失敗，請稍後重新發送'
+                    })
+                }
+            }).catch(e => {
+                this.$message({
+                    type: 'error',
+                    message: '發送失敗'
+                })
+            })
+        },
+        checkVerify (val,i) {      //校驗驗證碼
+            let that = this
+            let data = {
+                email: this.user.email,
+                code: val
+            }
+            verify(data).then(res => {
+                // console.log(res)
+                if (res.data.rtnCode == 200) {
+                    if (i == 1) {
+                        that.active = false
+                    } else if (i == 2) {
+                        that.active1 = false
+                    } else if (i == 3) {
+                        that.active2 = false
+                    }
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.$message({
+                    type: 'error',
+                    message: '驗證失敗'
+                })
+            })
         },
         getVerify1 () {
             this.ruleForm2.veri = 324864  
@@ -476,18 +587,21 @@ export default {
             let that = this
             this.$refs.form.validate(flag => {
                 if (flag) {
-                    that.active = false
+                    that.checkVerify(that.ruleForm.veri,1)
+                    // that.active = false
                 }
             })
         },
-        sure1 () {
+        sure1 () {    //確認修改郵箱按鈕
+            this.loading = true
             let that = this
             this.$refs.form1.validate(flag => {
                 if (flag) {
-                    that.visible = false
-                    that.active = true
-                    that.email = that.ruleForm1.newemail
-                    that.ruleForm1.newemail = ''
+                    that.updateEmail()
+                    // that.visible = false
+                    // that.active = true
+                    // that.email = that.ruleForm1.newemail
+                    // that.ruleForm1.newemail = ''
                 }
             })
         },
@@ -495,18 +609,21 @@ export default {
             let that = this
             this.$refs.form2.validate(flag => {
                 if (flag) {
-                    that.active1 = false
+                    that.checkVerify(that.ruleForm2.veri,2)
+                    // that.active1 = false
                 }
             })
         },
-        sure3 () {
+        sure3 () {  //確認修改電話按鈕
+            this.loading = true
             let that = this
             this.$refs.form3.validate(flag => {
                 if (flag) {
-                    that.active1 = true
-                    that.visible1 = false
-                    that.phone = that.ruleForm3.newphone
-                    that.ruleForm3.newphone = ''
+                    that.updatePhone()
+                    // that.active1 = true
+                    // that.visible1 = false
+                    // that.phone = that.ruleForm3.newphone
+                    // that.ruleForm3.newphone = ''
                 }
             })
         },
@@ -514,23 +631,129 @@ export default {
             let that = this
             this.$refs.form4.validate(flag => {
                 if (flag) {
-                    that.active2 = false
+                    that.checkVerify(that.ruleForm6.veri,3)
+                    // that.active2 = false
                 }
             })
         },
-        sure5 () {
+        sure5 () {   //確認修改密碼按鈕
+            this.loading = true
             let that = this
             this.$refs.form5.validate(flag => {
                 if (flag) {
-                    that.active2 = true
-                    that.visible2 = false
+                    that.updatePwd()
+                    // that.active2 = true
+                    // that.visible2 = false
                 }
             })
         },
-        getUrl (e) {
+        updateEmail () {       //修改郵箱
+            let that = this
+            let data = {
+                email: this.ruleForm1.newemail,
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            updateEmail(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.getUser()
+                    that.visible = false
+                    that.active = true
+                    that.email = that.ruleForm1.newemail
+                    that.ruleForm1.newemail = ''
+                    that.$message({
+                        type: 'success',
+                        message: '修改成功'
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: res.data.msg
+                    })
+                }
+                // console.log(res)
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '請求失敗'
+                })
+            })
+        },
+        updatePhone () {       //修改聯繫電話
+            let that = this
+            let data = {
+                phone: this.ruleForm3.newphone,
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            updatePhone(data).then(res => {
+                // console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.getUser()
+                    that.active1 = true
+                    that.visible1 = false
+                    that.phone = that.ruleForm3.newphone
+                    that.ruleForm3.newphone = ''
+                    that.$message({
+                        type: 'success',
+                        message: '修改成功'
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '請求失敗'
+                })
+            })
+        },
+        updatePwd () {         //修改密碼
+            let that = this
+            let data = {
+                pwd: this.ruleForm5.newPassword,
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            updatePwd(data).then(res => {
+                // console.log(res)
+                this.loading = false
+                if (nes.data.rtnCode == 200) {
+                    that.active2 = true
+                    that.visible2 = false
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '請求失敗'
+                })
+            })
+        },
+
+
+        getUrl (e) {            //上傳本地圖片
             let url = URL.createObjectURL(e.target.files[0])
             this.imgUrl = url
-        }
+        },
+        // updateHead () {         //修改頭像
+        //     let data = {
+        //         head: '',
+        //         userId: localStorage.getItem('compoundeyesUserId')
+        //     }
+        //     updateHead(data).then(res => {
+        //         sonsole.log(res)
+        //     })
+        // }
     }
 }
 </script>

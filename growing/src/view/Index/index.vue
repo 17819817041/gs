@@ -141,6 +141,7 @@
 </template>
 
 <script>
+
 export default {
     data () {
         return {
@@ -157,7 +158,8 @@ export default {
         },
         statistics () {
             this.$router.push('/Statistics')          //廣告統計
-        }
+        },
+        
     }
 }
 </script>

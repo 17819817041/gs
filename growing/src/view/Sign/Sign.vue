@@ -1,5 +1,5 @@
 <template>
-    <div class="Sign flex">
+    <div class="Sign flex" v-loading='loading'>
         <div class="Logo ju">
             <img src="@/assets/img/logo.png" alt="">
         </div>
@@ -38,40 +38,40 @@
                         <div class="input_form">
                             <div class="user_title">{{$t("lang.userId")}}</div>
                             <div class="user">
-                                <el-select v-model="value" class="width100" :placeholder="$t('lang.select')">
-                                    <el-option :label="$t('lang.store')" value="1"></el-option>
-                                    <el-option :label="$t('lang.advertisers')" value="2"></el-option>
+                                <el-select v-model="userType" class="width100" :placeholder="$t('lang.select')">
+                                    <el-option :label="$t('lang.store')" :value='2'></el-option>
+                                    <el-option :label="$t('lang.advertisers')" :value="1"></el-option>
                                 </el-select>
                             </div>
                         </div>
                         <div class="input_form pwd_inp">
                             <div class="user_title">{{$t("lang.name")}}</div>
                             <div class="user">
-                                <input type="text">
+                                <input type="text" v-model="userName">
                             </div>
                         </div>
                         <div class="input_form pwd_inp">
                             <div class="user_title">{{$t("lang.phone")}}</div>
                             <div class="user">
-                                <input type="text">
+                                <input type="text" v-model="phone">
                             </div>
                         </div>
                         <div class="input_form pwd_inp">
                             <div class="user_title">{{$t("lang.email")}}</div>
                             <div class="user">
-                                <input type="text">
+                                <input type="text" v-model="email" oninput="value=value.replace(^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$,'')">
                             </div>
                         </div>
                         <div class="input_form pwd_inp">
                             <div class="user_title">{{$t("lang.company")}}</div>
                             <div class="user">
-                                <input type="text">
+                                <input type="text" v-model="companyName">
                             </div>
                         </div>
                         <div class="input_form pwd_inp">
                             <div class="user_title">{{$t("lang.pwd")}}</div>
                             <div class="user">
-                                <input type="password">
+                                <input type="password" v-model="pwd">
                             </div>
                         </div>
                         <div class="sign_btn tc cursor" @click="sign">{{$t("lang.register")}}</div>
@@ -108,13 +108,20 @@
 </template>
 
 <script>
+import { signUp } from '@/axios/request.js'
 export default {
     data () {
         return {
             lists: [],
-            value: '',
             active1: true,
             active: false,
+            companyName: '',
+            email: '',
+            phone: '',
+            userName: '',
+            pwd: '',
+            userType: null,
+            loading: false
         }
     },
     mounted () {
@@ -123,7 +130,34 @@ export default {
     methods: {
         sign () {
             // this.active = false
-            this.$router.push('/Sign1')
+            this.loading = true
+            let data = {
+                companyName: this.companyName,
+                email: this.email,
+                phone: this.phone,
+                userName: this.userName,
+                pwd: this.pwd,
+                userType: this.userType
+            }
+            signUp(data).then(res => {
+                this.loading = false
+                 console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$router.push('/Sign1')
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '註冊失敗'
+                })
+            })
+            // this.$router.push('/Sign1')
         },
         zh () {
             localStorage.setItem('locale','zh-CN')
