@@ -1,5 +1,5 @@
 <template>
-    <div class="AdvertisingAdd">
+    <div class="AdvertisingAdd AdvertisingAdd2">
 		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
 		<div class="AdvertisingOperation_back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">Basic廣告計劃
@@ -21,10 +21,12 @@
 								<div class="flex br">
 									<div class="flex">
 										<el-select v-model="ruleForm.type" :placeholder="$t('lang.pldselecttype')">
-											<el-option :label="$t('lang.food')" :value="$t('lang.food')"></el-option>
-											<el-option :label="$t('lang.Technology')" :value="$t('lang.Technology')"></el-option>
-											<el-option :label="$t('lang.medical')" :value="$t('lang.medical')"></el-option>
-											<el-option :label="$t('lang.car')" :value="$t('lang.car')"></el-option>
+											<el-option v-for="(item,i) in getTypeList" :key="i"
+												:label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+												item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+												item.find( res => res.language == "en-US").guangGaoTypeName '
+												:value="item[0].id">
+											</el-option>
 										</el-select>
 										<div class="addCate al" @click="addType(ruleForm.type)">
 											{{$t("lang.addbtn")}}
@@ -129,14 +131,29 @@
 									</label>
 									<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
 										<div class="imageList_wrap">
-											<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
-											<div class="textarea_wrap_item_child ju al">
-												<img v-if="ruleForm.mediaType == 'image'" style="height: 100%;" :src="item.url" alt="">
-												<img v-else-if="ruleForm.mediaType == 'video'" style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+											<div class="deleImg radius cursor ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
+											<div class="textarea_wrap_item_child cursor ju al">
+												<img v-if="ruleForm.mediaType == 'image'"  @click="imgPreview(item.url)"
+												style="height: 100%;" :src="item.url" alt="">
+												<!-- <img v-else-if="ruleForm.mediaType == 'video'" style="height: 50%;" src="@/assets/img/video_file.png" alt=""> -->
+
+												<div class="video_outWrap" v-else-if="ruleForm.mediaType == 'video'">
+													<img class="img" src="@/assets/img/start.png" alt="">
+													<div class="videoImage ju al" id="output" ref="output"  
+													@click="previewVideo(item)">
+														
+													</div>
+													<video class="width100" id="video1" ref="video"
+														:controls="false">
+														<source :src="item.url" type="video/mp4">
+													</video>
+												</div>
 											</div>
 										</div>
 										<div class="imageList_name tc">{{item.name}}</div>
 										<div class="imageList_size tc">{{item.size}}</div>
+										<div class="imageList_long tc" v-if="ruleForm.mediaType == 'video'"
+										>時長：{{item.videoTime}}</div>
 									</div>
 								</div>
 								<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
@@ -201,13 +218,47 @@
 				</div>
 			</div>
 		</div>
+
+		<el-dialog
+			:visible.sync="showVideo"
+			width="90%"
+			@close='closeVideo'>
+			<video id="myVideo" class="video-js" :poster="Poster" v-if="videoWrap"
+				:controls="Controls">
+				<source :src="src" type="video/mp4">
+			</video>
+			<!-- <span slot="footer" class="dialog-footer">
+				<el-button type="primary" @click="closeVideo">确 定</el-button>
+			</span> -->
+		</el-dialog>
+
+		<el-image-viewer 
+		v-if="showViewer" 
+		:on-close="closeViewer" 
+		:url-list="[dimg]" />
+		<el-image-viewer v-if="showViewer1" :on-close="closeViewer1" :url-list="[dimg1]" />
     </div>
 </template>
 
 <script>
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 export default {
     data() {
         return {
+			showViewer: false, 
+			showViewer1: false, 
+
+			showVideo: false,
+			videoWrap: false,
+			videolong: false,
+			preload: 'auto',  //  建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
+            src:'',               //视频的路径
+            type: '',                //视频的类型
+            Controls: true,              //确定播放器是否具有用户可以与之交互的控件
+            Autoplay: '',              //是否自动播放
+            Poster: '',         
+
+
 			position: 'left-end',
 			visible: false,
 			drawer: false,
@@ -225,6 +276,7 @@ export default {
 				mediaType: '',
 				cmediaType: '',
 				inp: 60,
+				videoMinute: 0
             },
 			labelPosition: 'left',
             rules: {
@@ -330,11 +382,40 @@ export default {
 					}
                 }
             }
-        }
+        },
+		addressList (val) {
+			if (val) {
+				this.addressList = val
+			}
+		},
+        getTypeList (val) {
+			if (val) {
+				this.getTypeList = val
+			}
+		}
     },
 	computed: {
-        lang () { return this.$i18n.locale }
-    },
+		lang () { return this.$i18n.locale },
+		addressList: {           //地址列表
+			get () { return this.$store.state.user.addressList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'addressList',
+					value: val
+				})
+			}
+		},
+        getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		}
+	},
+	components: { ElImageViewer },
 	beforeMount() {
 		let that = this
         window.addEventListener('resize', (e) => {
@@ -343,9 +424,27 @@ export default {
 		this.fun()
     },
 	created () {
-		
+		this.$store.dispatch('getAddress',this) 
+        this.$store.dispatch('getTypeList',this)
 	},
     methods: {
+		closeVideo () {
+			this.showVideo = false
+			this.videoWrap = false
+		},
+		closeViewer1() {
+          this.showViewer1 = false
+        },
+		previewVideo (item) {
+			console.log(item.url)
+			this.src = item.url
+			this.showVideo = true
+			this.videoWrap = true
+		},
+		imgPreview (url) {
+			this.dimg1 = url
+			this.showViewer1 = true
+		},
 		fun () {
 			if (window.innerWidth <= 564) {
                 this.labelPosition = 'top'
@@ -436,7 +535,7 @@ export default {
 			if (this.ruleForm.mediaType) {
 				if (this.video) {
 					if (this.ruleForm.mediaType == 'video') {
-						if (e.target.files.length<=5 && this.imageList.length <= 5) {
+						if (e.target.files.length<=5 && this.imageList.length < 5) {
 							for(var ff=0;ff<e.target.files.length;ff++){
 								let file = e.target.files[ff].type.split('/')[0]
 								let fileSize = e.target.files[ff].size
@@ -454,30 +553,33 @@ export default {
 											size = s.toFixed(0) + 'KB'
 											// size = Math.ceil(files[ff].size/1000) + 'kb'
 										}
-										that.imageList.push({ url: fileurl, name: name, size: size })
+
 										let audioElement = new Audio(fileurl);
 										audioElement.addEventListener("loadedmetadata", function (_event) {
 											var time = Math.ceil(audioElement.duration)
-											if (null != time && "" != time) {
-												if (time > 60 && time < 60 * 60) {
-													time = parseInt(time / 60.0)
-												}
-												// else if (time >= 60 * 60 && time < 60 * 60 * 24) {
-												// 	time = parseInt(time / 3600.0) + "小时" + parseInt((parseFloat(time / 3600.0) -
-												// 	parseInt(time / 3600.0)) * 60) + "分钟" +
-												// 	parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
-												// 	parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60) + "秒";
-												// }
-												else {
-													// time = parseInt(time) + "秒";
-													time =	1;
-												}
+											var sTime = parseInt(time);// 秒
+											var mTime = 0;// 分
+											if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+												//获取分钟，除以60取整数，得到整数分钟
+												mTime = parseInt(sTime / 60);
+												//获取秒数，秒数取佘，得到整数秒数
+												sTime = parseInt(sTime % 60);
 											}
+											that.imageList.push({ 
+												url: fileurl, 
+												name: name, 
+												size: size, 
+												time: time, 
+												videoTime: mTime + '分' + sTime + '秒'
+											})
+											let index = that.imageList.length -1
+											setTimeout(() => {
+												that.initialize(index)
+											},200)
+											
 											// that.minute.push(Math.ceil(audioElement.duration))
 											that.minute.push(time)
 											that.$forceUpdate()
-											// that.ruleForm.inp = that.ruleForm.inp*1 +  Math.ceil(audioElement.duration)                   //时长为秒，小数，182.36   / 向上取整
-											// console.log(audioElement.duration)
 										});
 									} else {
 										this.$message({
@@ -488,12 +590,25 @@ export default {
 								} else {}
 							}
 							setTimeout(() => {
+								let that = this
 								this.$nextTick(() => {
-									this.ruleForm.inp = 0
-									for (let i=0;i<Array.from(this.minute).length;i++) {
-										this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
-										this.$forceUpdate()
+									let num = 0
+									for (let i=0;i<that.minute.length;i++) {
+										num += that.minute[i]
 									}
+									let time = num
+									var sTime = parseInt(time);// 秒
+									var mTime = 0;// 分
+									if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+										//获取分钟，除以60取整数，得到整数分钟
+										mTime = parseInt(sTime / 60);
+										//获取秒数，秒数取佘，得到整数秒数
+										sTime = parseInt(sTime % 60);
+									}
+									// console.log(sTime, mTime, mTime + '.' + sTime, Number(mTime + '.' + sTime))
+									time = Math.ceil(Number(mTime + '.' + sTime))
+									that.ruleForm.videoMinute = time
+									that.$forceUpdate()
 								})
 							},100)
 						} else {
@@ -548,14 +663,47 @@ export default {
 				})
 			}
 		},
+		initialize (ff) {
+			var scale = 0.8;
+			var output = this.$refs.output[ff]
+			var video = this.$refs.video[ff]
+			// console.log(ff)
+			video.addEventListener('loadeddata',this.captureImage(video,output,scale));
+		},
+		captureImage (video,output,scale) {
+			setTimeout(() => {
+				var canvas = document.createElement("canvas");
+				canvas.width = video.videoWidth * scale;
+				canvas.height = video.videoHeight * scale;
+				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+				var img = document.createElement("img");
+				img.src = canvas.toDataURL("image/png");
+				
+				// img.width = 400;
+				// img.height = 100;
+				output.appendChild(img);
+			},100)
+		},
 		deleImg (i) {
+			let that = this
 			if (this.ruleForm.mediaType == 'video') {
 				this.minute.splice(i,1)
-				this.ruleForm.inp = 0
-				for (let i=0;i<Array.from(this.minute).length;i++) {
-					this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
-					this.$forceUpdate()
+				let num = 0
+				for (let i=0;i<that.minute.length;i++) {
+					num += that.minute[i]
 				}
+				let time = num
+				var sTime = parseInt(time);// 秒
+				var mTime = 0;// 分
+				if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+					//获取分钟，除以60取整数，得到整数分钟
+					mTime = parseInt(sTime / 60);
+					//获取秒数，秒数取佘，得到整数秒数
+					sTime = parseInt(sTime % 60);
+				}
+				time = Math.ceil(Number(mTime + '.' + sTime))
+				that.ruleForm.videoMinute = time
+				this.$forceUpdate()
 				this.imageList.splice(i,1)
 			} else {
 				this.imageList.splice(i,1)
@@ -685,7 +833,7 @@ export default {
 	}
 	.textarea_wrap_item {
 		width: 100px;
-		height: 110px;
+		height: 140px;
 		margin: 5px;
 		position: relative;
 		.imageList_wrap {
@@ -699,7 +847,36 @@ export default {
 		}
 		@media screen and (max-width: 564px) {
 			width: 70px;
-			height: 70px;
+			height: 110px;
+		}
+	}
+	.video_outWrap {
+		height: 100%;
+		position: relative;
+		.img {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			z-index: 125;
+			transform: translate(-50%, -50%);
+			pointer-events: none;
+		}
+	}
+	.imageList_long {
+		max-width: 100px;
+		text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+		display: -webkit-box;
+		-webkit-line-clamp: 1;/*规定超过两行的部分截断*/
+		-webkit-box-orient: vertical;
+		overflow : hidden; 
+		word-break: break-all;/*在任何地方换行*/
+		font-size: 12px;
+		color: #A7A7A7;
+		line-height: 15px;
+		@media screen and (max-width: 564px) {
+			transform: scale(0.8);
+			width: 90px;
+			margin-left: -9.5px;
 		}
 	}
 	.imageList_name, .imageList_size {
@@ -729,6 +906,7 @@ export default {
 		right: -5px;
 		width: 20px;
 		height: 20px;
+		z-index: 22;
 		// opacity: 0.9;
 	}
 	.br1185 {

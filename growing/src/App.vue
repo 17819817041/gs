@@ -248,8 +248,20 @@ export default {
 		color: rgb(170, 170, 170);
 	}
 
-	.AdvertisingAdd1 .el-dialog, .AddStore .el-dialog, .AdvertisingAddPlus .el-dialog{
+	.AdvertisingAdd1 .el-dialog, .AddStore .el-dialog, .AdvertisingAddPlus .el-dialog,
+	.AdvertisingAdd2 .el-dialog, .AddStore .el-dialog, .AdvertisingAddPlus .el-dialog {
 		max-width: 800px;
+		max-height: 591px;
+		// height: 85% !important;
+		@media screen and (max-width: 1000px) and (max-height: 620px) {
+			height: 80%;
+		}
+	}
+	.AdvertisingAdd1 .el-dialog__wrapper .el-dialog__body, .AdAdmin .el-dialog__wrapper .el-dialog__body,
+	.AdvertisingAdd2 .el-dialog__wrapper .el-dialog__body, .AdAdmin .el-dialog__wrapper .el-dialog__body {
+		display: flex;
+		justify-content: center;
+		height: 82%;
 	}
 
 
@@ -347,6 +359,14 @@ export default {
 	.AddStore .el-form-item {
 		margin-bottom: 0;
 		padding: 20px 0;
+	}
+	.AddStore .el-dialog .el-radio {
+		margin-left: 0 !important;
+		margin-right: 5px !important;
+		margin-bottom: 7px;
+	}
+	.AddStore .el-dialog {
+		min-width: 300px !important;
 	}
 
 
@@ -579,7 +599,8 @@ export default {
 
 	.video-js {
 		width: 100% !important;
-		// height: 150px !important;
+		max-width: 750px;
+		height: 100%;
 	}
 
 

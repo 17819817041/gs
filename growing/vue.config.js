@@ -6,7 +6,7 @@ module.exports = {
 		hot:true,
         proxy: {
 			"api": {
-				// target: "https://petavi.top/api",
+				// target: "https://compoundeyes.hk",
 				target: "http",
 				ws: true,
 				changeOrigin: true,

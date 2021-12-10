@@ -149,8 +149,8 @@
                         @current-change="handleCurrentChange"
                         small
                         :pager-count="5"
-                        :current-page="tableData.length"
-                        :page-size="10"
+                        :current-page="goToPage"
+                        :page-size="pageSize"
                         layout=" jumper, prev, pager, next"
                         :total="tableData.length">
                     </el-pagination>
@@ -252,10 +252,13 @@
 </template>
 
 <script>
+import { getShopIncomeStatistics } from "@/axios/request.js"
 import * as echarts from 'echarts';
 export default {
     data () {
         return {
+            goToPage: 1,
+            pageSize: 5,
             value: '全部店鋪',
             value1: '',
             value3: '',
@@ -367,6 +370,8 @@ export default {
 			unh1 += 1
 			this.timeList.push(unh1 + ':00~' + uns1 + ':00')
 		}
+
+        // this.getShopIncomeStatistics()
     },
     mounted () {
         let that = this
@@ -419,6 +424,18 @@ export default {
             }
             return ''
         },
+        getShopIncomeStatistics () {
+            let data = {
+                date: '',
+                pageNum: this.goToPage,
+                pageSize: this.pageSize,
+                shopId: 1,
+                userId: localStorage.getItem('compoundeyseUserId')
+            }
+            getShopIncomeStatistics(data).then(res => {
+                console.log(res)
+            })
+        }
     },
 }
 </script>

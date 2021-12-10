@@ -20,6 +20,9 @@ export const lang = {
 	addFail: '添加失敗',
 	delSuccess: '刪除成功',
 	delFail: '刪除失敗',
+	examineSuccess: '審核通過',
+	editSuccess: '操作成功',
+	editError: '操作失敗',
 
 
 	addbtn: '添加',

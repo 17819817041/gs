@@ -1,11 +1,12 @@
 // import router from "@/router/router/router.js"
 import { Message } from 'element-ui';
-import { AddressList, typeList } from '@/axios/request.js'
+import { AddressList, typeList, incomePriceId } from '@/axios/request.js'
 export default {
     state: {
         loading: false,
         addressList: [],   //地址列表
         typeList: [],      //類型列表
+        incomePriceIdList: []
     },
     mutations: {
         setUser (state,data) {
@@ -52,6 +53,17 @@ export default {
                         type: 'error',
                         message: vm.$t('lang.typeLoadFail')
                     })
+                }
+            })
+        },
+        incomePriceId (store,data) {
+            incomePriceId().then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    store.commit('setUser', {
+						key: 'incomePriceIdList',
+						value: res.data.data
+					})
                 }
             })
         }

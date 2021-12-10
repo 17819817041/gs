@@ -4,10 +4,10 @@
 		<div class="AdvertisingOperation_back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">店鋪管理
         </div>
-		<div class="noBar" style="height: calc(100% - 11px);overflow: auto;padding-bottom: 30px;">
-			<div class="content mg bar">
+		<div class="noBar" style="height: calc(100% - 11px);overflow-y: auto;overflow-x:hidden;padding-bottom: 30px;">
+			<div class="content mg">
 				<!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div> -->
-				<div class="noBar" style="height: calc(100% - 27px); overflow:auto">
+				<div style="height: calc(100% - 27px)">
 					<div class="basicsMsg boxs theme" v-show="submit">
 					<div class="flex divider_message_title">
 						<div class="divider"></div>
@@ -22,11 +22,14 @@
 						<el-form-item label="店鋪所屬類型" prop="storeType">
 							<div class="al br">
 								<div class="al width30">
-									<el-select v-model="ruleForm.storeType" class="width100" placeholder="請選擇類型">
-										<el-option label="食品" value="食品"></el-option>
-										<el-option label="科技" value="科技"></el-option>
-										<el-option label="醫療" value="醫療"></el-option>
-										<el-option label="汽車" value="汽車"></el-option>
+									<el-select v-model="ruleForm.storeType" class="width100" placeholder="請選擇類型" 
+										@change="addType">
+										<el-option v-for="(item,i) in getTypeList" :key="i"
+											:label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+											item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+											item.find( res => res.language == "en-US").guangGaoTypeName '
+											:value="item[0].id">
+										</el-option>
 									</el-select>
 								</div>
 							</div>
@@ -97,8 +100,10 @@
 									<input type="file" id="img1" v-show="false" multiple="multiple" @change="changeFile1">
 								</label>
 								<div class="textarea_wrap_item float" v-for="(item,i) in imageList1" :key="i">
-									<div class="imageList_wrap">
-										<div class="deleImg radius ju al" @click.stop="deleImg1(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
+									<div class="imageList_wrap cursor">
+										<div class="deleImg radius ju al" @click.stop="deleImg1(i)">
+											<img style="heihgt: 100%;" src="@/assets/img/cha.png" alt="">
+										</div>
 										<div class="textarea_wrap_item_child ju al"  @click="imgPreview(item.url)">
 											<img style="height: 100%;" :src="item.url" alt="">
 										</div>
@@ -189,7 +194,7 @@
 							<div class="al">
 								<div class="al inp_time">
 										<!-- <input type="text" class="tc"> -->
-									<el-input-number v-model="ruleForm.inp" :step="1" size="small" 
+									<el-input-number v-model="ruleForm.videoMinute" :step="1" size="small" 
 									:min="1" :max="5" label="描述文字"></el-input-number>
 								</div>
 								<div>{{$t('lang.minute')}}</div>
@@ -205,12 +210,24 @@
 								</label>
 								<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
 									<div class="imageList_wrap">
-										<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
-										<div class="textarea_wrap_item_child ju al">
+										<div class="deleImg radius cursor ju al" @click.stop="deleImg(i)">
+											<img style="heihgt: 100%;" src="@/assets/img/cha.png" alt="">
+										</div>
+										<div class="textarea_wrap_item_child ju al cursor">
 											<img v-if="ruleForm.mediaType == 'image'"  @click="imgPreview(item.url)"
 											style="height: 100%;" :src="item.url" alt="">
-											<img v-else-if="ruleForm.mediaType == 'video'" @click="previewVideo(item)"
-											style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+
+											<div class="video_outWrap" v-else-if="ruleForm.mediaType == 'video'">
+												<img class="img" src="@/assets/img/start.png" alt="">
+												<div class="videoImage ju al" id="output" ref="output"  
+												@click="previewVideo(item)">
+													
+												</div>
+												<video class="width100" id="video1" ref="video"
+													:controls="false">
+													<source :src="item.url" type="video/mp4">
+												</video>
+											</div>
 										</div>
 									</div>
 									<div class="imageList_name tc">{{item.name}}</div>
@@ -289,6 +306,7 @@ export default {
                 mediaType: '',
                 cmediaType: '',
                 inp: 1,
+				videoMinute: 0,
 				street: '',
                 ratio: '',
                 date: '',
@@ -344,7 +362,11 @@ export default {
             minute: [],
 			dimg1: '',
 			map: null,
-			marker: null
+			marker: null,
+
+
+
+			storeTypeList: [],
         };
     },
 	beforeMount () {
@@ -357,6 +379,66 @@ export default {
     mounted () {
         this.initMap1(22.6,114.1,1)
     },
+	watch: {
+		addressList (val) {
+			if (val) {
+				this.addressList = val
+			}
+		},
+        getTypeList (val) {
+			if (val) {
+				this.getTypeList = val
+			}
+		},
+        loading (val) {
+			if (val) {
+				this.loading = val
+			}
+		},
+		incomePriceIdList (val) {
+			if (val) {
+				this.incomePriceIdList = val
+			}
+		},
+	},
+	computed: {
+		addressList: {           //地址列表
+			get () { return this.$store.state.user.addressList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'addressList',
+					value: val
+				})
+			}
+		},
+        getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		},
+        loading: {
+			get () { return this.$store.state.user.loading },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'loading',
+					value: val
+				})
+			}
+		},
+		incomePriceIdList:{             //期望收入
+			get () { return this.$store.state.user.incomePriceIdList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'incomePriceIdList',
+					value: val
+				})
+			}
+		},
+	},
 	components: { ElImageViewer },
     methods: {
         fun () {
@@ -561,6 +643,14 @@ export default {
 				this.typeList = Array.from(arr)
 			}
 		},
+		addType (item) {
+			// if (item) {
+				this.storeTypeList = []
+				this.storeTypeList.push(item)
+				// let arr = new Set(this.storeTypeList)
+				// this.storeTypeList = Array.from(arr)
+			// }
+		},
 		addArea (item) {
 			this.areaList.push(item)
 		},
@@ -586,7 +676,7 @@ export default {
 			if (this.ruleForm.mediaType) {
 				if (this.video) {
 					if (this.ruleForm.mediaType == 'video') {
-						if (e.target.files.length<=5 && this.imageList.length <= 5) {
+						if (e.target.files.length<=5 && this.imageList.length < 5) {
 							for(var ff=0;ff<e.target.files.length;ff++){
 								let file = e.target.files[ff].type.split('/')[0]
 								let fileSize = e.target.files[ff].size
@@ -604,30 +694,33 @@ export default {
 											size = s.toFixed(0) + 'KB'
 											// size = Math.ceil(files[ff].size/1000) + 'kb'
 										}
-										that.imageList.push({ url: fileurl, name: name, size: size })
+
 										let audioElement = new Audio(fileurl);
 										audioElement.addEventListener("loadedmetadata", function (_event) {
 											var time = Math.ceil(audioElement.duration)
-											if (null != time && "" != time) {
-												if (time > 60 && time < 60 * 60) {
-													time = parseInt(time / 60.0)
-												}
-												// else if (time >= 60 * 60 && time < 60 * 60 * 24) {
-												// 	time = parseInt(time / 3600.0) + "小时" + parseInt((parseFloat(time / 3600.0) -
-												// 	parseInt(time / 3600.0)) * 60) + "分钟" +
-												// 	parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
-												// 	parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60) + "秒";
-												// }
-												else {
-													// time = parseInt(time) + "秒";
-													time =	1;
-												}
+											var sTime = parseInt(time);// 秒
+											var mTime = 0;// 分
+											if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+												//获取分钟，除以60取整数，得到整数分钟
+												mTime = parseInt(sTime / 60);
+												//获取秒数，秒数取佘，得到整数秒数
+												sTime = parseInt(sTime % 60);
 											}
+											that.imageList.push({ 
+												url: fileurl, 
+												name: name, 
+												size: size, 
+												time: time, 
+												videoTime: mTime + '分' + sTime + '秒'
+											})
+											let index = that.imageList.length -1
+											setTimeout(() => {
+												that.initialize(index)
+											},200)
+											
 											// that.minute.push(Math.ceil(audioElement.duration))
 											that.minute.push(time)
 											that.$forceUpdate()
-											// that.ruleForm.inp = that.ruleForm.inp*1 +  Math.ceil(audioElement.duration)                   //时长为秒，小数，182.36   / 向上取整
-											// console.log(audioElement.duration)
 										});
 									} else {
 										this.$message({
@@ -638,12 +731,25 @@ export default {
 								} else {}
 							}
 							setTimeout(() => {
+								let that = this
 								this.$nextTick(() => {
-									this.ruleForm.inp = 0
-									for (let i=0;i<Array.from(this.minute).length;i++) {
-										this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
-										this.$forceUpdate()
+									let num = 0
+									for (let i=0;i<that.minute.length;i++) {
+										num += that.minute[i]
 									}
+									let time = num
+									var sTime = parseInt(time);// 秒
+									var mTime = 0;// 分
+									if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+										//获取分钟，除以60取整数，得到整数分钟
+										mTime = parseInt(sTime / 60);
+										//获取秒数，秒数取佘，得到整数秒数
+										sTime = parseInt(sTime % 60);
+									}
+									// console.log(sTime, mTime, mTime + '.' + sTime, Number(mTime + '.' + sTime))
+									time = Math.ceil(Number(mTime + '.' + sTime))
+									that.ruleForm.videoMinute = time
+									that.$forceUpdate()
 								})
 							},100)
 						} else {
@@ -741,13 +847,25 @@ export default {
 			}
 		},
 		deleImg (i) {
+			let that = this
 			if (this.ruleForm.mediaType == 'video') {
 				this.minute.splice(i,1)
-				this.ruleForm.inp = 0
-				for (let i=0;i<Array.from(this.minute).length;i++) {
-					this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
-					this.$forceUpdate()
+				let num = 0
+				for (let i=0;i<that.minute.length;i++) {
+					num += that.minute[i]
 				}
+				let time = num
+				var sTime = parseInt(time);// 秒
+				var mTime = 0;// 分
+				if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+					//获取分钟，除以60取整数，得到整数分钟
+					mTime = parseInt(sTime / 60);
+					//获取秒数，秒数取佘，得到整数秒数
+					sTime = parseInt(sTime % 60);
+				}
+				time = Math.ceil(Number(mTime + '.' + sTime))
+				that.ruleForm.videoMinute = time
+				this.$forceUpdate()
 				this.imageList.splice(i,1)
 			} else {
 				this.imageList.splice(i,1)
@@ -766,12 +884,45 @@ export default {
 				this.imageList1.splice(i,1)
 			}
 		},
+		initialize (ff) {
+			var scale = 0.8;
+			var output = this.$refs.output[ff]
+			var video = this.$refs.video[ff]
+			// console.log(ff)
+			video.addEventListener('loadeddata',this.captureImage(video,output,scale));
+		},
+		captureImage (video,output,scale) {
+			setTimeout(() => {
+				var canvas = document.createElement("canvas");
+				canvas.width = video.videoWidth * scale;
+				canvas.height = video.videoHeight * scale;
+				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+				var img = document.createElement("img");
+				img.src = canvas.toDataURL("image/png");
+				
+				// img.width = 400;
+				// img.height = 100;
+				output.appendChild(img);
+			},100)
+		}
     }
 }
 </script>
 
 <style lang='less' scoped>
     @import "@/less/style.less";
+	.video_outWrap {
+		height: 100%;
+		position: relative;
+		.img {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			z-index: 125;
+			transform: translate(-50%, -50%);
+			pointer-events: none;
+		}
+	}
 	.AdvertisingOperation_back {
         width: 98%;
         font-size: 20px;
@@ -811,7 +962,7 @@ export default {
         width: 85%;
         // height: calc(100% - 11px);
         padding: 0px 20px;
-        overflow: auto;
+        // overflow: auto;
 		margin-top: 15px;
 		@media screen and (max-width: 564px) {
 			padding: 0px 10px;
@@ -856,17 +1007,38 @@ export default {
     }
     .textarea_wrap_item {
 		width: 100px;
-		height: 110px;
+		height: 140px;
 		margin: 5px;
 		position: relative;
 		.imageList_wrap {
 			border: solid 1px rgb(230, 230, 230);
 			width: 100px;
 			height: 100px;
-            @media screen and (max-width: 564px) {
-                width: 70px;
-                height: 70px;
-            }
+			@media screen and (max-width: 564px) {
+				width: 70px;
+				height: 70px;
+			}
+		}
+		@media screen and (max-width: 564px) {
+			width: 70px;
+			height: 110px;
+		}
+	}
+	.imageList_long {
+		max-width: 100px;
+		text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+		display: -webkit-box;
+		-webkit-line-clamp: 1;/*规定超过两行的部分截断*/
+		-webkit-box-orient: vertical;
+		overflow : hidden; 
+		word-break: break-all;/*在任何地方换行*/
+		font-size: 12px;
+		color: #A7A7A7;
+		line-height: 15px;
+		@media screen and (max-width: 564px) {
+			transform: scale(0.8);
+			width: 90px;
+			margin-left: -9.5px;
 		}
 	}
     .imageList_name, .imageList_size {
@@ -890,14 +1062,15 @@ export default {
         overflow: hidden;
     }
     .deleImg {
-        background: rgb(224, 224, 224);
-        position: absolute;
-        top: -5px;
-        right: -5px;
-        width: 20px;
-        height: 20px;
-        // opacity: 0.9;
-    }
+		background: rgb(224, 224, 224);
+		position: absolute;
+		top: -5px;
+		right: -5px;
+		width: 20px;
+		height: 20px;
+		z-index: 22;
+		// opacity: 0.9;
+	}
 	.addImg {
 		border: dashed 1px rgb(201, 201, 201);
 		width: 100px;

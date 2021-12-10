@@ -75,6 +75,9 @@
     .th_color {
         color: #7868C1;
     }
+    .red {
+        color: rgb(255, 10, 10);
+    }
     .cuditImg {
         width: 30px;
         height: 30px;
@@ -162,7 +165,7 @@
     }
 </style>
 <template>
-    <div class="AuditList">
+    <div class="AuditList" v-loading='loading'>
         <div class="back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">審核申請列表
         </div>
@@ -211,10 +214,12 @@
                             店鋪類型
                             <div class="searchInp mg">
                                 <el-select class="width100" style="height: 28px;" v-model="type" placeholder="請選擇類型">
-									<el-option label="食品" value="食品"></el-option>
-									<el-option label="科技" value="科技"></el-option>
-									<el-option label="醫療" value="醫療"></el-option>
-									<el-option label="汽車" value="汽車"></el-option>
+									<el-option v-for="(item,i) in getTypeList" :key="i"
+                                        :label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+                                        item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+                                        item.find( res => res.language == "en-US").guangGaoTypeName '
+                                        :value="item[0].id">
+                                    </el-option>
 								</el-select>
                             </div>
                         </template>
@@ -228,14 +233,17 @@
                             店鋪區域
                             <div class="searchInp mg">
                                 <el-select class="width100" style="height: 28px;" v-model="area" placeholder="請選擇類型">
-									<el-option label="九龍" value="九龍"></el-option>
-									<el-option label="旺角" value="旺角"></el-option>
-									<el-option label="中環" value="中環"></el-option>
+									<el-option v-for="(item,i) in addressList" :key="i"
+                                        :label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+                                        item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+                                        item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+                                        :value="item.id">
+                                    </el-option>
 								</el-select>
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column
+                    <!-- <el-table-column
                         prop="d_ratio"
                         sortable
                         label="接收外來廣告比例"
@@ -246,7 +254,7 @@
                                 {{scope.row.d_ratio}}%
                             </div>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                     <el-table-column
                         prop="d_time"
                         sortable
@@ -255,9 +263,10 @@
                         >
                         <template slot-scope="scope">
                             <div class="tc th_color">
-                                <div class="th_color tc" v-show="scope.row.d_time.busy">{{scope.row.d_time.busy}}</div>
+                                <!-- <div class="th_color tc" v-show="scope.row.d_time.busy">{{scope.row.d_time.busy}}</div>
                                 <div class="th_color tc" v-show="scope.row.d_time.unbusy">{{scope.row.d_time.unbusy}}</div>
-                                <div class="th_color tc" v-show="scope.row.d_time.busy == '' && scope.row.d_time.unbusy == '' ">無</div>
+                                <div class="th_color tc" v-show="scope.row.d_time.busy == '' && scope.row.d_time.unbusy == '' ">無</div> -->
+                                <div class="th_color tc" v-show="scope.row.d_time">{{scope.row.d_time}}</div>
                             </div>
                         </template>
                     </el-table-column>
@@ -278,8 +287,9 @@
                         >
                         <template slot-scope="scope">
                             <div class="tc">
-                                <span class="green" v-if="scope.row.d_state == 1">通過</span>
-                                <span class="th_color" v-else-if="scope.row.d_state == 2">待審核</span>
+                                <span class="green" v-if="scope.row.d_state == 2">通過</span>
+                                <span class="th_color" v-else-if="scope.row.d_state == 1">待審核</span>
+                                <span class="red" v-else-if="scope.row.d_state == 3">不通過</span>
                             </div>
                         </template>
                     </el-table-column>
@@ -300,10 +310,12 @@
                         label="操作"
                         min-width="130"
                         >
-                        <template>
-                            <div class="tc" style="font-size: 12px;" @click="dialogVisible = true">
-                                <div class="ju al"><img class="cuditImg" src="@/assets/img/audit.png" alt=""></div>
-                                <div class="tc">審核操作</div>
+                        <template slot-scope="scope">
+                            <div class="tc ju" style="font-size: 12px;">
+                                <div class="cursor" @click="storeExamine(scope.row.id,scope.row.shopId)">
+                                    <div class="ju al"><img class="cuditImg" src="@/assets/img/audit.png" alt=""></div>
+                                    <div class="tc">審核操作</div>
+                                </div>
                             </div>
                         </template>
                     </el-table-column>
@@ -321,6 +333,7 @@
                     </el-pagination>
                 </div>
             </div>
+            <!-- 廣告 -->
             <div class="AuditList_table" v-else>
                 <el-table :row-class-name="tableRowClassName"
                     :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
@@ -354,10 +367,12 @@
                             廣告投放類型
                             <div class="searchInp mg">
                                 <el-select class="width100" style="height: 28px;" v-model="d_type" placeholder="請選擇類型">
-									<el-option label="食品" value="食品"></el-option>
-									<el-option label="科技" value="科技"></el-option>
-									<el-option label="醫療" value="醫療"></el-option>
-									<el-option label="汽車" value="汽車"></el-option>
+									<el-option v-for="(item,i) in getTypeList" :key="i"
+                                        :label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+                                        item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+                                        item.find( res => res.language == "en-US").guangGaoTypeName '
+                                        :value="item[0].id">
+                                    </el-option>
 								</el-select>
                             </div>
                         </template>
@@ -371,9 +386,12 @@
                             廣告投放區域
                             <div class="searchInp mg">
                                 <el-select class="width100" style="height: 28px;" v-model="d_area" placeholder="請選擇類型">
-									<el-option label="九龍" value="九龍"></el-option>
-									<el-option label="旺角" value="旺角"></el-option>
-									<el-option label="中環" value="中環"></el-option>
+									<el-option v-for="(item,i) in addressList" :key="i"
+                                        :label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+                                        item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+                                        item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+                                        :value="item.id">
+                                    </el-option>
 								</el-select>
                             </div>
                         </template>
@@ -418,7 +436,8 @@
                         min-width="105"
                         >
                         <template>
-                            <div class="ju al"><img class="planEdit cursor" @click="Gdetail" src="@/assets/img/planEdit.png" alt=""> </div>
+                            <div class="ju al"><img class="planEdit cursor" @click="Gdetail" 
+                            src="@/assets/img/planEdit.png" alt=""> </div>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -429,8 +448,9 @@
                         >
                         <template slot-scope="scope">
                             <div class="tc">
-                                <span class="green" v-if="scope.row.state == 1">通過</span>
-                                <span class="th_color" v-else-if="scope.row.state == 2">待審核</span>
+                                <span class="green" v-if="scope.row.state == 2">通過</span>
+                                <span class="th_color" v-else-if="scope.row.state == 1">待審核</span>
+                                <span class="red" v-else-if="scope.row.state == 3">不通過</span>
                             </div>
                         </template>
                     </el-table-column>
@@ -451,8 +471,9 @@
                         label="店鋪詳細計劃"
                         min-width="130"
                         >
-                        <template>
-                            <div class="tc" style="font-size: 12px;" @click="dialogVisible = true">
+                        <template slot-scope="scope">
+                            <div class="tc" style="font-size: 12px;" 
+                            @click="adExamine(scope.row.id,scope.row.guangGaoId)">
                                 <div class="ju al"><img class="cuditImg" src="@/assets/img/audit.png" alt=""></div>
                                 <div class="tc">審核操作</div>
                             </div>
@@ -473,7 +494,8 @@
                 </div>
             </div>
         </div>
-        <el-dialog
+        <!-- 廣告商 -->
+        <el-dialog 
             :visible.sync="dialogVisible"
             width="30%">
             <div class="flex" style="height: 100%">
@@ -482,11 +504,34 @@
                     <div class="ju Logo"><img src="@/assets/img/logo.png" alt=""></div>
                     <div class="gray_text tc"> — 請詳細審閱內容後，選擇審核結果 — </div>
                     <div class="result sb mg">
-                        <div class="no_wrap">
+                        <div class="no_wrap cursor" @click="examineError">
                             <div class="no ju al"><img style="height: 70%;" src="@/assets/img/no.png" alt=""></div>
                             <div class="no_text tc">審核不通過</div>
                         </div>
-                        <div class="yes_wrap">
+                        <div class="yes_wrap cursor" @click="examineAdopt">
+                            <div class="yes ju al"><img style="height: 70%;" src="@/assets/img/yes.png" alt=""></div>
+                            <div class="yes_text tc">審核通過</div>
+                        </div>
+                    </div>
+                    <div class="plat_f tc">Compoundeyes提供技術支持</div>
+                </div>
+            </div>
+        </el-dialog>
+        <!-- 店鋪 -->
+        <el-dialog
+            :visible.sync="dialogVisible1"
+            width="30%">
+            <div class="flex" style="height: 100%">
+                <div class="backimg"><img style="height: 100%;" src="@/assets/img/backimg.png" alt=""></div>
+                <div class="auditBtn mg">
+                    <div class="ju Logo"><img src="@/assets/img/logo.png" alt=""></div>
+                    <div class="gray_text tc"> — 請詳細審閱內容後，選擇審核結果 — </div>
+                    <div class="result sb mg">
+                        <div class="no_wrap cursor" @click="shopExamineError">
+                            <div class="no ju al"><img style="height: 70%;" src="@/assets/img/no.png" alt=""></div>
+                            <div class="no_text tc">審核不通過</div>
+                        </div>
+                        <div class="yes_wrap cursor" @click="shopExamineAdopt">
                             <div class="yes ju al"><img style="height: 70%;" src="@/assets/img/yes.png" alt=""></div>
                             <div class="yes_text tc">審核通過</div>
                         </div>
@@ -499,11 +544,13 @@
 </template>
 
 <script>
+import { shopExamine, examine, examineAdopt, examineError, shopExamineAdopt, shopExamineError } from "@/axios/request.js"
 export default {
     data () {
         return {
             tableHeight:0,
             dialogVisible: false,
+            dialogVisible1: false,
             type: '',
             d_type: '',
             area: '',
@@ -514,17 +561,65 @@ export default {
             tableData:[
                 {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 1, 
                 d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
-                {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 1, 
-                d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
-                {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 1, 
-                d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
             ],
             tableData1:[
                 {name:'九龍店',type: '美食',area: '九龍', time: '2021-06-06 ~ 2021-10-26', total: '6000',videoLong:'5',gDetail: '', state: 1, 
                 auditTime: '2021-06-06 19:00', storePlanDetail: ''},
             ],
+
+            pageNum: 0,
+            pageSize: 10,
+            loading: false,
+
+            pageNum1: 0,
+            pageSize1: 10,
+
+            id: 0,
+            adId: 0,
+
+            id1: 0,
+            shopId: 0
+            
         }
     },
+    created () {
+        this.$store.dispatch('getAddress',this) 
+        this.$store.dispatch('getTypeList',this)
+        this.examine()
+        this.shopExamine()
+    },
+    watch: {
+		addressList (val) {
+			if (val) {
+				this.addressList = val
+			}
+		},
+        getTypeList (val) {
+			if (val) {
+				this.getTypeList = val
+			}
+		}
+	},
+	computed: {
+		addressList: {           //地址列表
+			get () { return this.$store.state.user.addressList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'addressList',
+					value: val
+				})
+			}
+		},
+        getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		}
+	},
     mounted () {
         let that = this
         window.addEventListener("resize",function(){
@@ -533,6 +628,225 @@ export default {
         this.resi()
     },
     methods: {
+        shopExamine () {  // 获取店铺审核列表
+            this.tableData = []
+            this.loading = true
+            let data = {
+                pageNum: this.pageNum,
+                pageSize: this.pageSize
+            }
+            shopExamine(data).then(res => {
+                this.loading = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.storeList = res.data.data.pageT
+                    res.data.data.pageT.forEach(item => {
+                        this.tableData.push({
+                            d_name:item.shopName,
+                            d_type: item.typeName,
+                            d_area: item.addressNames, 
+                            d_ratio: '80', 
+                            // d_time: {
+                            //     busy: '繁忙時段(9am - 9pm)', 
+                            //     unbusy: '非繁忙時段(9pm - 9am)'
+                            // },
+                            d_time: item.timeInterval,
+                            d_detail: '', 
+                            d_state: item.examineState, 
+                            d_auditTime: item.createTime.split(' ')[0], 
+                            d_storePlanDetail: ''
+                        })
+                    })
+                } else {
+                    this.loading = false
+                    this.$message({
+                        type: 'warning',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.loading')
+                })
+            })
+        },
+        examine () {      //获取广告商审核列表
+            this.tableData1 = []
+            this.loading = true
+            let data = {
+                pageNum: this.pageNum1,
+                pageSize: this.pageSize1
+            }
+            examine(data).then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    res.data.data.pageT.forEach(item => {
+                        this.tableData1.push({
+                            name:item.guangGaoName,
+                            type: item.typeName,
+                            area: item.addressNames, 
+                            time: item.startTime.split(' ')[0] + '~' + item.endTime.split(' ')[0], 
+                            total: '6000',
+                            videoLong: item['length'],
+                            gDetail: '', 
+                            state: item.examineState, 
+                            id: item.id,
+                            adId: item.guangGaoId,
+                            auditTime: item.createTime.split(':')[0] + item.createTime.split(':')[1], 
+                            storePlanDetail: ''
+                        })
+                    })
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        messsage: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.$message({
+                    type: 'error',
+                    messsage: this.$t('lang.loading')
+                })
+            })
+        },
+
+
+        adExamine (id,adId) {
+            this.dialogVisible = true
+            this.id = id
+            this.adId = adId
+        },
+        examineAdopt () {  //廣告审核通过
+            this.loading = true
+            this.dialogVisible = false
+            let data = {
+                id: this.id,
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            examineAdopt(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: this.$t('lang.editSuccess')
+                    })
+                    this.examine()
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.editError')
+                })
+            })
+        },
+        examineError () {   // 廣告審核不通過
+            this.loading = true
+            this.dialogVisible = false
+            let data = {
+                id: this.id,
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            examineError(data).then(res => {
+                
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: this.$t('lang.editSuccess')
+                    })
+                    this.examine()
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.editError')
+                })
+            })
+        },
+
+
+
+        storeExamine(id,shopId) {
+            this.id1 = id
+            this.shopId = shopId
+            this.dialogVisible1 = true
+        },
+        shopExamineAdopt () {    //店鋪審核通過
+            this.loading = true
+            this.dialogVisible1 = false
+            let data = {
+                shopExamineId: this.id1
+            }
+            shopExamineAdopt(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: this.$t('lang.editSuccess')
+                    })
+                    this.shopExamine()
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.editError')
+                })
+            })
+        },
+        shopExamineError () {   //店鋪審核不通過
+            this.loading = true
+            this.dialogVisible1 = false
+            let data = {
+                shopExamineId: this.id1,
+                msg: ''
+            }
+            shopExamineError(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: this.$t('lang.editSuccess')
+                    })
+                    this.shopExamine()
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.editError')
+                })
+            })
+        },
+
+
+
+
         resi () {
             let that = this
             this.$nextTick(() => {

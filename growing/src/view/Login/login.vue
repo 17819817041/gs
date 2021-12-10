@@ -88,6 +88,7 @@ export default {
 
             // userName: '',
             // password: '',
+            
             loading: false,
         }
     },
@@ -96,47 +97,55 @@ export default {
     },
     methods: {
         login () {
-            this.loading = true
-            let data = {
-                userName: this.userName,
-                pwd: this.password
-            }
-            Login(data).then(res => {
-                console.log(res)
-                this.loading = false
-                if (res.data.rtnCode == 200) {
-                    localStorage.setItem('compoundeyesToken',res.data.data.token)
-                    localStorage.setItem('compoundeyesUserId',res.data.data.userId)
-                    if (res.data.data.mainUrl == '1') {
-                        this.$router.push('/Index')
-                        localStorage.setItem('plat','廣告商')
-                        localStorage.setItem('platform',1)
-                    } else if (res.data.data.mainUrl == '2') {
-                        localStorage.setItem('plat','店鋪')
-                        this.$router.push('/PlatIndex')
-                        localStorage.setItem('platform',2)
-                    } else if (res.data.data.mainUrl == '3') {
-                        localStorage.setItem('plat','廣告後台')
-                        this.$router.push('/AdminIndex')
-                        localStorage.setItem('platform',3)
-                    } else {
-                        localStorage.setItem('plat','廣告商')
-                        this.$router.push('/Index')
-                        localStorage.setItem('platform',1)
-                    }
-                } else {
-                    this.$message({
-                        type: 'warning',
-                        message: res.data.msg
-                    })
-                }
-            }).catch(e => {
+            if (this.userName == '' || this.password == '') {
                 this.$message({
-                    type: 'error',
-                    message: '登錄失敗!'
+                    type: 'warning',
+                    message: '用戶名或密碼不能為空'
                 })
-                this.loading = false
-            })
+            } else {
+                this.loading = true
+                let data = {
+                    userName: this.userName,
+                    pwd: this.password
+                }
+                Login(data).then(res => {
+                    console.log(res)
+                    this.loading = false
+                    if (res.data.rtnCode == 200) {
+                        localStorage.setItem('compoundeyesToken',res.data.data.token)
+                        localStorage.setItem('compoundeyesUserId',res.data.data.userId)
+                        if (res.data.data.mainUrl == '1') {
+                            this.$router.push('/Index')
+                            localStorage.setItem('plat','廣告商')
+                            localStorage.setItem('platform',1)
+                        } else if (res.data.data.mainUrl == '2') {
+                            localStorage.setItem('plat','店鋪')
+                            this.$router.push('/PlatIndex')
+                            localStorage.setItem('platform',2)
+                        } else if (res.data.data.mainUrl == '3') {
+                            localStorage.setItem('plat','廣告後台')
+                            this.$router.push('/AdminIndex')
+                            localStorage.setItem('platform',3)
+                        } else {
+                            localStorage.setItem('plat','廣告商')
+                            this.$router.push('/Index')
+                            localStorage.setItem('platform',1)
+                        }
+                    } else {
+                        this.$message({
+                            type: 'warning',
+                            message: res.data.msg
+                        })
+                    }
+                }).catch(e => {
+                    this.$message({
+                        type: 'error',
+                        message: '登錄失敗!'
+                    })
+                    this.loading = false
+                })
+            }
+            
         },
         sign () {
             this.$router.push('/Sign')

@@ -13,13 +13,14 @@
                     <div :class="['child_message1',{ minwidth: $i18n.locale == 'en-US' }]" v-show="category_list">
                         <div class="child_message_title">
                             <div class="tc cursor" @click="showadd = !showadd">
-                                {{$t("lang.jiulong")}}
+                                {{shopTitle.shopName}}
                                 <img class="t_arrow" src="@/assets/img/arrow.png" alt="">
                             </div>
 
                             <div class="addPlat_wrap boxs" v-show="showadd">
-                                <div class="input_msg cursor tc">
-                                    {{$t("lang.jiulong")}}
+                                <div class="input_msg cursor tc" @click="choose(item)"
+                                 v-for="(item,i) in storeList" :key="i">
+                                    {{item.shopName}}
                                 </div>
 
                                 <div class="addPlat al ju cursor mg" @click="AddStore">
@@ -34,7 +35,7 @@
                                 <div class="al">
                                     <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.foreignnum")}}
                                 </div>
-                                <div class="al">4</div>
+                                <div class="al">{{shopTitle.guangGaoTotalAccount}}</div>
                             </div>
                             <div class="child_message_content_item sb">
                                 <div class="al">
@@ -46,20 +47,20 @@
                                 <div class="al">
                                     <img class="child_message_content_item_logo" src="@/assets/img/add-address.png" alt="">{{$t("lang.storeArea")}}
                                 </div>
-                                <div class="al">{{$t("lang.jiulong")}}</div>
+                                <div class="al">{{shopTitle.addressReginName}}</div>
                             </div>
                             <div class="child_message_content_item sb">
                                 <div class="al">
                                     <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.mynum")}}
                                 </div>
-                                <div class="al">1</div>
+                                <div class="al">{{shopTitle.shopGuangGaoTotalAccount}}</div>
                             </div>
-                            <div class="child_message_content_item sb">
+                            <!-- <div class="child_message_content_item sb">
                                 <div class="al">
                                     <img class="child_message_content_item_logo" src="@/assets/img/bili.png" alt="">{{$t("lang.ads")}}
                                 </div>
                                 <div class="al">80%</div>
-                            </div>
+                            </div> -->
                             <div class="moreMsg flexEnd al">
                                 <img class="cursor" @click="PlatSetting" src="@/assets/img/more.png" 
                                 alt=""><span @click="PlatSetting" class="cursor">{{$t("lang.storeset")}}</span>
@@ -123,12 +124,13 @@
                 <div :class="['child_message',{ minwidth: $i18n.locale == 'en-US' }]">
                     <div class="child_message_title">
                         <div class="tc cursor" @click="showadd = !showadd">
-                            {{$t("lang.jiulong")}}
+                            {{shopTitle.shopName}}
                             <img class="t_arrow" src="@/assets/img/arrow.png" alt="">
                         </div>
                         <div class="addPlat_wrap" v-show="showadd">
-                            <div class="input_msg cursor tc" v-for="(item) in storeList" :key="item.id">
-                                {{item.name}}
+                            <div class="input_msg cursor tc" @click="choose(item)"
+                                v-for="(item) in storeList" :key="item.id">
+                                {{item.shopName}}
                             </div>
                             <div class="line"></div>
                             <div class="addPlat al ju cursor mg" @click="AddStore">
@@ -143,7 +145,7 @@
                             <div class="al">
                                 <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.foreignnum")}}
                             </div>
-                            <div class="al">4</div>
+                            <div class="al">{{shopTitle.guangGaoTotalAccount}}</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
@@ -155,20 +157,20 @@
                             <div class="al">
                                 <img class="child_message_content_item_logo" src="@/assets/img/add-address.png" alt="">{{$t("lang.storeArea")}}
                             </div>
-                            <div class="al">{{$t("lang.jiulong")}}</div>
+                            <div class="al">{{shopTitle.addressReginName}}</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
                                 <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.mynum")}}
                             </div>
-                            <div class="al">1</div>
+                            <div class="al">{{shopTitle.shopGuangGaoTotalAccount}}</div>
                         </div>
-                        <div class="child_message_content_item sb">
+                        <!-- <div class="child_message_content_item sb">
                             <div class="al">
                                 <img class="child_message_content_item_logo" src="@/assets/img/bili.png" alt="">{{$t("lang.ads")}}
                             </div>
                             <div class="al">80%</div>
-                        </div>
+                        </div> -->
                         <div class="moreMsg flexEnd al">
                             <img class="cursor" @click="PlatSetting" src="@/assets/img/more.png" 
                             alt=""><span @click="PlatSetting" class="cursor">{{$t("lang.storeset")}}</span>
@@ -181,14 +183,15 @@
 </template>
 
 <script>
-import { getShopHomeDetails, getShopListByUser } from '@/axios/request.js'
+import { getShopListByUser } from '@/axios/request.js'
 export default {
     data () {
         return {
             showadd: false,
             category_list: false,
             storeList: [],
-            loading: false
+            loading: false,
+            shopTitle: {}
         }
     },
     mounted () {
@@ -199,18 +202,9 @@ export default {
 		this.getResize()
     },
     created () {
-        // this.getShopHomeDetails()
         this.getShopListByUser()
     },
     methods: {
-        getShopHomeDetails () {      //根据用户id获取店铺首页数据
-            let data = {
-                userId: localStorage.getItem('compoundeyesUserId')
-            }
-            getShopHomeDetails(data).then(res => {
-                console.log(res)
-            })
-        },
         getShopListByUser () {       //获取用户下所有店铺
             this.loading = true
             let data = { userId: localStorage.getItem('compoundeyesUserId') }
@@ -219,11 +213,12 @@ export default {
                 this.loading = false
                 if (res.data.rtnCode == 200) {
                     this.storeList = res.data.data
+                    this.shopTitle = res.data.data[0]
                 } else {
-                    this.$message({
-                    type: 'error',
-                        message: '請求失敗'
-                    })
+                    // this.$message({
+                    // type: 'warning',
+                    //     message: res.data.msg
+                    // })
                 }
             }).catch(e => {
                 this.loading = false
@@ -232,6 +227,10 @@ export default {
                     message: '請求失敗'
                 })
             })
+        },
+        choose (item) {
+            this.shopTitle = item
+            this.showadd = false
         },
         getResize () {
             if (document.getElementsByClassName('wrap_addPlat')[0] != undefined) {
@@ -332,7 +331,8 @@ export default {
         width: 30%;
         min-width: 272px;
         padding: 23px 17px;
-        height: 298px;
+        // height: 298px;
+        height: 257px;
         background: #F7F8FB;
         box-shadow: 0 0 2px #c2c2c2;
         margin-top: 20px;
@@ -358,7 +358,8 @@ export default {
         padding: 0 5px;
         z-index: 10;
         min-width: 272px;
-        height: 298px;
+        // height: 298px;
+        height: 257px;
         padding: 23px 17px;
         background: #F7F8FB;
         box-shadow: 0 0 5px rgb(194, 194, 194);

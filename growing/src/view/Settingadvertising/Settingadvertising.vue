@@ -172,25 +172,6 @@
             :before-close="handleClose">
             <div class="">
                 <div>
-                    <!-- <el-form :model="ruleForm3" label-position="top" :rules="rules3" ref="ruleForm" 
-					 class="demo-ruleForm">
-						<el-form-item :label="$t('lang.set_price')" prop="name">
-                            <div class="flex" style="margin-top: -15px">
-                                <el-select v-model="ruleForm3.name" :placeholder="$t('lang.pldselecttime')">
-                                    <el-option :label="$t('lang.busyhour')" :value="$t('lang.busyhour')"></el-option>
-                                    <el-option :label="$t('lang.unbusyhour')" :value="$t('lang.unbusyhour')"></el-option>
-                                </el-select>
-                                <div class="addCate cursor al" @click="addTime(ruleForm3.name)">
-                                    {{$t("lang.addbtn")}}
-                                </div>
-                            </div>
-                            <div class="list clear">
-                                <div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in timeList" :key="i">
-                                    {{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleTime(i)" src="@/assets/img/cha.png" alt=""></span>
-                                </div>
-                            </div>
-						</el-form-item>
-                    </el-form> -->
                     <el-radio-group v-model="radio4" size="small">
                         <el-radio label="1" border style="margin-right: 0;">接收全部時段</el-radio>
                         <el-radio label="2" border style="margin-right: 0;" @click.native="drawers = true">自定義接收的廣告時間</el-radio>
@@ -339,6 +320,7 @@
 </template>
 
 <script>
+import { updatePrice } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -366,7 +348,7 @@ export default {
             dialogVisible2: false,
             dialogVisible3: false,
             labelPosition: 'left',
-            ggbili: '',
+            ggbili: '100%',
             ruleForm: {
                 name: '',
             },
@@ -585,6 +567,9 @@ export default {
         sueraddList1 () {
 			let i = 0
 			let arr = this.addTimeList.concat(this.addTimeList1.concat(this.addTimeList2))
+            if (arr.length != 0) {
+                this.arr1[0].br = true
+            }
 			arr.forEach(item => {
 				i = i + item.num
 			})
@@ -604,7 +589,14 @@ export default {
             this.checkedCities2 = val ? this.cityOptions2 : [];
             this.isIndeterminate2 = false;
         },
-        changemoney () {
+        changemoney () {      //修改店铺期望收入价格(馬上修改)
+            let data = {
+                incomePriceId: 0,
+                shopId: 0
+            }
+            updatePrice(data).then(res => {
+                console.log(res)
+            })
             this.dialogVisible = false
             this.arr3[0].name = this.ruleForm.name
         },
@@ -634,18 +626,23 @@ export default {
             if (this.radio4 == '1') {
                 this.arr1[0].ids = this.ggbili
             } else if (this.radio4 == '3') {
+                this.arr1[0].adList1 = []
                 this.arr1[0].nodv = true
                 this.arr1[0].br = false
-            } else {
-                this.adList = this.copy1.concat(this.copy2.concat(this.copy3))
-                if (this.adList.length != 0) {
-                    let obj = this.adList[0]
-                    for (let i=0;i<this.adList.length-1;i++) {
-                        obj = obj + ',' + this.adList[i+1]
-                    }
-                    this.arr1[0].name = this.$t("lang.set_acc") + ': ' + obj
+                
+            } else if (this.radio4 == '2') {
+                // this.adList = this.copy1.concat(this.copy2.concat(this.copy3))
+                // console.log(this.adList)
+                if (this.arr1[0].adList1.length != 0) {
+                    // let obj = this.adList[0]
+                    // for (let i=0;i<this.adList.length-1;i++) {
+                    //     obj = obj + ',' + this.adList[i+1]
+                    // }
+                    // this.arr1[0].name = this.$t("lang.set_acc") + ': ' + obj
                 } else {
-                    this.arr1[0].name = this.$t("lang.nodata")
+                    // this.arr1[0].name = this.$t("lang.nodata")
+                    this.arr1[0].nodv = true
+                    this.arr1[0].br = false
                 }
             }
             

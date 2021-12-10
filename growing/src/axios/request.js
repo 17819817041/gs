@@ -101,22 +101,21 @@ export function setLang (data) {    //设置语言
     )
 } 
 
+export function incomePriceId (data) {    ///api/income/list
+    return request (
+        {
+            url: "/api/income/list",
+            method: "GET"
+        }
+    )
+} 
+
 
 
 
 
 
 //店鋪
-export function getShopHomeDetails (data) {    //根据用户id获取店铺首页数据
-    return request (
-        {
-            url: "/api/shopManager/getShopHomeDetails",
-            method: "GET",
-            params: data
-        }
-    )
-}
-
 export function AddStore (data) {    //添加店铺
     return request (
         {
@@ -130,11 +129,31 @@ export function AddStore (data) {    //添加店铺
     )
 } 
 
-export function getShopListByUser (data) {    //获取用户下所有店铺
+export function getShopListByUser (data) {    //获取用户下所有店铺 根据用户id获取店铺首页数据
     return request (
         {
-            url: "/api/userShop/getShopListByUser",
+            url: "/api/userShop/getShopHomeDetails",
             method: "GET",
+            params: data
+        }
+    )
+}
+
+export function updatePrice (data) {    //修改店铺期望收入价格(馬上修改)
+    return request (
+        {
+            url: "/api/userShop/updatePrice",
+            method: "PUT",
+            params: data
+        }
+    )
+}
+
+export function getShopIncomeStatistics (data) {    //查询店鋪廣告收入統計
+    return request (
+        {
+            url: "/api/userShop/getShopIncomeStatistics",
+            method: "PUT",
             params: data
         }
     )
@@ -188,6 +207,152 @@ export function adTypeAdd (data) {    //添加广告类型
             url: "/api/admin/guangGaoType/add",
             method: "DELETE",
             params: data
+        }
+    )
+} 
+
+export function shopExamine (data) {    //获取店铺审核列表 
+    return request (
+        {
+            url: "/api/manager/shopExamine/getExamineList",
+            method: "PUT",
+            params: data
+        }
+    )
+} 
+
+export function examine (data) {    //获取广告商审核列表 
+    return request (
+        {
+            url: "/api/manager/examine/getExamineList",
+            method: "PUT",
+            params: data
+        }
+    )
+} 
+
+export function examineAdopt (data) {    //广告审核通过
+    return request (
+        {
+            url: "/api/manager/examine/examineAdopt",
+            method: "PUT",
+            params: data
+        }
+    )
+} 
+
+export function examineError (data) {    //广告审核不通過
+    return request (
+        {
+            url: "/api/manager/examine/examineError",
+            method: "PUT",
+            params: data
+        }
+    )
+} 
+
+export function shopExamineAdopt (data) {    //店鋪审核通过
+    return request (
+        {
+            url: "/api/manager/shopExamine/examineAdopt",
+            method: "PUT",
+            params: data
+        }
+    )
+} 
+
+export function shopExamineError (data) {    //店鋪审核不通过
+    return request (
+        {
+            url: "/api/manager/shopExamine/examineError",
+            method: "PUT",
+            params: data
+        }
+    )
+} 
+
+export function getEventExpirationTime (data) {    //近期廣告活動到期時間
+    return request (
+        {
+            url: "/api/manager/activityStatistics/getEventExpirationTime",
+            method: "GET"
+        }
+    )
+}   
+
+export function getGuangGaoTypeActiveStatus (data) {    //廣告類型活動狀態
+    return request (
+        {
+            url: "/api/manager/activityStatistics/getGuangGaoTypeActiveStatus",
+            method: "GET",
+            params: data
+        }
+    )
+}   
+
+export function getStatisticsForTheLast12Days (data) {    //近12日廣告活動時段統計
+    return request (
+        {
+            url: "/api/manager/activityStatistics/getStatisticsForTheLast12Days",
+            method: "GET"
+        }
+    )
+} 
+
+export function getStatisticsForThepastSixMonths (data) {    //近半年廣告活動統計
+    return request (
+        {
+            url: "/api/manager/activityStatistics/getStatisticsForThepastSixMonths",
+            method: "GET"
+        }
+    )
+} 
+
+export function getTimeActiveStatus (data) {    //廣告時段活動狀態
+    return request (
+        {
+            url: "/api/manager/activityStatistics/getTimeActiveStatus",
+            method: "GET",
+            params: data
+        }
+    )
+} 
+
+export function getTotalTimePeriod (data) {    //廣告活動時段總數
+    return request (
+        {
+            url: "/api/manager/activityStatistics/getTotalTimePeriod",
+            method: "GET"
+        }
+    )
+} 
+
+
+
+//广告商
+export function getCumulativeMonthly (data) {    //获取最近一年的月份（过去一年的数据）累计投放广告天数
+    return request (
+        {
+            url: "/api/statistics/getCumulativeMonthly",
+            method: "GET",
+        }
+    )
+} 
+
+export function getGuangGaoStatistics (data) {    //每个区域的所有广告的天数之和
+    return request (
+        {
+            url: "/api/statistics/getGuangGaoStatistics",
+            method: "GET",
+        }
+    )
+} 
+
+export function getRemainderDay (data) {    //获取每个区域的所有广告
+    return request (
+        {
+            url: "/api/statistics/getRemainderDay",
+            method: "GET",
         }
     )
 } 

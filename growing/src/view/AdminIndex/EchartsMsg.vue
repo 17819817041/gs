@@ -81,7 +81,7 @@
         background: white;
         min-width: 345px;
         padding: 0 20px;
-        height: 400px;
+        height: 500px;
         @media screen and (max-width: 564px) {
            margin: 20px 0;
            padding: 0;
@@ -257,7 +257,7 @@
         <div class="AdvertisingOperation_back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">新增店鋪
         </div>
-        <div class="EchartsMsg_content bar mg">
+        <div class="EchartsMsg_content noBar mg">
             <div class="divider_wrap">
                 <div class="flex divider_message_title">
                     <div class="divider"></div>
@@ -393,6 +393,8 @@
 </template>
 <script>
 import * as echarts from 'echarts';
+import { getEventExpirationTime, getGuangGaoTypeActiveStatus, getTotalTimePeriod,
+getStatisticsForTheLast12Days, getStatisticsForThepastSixMonths, getTimeActiveStatus } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -408,24 +410,24 @@ export default {
                     'Search Engine',
                     ]
                 },
-                series: [
+                series: [  
                     {
-                    name: 'Access From',
-                    type: 'pie',
-                    selectedMode: 'single',
-                    radius: [0, '30%'],
-                    label: {
-                        position: 'inner',
-                        fontSize: 14
-                    },
-                    labelLine: {
-                        show: false
-                    },
-                    data: [
-                        { value: 1548, name: 'Search Engine' },
-                        { value: 775, name: 'Direct' },
-                        { value: 679, name: 'Marketing', selected: true }
-                    ]
+                        name: 'Access From',
+                        type: 'pie',
+                        selectedMode: 'single',
+                        radius: [0, '30%'],
+                        label: {
+                            position: 'inner',
+                            fontSize: 14
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: [
+                            { value: 1548, name: 'Search Engine' },
+                            { value: 775, name: 'Direct' },
+                            { value: 679, name: 'Marketing', selected: true }
+                        ]
                     },
                     {
                     name: 'Access From',
@@ -484,129 +486,79 @@ export default {
                 },
                 series: [
                     {
+                        name: 'Access From',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        avoidLabelOverlap: false,
+                        label: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            label: {
+                            show: true,
+                            fontSize: '40',
+                            fontWeight: 'bold'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: [
+                            { value: 1048, name: 'Search Engine' },
+                            { value: 735, name: 'Direct' },
+                            { value: 580, name: 'Email' },
+                            { value: 484, name: 'Union Ads' },
+                            { value: 300, name: 'Video Ads' }
+                        ]
+                    }
+                ]
+            },
+            option2: {
+                title: {
+                    // text: 'Referer of a Website',
+                    subtext: 'Fake Data',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left'
+                },
+                series: [
+                    {
                     name: 'Access From',
                     type: 'pie',
-                    radius: ['40%', '70%'],
-                    avoidLabelOverlap: false,
-                    label: {
-                        show: false,
-                        position: 'center'
-                    },
-                    emphasis: {
-                        label: {
-                        show: true,
-                        fontSize: '40',
-                        fontWeight: 'bold'
-                        }
-                    },
-                    labelLine: {
-                        show: false
-                    },
+                    radius: '50%',
                     data: [
                         { value: 1048, name: 'Search Engine' },
                         { value: 735, name: 'Direct' },
                         { value: 580, name: 'Email' },
                         { value: 484, name: 'Union Ads' },
                         { value: 300, name: 'Video Ads' }
-                    ]
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
                     }
                 ]
             },
-            option2: {
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {
-                    // Use axis to trigger tooltip
-                    type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
-                    }
-                },
-                legend: {},
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'value'
-                },
-                yAxis: {
-                    type: 'category',
-                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                },
-                series: [
-                    {
-                    name: 'Direct',
-                    type: 'bar',
-                    stack: 'total',
-                    label: {
-                        show: true
-                    },
-                    emphasis: {
-                        focus: 'series'
-                    },
-                    data: [320, 302, 301, 334, 390, 330, 320]
-                    },
-                    {
-                    name: 'Mail Ad',
-                    type: 'bar',
-                    stack: 'total',
-                    label: {
-                        show: true
-                    },
-                    emphasis: {
-                        focus: 'series'
-                    },
-                    data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                    name: 'Affiliate Ad',
-                    type: 'bar',
-                    stack: 'total',
-                    label: {
-                        show: true
-                    },
-                    emphasis: {
-                        focus: 'series'
-                    },
-                    data: [220, 182, 191, 234, 290, 330, 310]
-                    },
-                    {
-                    name: 'Video Ad',
-                    type: 'bar',
-                    stack: 'total',
-                    label: {
-                        show: true
-                    },
-                    emphasis: {
-                        focus: 'series'
-                    },
-                    data: [150, 212, 201, 154, 190, 330, 410]
-                    },
-                    {
-                    name: 'Search Engine',
-                    type: 'bar',
-                    stack: 'total',
-                    label: {
-                        show: true
-                    },
-                    emphasis: {
-                        focus: 'series'
-                    },
-                    data: [820, 832, 901, 934, 1290, 1330, 1320]
-                    }
-                ]
-            },
-            option3: {
+            option3: { 
                 legend: {},
                 tooltip: {},
                 dataset: {
                     source: [
-                    ['product', '2016', '2017'],
-                    ['Matcha Latte', 43.3, 93.7],
-                    ['Milk Tea', 83.1, 55.1],
-                    ['Cheese Cocoa', 86.4, 82.5],
-                    ['Walnut Brownie', 72.4, 39.1]
+                    ['product', '繁忙時段', '非繁忙時段'],
+                    // ['Matcha Latte', 43.3, 93.7],
+                    // ['Milk Tea', 83.1, 55.1],
+                    // ['Cheese Cocoa', 86.4, 82.5],
+                    // ['Walnut Brownie', 72.4, 39.1]
                     ]
                 },
                 xAxis: { type: 'category' },
@@ -656,31 +608,31 @@ export default {
                 ],
                 series: [
                     {
-                    name: 'Direct',
-                    type: 'line',
-                    stack: 'Total',
-                    areaStyle: {},
-                    emphasis: {
-                        focus: 'series'
-                    },
-                    data: [20, 25, 31, 34, 90, 40, 30]
+                        name: 'Direct',
+                        type: 'line',
+                        stack: 'Total',
+                        areaStyle: {},
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [20, 25, 31, 34, 90, 40, 30]
                     },
                     {
-                    name: 'Search Engine',
-                    type: 'line',
-                    stack: 'Total',
-                    label: {
-                        show: true,
-                        position: 'top'
-                    },
-                    areaStyle: {},
-                    emphasis: {
-                        focus: 'series'
-                    },
-                    data: [20, 32, 51, 34, 90, 30, 20]
+                        name: 'Search Engine',
+                        type: 'line',
+                        stack: 'Total',
+                        label: {
+                            show: true,
+                            position: 'top'
+                        },
+                        areaStyle: {},
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        data: [20, 32, 51, 34, 90, 30, 20]
                     }
                 ]
-                },
+            },
             options: [{
             value: '选项1',
             label: '2021'
@@ -704,6 +656,12 @@ export default {
         }
     },
     mounted () {
+        this.getEventExpirationTime()
+        this.getGuangGaoTypeActiveStatus()
+        this.getStatisticsForTheLast12Days()
+        this.getStatisticsForThepastSixMonths()
+        this.getTimeActiveStatus()
+
         var myChart = echarts.init(document.getElementById('main'));
         myChart.setOption(this.option);
 
@@ -726,11 +684,105 @@ export default {
             myChart3.resize();
             myChart4.resize();
         });
+
+
+    },
+    created () {
+        this.getTotalTimePeriod()
     },
     methods: {
         goBack () {
 			this.$router.back()
 		},
+        getEventExpirationTime () {    //近期廣告活動到期時間
+            this.option2.series[0].data = []
+            getEventExpirationTime().then(res => {
+                if (res.data.rtnCode == 200) {
+                    for (var val in res.data.data) {
+                        // console.log(res.data.data[val])
+                        // console.log(val)
+                        this.option2.series[0].data.push({ name: val, value: res.data.data[val] })
+                    }
+                    var myChart2 = echarts.init(document.getElementById('main2'));
+                    myChart2.setOption(this.option2);
+                    window.addEventListener("resize",function(){
+                        myChart2.resize();
+                    });
+                }
+            })
+        },
+        getGuangGaoTypeActiveStatus () {      //廣告類型活動狀態
+            this.option1.series[0].data = []
+            let data = {
+                date: '2021-12-10'
+            }
+            getGuangGaoTypeActiveStatus(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    res.data.data.forEach(item => {
+                        this.option1.series[0].data.push({ name: item.timeIntervalName, value: item.count })
+                    })
+                    var myChart1 = echarts.init(document.getElementById('main1'));
+                    myChart1.setOption(this.option1);
+                    window.addEventListener("resize",function(){
+                        myChart1.resize();
+                    });
+                }
+            })
+        },
+        getStatisticsForTheLast12Days () {        //近12日廣告活動時段統計
+            getStatisticsForTheLast12Days().then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    let arr = []
+                    for (let key in res.data.data) {
+                        let k = []
+                        for (let val in res.data.data[key]) {
+                            k.push(res.data.data[key][val])
+                        }
+                        arr.push([key,k[0],k[1],k[2]])
+                        k = []
+                    }
+                    this.option3.dataset.source = arr
+                    var myChart3 = echarts.init(document.getElementById('main3'));
+                    myChart3.setOption(this.option3);
+                    window.addEventListener("resize",function(){
+                        myChart3.resize();
+                    });
+                }
+            })
+        },
+        getStatisticsForThepastSixMonths () {   //近半年廣告活動統計
+            getStatisticsForThepastSixMonths().then(res => {
+                console.log(res)
+            })
+        }, 
+        getTimeActiveStatus () {               //廣告時段活動狀態
+            this.option.series[0].data = []
+            this.option.series[1].data = []
+            let data = {
+                date: '2021-12-10'
+            }
+            getTimeActiveStatus(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    res.data.data.forEach(item => {
+                        this.option.series[0].data.push({ name: item.timeIntervalName, value: item.count })
+                        this.option.series[1].data.push({ name: item.timeIntervalName, value: item.count })
+                    })
+                    var myChart = echarts.init(document.getElementById('main'));
+                    myChart.setOption(this.option);
+                    window.addEventListener("resize",function(){
+                        myChart.resize();
+                    });
+                }
+            })
+        },
+        getTotalTimePeriod () {                 //廣告活動時段總數
+            getTotalTimePeriod().then(res => {
+                console.log(res)
+            })
+        }
     }
 }
 </script>

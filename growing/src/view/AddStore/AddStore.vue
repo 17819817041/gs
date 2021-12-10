@@ -1,19 +1,20 @@
 <template>
-    <div class="AddStore" id="AddStore">
+    <div class="AddStore" id="AddStore" v-loading='loading'>
 		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
 		<div class="AdvertisingOperation_back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">新增店鋪
         </div>
-		<div class="noBar" style="height: calc(100% - 11px);overflow: auto;padding-bottom: 30px;">
-			<div class="content mg bar">
+		<div class="noBar" style="height: calc(100% - 11px);overflow-y: auto;overflow-x: hidden;padding-bottom: 30px;">
+			<div class="content mg">
 				<!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div> -->
-				<div class="noBar" style="height: calc(100% - 27px); overflow:auto">
-					<div class="basicsMsg theme" v-show="submit">
+				<div style="height: calc(100% - 27px)">
+					<div class="basicsMsg boxs theme" v-show="submit">
 					<div class="flex divider_message_title">
 						<div class="divider"></div>
 						<div class="divider_text">店鋪信息管理</div>
 					</div>
-					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="135px" class="demo-ruleForm">
+					<el-form :model="ruleForm" :label-position="labelPosition" 
+					:rules="rules" ref="ruleForm" label-width="135px" class="demo-ruleForm">
 						<el-form-item label="店鋪名" prop="name" class="bcolor">
 							<div class="elinput width30">
 								<el-input class="width100" v-model="ruleForm.name"></el-input>
@@ -22,13 +23,13 @@
 						<el-form-item label="店鋪所屬類型" prop="storeType">
 							<div class="al br">
 								<div class="al width30">
-									<el-select v-model="ruleForm.storeType" class="width100" placeholder="請選擇類型" @change="addType">
+									<el-select v-model="ruleForm.storeType" class="width100" placeholder="請選擇類型" 
+										@change="addType">
 										<el-option v-for="(item,i) in getTypeList" :key="i"
-											:label='item.find(child => { 
-												child.language == "zh-TW" && $i18n.locale == "zh-CN"? 
-												"child.guangGaoTypeName" : "123"
-											})'
-											:value="1">
+											:label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+											item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+											item.find( res => res.language == "en-US").guangGaoTypeName '
+											:value="item[0].id">
 										</el-option>
 									</el-select>
 								</div>
@@ -36,32 +37,32 @@
 						</el-form-item>
 						<el-form-item label="店鋪所在區域" prop="area" class="bcolor">
 							<div class="flex br">
-									<div class="flex">
-										<el-select v-model="ruleForm.area" @change="changeArea"
-											:placeholder="$t('lang.pldselectarea')" style="margin-right: 10px;">
-											<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
-											<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
-											<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
-										</el-select>
-										<el-select v-model="ruleForm.street" :placeholder="$t('lang.pldselectstreet')">
-											<el-option :label="$t('lang.Kowloon') + $t('lang.street')" @click.native="changeCen(22.8, 114.6)"
-											v-if="ruleForm.area == $t('lang.jiulong')" :value="$t('lang.Kowloon') + $t('lang.street')"></el-option>
-											<el-option :label="$t('lang.MongKok') + $t('lang.street')"  @click.native="changeCen(23.8, 114.6)"
-											v-if="ruleForm.area == $t('lang.wangjiao')" :value="$t('lang.MongKok') + $t('lang.street')"></el-option>
-											<el-option :label="$t('lang.Central') + $t('lang.street')"  @click.native="changeCen(22.8, 116.6)"
-											v-if="ruleForm.area == $t('lang.zhonghuan')" :value="$t('lang.Central') + $t('lang.street')"></el-option>
-										</el-select>
-									</div>
+								<div class="flex">
+									<el-select v-model="ruleForm.area" @change="changeArea"
+										:placeholder="$t('lang.pldselectarea')" style="margin-right: 10px;">
+										<el-option v-for="(item,i) in addressList" :key="i"
+											:label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+											item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+											item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+											:value="item.id">
+										</el-option>
+									</el-select>
+									<el-select v-model="ruleForm.street" :placeholder="$t('lang.pldselectstreet')">
+										<el-option :label="$t('lang.Kowloon') + $t('lang.street')" @click.native="changeCen(22.8, 114.6)"
+										v-if="ruleForm.area == $t('lang.jiulong')" :value="$t('lang.Kowloon') + $t('lang.street')"></el-option>
+										<el-option :label="$t('lang.MongKok') + $t('lang.street')"  @click.native="changeCen(23.8, 114.6)"
+										v-if="ruleForm.area == $t('lang.wangjiao')" :value="$t('lang.MongKok') + $t('lang.street')"></el-option>
+										<el-option :label="$t('lang.Central') + $t('lang.street')"  @click.native="changeCen(22.8, 116.6)"
+										v-if="ruleForm.area == $t('lang.zhonghuan')" :value="$t('lang.Central') + $t('lang.street')"></el-option>
+									</el-select>
 								</div>
+							</div>
 						</el-form-item>
-						<el-form-item label="店鋪詳細位置地址" prop="address">
+						<el-form-item label="店鋪詳細位置地址" prop="latLng.lat">
 							<div class="mapwrap_w">
-								<!-- <div class="al width30" style='min-width: 217px;'>
-									<div class="elinput width100">
-										<el-input class="width100" v-model="ruleForm.address"></el-input>
-									</div>
-								</div> -->
-								<div class="size12 streetText">{{ruleForm.street}}</div>
+								<div class="size12 latlngShow" v-show="ruleForm.latLng.lat"
+								> lat: {{ruleForm.latLng.lat}}, lng: {{ruleForm.latLng.lng}} </div>
+								<div class="size12 streetText"></div>
 								<div :class="['map_wrap']">
 									<img class="searchImg" src="@/assets/img/search.png" alt="">
 									<input
@@ -76,33 +77,45 @@
 							</div>
 						</el-form-item>
 						<el-form-item label="店鋪描述" prop="message" class="bcolor">
-							<div class="al">
+							<div class="al content_down">
 								<div class="al textarea">
 									<textarea v-model="ruleForm.message" id="" cols="60" rows="8"></textarea>
 								</div>
 							</div>
 						</el-form-item>
-						<el-form-item label="廣告顯示的尺寸" prop="message" class="bcolor" style="background: #F2F2F2;">
-							<div class="al">
-								<div class="inp_time1 al"><input type="text"></div>
-								<div> m(高)</div>
-								<div style="margin: 0 15px;"> × </div>
-								<div class="inp_time1 al"><input type="text"></div>
+						<el-form-item label="廣告顯示的尺寸" prop="chicun" class="bcolor" style="background: #F2F2F2;">
+							<div class="al" style="margin-top: -20px;">
+								<div class="inp_time1 al">
+									<!-- <input type="text" v-model="ruleForm.size.width"> -->
+									<el-form-item label=""  prop="size.width">
+										<el-input class="width100" v-model="ruleForm.size.width"></el-input>
+									</el-form-item>
+								</div>
 								<div> m(寬)</div>
+								<div style="margin: 0 10px;"> × </div>
+								<div class="inp_time1 al">
+									<!-- <input type="text" v-model="ruleForm.size.height"> -->
+									<el-form-item label=""  prop="size.height">
+										<el-input class="width100" v-model="ruleForm.size.height"></el-input>
+									</el-form-item>
+								</div>
+								<div> m(高)</div>
 							</div>
 						</el-form-item>
-						<el-form-item label="店鋪展示圖片" prop="type" class="bcolor">
-							<div class="textarea_wrap clear">
+						<el-form-item label="店鋪展示圖片" prop="imageList1" class="bcolor">
+							<div class="textarea_wrap clear content_down">
 								<label for="img1">
 									<div class="addImg ju al float">
 										<img src="@/assets/img/add.png" alt="">
 									</div>
 									<input type="file" id="img1" v-show="false" multiple="multiple" @change="changeFile1">
 								</label>
-								<div class="textarea_wrap_item float" v-for="(item,i) in imageList1" :key="i">
+								<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm2.imageList1" :key="i">
 									<div class="imageList_wrap">
-										<div class="deleImg radius ju al" @click.stop="deleImg1(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
-										<div class="textarea_wrap_item_child ju al"  @click="imgPreview(item.url)">
+										<div class="deleImg radius ju al" @click.stop="deleImg1(i)">
+											<img style="heihgt: 100%;" src="@/assets/img/cha.png" alt="">
+										</div>
+										<div class="textarea_wrap_item_child ju al" @click="imgPreview(item.url)">
 											<img style="height: 100%;" :src="item.url" alt="">
 										</div>
 									</div>
@@ -121,61 +134,76 @@
 						<div class="divider"></div>
 						<div class="divider_text">接受外來廣告設定</div>
 					</div>
-					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="145px" class="demo-ruleForm">
-						<el-form-item :label='$t("lang.set_price")' prop="ratio"  class="bcolor">
-							<div class="al br">
-								<div class="al">
-									<!-- <el-select class="width100" v-model="ruleForm.time" placeholder="請選擇時間段">
-										<el-option label="繁忙时段(9am-9pm)" value="繁忙时段(9am-9pm)"></el-option>
-										<el-option label="非繁忙时段(9pm-9am)" value="非繁忙时段(9pm-9am)"></el-option>
-									</el-select> -->
-									<div class="addCate al cursor" @click="dialogVisible = true">
-										選擇
-									</div>
+					<el-form :model="ruleForm1" :label-position="labelPosition" 
+					:rules="rules1" ref="ruleForm1"
+					label-width="245px" class="demo-ruleForm">
+						<el-form-item :label='$t("lang.set_price")' prop="price" class="bcolor">
+							<div class="al sb" slot="label"
+								:style="{'min-width': $i18n.locale == 'zh-CN'? '200px': '250px' ,
+								'margin': '-40px 0 0 10px',
+								'line-height': '26px',
+								'font-size': '13px'}">
+								<div>{{$t("lang.set_price")}}</div>
+								<div class="addCate al cursor" @click="dialogVisible = true">
+									選擇
 								</div>
+							</div>
+							<div class="flex">
 								<div class="list clear">
-									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in priceList" :key="i">
-										{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="delePrice(i)" src="@/assets/img/cha.png" alt=""></span>
+									<div style="color: #B0B0B0;" class="list_item float al" 
+									v-for="(item,i) in ruleForm1.priceList" :key="i">
+										$ {{item.price}} HKD<span class="al" style="margin-left: 5px">
+											<img class="cursor" 
+											@click="delePrice(i)" src="@/assets/img/cha.png" alt="">
+										</span>
 									</div>
 								</div>
 							</div>
 						</el-form-item>
-						<el-form-item :label='$t("lang.receivingad")' prop="time">
-							<div class="al br">
-								<div class="al">
-									<!-- <el-select class="width100" v-model="ruleForm.time" placeholder="請選擇時間段">
-										<el-option label="繁忙时段(9am-9pm)" value="繁忙时段(9am-9pm)"></el-option>
-										<el-option label="非繁忙时段(9pm-9am)" value="非繁忙时段(9pm-9am)"></el-option>
-									</el-select> -->
-									<!-- <div class="addCate al cursor" @click="addTime(ruleForm.time)"> -->
-									<div class="addCate al cursor" @click="dialogVisible3 = true">
-										選擇
-									</div>
+						<el-form-item :label='$t("lang.receivingad")' prop="adTimeList">
+							<div class="al sb" slot="label"
+							:style="{'min-width': $i18n.locale == 'zh-CN'? '200px': '250px' ,
+							'margin': '-40px 0 0 10px',
+							'line-height': '26px',
+							'font-size': '13px'}">
+								<div>{{$t("lang.receivingad")}}</div>
+								<div class="addCate al cursor" @click="dialogVisible3 = true">
+									選擇
 								</div>
-								<div class="list clear">
-									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in outTimeList" :key="i">
-										{{item.time}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleOutTime(i)" src="@/assets/img/cha.png" alt=""></span>
+							</div>
+							<div class="flex content_down1">
+								<div class="clear" style="margin-left: 13px;">
+									<div style="color: #B0B0B0;" class="list_item1 float al" 
+									v-for="(item,i) in ruleForm1.adTimeList" :key="i">
+										{{item.time}} <span class="al" style="margin-left: 5px">
+											<img class="cursor" @click="deleOutTime(i)" 
+											src="@/assets/img/cha.png" alt="">
+										</span>
 									</div>
 								</div>
 							</div>
 						</el-form-item>
-						
-						<el-form-item :label='$t("lang.set_type1")' prop="type" class="bcolor">
-							<div class="al br">
-								<div class="al">
-									<!-- <el-select class="width100" v-model="ruleForm.type" placeholder="請選擇類型">
-										<el-option label="食品" value="食品"></el-option>
-										<el-option label="科技" value="科技"></el-option>
-										<el-option label="醫療" value="醫療"></el-option>
-										<el-option label="汽車" value="汽車"></el-option>
-									</el-select> -->
-									<div class="addCate al cursor" @click="dialogVisible2 = true">
-										選擇
-									</div>
+						<el-form-item :label='$t("lang.set_type1")' prop="typeList" class="bcolor">
+							<div class="al sb" slot="label"
+							:style="{'min-width': $i18n.locale == 'zh-CN'? '200px': '250px' ,
+							'margin': '-40px 0 0 10px',
+							'line-height': '26px',
+							'font-size': '13px'}">
+								<div>{{$t("lang.set_type1")}}</div>
+								<div class="addCate al cursor" @click="dialogVisible2 = true">
+									選擇
 								</div>
-								<div class="list clear">
-									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
-										{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleTime(i)" src="@/assets/img/cha.png" alt=""></span>
+							</div>
+							<div class="flex br">
+								<div class="clear">
+									<div style="color: #B0B0B0;" class="list_item float al" 
+									v-for="(item,i) in ruleForm1.typeList" :key="i">
+										{{item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+										item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+										item.find( res => res.language == "en-US").guangGaoTypeName}} <span class="al" style="margin-left: 5px">
+											<img class="cursor" @click="deleTime(i)" 
+											src="@/assets/img/cha.png" alt="">
+										</span>
 									</div>
 								</div>
 							</div>
@@ -188,28 +216,28 @@
 						<div class="divider"></div>
 						<div class="divider_text">店鋪廣告媒體內容信息</div>
 					</div>
-					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
-					:label-width="$i18n.locale == 'zh-CN'? '125px': '165px'" class="demo-ruleForm">
-						<el-form-item label="廣告媒體類型" prop="mediaType" class="bcolor">
+					<el-form :model="ruleForm2" :label-position="labelPosition" :rules="rules2" ref="ruleForm2"
+					:label-width="$i18n.locale == 'zh-CN'? '135px': '165px'" class="demo-ruleForm">
+						<el-form-item label="廣告媒體類型" prop="cmediaType" class="bcolor">
 							<div class="al">
-								<el-select v-model="ruleForm.cmediaType" placeholder="請選擇類型" @change="getType">
+								<el-select v-model="ruleForm2.cmediaType" placeholder="請選擇類型" @change="getType">
 									<el-option label="圖片" value="1"></el-option>
-									<el-option label="視頻" value="2"></el-option>
+									<!-- <el-option label="GIF" value="2"></el-option> -->
+									<el-option label="視頻" value="3"></el-option>
 								</el-select>
 							</div>
 						</el-form-item>
-						<el-form-item label="廣告媒體時長" prop="inp">
+						<el-form-item label="廣告媒體時長" prop="videoMinute">
 							<div class="al">
 								<div class="al inp_time">
-										<!-- <input type="text" class="tc"> -->
-									<el-input-number v-model="ruleForm.inp" :step="1" size="small" 
-									:min="1" :max="5" label="描述文字"></el-input-number>
+									<el-input-number v-model="ruleForm2.videoMinute" :step="1" size="small" 
+									:min="1" :max="5" label=""></el-input-number>
 								</div>
 								<div>{{$t('lang.minute')}}</div>
 							</div>
 						</el-form-item>
-						<el-form-item label="廣告媒體內容" prop="content" class="bcolor">
-							<div class="textarea_wrap clear">
+						<el-form-item label="廣告媒體內容" prop="imageList1" class="bcolor">
+							<div class="textarea_wrap clear content_down">
 								<label for="img">
 									<div class="addImg ju al float">
 										<img src="@/assets/img/add.png" alt="">
@@ -218,16 +246,30 @@
 								</label>
 								<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
 									<div class="imageList_wrap">
-										<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
-										<div class="textarea_wrap_item_child ju al">
+										<div class="deleImg cursor radius ju al" @click.stop="deleImg(i)">
+											<img style="heihgt: 100%;" src="@/assets/img/cha.png" alt="">
+										</div>
+										<div class="textarea_wrap_item_child cursor ju al">
 											<img v-if="ruleForm.mediaType == 'image'"  @click="imgPreview(item.url)"
 											style="height: 100%;" :src="item.url" alt="">
-											<img v-else-if="ruleForm.mediaType == 'video'" @click="previewVideo(item)"
-											style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+											<div class="video_outWrap" v-else-if="ruleForm.mediaType == 'video'">
+												<img class="img" src="@/assets/img/start.png" alt="">
+												<div class="videoImage ju al" id="output" ref="output"  
+												@click="previewVideo(item)">
+													
+												</div>
+												<video class="width100" id="video1" ref="video"
+													:controls="false">
+													<source :src="item.url" type="video/mp4">
+												</video>
+											</div>
 										</div>
 									</div>
 									<div class="imageList_name tc">{{item.name}}</div>
 									<div class="imageList_size tc">{{item.size}}</div>
+									<div class="imageList_long tc" 
+									v-if="ruleForm.mediaType == 'video'"
+										>時長：{{item.videoTime}}</div>
 								</div>
 							</div>
 							<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
@@ -279,12 +321,12 @@
             <div class="">
                 <div class="size12">(*店鋪接入每分鐘廣告收入=期望廣告收入/30天/24小時/60分鐘)</div>
                 <div style="margin-top: 20px;">
-                    <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
-					 class="demo-ruleForm">
-						<el-form-item :label="$t('lang.set_price')" prop="name">
-                            <el-select v-model="ruleForm.price" :placeholder="$t('lang.pldselecttype')">
-                                <el-option v-for="(item,i) in price_list" :key="i" 
-                                :label="'$ ' + item.price + ' HKD'" :value="'$ ' + item.price + ' HKD'">
+                    <el-form :label-position="labelPosition" class="demo-ruleForm">
+						<el-form-item :label="$t('lang.set_price')">
+                            <el-select v-model="incomePrice1" @change="getIncomePrice"
+							:placeholder="$t('lang.pldselecttype')">
+                                <el-option v-for="(item,i) in incomePriceIdList" :key="i" 
+                                :label="'$ ' + item.price + ' HKD'" :value="item">
                                 </el-option>
                             </el-select>
 						</el-form-item>
@@ -293,7 +335,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addPrice(ruleForm.price)">确 定</el-button>
+                <el-button type="primary" @click="addPrice(incomePrice)">确 定</el-button>
             </span>
         </el-dialog>
 
@@ -303,27 +345,33 @@
             :before-close="handleClose">
             <div class="">
                 <div>
-                    <el-form :model="ruleForm" label-position="top" :rules="rules" ref="ruleForm" 
+                    <el-form label-position="top"
 					 class="demo-ruleForm">
-						<el-form-item :label="$t('lang.set_type')" prop="t_name">
+						<el-form-item :label="$t('lang.set_type')">
                             <el-radio-group v-model="radio3" size="small">
                                 <el-radio label="1" border style="margin-right: 0;">接收全部行業廣告</el-radio>
                                 <el-radio label="2" border>自定義接收外來廣告行業</el-radio>
                             </el-radio-group>
                             <div class="flex" style="margin-top: 5px" v-if="radio3 == '2'">
-                                <el-select v-model="ruleForm.t_name" :placeholder="$t('lang.pldselecttype')">
-                                    <el-option :label="$t('lang.food')" :value="$t('lang.food')"></el-option>
-                                    <el-option :label="$t('lang.Technology')" :value="$t('lang.Technology')"></el-option>
-                                    <el-option :label="$t('lang.medical')" :value="$t('lang.medical')"></el-option>
-                                    <el-option :label="$t('lang.car')" :value="$t('lang.car')"></el-option>
+                                <el-select v-model="t_name" :placeholder="$t('lang.pldselecttype')" @change="chooseT">
+                                    <el-option v-for="(item,i) in getTypeList" :key="i"
+										:label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+										item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+										item.find( res => res.language == "en-US").guangGaoTypeName '
+										:value="item">
+									</el-option>
                                 </el-select>
-                                <div class="addCate cursor al" @click="addType1(ruleForm.t_name)">
+                                <div class="addCate cursor al" @click="addType1(chooseType)">
                                     {{$t("lang.addbtn")}}
                                 </div>
                             </div>
                             <div class="clear" v-if="radio3 == '2'" style="margin-top: 15px;">
                                 <div style="color: #B0B0B0;" class="list_item1 float al" v-for="(item,i) in typeList1" :key="i">
-                                    {{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleType1(i)" src="@/assets/img/cha.png" alt=""></span>
+                                    {{item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+										item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+										item.find( res => res.language == "en-US").guangGaoTypeName}} <span class="al" style="margin-left: 5px">
+										<img class="cursor" @click="deleType1(i)" src="@/assets/img/cha.png" alt="">
+									</span>
                                 </div>
                             </div>
 						</el-form-item>
@@ -332,7 +380,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible2 = false">取 消</el-button>
-                <el-button type="primary" @click="changeType">确 定</el-button>
+                <el-button type="primary" @click="changeType(chooseType)">确 定</el-button>
             </span>
         </el-dialog>
 
@@ -353,39 +401,19 @@
                     <el-form v-show="radio4 == '1'" :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'"
 						:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" style="margin-top: 15px;">
                     </el-form>
-                    <el-form ref="ruleForm" v-show="radio4 == '22'" style="margin-top: 15px;"
-                        :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'"
-						:label-width="$i18n.locale == 'zh-CN'? '90px': '205px'" class="demo-ruleForm">
-						<el-form-item label="繁忙時段">
-                            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" 
-                            @change="handleCheckAllChange">全选</el-checkbox>
-                            <div style="margin: 15px 0;"></div>
-							<el-checkbox-group v-model="checkedCities" @change="adListadd">
-								<el-checkbox v-for="(item,i) in busyTimeList" :label="item" :key="i">{{item}}</el-checkbox>
-							</el-checkbox-group>
-						</el-form-item>
-						<el-form-item label="超繁忙時段">
-                            <el-checkbox :indeterminate="isIndeterminate1" v-model="checkAll1" 
-                            @change="handleCheckAllChange1">全选</el-checkbox>
-                            <div style="margin: 15px 0;"></div>
-							<el-checkbox-group v-model="checkedCities12" @change="adsListadd">
-								<el-checkbox v-for="(item,i) in sbusyTimeList" :label="item" :key="i">{{item}}</el-checkbox>
-							</el-checkbox-group>
-						</el-form-item>
-						<el-form-item label="非繁忙時段">
-                            <el-checkbox :indeterminate="isIndeterminate2" v-model="checkAll2" 
-                            @change="handleCheckAllChange2">全选</el-checkbox>
-                            <div style="margin: 15px 0;"></div>
-							<el-checkbox-group v-model="checkedCities2" @change="adunListadd">
-								<el-checkbox v-for="(item,i) in unbusyTimeList" :label="item" :key="i">{{item}}</el-checkbox>
-							</el-checkbox-group>
-						</el-form-item>
-					</el-form>
+					<div class="clear" style="margin-top: 10px;">
+						<div style="color: #B0B0B0;" class="list_item1 float al" v-for="(item,i) in outTimeList" :key="i">
+							{{item.time}} <span class="al" style="margin-left: 5px">
+								<img class="cursor" @click="deleOutTime1(i)" 
+								src="@/assets/img/cha.png" alt="">
+							</span>
+						</div>
+					</div>
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible3 = false">取 消</el-button>
-                <el-button type="primary" @click="sureaddadList">确 定</el-button>
+                <el-button @click="cancelDele">取 消</el-button>
+                <el-button type="primary" @click="sureaddadList(radio4)">确 定</el-button>
             </span>
         </el-dialog>
 
@@ -441,7 +469,7 @@
 							width="270"
 							trigger="click">
 							<div class="popover_item noBar" ref='popover'>
-								<el-form label-position="top"  ref="ruleForm" 
+								<el-form label-position="top"
 									:label-width="$i18n.locale == 'zh-CN'? '80px': '205px'" class="demo-ruleForm">
 									<el-form-item label="繁忙時段">
 										<el-checkbox-group v-model="checkedCities1" @change="group">
@@ -502,7 +530,6 @@ export default {
 			dialogVisible3: false,
 			price_list: [],
 			idsList: [],
-			priceList: [],
 			drawers: false,
 			direction: 'rtl',
 			adList: ['8:00~9:.00'],
@@ -510,7 +537,7 @@ export default {
 			copy2: [],
 			copy3: [],
 			ggbili: '',
-			typeList: [],
+			
 			typeList1: [],
 			storeTypeList: [],
 
@@ -548,8 +575,6 @@ export default {
             radio3: '1',
 			radio4: '1',
 
-
-
 			videoWrap: false,
 			showVideo: false,
 			showViewer1: false,
@@ -562,32 +587,81 @@ export default {
             Poster: '',         
             video: true,
 			submit: true,
-            ruleForm: {
-                name: '',
-				t_name: '',
+			t_name: '',
+			chooseType: null,
+			incomePrice1: '',
+			incomePrice: {
+				id: '',
 				price: '',
-                area: '',
+				state: '',
+			},
+            ruleForm: {
+				chicun: '666',//
+                name: '',  //
+                area: '',//
                 time: '',
                 type: '',
-                storeType: '',
+				size: {//
+					width: '',
+					height: ''
+				},
+				latLng: { lat: '', lng: '' },//
+                storeType: '',//
                 mediaType: '',
-                cmediaType: '',
+                
                 inp: 1,
-				street: '',
-                ratio: '',
+				
                 date: '',
                 content: '',
                 address: '',
-                message: ""
+                message: "",//
+				
             },
+			ruleForm1: {
+				priceList: [], //
+				adTimeList: [],   //
+				price: '',   //
+				typeList: [],  //
+			},
+			rules1: {
+				priceList: [
+					{ required: true, message: '請选择期望收入', trigger: 'change' }
+				],
+				adTimeList: [
+					{ required: true, message: '請添加接收外來廣告時段', trigger: 'change' }
+				],
+				price: [
+                    { required: true, message: '請選擇期望收入', trigger: 'change' }
+                ],
+				typeList: [
+                    { required: true, message: '請添加接收外來廣告行業', trigger: 'change' }
+                ],
+			},
+			ruleForm2: {
+				cmediaType: '',  //
+				cmediaType1: 0,  //
+				videoMinute: 0,   //
+				imageList1: [],//
+			},
+			rules2: {
+				cmediaType: [
+                    { required: true, message: '請選擇廣告媒體類型', trigger: 'change' }
+                ],
+				videoMinute: [
+                    { required: true, message: '', trigger: 'change' }
+                ],
+				imageList1: [
+					{ required: true, message: '請添加圖片', trigger: 'change' }
+				],
+			},
 			labelPosition: 'left',
             rules: {
                 name: [
                     { required: true, message: '請輸入廣告名稱', trigger: 'blur' },
                     { min: 3, max: 5, message: '長度需3 到 5 個字符', trigger: 'blur' }
                 ],
-				price: [
-                    { required: true, message: '請選擇', trigger: 'change' }
+				chicun: [
+                    { required: true, message: '', trigger: 'change' }
                 ],
                 area: [
                     { required: true, message: '請選擇投放區域', trigger: 'change' }
@@ -601,17 +675,11 @@ export default {
                 storeType: [
                     { required: true, message: '請選擇媒體類型', trigger: 'change' }
                 ],
-				t_name: [
-                    { required: true, message: '請選擇媒體類型', trigger: 'change' }
-                ],
                 mediaType: [
                     { required: true, message: '請選擇媒體類型', trigger: 'change' }
                 ],
                 inp: [
                     { required: true, message: '請選擇媒體時長', trigger: 'blur' }
-                ],
-                ratio: [
-                    { required: true, message: '請選擇廣告比例', trigger: 'blur' }
                 ],
                 date: [
                     { required: true, message: '請選擇投放週期', trigger: 'blur' }
@@ -624,22 +692,46 @@ export default {
                 ],
                 message: [
                     { required: true, message: '請輸入店鋪描述', trigger: 'blur' }
-                ]
+                ],
+				'size.width': [
+					{ required: true, message: '請輸入寬度', trigger: 'blur' }
+				],
+				'size.height': [
+					{ required: true, message: '請輸入高度', trigger: 'blur' }
+				],
+				'latLng.lat': [
+					{ required: true, message: '请选择详细地址', trigger: 'blur' }
+				]
             },
 			outTimeList: [],
 			areaList: [],
 			timeList: [],
             imageList: [],
-            imageList1: [],
+            
             minute: [],
 			dimg1: '',
 			map: null,
 			marker: null,
+			
+
+			dnum: null,
+			dnum1: null,
+			dnum2: null,
+			dnum3: null,
+			dnum4: null,
+			dnum5: null,
+			dList: [],   //需删除勾选繁忙时段列表
+			dList1: [],  //需删除drawer繁忙时段列表
+			dList2: [],  //需删除drawer超繁忙时段列表
+			dList3: [],  //需删除drawer非繁忙时段列表
+			dList4: [],  //需删除勾选超繁忙时段列表
+			dList5: [],  //需删除勾选非繁忙时段列表
         };
     },
 	created () {
 		this.$store.dispatch('getAddress',this) 
         this.$store.dispatch('getTypeList',this)
+        this.$store.dispatch('incomePriceId',this)
         let num = 10000
         for (let i=0;i<10;i++) {
             num += 5000
@@ -710,7 +802,12 @@ export default {
 			if (val) {
 				this.loading = val
 			}
-		}
+		},
+		incomePriceIdList (val) {
+			if (val) {
+				this.incomePriceIdList = val
+			}
+		},
 	},
 	computed: {
 		addressList: {           //地址列表
@@ -739,65 +836,114 @@ export default {
 					value: val
 				})
 			}
-		}
+		},
+		incomePriceIdList:{             //期望收入
+			get () { return this.$store.state.user.incomePriceIdList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'incomePriceIdList',
+					value: val
+				})
+			}
+		},
 	},
 	components: { ElImageViewer },
     methods: {
 		AddStore () {       //添加店鋪
+			this.loading = true
 			let that = this
-            this.$refs.forms.validate(flag => {
-                if (flag) {
-					let data = {
-						shopDtoJson: {
-							"shopName": that.ruleForm.name,
-							"addressParentId": 1,
-							"shopAddressId": 5,
-							"addressName": "地址",
-							"longitude": "95.65",
-							"latitude": "30.15",
-							"content": "内容",
-							"types": that.storeTypeList,
-							"shopTypeId": 2,
-							"userId": 6,
-							"shopDiscountDtos": [{
-								"timeIntervalId": 1,
-								"discount": 70,
-								"timeIntervalDetailsDtos": [{
-									"timeIntervalDetailsId": 1,
-									"discount": 70,
-									"receiving": true
-								}],
-								"receiving": true,
-								"unified": true
-							}],
-							"shopGuangGaoDto": {
-								"shopGuangGaoTitle": "广告标题",
-								"shopGuangGaoLength": 6,
-								"shopGuangGaoContents": [{
-									"id": null,
-									"fileUrl": "www.baidu.com",
-									"step": 1,
-									"type": 1,
-									"shopGuangGaoId": 1
-								}]
-							},
-							"width": "12",
-							"heigth": "12",
-							"shopImages": ["12313513032"],
-							"incomePriceId": 3
-						}
-					}
-					let str = JSON.stringify(data.shopDtoJson)
-					const qs = require('qs')
-					let data1 = qs.stringify({
-						shopDtoJson: str
-					})
-					AddStore(data1).then(res => {
-						console.log(res)
-					})
-                }
+			let boo = false
+			let boo1 = false
+			let boo2 = false
+            this.$refs.ruleForm.validate(flag => {
+                if (flag) { boo = true }
             })
-            
+			this.$refs.ruleForm1.validate(flag => {
+				if (flag) { boo1 = true }
+			})
+			this.$refs.ruleForm2.validate(flag => {
+				if (flag) { boo2 = true }
+			})
+
+			if (boo && boo1) {
+				let arr = []
+				this.imageList.forEach((item,i) => {
+					arr.push({
+						"id": null,
+						"fileUrl": item.url,
+						"step": i,
+						"type": that.ruleForm2.cmediaType1,
+						"shopGuangGaoId": null
+					})
+				})
+				let imgList = []
+				that.ruleForm2.imageList1.forEach(item => {
+					imgList.push(item.url)
+				})
+				let data = {
+					shopDtoJson: {
+						"shopName": that.ruleForm.name,
+						"addressParentId": that.ruleForm.area,
+						"shopAddressId": 0,
+						"addressName": "",
+						"longitude": String(that.ruleForm.latLng.lng),
+						"latitude": String(that.ruleForm.latLng.lat),
+						"content": that.ruleForm.message,
+						"types": that.storeTypeList,
+						"shopTypeId": that.ruleForm.storeType,
+						"userId": Number(localStorage.getItem('compoundeyesUserId')),
+						"shopDiscountDtos": [{
+							"timeIntervalId": 1,
+							"discount": 0,
+							"timeIntervalDetailsDtos": [{
+								"timeIntervalDetailsId": 1,
+								"discount": 70,
+								"isReceiving": true
+							}],
+							"isReceiving": true,
+							"isUnified": true
+						}],
+						"shopGuangGaoDto": {
+							"shopGuangGaoTitle": "",
+							"shopGuangGaoLength": 6,
+							// "shopGuangGaoContents": [{
+							// 	"id": null,
+							// 	"fileUrl": "www.baidu.com",
+							// 	"step": 1,
+							// 	"type": that.ruleForm2.cmediaType,
+							// 	"shopGuangGaoId": 1
+							// }],
+							"shopGuangGaoContents": arr
+						},
+						"width": that.ruleForm.size.width,
+						"heigth": that.ruleForm.size.height,
+						// "shopImages": ["12313513032"],
+						"shopImages": imgList,
+						"incomePriceId": that.ruleForm1.price
+					}
+				}
+				let str = JSON.stringify(data.shopDtoJson)
+				const qs = require('qs')
+				let data1 = qs.stringify({
+					shopDtoJson: str
+				})
+				AddStore(data1).then(res => {
+					that.loading = false
+					if (res.data.rtnCode == 200) {
+						that.$message({
+							type: 'success',
+							message: that.$t('lang.addSuccess')
+						})
+						that.submit = false
+					}
+				})
+			} else {
+				this.loading = false
+				this.$message({
+					type: 'warning',
+					message: '請完善信息'
+				})
+			}
         },
         fun () {
 			if (window.innerWidth <= 564) {
@@ -823,6 +969,7 @@ export default {
 			this.videoWrap = false
 		},
 		changeArea (val) {
+			console.log(val)
 			this.ruleForm.street = ''
 		},
 		changeCen (lat,lng) {
@@ -870,6 +1017,8 @@ export default {
 			that.marker = markerr
 			map.addListener('click', function(e) {   //点击获取经纬度
 				// console.log(e.latLng.lat(),e.latLng.lng()); 
+				that.ruleForm.latLng.lat = e.latLng.lat()
+				that.ruleForm.latLng.lng = e.latLng.lng()
 				that.marker.setMap(null)
 
 				that.marker = new google.maps.Marker({
@@ -1208,11 +1357,13 @@ export default {
 			if (e == 1) {
 				this.video = false
 				this.ruleForm.mediaType = 'image'
-				this.ruleForm.cmediaType = '圖片'
+				this.ruleForm2.cmediaType = '圖片'
+				this.ruleForm2.cmediaType1 = 1
 			} else if (e == 2) {
 				this.video = true
 				this.ruleForm.mediaType = 'video'
-				this.ruleForm.cmediaType = '視頻'
+				this.ruleForm2.cmediaType = '視頻'
+				this.ruleForm2.cmediaType1 = 3
 			}
 		},
 		resetForm(formName) {
@@ -1249,8 +1400,142 @@ export default {
 		addArea (item) {
 			this.areaList.push(item)
 		},
-		deleOutTime (i) {
-			this.outTimeList.splice(i,1)
+		deleOutTime (k) {
+			for (let i=0;i<this.checkedCities1.length;i++) {
+				if (this.checkedCities1[i].time == this.ruleForm1.adTimeList[k].time) {
+					this.checkedCities1.splice(i,1)
+				}
+			}
+
+			this.ruleForm1.adTimeList.splice(k,1)        //删除已有列表之一
+			this.addTimeList = this.ruleForm1.adTimeList //同步drawer列表
+		},
+		deleOutTime1 (k) {
+			this.ruleForm1.adTimeList = JSON.parse(JSON.stringify(this.ruleForm1.adTimeList))
+			let that = this
+			this.checkedCities1.findIndex((res,i) => {   //同步勾选繁忙时段列表
+				if (res.time == that.outTimeList[k].time) {
+					this.dnum = i
+				}
+			})
+			this.checkedCities11.findIndex((res,i) => {   //同步勾选超繁忙时段列表
+				if (res.time == that.outTimeList[k].time) {
+					this.dnum4 = i
+				}
+			})
+			this.checkedCities21.findIndex((res,i) => {   //同步勾选非繁忙时段列表
+				if (res.time == that.outTimeList[k].time) {
+					this.dnum5 = i
+				}
+			})
+			this.addTimeList.findIndex((res,i) => {   //同步drawer繁忙时段列表
+				if (res.time == that.outTimeList[k].time) {
+					this.dnum1 = i
+				}
+			})
+			this.addTimeList1.findIndex((res,i) => {   //同步drawer超繁忙时段列表
+				if (res.time == that.outTimeList[k].time) {
+					this.dnum2 = i
+				}
+			})
+			this.addTimeList2.findIndex((res,i) => {   //同步drawer非繁忙时段列表
+				if (res.time == that.outTimeList[k].time) {
+					this.dnum3 = i
+				}
+			})
+			if (this.checkedCities1[this.dnum]) {
+				// this.checkedCities1.splice(dnum,1)     //同步勾选繁忙时段列表
+				this.dList.push(this.checkedCities1[this.dnum])
+			}
+			if (this.checkedCities11[this.dnum4]) {
+				// this.checkedCities11.splice(dnum4,1)     //同步勾选超繁忙时段列表
+				this.dList4.push(this.checkedCities11[this.dnum4])
+			}
+			if (this.checkedCities21[this.dnum5]) {
+				// this.checkedCities21.splice(dnum5,1)     //同步勾选非繁忙时段列表
+				this.dList5.push(this.checkedCities21[this.dnum5])
+			}
+			if (this.addTimeList[this.dnum1]) {
+				// this.addTimeList.splice(dnum1,1)     //同步drawer繁忙时段列表
+				this.dList1.push(this.addTimeList[this.dnum1])
+			}
+			if (this.addTimeList1[this.dnum2]) {
+				// this.addTimeList1.splice(dnum2,1)     //同步drawer超繁忙时段列表
+				this.dList2.push(this.addTimeList1[this.dnum2])
+			}
+			if (this.addTimeList2[this.dnum3]) {
+				// this.addTimeList2.splice(dnum3,1)     //同步drawer非繁忙时段列表
+				this.dList3.push(this.addTimeList2[this.dnum3])
+			}
+			
+
+			this.outTimeList.splice(k,1)		  //删除dialog任意之一
+		},
+		cancelDele () {
+			this.dialogVisible3 = false
+			this.outTimeList = this.ruleForm1.adTimeList //取消修改后同步dialog列表
+		},
+		sureaddadList (val) {
+			if (val == '1') {
+				this.ruleForm1.adTimeList = []
+				this.ruleForm1.adTimeList.push( { time: '接受全部時段' , num: 0} )
+			} else if (val == '2') {
+				this.tongbu()
+				if (this.outTimeList.length == 0) {
+					this.ruleForm1.adTimeList = []
+					this.ruleForm1.adTimeList.push( { time: '不接受外來廣告' , num: 0} )
+				} else {
+					this.ruleForm1.adTimeList = this.outTimeList
+				}
+			} else if (val == '3') {
+				this.ruleForm1.adTimeList = []
+				this.ruleForm1.adTimeList.push( { time: '不接受外來廣告' , num: 0} )
+			}
+			this.dialogVisible3 = false
+		},
+		tongbu () {
+				this.dList.forEach(item => {
+					for (let i=0;i<this.checkedCities1.length;i++) {
+						if (this.checkedCities1[i].time == item.time) {
+							this.checkedCities1.splice(i,1)   //同步勾选繁忙时段列表
+						}
+					}
+				})
+				this.dList4.forEach(item => {
+					for (let i=0;i<this.checkedCities11.length;i++) {
+						if (this.checkedCities11[i].time == item.time) {
+							this.checkedCities11.splice(i,1)   //同步勾选超繁忙时段列表
+						}
+					}
+				})
+				this.dList5.forEach(item => {
+					for (let i=0;i<this.checkedCities21.length;i++) {
+						if (this.checkedCities21[i].time == item.time) {
+							this.checkedCities21.splice(i,1)   //同步勾选非繁忙时段列表
+						}
+					}
+				})
+				this.dList1.forEach(item => {
+					for (let i=0;i<this.addTimeList.length;i++) {
+						if (this.addTimeList[i].time == item.time) {
+							this.addTimeList.splice(i,1)   //同步drawer繁忙时段列表
+						}
+					}
+				})
+				this.dList2.forEach(item => {
+					for (let i=0;i<this.addTimeList1.length;i++) {
+						if (this.addTimeList1[i].time == item.time) {
+							this.addTimeList1.splice(i,1)   //同步drawer超繁忙时段列表
+						}
+					}
+				})
+				this.dList3.forEach(item => {
+					for (let i=0;i<this.addTimeList2.length;i++) {
+						if (this.addTimeList2[i].time == item.time) {
+							this.addTimeList2.splice(i,1)   //同步drawer非繁忙时段列表
+						}
+					}
+				})
 		},
 		deleArea (i) {
 			this.areaList.splice(i,1)
@@ -1265,17 +1550,22 @@ export default {
 		addPrice (item) {
 			this.dialogVisible = false
 			if (item) {
-				this.priceList = []
-				this.priceList.push(item)
-				let arr = new Set(this.priceList)
-				this.priceList = Array.from(arr)
+				this.ruleForm1.price = this.incomePrice.id
+				this.ruleForm1.priceList = []
+				this.ruleForm1.priceList.push(item)
+				let arr = new Set(this.ruleForm1.priceList)
+				this.ruleForm1.priceList = Array.from(arr)
 			}
 		},
+		getIncomePrice (item) {
+			this.incomePrice = item
+			this.incomePrice1 = '$ ' + item.price + ' HKD'
+		},
 		deleTime (i) {
-			this.typeList.splice(i,1)
+			this.ruleForm1.typeList.splice(i,1)
 		},
 		delePrice (i) {
-			this.priceList.splice(i,1)
+			this.ruleForm1.priceList.splice(i,1)
 		},
         changeFile (e) {
 			var files = e.target.files
@@ -1283,7 +1573,7 @@ export default {
 			if (this.ruleForm.mediaType) {
 				if (this.video) {
 					if (this.ruleForm.mediaType == 'video') {
-						if (e.target.files.length<=5 && this.imageList.length <= 5) {
+						if (e.target.files.length<=5 && this.imageList.length < 5) {
 							for(var ff=0;ff<e.target.files.length;ff++){
 								let file = e.target.files[ff].type.split('/')[0]
 								let fileSize = e.target.files[ff].size
@@ -1301,30 +1591,33 @@ export default {
 											size = s.toFixed(0) + 'KB'
 											// size = Math.ceil(files[ff].size/1000) + 'kb'
 										}
-										that.imageList.push({ url: fileurl, name: name, size: size })
+
 										let audioElement = new Audio(fileurl);
 										audioElement.addEventListener("loadedmetadata", function (_event) {
 											var time = Math.ceil(audioElement.duration)
-											if (null != time && "" != time) {
-												if (time > 60 && time < 60 * 60) {
-													time = parseInt(time / 60.0)
-												}
-												// else if (time >= 60 * 60 && time < 60 * 60 * 24) {
-												// 	time = parseInt(time / 3600.0) + "小时" + parseInt((parseFloat(time / 3600.0) -
-												// 	parseInt(time / 3600.0)) * 60) + "分钟" +
-												// 	parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
-												// 	parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60) + "秒";
-												// }
-												else {
-													// time = parseInt(time) + "秒";
-													time =	1;
-												}
+											var sTime = parseInt(time);// 秒
+											var mTime = 0;// 分
+											if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+												//获取分钟，除以60取整数，得到整数分钟
+												mTime = parseInt(sTime / 60);
+												//获取秒数，秒数取佘，得到整数秒数
+												sTime = parseInt(sTime % 60);
 											}
+											that.imageList.push({ 
+												url: fileurl, 
+												name: name, 
+												size: size, 
+												time: time, 
+												videoTime: mTime + '分' + sTime + '秒'
+											})
+											let index = that.imageList.length -1
+											setTimeout(() => {
+												that.initialize(index)
+											},200)
+											
 											// that.minute.push(Math.ceil(audioElement.duration))
 											that.minute.push(time)
 											that.$forceUpdate()
-											// that.ruleForm.inp = that.ruleForm.inp*1 +  Math.ceil(audioElement.duration)                   //时长为秒，小数，182.36   / 向上取整
-											// console.log(audioElement.duration)
 										});
 									} else {
 										this.$message({
@@ -1335,12 +1628,25 @@ export default {
 								} else {}
 							}
 							setTimeout(() => {
+								let that = this
 								this.$nextTick(() => {
-									this.ruleForm.inp = 0
-									for (let i=0;i<Array.from(this.minute).length;i++) {
-										this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
-										this.$forceUpdate()
+									let num = 0
+									for (let i=0;i<that.minute.length;i++) {
+										num += that.minute[i]
 									}
+									let time = num
+									var sTime = parseInt(time);// 秒
+									var mTime = 0;// 分
+									if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+										//获取分钟，除以60取整数，得到整数分钟
+										mTime = parseInt(sTime / 60);
+										//获取秒数，秒数取佘，得到整数秒数
+										sTime = parseInt(sTime % 60);
+									}
+									// console.log(sTime, mTime, mTime + '.' + sTime, Number(mTime + '.' + sTime))
+									time = Math.ceil(Number(mTime + '.' + sTime))
+									that.ruleForm2.videoMinute = time
+									that.$forceUpdate()
 								})
 							},100)
 						} else {
@@ -1395,10 +1701,31 @@ export default {
 				})
 			}
 		},
+		initialize (ff) {
+			var scale = 0.8;
+			var output = this.$refs.output[ff]
+			var video = this.$refs.video[ff]
+			// console.log(ff)
+			video.addEventListener('loadeddata',this.captureImage(video,output,scale));
+		},
+		captureImage (video,output,scale) {
+			setTimeout(() => {
+				var canvas = document.createElement("canvas");
+				canvas.width = video.videoWidth * scale;
+				canvas.height = video.videoHeight * scale;
+				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+				var img = document.createElement("img");
+				img.src = canvas.toDataURL("image/png");
+				
+				// img.width = 400;
+				// img.height = 100;
+				output.appendChild(img);
+			},100)
+		},
 		changeFile1 (e) {
 			var files = e.target.files
 			let that = this
-			if (e.target.files.length<=10 && this.imageList1.length <= 10) {
+			if (e.target.files.length<=10 && that.ruleForm2.imageList1.length <= 10) {
 				for(var ff=0;ff<e.target.files.length;ff++){
 					let file = e.target.files[ff].type.split('/')[0]
 					let fileSize = e.target.files[ff].size
@@ -1416,7 +1743,7 @@ export default {
 								size = s.toFixed(0) + 'KB'
 								// size = Math.ceil(files[ff].size/1000) + 'kb'
 							}
-							that.imageList1.push({ url: fileurl, name: name, size: size })
+							that.ruleForm2.imageList1.push({ url: fileurl, name: name, size: size })
 						} else {
 							this.$message({
 								type: 'error',
@@ -1438,19 +1765,32 @@ export default {
 			}
 		},
 		deleImg (i) {
+			let that = this
 			if (this.ruleForm.mediaType == 'video') {
 				this.minute.splice(i,1)
-				this.ruleForm.inp = 0
-				for (let i=0;i<Array.from(this.minute).length;i++) {
-					this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
-					this.$forceUpdate()
+				let num = 0
+				for (let i=0;i<that.minute.length;i++) {
+					num += that.minute[i]
 				}
+				let time = num
+				var sTime = parseInt(time);// 秒
+				var mTime = 0;// 分
+				if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+					//获取分钟，除以60取整数，得到整数分钟
+					mTime = parseInt(sTime / 60);
+					//获取秒数，秒数取佘，得到整数秒数
+					sTime = parseInt(sTime % 60);
+				}
+				time = Math.ceil(Number(mTime + '.' + sTime))
+				that.ruleForm2.videoMinute = time
+				this.$forceUpdate()
 				this.imageList.splice(i,1)
 			} else {
 				this.imageList.splice(i,1)
 			}
 		},
 		deleImg1 (i) {
+			let that = this
 			if (this.ruleForm.mediaType == 'video') {
 				this.minute.splice(i,1)
 				this.ruleForm.inp = 0
@@ -1458,13 +1798,10 @@ export default {
 					this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
 					this.$forceUpdate()
 				}
-				this.imageList1.splice(i,1)
+				that.ruleForm2.imageList1.splice(i,1)
 			} else {
-				this.imageList1.splice(i,1)
+				that.ruleForm2.imageList1.splice(i,1)
 			}
-		},
-		sureaddadList () {
-			this.dialogVisible3 = false
 		},
 		adListadd (val) {
             let checkedCount = val.length;
@@ -1528,16 +1865,53 @@ export default {
 				this.typeList1.push(item)
 				let arr = new Set(this.typeList1)
 				this.typeList1 = Array.from(arr)
-                // this.changeType()
+				// this.changeType()
 			}
+		},
+		chooseT (item) {
+			this.chooseType = item
 		},
 		deleType1 (i) {
 			this.typeList1.splice(i,1)
             // this.changeType()
 		},
-		changeType () {
+		changeType (item) {
             this.dialogVisible2 = false
-			this.typeList = this.typeList1
+			
+			if (this.radio3 == '1') {
+				this.ruleForm1.typeList = []
+				this.ruleForm1.typeList.push([
+					{
+						guangGaoTypeName:"接收全部行業廣告",
+						id:0,
+						language:"zh-TW",
+					},
+					{
+						guangGaoTypeName:"Receive all industry advertisements",
+						id:0,
+						language:"en-US",
+					}
+				])
+			} else if (this.radio3 == '2') {
+				if (this.typeList1.length != 0) {
+					this.ruleForm1.typeList = JSON.parse(JSON.stringify(this.typeList1))
+				} else {
+					this.ruleForm1.typeList = []
+					this.ruleForm1.typeList.push([
+						{
+							guangGaoTypeName:"接收全部行業廣告",
+							id:0,
+							language:"zh-TW",
+						},
+						{
+							guangGaoTypeName:"Receive all industry advertisements",
+							id:0,
+							language:"en-US",
+						}
+					])
+				}
+				
+			}
             // if (this.typeList1.length != 0) {
             //     let obj = this.typeList1[0]
             //     for (let i=0;i<this.typeList1.length-1;i++) {
@@ -1554,6 +1928,35 @@ export default {
 
 <style lang='less' scoped>
     @import "@/less/style.less";
+	.latlngShow {
+		height: 0;
+		color: gray;
+		@media screen and (max-width: 564px) {
+            height: 27px;
+			margin-top: -25px;
+			margin-left: 10px;
+        }
+	}
+	.popover_item {
+		height: 600px !important;
+		overflow: auto;
+		@media screen and (max-width: 1000px) and (max-height: 500px) {
+            // font-size: 12px;
+			height: 300px !important;
+        }
+	}
+	.video_outWrap {
+		height: 100%;
+		position: relative;
+		.img {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			z-index: 125;
+			transform: translate(-50%, -50%);
+			pointer-events: none;
+		}
+	}
 	.AdvertisingOperation_back {
         width: 98%;
         font-size: 20px;
@@ -1593,7 +1996,7 @@ export default {
         width: 85%;
         // height: calc(100% - 11px);
         padding: 0px 20px;
-        overflow: auto;
+        // overflow: auto;
 		margin-top: 15px;
 		@media screen and (max-width: 564px) {
 			padding: 0px 10px;
@@ -1636,19 +2039,40 @@ export default {
 		background: white;
 		padding: 20px 27px;
     }
-    .textarea_wrap_item {
+	.textarea_wrap_item {
 		width: 100px;
-		height: 110px;
+		height: 140px;
 		margin: 5px;
 		position: relative;
 		.imageList_wrap {
 			border: solid 1px rgb(230, 230, 230);
 			width: 100px;
 			height: 100px;
-            @media screen and (max-width: 564px) {
-                width: 70px;
-                height: 70px;
-            }
+			@media screen and (max-width: 564px) {
+				width: 70px;
+				height: 70px;
+			}
+		}
+		@media screen and (max-width: 564px) {
+			width: 70px;
+			height: 110px;
+		}
+	}
+	.imageList_long {
+		max-width: 100px;
+		text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+		display: -webkit-box;
+		-webkit-line-clamp: 1;/*规定超过两行的部分截断*/
+		-webkit-box-orient: vertical;
+		overflow : hidden; 
+		word-break: break-all;/*在任何地方换行*/
+		font-size: 12px;
+		color: #A7A7A7;
+		line-height: 15px;
+		@media screen and (max-width: 564px) {
+			transform: scale(0.8);
+			width: 90px;
+			margin-left: -9.5px;
 		}
 	}
     .imageList_name, .imageList_size {
@@ -1672,14 +2096,15 @@ export default {
         overflow: hidden;
     }
     .deleImg {
-        background: rgb(224, 224, 224);
-        position: absolute;
-        top: -5px;
-        right: -5px;
-        width: 20px;
-        height: 20px;
-        // opacity: 0.9;
-    }
+		background: rgb(224, 224, 224);
+		position: absolute;
+		top: -5px;
+		right: -5px;
+		width: 20px;
+		height: 20px;
+		z-index: 22;
+		// opacity: 0.9;
+	}
 	.addImg {
 		border: dashed 1px rgb(201, 201, 201);
 		width: 100px;
@@ -1765,7 +2190,7 @@ export default {
         font-size: 14px;
     }
     .textarea {
-        width: 98%;
+        width: 100%;
         height: 200px;
         // padding: 3px;
         textarea {
@@ -1779,20 +2204,12 @@ export default {
     }
 	.inp_time1 {
 		width: 70px;
-		background: #F5F7FA;
-		border: solid 1px #E4E7ED;
-		color: rgb(168, 168, 168);
-		height: 37px;
-		// margin-left: 30px;
+		// background: #F5F7FA;
+		// border: solid 1px #E4E7ED;
+		// color: rgb(168, 168, 168);
+		// height: 37px;
 		margin-right: 5px;
-		overflow: hidden;
-		input {
-			border: none;
-			outline: none;
-			width: 100%;
-			background: #F5F7FA;
-			// height: 100%;
-		}
+		// overflow: hidden;
     }
     .addorcancel {
         margin-top: 30px;
@@ -1825,6 +2242,28 @@ export default {
 	.mapwrap_w {
 		width: calc(100% + 120px);
 		@media screen and (max-width: 564px) {
+			width: 100%;
+        }
+	}
+	.content_down {
+		width: calc(100% + 115px);
+		position: relative;
+		margin-top: 35px;
+		margin-left: -125px;
+		@media screen and (max-width: 564px) {
+            margin-left: 5px;
+			margin-top: 0px;
+			width: 98%;
+        }
+	}
+	.content_down1 {
+		width: calc(100% + 246px);
+		position: relative;
+		margin-top: 55px;
+		margin-left: -247px;
+		@media screen and (max-width: 564px) {
+            margin-left: 0px;
+			margin-top: 0px;
 			width: 100%;
         }
 	}

@@ -106,7 +106,18 @@
 								<div class="flex">
                                     <el-input style="width: 40%;min-width: 200px;" 
                                     v-model="ruleForm.content"></el-input>
-                                    <el-button type="primary" style="margin-left: 5px;">添加</el-button>
+                                    <el-button type="primary" style="margin-left: 5px;" @click.native="addContentList">添加</el-button>
+                                </div>
+								<div class="flex" v-for="(item,i) in ruleForm.contentList" :key="i" style="margin-top: 10px;">
+                                    <el-input style="width: 40%;min-width: 200px;" 
+                                    v-model="ruleForm.contentList[i].value"></el-input>
+
+                                    <div class="flex">
+										<el-button type="primary" style="margin-left: 5px;" 
+										@click.native="addContentList">添加</el-button>
+										<div class="cursor addCate" style="margin: 2px 0 0 10px;" @click="delContentList(i)">刪除</div>
+									</div>
+
                                 </div>
 							</el-form-item>
 
@@ -144,8 +155,8 @@
 										<div class="al inp_time ju">
 											<!-- <el-input-number v-model="ruleForm.inp" :step="10" step-strictly size="small" 
 											:min="10" :max="900" label="描述文字" disabled></el-input-number> -->
-											<el-input-number v-model="ruleForm.inp" :step="10" size="small" 
-											:min="60" :max="900" label="描述文字"></el-input-number>
+											<el-input-number v-model="ruleForm.inp" :step="1" size="small" 
+											:min="1" :max="100" label="描述文字"></el-input-number>
 										</div>
 										<div>{{$t('lang.minute')}}</div>
 									</div>
@@ -370,8 +381,6 @@
 							</div>
 						</el-form-item>
 					</el-form>
-
-					
 					<div class="ju" style="margin-top: 20px;">
 						<el-popover
 							style="width: 80px;"
@@ -519,8 +528,9 @@ export default {
 				endtDate: '',
                 content: '',
 				mediaType: '',
-				inp: 60,
-				videoMinute: 0
+				inp: 1,
+				videoMinute: 0,
+				contentList: []
             },
             rules: {
                 name: [
@@ -983,16 +993,16 @@ export default {
 			arr.forEach(item => {
 				i = i + item.num
 			})
-			if (i == this.ruleForm.inp) {
+			// if (i == this.ruleForm.inp) {
 				this.adList1 = this.addTimeList.concat(this.addTimeList1.concat(this.addTimeList2))
 				this.drawer2 = false
 				this.ruleForm.inp = i
-			} else {
-				this.$message({
-					type: 'error',
-					message: '確認自定義時間等於投放時長'
-				})
-			}
+			// } else {
+			// 	this.$message({
+			// 		type: 'error',
+			// 		message: '確認自定義時間等於投放時長'
+			// 	})
+			// }
 		},
 		changeArea (val) {
 			this.ruleForm.street = ''
@@ -1413,9 +1423,6 @@ export default {
 				bermudaTriangle.setMap(null);
 			}
 		},
-
-
-
 		reset () {
 			this.checkedCities21 = []
 			this.checkedCities11 = []
@@ -1703,6 +1710,12 @@ export default {
 				// img.height = 100;
 				output.appendChild(img);
 			},100)
+		},
+		addContentList () {
+			this.ruleForm.contentList.push({ key: '', value: '' })
+		},
+		delContentList (i) {
+			this.ruleForm.contentList.splice(i,1)
 		}
     }
 }
