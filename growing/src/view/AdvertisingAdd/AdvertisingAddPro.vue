@@ -1842,7 +1842,7 @@ export default {
 	.popover_item {
 		height: 600px !important;
 		overflow: auto;
-		@media screen and (max-width: 1000px) and (max-height: 500px) {
+		@media screen and (max-height: 640px) {
             // font-size: 12px;
 			height: 300px !important;
         }

@@ -502,6 +502,7 @@ export default {
 				lat: 0,
 				lng: 0
 			}
+			
 			var markerr = new google.maps.Marker({position: pos, map: map})
 			that.marker = markerr
 			map.addListener('click', function(e) {   //点击获取经纬度
@@ -513,24 +514,6 @@ export default {
 					icon: mapPoint,
 					map: map,
 				})
-
-
-				var axios = require('axios');
-
-				var config = {
-					method: 'get',
-					url: 'https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJN1t_tDeuEmsRUsoyG83frY4&fields=name%2Crating%2Cformatted_phone_number&key=AIzaSyC4UE1P5tLy0aSibmA0WzZq-yFi9cpyrW0',
-					headers: { }
-				};
-
-				axios(config).then(function (response) {
-					console.log(JSON.stringify(response.data));
-					console.log(response);
-				})
-				.catch(function (error) {
-					onsole.log(error);
-				});
-
 				// var pos = {
 				// 	lat: e.latLng.lat(),
 				// 	lng: e.latLng.lng()

@@ -356,3 +356,13 @@ export function getRemainderDay (data) {    //获取每个区域的所有广告
         }
     )
 } 
+
+
+// export function AK (data) {   
+//     return request (
+//         {
+//             url: "http://api.map.baidu.com/api_region_search/v1/?keyword=香港&sub_admin=0&ak=6GAWAG891l60tKygT8GcbFB45PGbUrZC",
+//             method: "GET",
+//         }
+//     )
+// }
