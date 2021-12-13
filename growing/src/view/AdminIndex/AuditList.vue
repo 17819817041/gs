@@ -589,16 +589,21 @@ export default {
         this.shopExamine()
     },
     watch: {
-		addressList (val) {
-			if (val) {
-				this.addressList = val
+		addressList: {
+			handler (val) {
+				if (val) {
+					this.addressList = val
+				}
 			}
 		},
-        getTypeList (val) {
-			if (val) {
-				this.getTypeList = val
-			}
-		}
+		getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+					this.getShopDetailsById()
+				}
+			},
+		},
 	},
 	computed: {
 		addressList: {           //地址列表

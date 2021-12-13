@@ -251,7 +251,12 @@ export default {
             this.$router.push('/PlatSetting')
         },
         AdministrationStore () {
-            this.$router.push('/AdministrationStore')
+            this.$router.push({
+                name: 'AdministrationStore',
+                query: {
+                    id: this.shopTitle.shopId
+                }
+            })
         },
         
     }

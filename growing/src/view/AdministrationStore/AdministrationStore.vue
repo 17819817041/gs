@@ -39,9 +39,12 @@
 									<div class="flex">
 										<el-select v-model="ruleForm.area" @change="changeArea"
 											:placeholder="$t('lang.pldselectarea')" style="margin-right: 10px;">
-											<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
-											<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
-											<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
+											<el-option v-for="(item,i) in addressList" :key="i"
+												:label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+												item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+												item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+												:value="item.id">
+											</el-option>
 										</el-select>
 										<el-select v-model="ruleForm.street" :placeholder="$t('lang.pldselectstreet')">
 											<el-option :label="$t('lang.Kowloon') + $t('lang.street')" @click.native="changeCen(22.8, 114.6)"
@@ -54,14 +57,11 @@
 									</div>
 								</div>
 						</el-form-item>
-						<el-form-item label="店鋪詳細位置地址" prop="address">
+						<el-form-item label="店鋪詳細位置地址" prop="latLng.lat">
 							<div class="mapwrap_w">
-								<!-- <div class="al width30" style='min-width: 217px;'>
-									<div class="elinput width100">
-										<el-input class="width100" v-model="ruleForm.address"></el-input>
-									</div>
-								</div> -->
-								<div class="size12 streetText">{{ruleForm.street}}</div>
+								<div class="size12 latlngShow" v-show="ruleForm.latLng.lat"
+								> lat: {{ruleForm.latLng.lat}}, lng: {{ruleForm.latLng.lng}} </div>
+								<div class="size12 streetText"></div>
 								<div :class="['map_wrap']">
 									<img class="searchImg" src="@/assets/img/search.png" alt="">
 									<input
@@ -84,14 +84,14 @@
 						</el-form-item>
 						<el-form-item label="廣告顯示的尺寸" prop="message" class="bcolor" style="background: #F2F2F2;">
 							<div class="al">
-								<div class="inp_time1"><input type="text"></div>
-								<div> m(高)</div>
-								<div style="margin: 0 15px;"> × </div>
-								<div class="inp_time1"><input type="text"></div>
+								<div class="inp_time1 al"><input type="text" v-model="ruleForm.size.width"></div>
 								<div> m(寬)</div>
+								<div style="margin: 0 15px;"> × </div>
+								<div class="inp_time1 al"><input type="text" v-model="ruleForm.size.height"></div>
+								<div> m(高)</div>
 							</div>
 						</el-form-item>
-						<el-form-item label="店鋪展示圖片" prop="type" class="bcolor">
+						<el-form-item label="店鋪展示圖片" prop="imageList1" class="bcolor">
 							<div class="textarea_wrap clear">
 								<label for="img1">
 									<div class="addImg ju al float">
@@ -99,7 +99,7 @@
 									</div>
 									<input type="file" id="img1" v-show="false" multiple="multiple" @change="changeFile1">
 								</label>
-								<div class="textarea_wrap_item float" v-for="(item,i) in imageList1" :key="i">
+								<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm.imageList1" :key="i">
 									<div class="imageList_wrap cursor">
 										<div class="deleImg radius ju al" @click.stop="deleImg1(i)">
 											<img style="heihgt: 100%;" src="@/assets/img/cha.png" alt="">
@@ -108,8 +108,8 @@
 											<img style="height: 100%;" :src="item.url" alt="">
 										</div>
 									</div>
-									<div class="imageList_name tc">{{item.name}}</div>
-									<div class="imageList_size tc">{{item.size}}</div>
+									<div class="imageList_name tc">{{item.fileName}}</div>
+									<div class="imageList_size tc">{{item.fileSize}}</div>
 								</div>
 							</div>
 							<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
@@ -123,7 +123,7 @@
 						<div class="divider"></div>
 						<div class="divider_text">接受外來廣告設定</div>
 					</div>
-					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="145px" class="demo-ruleForm">
+					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm1" label-width="145px" class="demo-ruleForm">
 						<el-form-item label="接受外來廣告比例" prop="ratio"  class="bcolor">
 							<div class="width30">
 								<!-- <el-input v-model="ruleForm.ratio "></el-input> -->
@@ -180,27 +180,28 @@
 						<div class="divider"></div>
 						<div class="divider_text">店鋪廣告媒體內容信息</div>
 					</div>
-					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
+					<el-form :model="ruleForm2" :label-position="labelPosition" :rules="rules2" ref="ruleForm2" 
 					:label-width="$i18n.locale == 'zh-CN'? '125px': '165px'" class="demo-ruleForm">
-						<el-form-item label="廣告媒體類型" prop="mediaType" class="bcolor">
+						<el-form-item label="廣告媒體類型" prop="cmediaType" class="bcolor">
 							<div class="al">
-								<el-select v-model="ruleForm.cmediaType" placeholder="請選擇類型" @change="getType">
-									<el-option label="圖片" value="1"></el-option>
-									<el-option label="視頻" value="2"></el-option>
+								<el-select v-model="ruleForm2.cmediaType" placeholder="請選擇類型" @change="getType">
+									<el-option :label="$t('lang.image')" value="1"></el-option>
+									<!-- <el-option label="GIF" value="2"></el-option> -->
+									<el-option :label="$t('lang.video')" value="3"></el-option>
 								</el-select>
 							</div>
 						</el-form-item>
-						<el-form-item label="廣告媒體時長" prop="inp">
+						<el-form-item label="廣告媒體時長" prop="videoMinute">
 							<div class="al">
 								<div class="al inp_time">
 										<!-- <input type="text" class="tc"> -->
-									<el-input-number v-model="ruleForm.videoMinute" :step="1" size="small" 
+									<el-input-number v-model="ruleForm2.videoMinute" :step="1" size="small" 
 									:min="1" :max="5" label="描述文字"></el-input-number>
 								</div>
 								<div>{{$t('lang.minute')}}</div>
 							</div>
 						</el-form-item>
-						<el-form-item label="廣告媒體內容" prop="content" class="bcolor">
+						<el-form-item label="廣告媒體內容" prop="imageList" class="bcolor">
 							<div class="textarea_wrap clear">
 								<label for="img">
 									<div class="addImg ju al float">
@@ -208,14 +209,14 @@
 									</div>
 									<input type="file" id="img" v-show="false" multiple="multiple" @change="changeFile">
 								</label>
-								<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
+								<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm2.imageList" :key="i">
 									<div class="imageList_wrap">
 										<div class="deleImg radius cursor ju al" @click.stop="deleImg(i)">
 											<img style="heihgt: 100%;" src="@/assets/img/cha.png" alt="">
 										</div>
 										<div class="textarea_wrap_item_child ju al cursor">
-											<img v-if="ruleForm.mediaType == 'image'"  @click="imgPreview(item.url)"
-											style="height: 100%;" :src="item.url" alt="">
+											<img v-if="ruleForm.mediaType == 'image'"  @click="imgPreview(item.fileUrl)"
+											style="height: 100%;" :src="item.fileUrl" alt="">
 
 											<div class="video_outWrap" v-else-if="ruleForm.mediaType == 'video'">
 												<img class="img" src="@/assets/img/start.png" alt="">
@@ -225,13 +226,15 @@
 												</div>
 												<video class="width100" id="video1" ref="video"
 													:controls="false">
-													<source :src="item.url" type="video/mp4">
+													<source :src="item.fileUrl" type="video/mp4">
 												</video>
 											</div>
 										</div>
 									</div>
-									<div class="imageList_name tc">{{item.name}}</div>
-									<div class="imageList_size tc">{{item.size}}</div>
+									<div class="imageList_name tc">{{item.fileName}}</div>
+									<div class="imageList_size tc">{{item.fileSize}}</div>
+									<div class="imageList_long tc" v-if="ruleForm.mediaType == 'video'"
+										>時長：{{item.filePlayTime}}</div>
 								</div>
 							</div>
 							<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
@@ -281,7 +284,7 @@
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import mapPoint from "@/assets/img/marker.png"
-
+import { updateShop, getShopDetailsById } from "@/axios/request.js"
 export default {
     data() {
         return {
@@ -303,22 +306,38 @@ export default {
                 time: '',
                 type: '',
                 storeType: '',
+				size: {//
+					width: '',
+					height: ''
+				},
+				latLng: { lat: '', lng: '' },//
                 mediaType: '',
-                cmediaType: '',
                 inp: 1,
-				videoMinute: 0,
 				street: '',
                 ratio: '',
                 date: '',
                 content: '',
                 address: '',
+				imageList1: [],//
                 message: ""
             },
 			labelPosition: 'left',
             rules: {
+				'size.width': [
+					{ required: true, message: '請輸入寬度', trigger: 'blur' }
+				],
+				'size.height': [
+					{ required: true, message: '請輸入高度', trigger: 'blur' }
+				],
+				'latLng.lat': [
+					{ required: true, message: '请选择详细地址', trigger: 'blur' }
+				],
+				imageList1: [
+					{ required: true, message: '請添加圖片', trigger: 'change' }
+				],
                 name: [
                     { required: true, message: '請輸入廣告名稱', trigger: 'blur' },
-                    { min: 3, max: 5, message: '長度需3 到 5 個字符', trigger: 'blur' }
+                    { min: 3, max: 15, message: '長度需3 到 15 個字符', trigger: 'blur' }
                 ],
                 area: [
                     { required: true, message: '請選擇投放區域', trigger: 'change' }
@@ -354,11 +373,27 @@ export default {
                     { required: true, message: '請輸入店鋪描述', trigger: 'blur' }
                 ]
             },
+			ruleForm2: {
+				cmediaType: '',  //
+				cmediaType1: 0,  //
+				videoMinute: 0,   //
+				imageList: [],
+			},
+			rules2: {
+				cmediaType: [
+                    { required: true, message: '請選擇廣告媒體類型', trigger: 'change' }
+                ],
+				videoMinute: [
+                    { required: true, message: '', trigger: 'change' }
+                ],
+				imageList: [
+					{ required: true, message: '請添加媒體內容', trigger: 'change' }
+				],
+			},
 			typeList: [],
 			areaList: [],
 			timeList: [],
-            imageList: [],
-            imageList1: [],
+            
             minute: [],
 			dimg1: '',
 			map: null,
@@ -380,28 +415,38 @@ export default {
         this.initMap1(22.6,114.1,1)
     },
 	watch: {
-		addressList (val) {
-			if (val) {
-				this.addressList = val
+		addressList: {
+			handler (val) {
+				if (val) {
+					this.addressList = val
+				}
 			}
 		},
-        getTypeList (val) {
-			if (val) {
-				this.getTypeList = val
-			}
+		getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+					this.getShopDetailsById()
+				}
+			},
 		},
-        loading (val) {
-			if (val) {
-				this.loading = val
-			}
+		loading: {
+			handler (val) {
+				if (val) {
+					this.loading = val
+				}
+			},
 		},
-		incomePriceIdList (val) {
-			if (val) {
-				this.incomePriceIdList = val
-			}
-		},
+		lang: {
+            handler (val) {
+                if (val) {
+					this.getShopDetailsById()
+                }
+            }
+        },
 	},
 	computed: {
+		lang () { return this.$i18n.locale },
 		addressList: {           //地址列表
 			get () { return this.$store.state.user.addressList },
 			set (val) {
@@ -429,18 +474,155 @@ export default {
 				})
 			}
 		},
-		incomePriceIdList:{             //期望收入
-			get () { return this.$store.state.user.incomePriceIdList },
-			set (val) {
-				this.$store.commit('setUser', {
-					key: 'incomePriceIdList',
-					value: val
-				})
-			}
-		},
 	},
 	components: { ElImageViewer },
+	created () {
+		this.$store.dispatch('getAddress',this) 
+        this.$store.dispatch('getTypeList',this)
+        this.$store.dispatch('incomePriceId',this)
+		
+	},
     methods: {
+		getShopDetailsById () {
+			this.loading = true
+			let that = this
+			let data = {
+				shopId: Number(this.$route.query.id)
+			}
+			getShopDetailsById(data).then(res => {
+				this.loading = false
+				console.log(res)
+				if (res.data.rtnCode == 200) {
+					that.ruleForm.name = res.data.data.shopName
+					that.ruleForm.latLng.lat = res.data.data.latitude
+					that.ruleForm.latLng.lng = res.data.data.longitude
+					that.ruleForm.size.width = res.data.data.width
+					that.ruleForm.size.height = res.data.data.heigth
+					this.getTypeList.forEach(item => {
+						item.forEach(child => {
+							if (child.id == res.data.data.shopTypeId && child.language == 'zh-TW' && this.$i18n.locale == 'zh-CN') {
+								that.ruleForm.storeType = child.guangGaoTypeName
+							} else if (child.id == res.data.data.shopTypeId && child.language == 'en-US' && this.$i18n.locale == 'en-US') {
+								that.ruleForm.storeType = child.guangGaoTypeName
+							}
+						})
+					})
+					res.data.data.shopImages.forEach(item => {
+						this.ruleForm.imageList1 = []
+						this.ruleForm.imageList1.push({ url: item })
+					})
+					this.ruleForm2.imageList = res.data.data.shopGuangGaoDto.shopGuangGaoContents
+					this.addressList.forEach(item => {
+						if (item.id == res.data.data.addressParentId) {
+							item.addressLanguageDtos.find( res => res.language == "zh-TW") && this.$i18n.locale == "zh-CN" ? 
+							this.ruleForm.area = item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+							this.ruleForm.area = item.addressLanguageDtos.find( res => res.language == "en-US").addressName
+						}
+					})
+					
+					if (res.data.data.shopGuangGaoDto.shopGuangGaoContents[0].type == 1 && this.$i18n.locale == 'zh-CN') {
+						this.ruleForm2.cmediaType = '圖片'
+					} else if (res.data.data.shopGuangGaoDto.shopGuangGaoContents[0].type == 1 && this.$i18n.locale == 'en-US') {
+						this.ruleForm2.cmediaType = 'image'
+					}
+
+					if (res.data.data.shopGuangGaoDto.shopGuangGaoContents[0].type == 3 && this.$i18n.locale == 'zh-CN') {
+						this.ruleForm2.cmediaType = '視頻'
+					} else if (res.data.data.shopGuangGaoDto.shopGuangGaoContents[0].type == 3 && this.$i18n.locale == 'en-US') {
+						this.ruleForm2.cmediaType = 'video'
+					}
+					this.ruleForm.message = res.data.data.content
+				}
+			})
+		},
+		updateShop () {
+			let that = this
+			let boo = true
+			// let boo1 = false
+			let boo2 = false
+			this.$refs.ruleForm.validate(flag => {
+                if (flag) { boo = true }
+            })
+			// this.$refs.ruleForm1.validate(flag => {
+			// 	if (flag) { boo1 = true }
+			// })
+			this.$refs.ruleForm2.validate(flag => {
+				if (flag) { boo2 = true }
+			})
+			if (boo && boo2) {
+				let arr = []
+				this.ruleForm2.imageList.forEach((item,i) => {
+					arr.push({
+						"id": null,
+						"fileUrl": item.url,
+						"step": i,
+						"type": that.ruleForm2.cmediaType1,
+						"shopGuangGaoId": null,
+						"fileName": item.name,
+						"fileSize": item.size,
+						"filePlayTime": item.videoTime
+					})
+				})
+				let imgList = []
+				that.ruleForm.imageList1.forEach(item => {
+					imgList.push(item.url)
+				})
+				let data = {
+					shopDtoJson: {
+						"shopId": that.$route.query.id,
+						"shopName": that.ruleForm.name,
+						"addressParentId": that.ruleForm.area,
+						"shopAddressId": 0,
+						"addressName": "",
+						"longitude": String(that.ruleForm.latLng.lng),
+						"latitude": String(that.ruleForm.latLng.lat),
+						"content": that.ruleForm.message,
+						"shopTypeId": that.ruleForm.storeType,
+						"shopGuangGaoDto": {
+							"shopGuangGaoTitle": "",
+							"shopGuangGaoLength": 6,
+							// "shopGuangGaoContents": [{
+							// 	"id": null,
+							// 	"fileUrl": "www.baidu.mp4",
+							// 	"step": 1,
+							// 	"type": 3,
+							// 	"shopGuangGaoId": 0
+							// }]
+							"shopGuangGaoContents": arr
+						},
+						"width": that.ruleForm.size.width,
+						"heigth": that.ruleForm.size.height,
+						// "shopImages": ["12313513032"],
+						"shopImages": imgList,
+					}
+				}
+				let str = JSON.stringify(data.shopDtoJson)
+				const qs = require('qs')
+				let data1 = qs.stringify({
+					shopDtoJson: str
+				})
+				updateShop(data1).then(res => {
+					if (res.data.rtnCode == 200) {
+						that.$message({
+							type: 'success',
+							message: that.$t('lang.addSuccess')
+						})
+						that.submit = false
+					} else {
+						this.$message({
+							type: 'error',
+							message: '修改失敗'
+						})
+					}
+				}).catch(e => {
+					this.$message({
+						type: 'error',
+						message: '修改失敗'
+					})
+				})
+			}
+			
+		},
         fun () {
 			if (window.innerWidth <= 564) {
                 this.labelPosition = 'top'
@@ -449,7 +631,7 @@ export default {
             }
 		},
 		previewVideo (item) {
-			this.src = item.url
+			this.src = item.fileUrl
 			this.showVideo = true
 			this.videoWrap = true
 		},
@@ -507,6 +689,9 @@ export default {
 			that.marker = markerr
 			map.addListener('click', function(e) {   //点击获取经纬度
 				// console.log(e.latLng.lat(),e.latLng.lng()); 
+				let a = that.map.getBounds()
+				that.ruleForm.latLng.lat = e.latLng.lat()
+				that.ruleForm.latLng.lng = e.latLng.lng()
 				that.marker.setMap(null)
 
 				that.marker = new google.maps.Marker({
@@ -514,6 +699,7 @@ export default {
 					icon: mapPoint,
 					map: map,
 				})
+
 				// var pos = {
 				// 	lat: e.latLng.lat(),
 				// 	lng: e.latLng.lng()
@@ -604,7 +790,7 @@ export default {
 				this.video = false
 				this.ruleForm.mediaType = 'image'
 				this.ruleForm.cmediaType = '圖片'
-			} else if (e == 2) {
+			} else if (e == 3) {
 				this.video = true
 				this.ruleForm.mediaType = 'video'
 				this.ruleForm.cmediaType = '視頻'
@@ -614,6 +800,8 @@ export default {
 			this.$refs[formName].resetFields();
 		},
 		submitG () {
+			this.updateShop()
+			return
 			this.submit = false
 		},
 		goBack () {
@@ -659,7 +847,7 @@ export default {
 			if (this.ruleForm.mediaType) {
 				if (this.video) {
 					if (this.ruleForm.mediaType == 'video') {
-						if (e.target.files.length<=5 && this.imageList.length < 5) {
+						if (e.target.files.length<=5 && this.ruleForm2.imageList.length < 5) {
 							for(var ff=0;ff<e.target.files.length;ff++){
 								let file = e.target.files[ff].type.split('/')[0]
 								let fileSize = e.target.files[ff].size
@@ -689,14 +877,14 @@ export default {
 												//获取秒数，秒数取佘，得到整数秒数
 												sTime = parseInt(sTime % 60);
 											}
-											that.imageList.push({ 
-												url: fileurl, 
-												name: name, 
-												size: size, 
+											that.ruleForm2.imageList.push({ 
+												fileUrl: fileurl, 
+												fileName: name, 
+												fileSize: size, 
 												time: time, 
-												videoTime: mTime + '分' + sTime + '秒'
+												filePlayTime: mTime + '分' + sTime + '秒'
 											})
-											let index = that.imageList.length -1
+											let index = that.ruleForm2.imageList.length -1
 											setTimeout(() => {
 												that.initialize(index)
 											},200)
@@ -745,7 +933,7 @@ export default {
 				}
 				if (!this.video) {
 					if (this.ruleForm.mediaType == 'image') {
-						if (e.target.files.length<=10 && this.imageList.length <= 10) {
+						if (e.target.files.length<=10 && this.ruleForm2.imageList.length <= 10) {
 							for(var ff=0;ff<e.target.files.length;ff++){
 								let file = e.target.files[ff].type.split('/')[0]
 								let fileSize = e.target.files[ff].size
@@ -763,7 +951,7 @@ export default {
 											size = s.toFixed(0) + 'KB'
 											// size = Math.ceil(files[ff].size/1000) + 'kb'
 										}
-										that.imageList.push({ url: fileurl, name: name, size: size })
+										that.ruleForm2.imageList.push({ fileUrl: fileurl, fileName: name, fileSize: size })
 									} else {
 										this.$message({
 											type: 'error',
@@ -790,7 +978,7 @@ export default {
 		changeFile1 (e) {
 			var files = e.target.files
 			let that = this
-			if (e.target.files.length<=10 && this.imageList1.length <= 10) {
+			if (e.target.files.length<=10 && this.ruleForm.imageList1.length <= 10) {
 				for(var ff=0;ff<e.target.files.length;ff++){
 					let file = e.target.files[ff].type.split('/')[0]
 					let fileSize = e.target.files[ff].size
@@ -808,7 +996,7 @@ export default {
 								size = s.toFixed(0) + 'KB'
 								// size = Math.ceil(files[ff].size/1000) + 'kb'
 							}
-							that.imageList1.push({ url: fileurl, name: name, size: size })
+							that.ruleForm.imageList1.push({ url: fileurl, name: name, size: size })
 						} else {
 							this.$message({
 								type: 'error',
@@ -849,9 +1037,12 @@ export default {
 				time = Math.ceil(Number(mTime + '.' + sTime))
 				that.ruleForm.videoMinute = time
 				this.$forceUpdate()
-				this.imageList.splice(i,1)
+				this.ruleForm2.imageList.splice(i,1)
+				console.log(this.$refs.output)
+				this.$refs.output.splice(i,1)
+				console.log(this.$refs.output)
 			} else {
-				this.imageList.splice(i,1)
+				this.ruleForm2.imageList.splice(i,1)
 			}
 		},
 		deleImg1 (i) {
@@ -862,9 +1053,9 @@ export default {
 					this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
 					this.$forceUpdate()
 				}
-				this.imageList1.splice(i,1)
+				this.ruleForm.imageList1.splice(i,1)
 			} else {
-				this.imageList1.splice(i,1)
+				this.ruleForm.imageList1.splice(i,1)
 			}
 		},
 		initialize (ff) {
@@ -883,6 +1074,7 @@ export default {
 				var img = document.createElement("img");
 				img.src = canvas.toDataURL("image/png");
 				
+				
 				// img.width = 400;
 				// img.height = 100;
 				output.appendChild(img);
@@ -894,6 +1086,15 @@ export default {
 
 <style lang='less' scoped>
     @import "@/less/style.less";
+	.latlngShow {
+		height: 0;
+		color: gray;
+		@media screen and (max-width: 564px) {
+            height: 27px;
+			margin-top: -25px;
+			margin-left: 10px;
+        }
+	}
 	.video_outWrap {
 		height: 100%;
 		position: relative;
@@ -1149,6 +1350,7 @@ export default {
 			border: none;
 			outline: none;
 			width: 100%;
+			background: #F5F7FA;
 			// height: 100%;
 		}
     }

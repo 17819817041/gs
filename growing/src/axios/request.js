@@ -159,6 +159,29 @@ export function getShopIncomeStatistics (data) {    //查询店鋪廣告收入�
     )
 }
 
+export function updateShop (data) {    //修改店鋪
+    return request (
+        {
+            url: "/api/shop/updateShop",
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        }
+    )
+}
+
+export function getShopDetailsById (data) {    //查询店鋪
+    return request (
+        {
+            url: "/api/shop/getShopDetailsById",
+            method: "PUT",
+            params: data
+        }
+    )
+}
+
 
 
 
@@ -356,6 +379,19 @@ export function getRemainderDay (data) {    //获取每个区域的所有广告
         }
     )
 } 
+
+export function genOrder (data) {    //生成订单/ 添加廣告
+    return request (
+        {
+            url: "/api/userOrder/genOrder",
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        }
+    )
+}
 
 
 // export function AK (data) {   

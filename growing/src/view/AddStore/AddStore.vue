@@ -110,7 +110,7 @@
 									</div>
 									<input type="file" id="img1" v-show="false" multiple="multiple" @change="changeFile1">
 								</label>
-								<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm2.imageList1" :key="i">
+								<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm.imageList1" :key="i">
 									<div class="imageList_wrap">
 										<div class="deleImg radius ju al" @click.stop="deleImg1(i)">
 											<img style="heihgt: 100%;" src="@/assets/img/cha.png" alt="">
@@ -134,7 +134,7 @@
 						<div class="divider"></div>
 						<div class="divider_text">接受外來廣告設定</div>
 					</div>
-					<el-form :model="ruleForm1" :label-position="labelPosition" 
+					<el-form :model="ruleForm1" label-position="top" 
 					:rules="rules1" ref="ruleForm1"
 					label-width="245px" class="demo-ruleForm">
 						<el-form-item :label='$t("lang.set_price")' prop="price" class="bcolor">
@@ -149,7 +149,7 @@
 								</div>
 							</div>
 							<div class="flex">
-								<div class="list clear">
+								<div class=" clear">
 									<div style="color: #B0B0B0;" class="list_item float al" 
 									v-for="(item,i) in ruleForm1.priceList" :key="i">
 										$ {{item.price}} HKD<span class="al" style="margin-left: 5px">
@@ -221,9 +221,10 @@
 						<el-form-item label="廣告媒體類型" prop="cmediaType" class="bcolor">
 							<div class="al">
 								<el-select v-model="ruleForm2.cmediaType" placeholder="請選擇類型" @change="getType">
-									<el-option label="圖片" value="1"></el-option>
+									<el-option :label="$t('lang.image')" value="1"></el-option>
 									<!-- <el-option label="GIF" value="2"></el-option> -->
-									<el-option label="視頻" value="3"></el-option>
+									<el-option :label="$t('lang.video')" value="3"></el-option>
+
 								</el-select>
 							</div>
 						</el-form-item>
@@ -236,7 +237,7 @@
 								<div>{{$t('lang.minute')}}</div>
 							</div>
 						</el-form-item>
-						<el-form-item label="廣告媒體內容" prop="imageList1" class="bcolor">
+						<el-form-item label="廣告媒體內容" prop="imageList" class="bcolor">
 							<div class="textarea_wrap clear content_down">
 								<label for="img">
 									<div class="addImg ju al float">
@@ -244,7 +245,7 @@
 									</div>
 									<input type="file" id="img" v-show="false" multiple="multiple" @change="changeFile">
 								</label>
-								<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
+								<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm2.imageList" :key="i">
 									<div class="imageList_wrap">
 										<div class="deleImg cursor radius ju al" @click.stop="deleImg(i)">
 											<img style="heihgt: 100%;" src="@/assets/img/cha.png" alt="">
@@ -255,10 +256,10 @@
 											<div class="video_outWrap" v-else-if="ruleForm.mediaType == 'video'">
 												<img class="img" src="@/assets/img/start.png" alt="">
 												<div class="videoImage ju al" id="output" ref="output"  
-												@click="previewVideo(item)">
+													@click="previewVideo(item)">
 													
 												</div>
-												<video class="width100" id="video1" ref="video"
+												<video style="height: 100%;" id="video1" ref="video" v-if="previewV"
 													:controls="false">
 													<source :src="item.url" type="video/mp4">
 												</video>
@@ -281,8 +282,8 @@
 				</div>
 
 				<div class="addorcancel tc ju al" v-show="submit">
-					<div class="addorcancel_btn cursor" style="margin-right: 30px;" @click="submitG">確認修改</div>
-					<div class="addorcancel_btn cursor" @click="goBack">取消修改</div>
+					<div class="addorcancel_btn cursor" style="margin-right: 30px;" @click="submitG">確認提交</div>
+					<div class="addorcancel_btn cursor" @click="goBack">取消</div>
 				</div>  
 
 				<div class="basicsMsg boxs padding backWhite" v-show="!submit">
@@ -522,6 +523,7 @@ import { AddStore } from '@/axios/request.js'
 export default {
     data() {
         return {
+			previewV: true,
 			addTimeList: [],
             addTimeList1: [],
             addTimeList2: [],
@@ -615,7 +617,7 @@ export default {
                 content: '',
                 address: '',
                 message: "",//
-				
+				imageList1: [],
             },
 			ruleForm1: {
 				priceList: [], //
@@ -641,7 +643,7 @@ export default {
 				cmediaType: '',  //
 				cmediaType1: 0,  //
 				videoMinute: 0,   //
-				imageList1: [],//
+				imageList: [],//
 			},
 			rules2: {
 				cmediaType: [
@@ -650,9 +652,10 @@ export default {
 				videoMinute: [
                     { required: true, message: '', trigger: 'change' }
                 ],
-				imageList1: [
-					{ required: true, message: '請添加圖片', trigger: 'change' }
+				imageList: [
+					{ required: true, message: '請添加媒體內容', trigger: 'change' }
 				],
+				
 			},
 			labelPosition: 'left',
             rules: {
@@ -663,6 +666,9 @@ export default {
 				chicun: [
                     { required: true, message: '', trigger: 'change' }
                 ],
+				imageList1: [
+					{ required: true, message: '請添加圖片', trigger: 'change' }
+				],
                 area: [
                     { required: true, message: '請選擇投放區域', trigger: 'change' }
                 ],
@@ -706,7 +712,7 @@ export default {
 			outTimeList: [],
 			areaList: [],
 			timeList: [],
-            imageList: [],
+            
             
             minute: [],
 			dimg1: '',
@@ -791,25 +797,33 @@ export default {
         this.initMap1(22.6,114.1,1)
     },
 	watch: {
-		addressList (val) {
-			if (val) {
-				this.addressList = val
+		addressList: {
+			handler (val) {
+				if (val) {
+					this.addressList = val
+				}
 			}
 		},
-        getTypeList (val) {
-			if (val) {
-				this.getTypeList = val
-			}
+		getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+				}
+			},
 		},
-        loading (val) {
-			if (val) {
-				this.loading = val
-			}
+		loading: {
+			handler (val) {
+				if (val) {
+					this.loading = val
+				}
+			},
 		},
-		incomePriceIdList (val) {
-			if (val) {
-				this.incomePriceIdList = val
-			}
+		incomePriceIdList: {
+			handler (val) {
+				if (val) {
+					this.incomePriceIdList = val
+				}
+			},
 		},
 	},
 	computed: {
@@ -852,6 +866,17 @@ export default {
 	},
 	components: { ElImageViewer },
     methods: {
+		flag () {
+			this.$refs.ruleForm.validate(flag => {
+                if (flag) {  }
+            })
+			this.$refs.ruleForm1.validate(flag => {
+				if (flag) {  }
+			})
+			this.$refs.ruleForm2.validate(flag => {
+				if (flag) {  }
+			})
+		},
 		AddStore () {       //添加店鋪
 			this.loading = true
 			let that = this
@@ -868,19 +893,22 @@ export default {
 				if (flag) { boo2 = true }
 			})
 
-			if (boo && boo1) {
+			if (boo && boo1 && boo2) {
 				let arr = []
-				this.imageList.forEach((item,i) => {
+				this.ruleForm2.imageList.forEach((item,i) => {
 					arr.push({
 						"id": null,
 						"fileUrl": item.url,
 						"step": i,
 						"type": that.ruleForm2.cmediaType1,
-						"shopGuangGaoId": null
+						"shopGuangGaoId": null,
+						"fileName": item.name,
+						"fileSize": item.size,
+						"filePlayTime": item.videoTime
 					})
 				})
 				let imgList = []
-				that.ruleForm2.imageList1.forEach(item => {
+				that.ruleForm.imageList1.forEach(item => {
 					imgList.push(item.url)
 				})
 				let data = {
@@ -938,7 +966,17 @@ export default {
 							message: that.$t('lang.addSuccess')
 						})
 						that.submit = false
+					} else {
+						this.$message({
+							type: 'error',
+							message: '修改失敗'
+						})
 					}
+				}).catch(e => {
+					this.$message({
+						type: 'error',
+						message: '修改失敗'
+					})
 				})
 			} else {
 				this.loading = false
@@ -1025,7 +1063,7 @@ export default {
 				that.ruleForm.latLng.lat = e.latLng.lat()
 				that.ruleForm.latLng.lng = e.latLng.lng()
 				that.marker.setMap(null)
-
+				that.flag()
 				that.marker = new google.maps.Marker({
 					position: new google.maps.LatLng(e.latLng.lat(), e.latLng.lng()),
 					icon: mapPoint,
@@ -1122,18 +1160,19 @@ export default {
 			});
 		},
         getType (e) {
-			this.imageList = []
+			this.ruleForm2.imageList = []
+			this.$forceUpdate()
 			this.ruleForm.inp = ''
 			this.minute = []
 			if (e == 1) {
 				this.video = false
 				this.ruleForm.mediaType = 'image'
-				this.ruleForm2.cmediaType = '圖片'
+				this.ruleForm.cmediaType = this.$t('lang.image')
 				this.ruleForm2.cmediaType1 = 1
-			} else if (e == 2) {
+			} else if (e == 3) {
 				this.video = true
 				this.ruleForm.mediaType = 'video'
-				this.ruleForm2.cmediaType = '視頻'
+				this.ruleForm.cmediaType = this.$t('lang.video')
 				this.ruleForm2.cmediaType1 = 3
 			}
 		},
@@ -1262,51 +1301,52 @@ export default {
 				this.ruleForm1.adTimeList = []
 				this.ruleForm1.adTimeList.push( { time: '不接受外來廣告' , num: 0} )
 			}
+			this.flag()
 			this.dialogVisible3 = false
 		},
 		tongbu () {
-				this.dList.forEach(item => {
-					for (let i=0;i<this.checkedCities1.length;i++) {
-						if (this.checkedCities1[i].time == item.time) {
-							this.checkedCities1.splice(i,1)   //同步勾选繁忙时段列表
-						}
+			this.dList.forEach(item => {
+				for (let i=0;i<this.checkedCities1.length;i++) {
+					if (this.checkedCities1[i].time == item.time) {
+						this.checkedCities1.splice(i,1)   //同步勾选繁忙时段列表
 					}
-				})
-				this.dList4.forEach(item => {
-					for (let i=0;i<this.checkedCities11.length;i++) {
-						if (this.checkedCities11[i].time == item.time) {
-							this.checkedCities11.splice(i,1)   //同步勾选超繁忙时段列表
-						}
+				}
+			})
+			this.dList4.forEach(item => {
+				for (let i=0;i<this.checkedCities11.length;i++) {
+					if (this.checkedCities11[i].time == item.time) {
+						this.checkedCities11.splice(i,1)   //同步勾选超繁忙时段列表
 					}
-				})
-				this.dList5.forEach(item => {
-					for (let i=0;i<this.checkedCities21.length;i++) {
-						if (this.checkedCities21[i].time == item.time) {
-							this.checkedCities21.splice(i,1)   //同步勾选非繁忙时段列表
-						}
+				}
+			})
+			this.dList5.forEach(item => {
+				for (let i=0;i<this.checkedCities21.length;i++) {
+					if (this.checkedCities21[i].time == item.time) {
+						this.checkedCities21.splice(i,1)   //同步勾选非繁忙时段列表
 					}
-				})
-				this.dList1.forEach(item => {
-					for (let i=0;i<this.addTimeList.length;i++) {
-						if (this.addTimeList[i].time == item.time) {
-							this.addTimeList.splice(i,1)   //同步drawer繁忙时段列表
-						}
+				}
+			})
+			this.dList1.forEach(item => {
+				for (let i=0;i<this.addTimeList.length;i++) {
+					if (this.addTimeList[i].time == item.time) {
+						this.addTimeList.splice(i,1)   //同步drawer繁忙时段列表
 					}
-				})
-				this.dList2.forEach(item => {
-					for (let i=0;i<this.addTimeList1.length;i++) {
-						if (this.addTimeList1[i].time == item.time) {
-							this.addTimeList1.splice(i,1)   //同步drawer超繁忙时段列表
-						}
+				}
+			})
+			this.dList2.forEach(item => {
+				for (let i=0;i<this.addTimeList1.length;i++) {
+					if (this.addTimeList1[i].time == item.time) {
+						this.addTimeList1.splice(i,1)   //同步drawer超繁忙时段列表
 					}
-				})
-				this.dList3.forEach(item => {
-					for (let i=0;i<this.addTimeList2.length;i++) {
-						if (this.addTimeList2[i].time == item.time) {
-							this.addTimeList2.splice(i,1)   //同步drawer非繁忙时段列表
-						}
+				}
+			})
+			this.dList3.forEach(item => {
+				for (let i=0;i<this.addTimeList2.length;i++) {
+					if (this.addTimeList2[i].time == item.time) {
+						this.addTimeList2.splice(i,1)   //同步drawer非繁忙时段列表
 					}
-				})
+				}
+			})
 		},
 		deleArea (i) {
 			this.areaList.splice(i,1)
@@ -1319,13 +1359,19 @@ export default {
 			}
 		},
 		addPrice (item) {
-			this.dialogVisible = false
-			if (item) {
+			if (item.price) {
 				this.ruleForm1.price = this.incomePrice.id
 				this.ruleForm1.priceList = []
 				this.ruleForm1.priceList.push(item)
 				let arr = new Set(this.ruleForm1.priceList)
 				this.ruleForm1.priceList = Array.from(arr)
+				this.flag()
+				this.dialogVisible = false
+			} else {
+				this.$message({
+					type:'warning',
+					message: '請選擇期望收入'
+				})
 			}
 		},
 		getIncomePrice (item) {
@@ -1344,7 +1390,7 @@ export default {
 			if (this.ruleForm.mediaType) {
 				if (this.video) {
 					if (this.ruleForm.mediaType == 'video') {
-						if (e.target.files.length<=5 && this.imageList.length < 5) {
+						if (e.target.files.length<=5 && this.ruleForm2.imageList.length < 5 && e.target.files.length + this.ruleForm2.imageList.length <= 5) {
 							for(var ff=0;ff<e.target.files.length;ff++){
 								let file = e.target.files[ff].type.split('/')[0]
 								let fileSize = e.target.files[ff].size
@@ -1374,14 +1420,14 @@ export default {
 												//获取秒数，秒数取佘，得到整数秒数
 												sTime = parseInt(sTime % 60);
 											}
-											that.imageList.push({ 
+											that.ruleForm2.imageList.push({ 
 												url: fileurl, 
 												name: name, 
 												size: size, 
 												time: time, 
 												videoTime: mTime + '分' + sTime + '秒'
 											})
-											let index = that.imageList.length -1
+											let index = that.ruleForm2.imageList.length -1
 											setTimeout(() => {
 												that.initialize(index)
 											},200)
@@ -1430,7 +1476,7 @@ export default {
 				}
 				if (!this.video) {
 					if (this.ruleForm.mediaType == 'image') {
-						if (e.target.files.length<=10 && this.imageList.length <= 10) {
+						if (e.target.files.length<=10 && this.ruleForm2.imageList.length <= 10) {
 							for(var ff=0;ff<e.target.files.length;ff++){
 								let file = e.target.files[ff].type.split('/')[0]
 								let fileSize = e.target.files[ff].size
@@ -1448,7 +1494,7 @@ export default {
 											size = s.toFixed(0) + 'KB'
 											// size = Math.ceil(files[ff].size/1000) + 'kb'
 										}
-										that.imageList.push({ url: fileurl, name: name, size: size })
+										that.ruleForm2.imageList.push({ url: fileurl, name: name, size: size })
 									} else {
 										this.$message({
 											type: 'error',
@@ -1496,7 +1542,7 @@ export default {
 		changeFile1 (e) {
 			var files = e.target.files
 			let that = this
-			if (e.target.files.length<=10 && that.ruleForm2.imageList1.length <= 10) {
+			if (e.target.files.length<=10 && that.ruleForm.imageList1.length <= 10) {
 				for(var ff=0;ff<e.target.files.length;ff++){
 					let file = e.target.files[ff].type.split('/')[0]
 					let fileSize = e.target.files[ff].size
@@ -1514,7 +1560,7 @@ export default {
 								size = s.toFixed(0) + 'KB'
 								// size = Math.ceil(files[ff].size/1000) + 'kb'
 							}
-							that.ruleForm2.imageList1.push({ url: fileurl, name: name, size: size })
+							that.ruleForm.imageList1.push({ url: fileurl, name: name, size: size })
 						} else {
 							this.$message({
 								type: 'error',
@@ -1538,6 +1584,7 @@ export default {
 		deleImg (i) {
 			let that = this
 			if (this.ruleForm.mediaType == 'video') {
+				// this.previewV = false
 				this.minute.splice(i,1)
 				let num = 0
 				for (let i=0;i<that.minute.length;i++) {
@@ -1554,10 +1601,10 @@ export default {
 				}
 				time = Math.ceil(Number(mTime + '.' + sTime))
 				that.ruleForm2.videoMinute = time
-				this.$forceUpdate()
-				this.imageList.splice(i,1)
+				
+				this.ruleForm2.imageList.splice(i,1)
 			} else {
-				this.imageList.splice(i,1)
+				this.ruleForm2.imageList.splice(i,1)
 			}
 		},
 		deleImg1 (i) {
@@ -1569,9 +1616,9 @@ export default {
 					this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
 					this.$forceUpdate()
 				}
-				that.ruleForm2.imageList1.splice(i,1)
+				that.ruleForm.imageList1.splice(i,1)
 			} else {
-				that.ruleForm2.imageList1.splice(i,1)
+				that.ruleForm.imageList1.splice(i,1)
 			}
 		},
 		adListadd (val) {
@@ -1683,6 +1730,7 @@ export default {
 				}
 				
 			}
+			this.flag()
             // if (this.typeList1.length != 0) {
             //     let obj = this.typeList1[0]
             //     for (let i=0;i<this.typeList1.length-1;i++) {
@@ -1792,9 +1840,9 @@ export default {
     }
     .addCate {
         border: solid 1px rgb(206, 206, 206);
-        padding: 0 20px;
+        padding: 0 17px;
         box-shadow: 2px 2px 6px rgb(224, 224, 224) inset;
-        height: 37px;
+        height: 30px;
         margin-left: 15px;
 		white-space: nowrap;
     }
@@ -2040,8 +2088,9 @@ export default {
 	.content_down1 {
 		width: calc(100% + 246px);
 		position: relative;
-		margin-top: 55px;
-		margin-left: -247px;
+		// margin-top: 55px;
+		// margin-left: -247px;
+		margin-left: -5px;
 		@media screen and (max-width: 564px) {
             margin-left: 0px;
 			margin-top: 0px;

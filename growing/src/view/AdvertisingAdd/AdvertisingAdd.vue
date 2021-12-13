@@ -1,5 +1,5 @@
 <template>
-    <div class="AdvertisingAdd AdvertisingAdd2">
+    <div class="AdvertisingAdd AdvertisingAdd2" v-loading='loading'>
 		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
 		<div class="AdvertisingOperation_back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">Basic廣告計劃
@@ -12,55 +12,37 @@
 						<div class=" basicsMsg_item bold al">
 							<div class="iden radius"></div> {{$t("lang.message")}}
 						</div>
-						<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
+						<el-form :model="ruleForm1" :label-position="labelPosition" :rules="rules1" ref="ruleForm" 
 						:label-width="$i18n.locale == 'zh-CN'? '100px': '165px'" class="demo-ruleForm">
 							<el-form-item :label="$t('lang.adname')" prop="name">
-								<el-input style="width: 40%;min-width: 200px;" v-model="ruleForm.name"></el-input>
+								<el-input style="width: 40%;min-width: 200px;" v-model="ruleForm1.name"></el-input>
 							</el-form-item>
 							<el-form-item :label="$t('lang.adtype')" prop="type">
 								<div class="flex br">
 									<div class="flex">
-										<el-select v-model="ruleForm.type" :placeholder="$t('lang.pldselecttype')">
+										<el-select v-model="ruleForm1.type" :placeholder="$t('lang.pldselecttype')" @change="cutType">
 											<el-option v-for="(item,i) in getTypeList" :key="i"
 												:label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
 												item.find( res => res.language == "zh-TW").guangGaoTypeName: 
 												item.find( res => res.language == "en-US").guangGaoTypeName '
-												:value="item[0].id">
+												:value="item">
 											</el-option>
 										</el-select>
-										<div class="addCate al" @click="addType(ruleForm.type)">
+										<div class="addCate al" @click="addType(ruleForm1.type)">
 											{{$t("lang.addbtn")}}
 										</div>
 									</div>
 									<div class="list clear">
 										<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
-											{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt=""></span>
+											{{item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+												item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+												item.find( res => res.language == "en-US").guangGaoTypeName}} <span class="al" style="margin-left: 5px">
+													<img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt="">
+												</span>
 										</div>
 									</div>
 								</div>
 							</el-form-item>
-							<!-- <el-form-item :label="$t('lang.AdvertisingArea')" prop="area">
-								<div class="flex br">
-									<div class="flex">
-										<el-select v-model="ruleForm.area" :placeholder="$t('lang.pldselectarea')">
-											<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
-											<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
-											<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
-										</el-select>
-										<div class="addCate al" @click="addArea(ruleForm.area)">
-											{{$t("lang.addbtn")}}
-										</div>
-									</div>
-									<div class="list clear">
-										<div style="color: #B0B0B0;" class="list_item float al" 
-										v-for="(item,i) in areaList" :key="i">
-											{{item}} <span class="al" style="margin-left: 5px">
-												<img class="cursor" @click="deleArea(i)" src="@/assets/img/cha.png" alt="">
-											</span>
-										</div>
-									</div>
-								</div>
-							</el-form-item> -->
 						</el-form>
 					</div>
 					<div class="detailPlan theme" v-show="submit">
@@ -104,7 +86,7 @@
 										<el-select v-model="ruleForm.cmediaType" :placeholder="$t('lang.pldselecttype')" 
 										@change="getType">
 											<el-option :label="$t('lang.image')" value="1"></el-option>
-											<el-option :label="$t('lang.video')" value="2"></el-option>
+											<el-option :label="$t('lang.video')" value="3"></el-option>
 										</el-select>
 									</div>
 								</el-form-item>
@@ -121,7 +103,7 @@
 									</div>
 								</el-form-item>
 							</div>
-							<el-form-item :label="$t('lang.adcontent')" prop="content">
+							<el-form-item :label="$t('lang.adcontent')" prop="imageList">
 								<div class="textarea_wrap clear">
 									<label for="img">
 										<div class="addImg ju al float">
@@ -129,7 +111,7 @@
 										</div>
 										<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
 									</label>
-									<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
+									<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm.imageList" :key="i">
 										<div class="imageList_wrap">
 											<div class="deleImg radius cursor ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
 											<div class="textarea_wrap_item_child cursor ju al">
@@ -242,6 +224,7 @@
 
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+import { genOrder } from "@/axios/request.js"
 export default {
     data() {
         return {
@@ -265,18 +248,16 @@ export default {
 			submit: true,
 			video: true,
             ruleForm: {
-                name: '',
-                // area: '',
-                // time: '',
-                type: '',
+                cmediaType1: 1,
 				date: '',
                 startDate: '',
-				endtDate: '',
+				endDate: '',
                 content: '',
 				mediaType: '',
 				cmediaType: '',
 				inp: 60,
-				videoMinute: 0
+				videoMinute: 0,
+				imageList: [],
             },
 			labelPosition: 'left',
             rules: {
@@ -284,12 +265,6 @@ export default {
                     { required: true, message: '請輸入廣告名稱', trigger: 'blur' },
                     { min: 3, max: 5, message: '長度需3 到 5 個字符', trigger: 'blur' }
                 ],
-                // area: [
-                //     { required: true, message: '請選擇投放區域', trigger: 'blur' }
-                // ],
-                // time: [
-                //     { required: true, message: '請選擇时间段', trigger: 'blur' }
-                // ],
                 type: [
                     { required: true, message: '請選擇媒體類型', trigger: 'blur' }
                 ], 
@@ -310,7 +285,10 @@ export default {
                 ],
                 content: [
                     { required: true, message: '請選擇媒體內容', trigger: 'blur' }
-                ]
+                ],
+				imageList: [
+					{ required: true, message: '請添加媒體內容', trigger: 'change' }
+				],
             },
             pickerOptions: {
               shortcuts: [{
@@ -353,13 +331,24 @@ export default {
                     return time.getTime() < this.ruleForm.startDate || time.getTime() < Date.now() + 8.64e7;
                 }
             },
-            startDate: '',
-			endDate: '',
+			ruleForm1: {
+				name: '',
+                type: '',
+			},
+			rules1: {
+				name: [
+                    { required: true, message: '請輸入廣告名稱', trigger: 'blur' },
+                    { min: 3, max: 15, message: '長度需3 到 15 個字符', trigger: 'blur' }
+                ],
+                type: [
+                    { required: true, message: '請選擇媒體類型', trigger: 'blur' }
+                ], 
+			},
             value2: '',
 			typeList: [],
 			areaList: [],
 			timeList: [],
-			imageList: [],
+			loading: false,
 			minute: []
         };
     },
@@ -383,15 +372,19 @@ export default {
                 }
             }
         },
-		addressList (val) {
-			if (val) {
-				this.addressList = val
+		addressList: {
+			handler (val) {
+				if (val) {
+					this.addressList = val
+				}
 			}
 		},
-        getTypeList (val) {
-			if (val) {
-				this.getTypeList = val
-			}
+		getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+				}
+			},
 		}
     },
 	computed: {
@@ -426,8 +419,82 @@ export default {
 	created () {
 		this.$store.dispatch('getAddress',this) 
         this.$store.dispatch('getTypeList',this)
+		let D = new Date('Wed Dec 15 2021 00:00:00 GMT+0800 (中国标准时间)').toLocaleDateString().split('/').join('-')
+		console.log(D)
 	},
     methods: {
+		genOrder () {
+			this.loading = true
+			let that = this
+			let arr = []
+			this.ruleForm.imageList.forEach(item => {
+				arr.push({
+					"fileType": this.ruleForm.cmediaType1,
+					"url": item.url,
+					"fileName": item.name,
+					"fileSize": item.size,
+					"filePlayTime": item.videoTime
+				})
+			})
+			let data = {
+				guangGaoDtoJson: {
+					"endTime": new Date(this.ruleForm.startDate).toLocaleDateString().split('/').join('-'),
+					"guangGaoAddressAndTimeDto": {
+						"guangGaoTimeDtos": [{
+							"guangGaoTimeMinDtos": [{
+								"timeIntervalDetailsId": 1,
+								"timeMin": 2
+							}],
+							"timeIntervalId": 1,
+							"totalMinLength": 12
+						}],
+						"shopAndAddressDtos": [{
+							"addressId": 0,
+							"addressParentId": 0,
+							"shopId": 0
+						}]
+					},
+					// "guangGaoContentDto": [{
+					// 	"fileType": this.ruleForm.cmediaType1,
+					// 	"url": "www.csada.sc"
+					// }],
+					"guangGaoContentDto": arr,
+					"length": 6,
+					"startTime": new Date(this.ruleForm.endDate).toLocaleDateString().split('/').join('-'),
+					"title": this.ruleForm1.name,
+					"totalLength": 63, 
+					"type": 2,    //隨機
+					"typeId": 1,
+					"userId": localStorage.getItem('compoundeyesUserId')
+				}
+			}
+			let str = JSON.stringify(data.guangGaoDtoJson)
+			const qs = require('qs')
+			let data1 = qs.stringify({
+				guangGaoDtoJson: str
+			})
+			genOrder(data1).then(res => {
+				that.loading = false
+				if (res.data.rtnCode == 200) {
+					that.$message({
+						type: 'success',
+						message: that.$t('lang.addSuccess')
+					})
+					that.submit = false
+				} else {
+					this.$message({
+						type: 'error',
+						message: this.$t('lang.addFail')
+					})
+				}
+			}).catch(e => {
+				that.loading = false
+				this.$message({
+					type: 'error',
+					message: this.$t('lang.addFail')
+				})
+			})
+		},
 		closeVideo () {
 			this.showVideo = false
 			this.videoWrap = false
@@ -480,7 +547,8 @@ export default {
 			this.$refs[formName].resetFields();
 		},
 		submitG () {
-			this.submit = false
+			this.genOrder()
+			// this.submit = false
 		},
 		goBack () {
 			this.$router.back()
@@ -491,6 +559,9 @@ export default {
 				let arr = new Set(this.typeList)
 				this.typeList = Array.from(arr)
 			}
+		},
+		cutType (val) {
+			console.log(val)
 		},
 		addArea (item) {
 			if (item) {
@@ -516,17 +587,19 @@ export default {
 			this.timeList.splice(i,1)
 		},
 		getType (e) {
-			this.imageList = []
+			this.ruleForm.imageList = []
 			this.ruleForm.inp = ''
 			this.minute = []
 			if (e == 1) {
 				this.video = false
 				this.ruleForm.mediaType = 'image'
 				this.ruleForm.cmediaType = this.$t('lang.image')
-			} else if (e == 2) {
+				this.ruleForm.cmediaType1 = 1
+			} else if (e == 3) {
 				this.video = true
 				this.ruleForm.mediaType = 'video'
 				this.ruleForm.cmediaType = this.$t('lang.video')
+				this.ruleForm.cmediaType1 = 3
 			}
 		},
 		cahngeFile (e) {
@@ -535,7 +608,7 @@ export default {
 			if (this.ruleForm.mediaType) {
 				if (this.video) {
 					if (this.ruleForm.mediaType == 'video') {
-						if (e.target.files.length<=5 && this.imageList.length < 5) {
+						if (e.target.files.length<=5 && this.ruleForm.imageList.length < 5) {
 							for(var ff=0;ff<e.target.files.length;ff++){
 								let file = e.target.files[ff].type.split('/')[0]
 								let fileSize = e.target.files[ff].size
@@ -565,14 +638,14 @@ export default {
 												//获取秒数，秒数取佘，得到整数秒数
 												sTime = parseInt(sTime % 60);
 											}
-											that.imageList.push({ 
+											that.ruleForm.imageList.push({ 
 												url: fileurl, 
 												name: name, 
 												size: size, 
 												time: time, 
 												videoTime: mTime + '分' + sTime + '秒'
 											})
-											let index = that.imageList.length -1
+											let index = that.ruleForm.imageList.length -1
 											setTimeout(() => {
 												that.initialize(index)
 											},200)
@@ -621,7 +694,7 @@ export default {
 				}
 				if (!this.video) {
 					if (this.ruleForm.mediaType == 'image') {
-						if (e.target.files.length<=10 && this.imageList.length <= 10) {
+						if (e.target.files.length<=10 && this.ruleForm.imageList.length <= 10) {
 							for(var ff=0;ff<e.target.files.length;ff++){
 								let file = e.target.files[ff].type.split('/')[0]
 								let fileSize = e.target.files[ff].size
@@ -639,7 +712,7 @@ export default {
 											size = s.toFixed(0) + 'KB'
 											// size = Math.ceil(files[ff].size/1000) + 'kb'
 										}
-										that.imageList.push({ url: fileurl, name: name, size: size })
+										that.ruleForm.imageList.push({ url: fileurl, name: name, size: size })
 									} else {
 										this.$message({
 											type: 'error',
@@ -704,9 +777,9 @@ export default {
 				time = Math.ceil(Number(mTime + '.' + sTime))
 				that.ruleForm.videoMinute = time
 				this.$forceUpdate()
-				this.imageList.splice(i,1)
+				this.ruleForm.imageList.splice(i,1)
 			} else {
-				this.imageList.splice(i,1)
+				this.ruleForm.imageList.splice(i,1)
 			}
 		},
     }

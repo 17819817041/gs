@@ -5,7 +5,7 @@
             <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">Pro廣告計劃
         </div>
 		<div class="noBar" style="height: calc(100% - 35px);overflow: auto;margin-top: 15px;">
-			<div :class="['content mg bar',{ heigh: !submit }]">
+			<div :class="['content mg noBar',{ heigh: !submit }]">
 				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
 				<div class="noBar" style="height: calc(100% - 0px); overflow:auto" v-show="submit">
 					<div class="basicsMsg theme" v-show="submit">
