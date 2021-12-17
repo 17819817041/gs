@@ -118,6 +118,7 @@
 						</el-form-item>
 					</el-form>
 				</div>
+				
 				<div class="detailPlan boxs theme" v-show="false">
 					<div class="flex divider_message_title">
 						<div class="divider"></div>
@@ -303,8 +304,8 @@ export default {
             ruleForm: {
                 name: '',
                 area: '',
-                time: '',
-                type: '',
+                // time: '',
+                // type: '',
                 storeType: '',
 				size: {//
 					width: '',
@@ -314,7 +315,7 @@ export default {
                 mediaType: '',
                 inp: 1,
 				street: '',
-                ratio: '',
+                // ratio: '',
                 date: '',
                 content: '',
                 address: '',
@@ -342,12 +343,12 @@ export default {
                 area: [
                     { required: true, message: '請選擇投放區域', trigger: 'change' }
                 ],
-                time: [
-                    { required: true, message: '請選擇时间段', trigger: 'blur' }
-                ],
-                type: [
-                    { required: true, message: '請選擇媒體類型', trigger: 'change' }
-                ],
+                // time: [
+                //     { required: true, message: '請選擇时间段', trigger: 'blur' }
+                // ],
+                // type: [
+                //     { required: true, message: '請選擇媒體類型', trigger: 'change' }
+                // ],
                 storeType: [
                     { required: true, message: '請選擇媒體類型', trigger: 'change' }
                 ],
@@ -357,9 +358,9 @@ export default {
                 inp: [
                     { required: true, message: '請選擇媒體時長', trigger: 'blur' }
                 ],
-                ratio: [
-                    { required: true, message: '請選擇廣告比例', trigger: 'blur' }
-                ],
+                // ratio: [
+                //     { required: true, message: '請選擇廣告比例', trigger: 'blur' }
+                // ],
                 date: [
                     { required: true, message: '請選擇投放週期', trigger: 'blur' }
                 ],
@@ -657,7 +658,7 @@ export default {
 			let boolean = true
 			let map = new google.maps.Map(document.getElementById('map'), {
 				center: {lat: lat, lng: lng},
-				zoom: 8,
+				zoom: 11,
 				mapTypeId: "roadmap",
 				disableDefaultUI: true,
 				zoomControl: boolean,

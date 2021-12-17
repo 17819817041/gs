@@ -176,6 +176,7 @@
 </template>
 
 <script>
+import { adList } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -187,7 +188,9 @@ export default {
                 outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 2, content: '查看預覽', edit: 2},
                 {name:'售藥',category: 3,area: '中環', time: 3, dv: 'pro',
                 outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 3, content: '查看預覽', edit: 3},
-            ]
+            ],
+            pageNum: 0,
+            pageSize: 100
         }
     },
     mounted () {
@@ -197,7 +200,21 @@ export default {
         });
         this.resi()
     },
+    created () {
+        this.adList()
+    },
     methods: {
+        adList () {
+            let data = {
+                // userId: localStorage.getItem('compoundeyesUserId'),
+                userId: 5,
+                pageNum: this.pageNum,
+                pageSize: this.pageSize
+            }
+            adList(data).then(res => {
+                console.log(res)
+            })
+        },
         toPreview (val) {
             if (val == 'pro') {
                 this.$router.push('/dvPreview')

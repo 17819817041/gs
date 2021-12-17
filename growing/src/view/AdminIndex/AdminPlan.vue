@@ -1,5 +1,5 @@
 <template>
-    <div class="AdminPlan">
+    <div class="AdminPlan" v-loading='loading'>
         <div class="AdminPlan_back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="back"><span>管理廣告計劃</span>
         </div>
@@ -7,7 +7,7 @@
             <div class="AdvertiserManagement_content_title sb al block">
                 <div class="flex">
                     <div class="divider"></div>
-                    <div class="divider_text">Jordan Cheung -XXXcompany</div>
+                    <div class="divider_text">{{storeName}}</div>
                 </div>
             </div>
             <div class="table mg">
@@ -34,6 +34,10 @@
                         label="廣告區域"
                         min-width="120"
                         >
+                        <template slot-scope="scope">
+                            <div v-if="scope.row.area.length == 0">隨機區域投放</div>
+                            <div v-else v-for="(item,i) in scope.row.area" :key="i">{{item}}</div>
+                        </template>
                     </el-table-column>
                     <el-table-column
                         prop="time"
@@ -59,10 +63,13 @@
                         min-width="120"
                         >
                         <template slot-scope="scope">
+                        <!-- <div :class="['cursor toufang ju', {'sure_state': scope.row.state == 1, 'no_state': scope.row.state == 2}]"> -->
                         <div :class="['cursor toufang ju', {'sure_state': scope.row.state == 1, 'no_state': scope.row.state == 2}]">
-                            <span v-if="scope.row.state == 1" >已投放</span>
+                            <!-- <span v-if="scope.row.state == 1" >已投放</span>
                             <span v-else-if="scope.row.state == 2">未投放(未付款)</span>
                             <span :class="[{ 'no_state': scope.row.state == 3}]" v-else-if="scope.row.state == 3">未投放(已付款)</span>
+                            <span :class="[{ 'wait': scope.row.state == 4}]" v-else-if="scope.row.state == 4">{{scope.row.status}}</span> -->
+                            <span>{{scope.row.status}}</span>
                         </div>
                     </template>
                     </el-table-column>
@@ -85,22 +92,22 @@
                         >
                         <template slot-scope="scope">
                             <div class="putaway sa">
-                                <div class="putaway_logo" v-if="scope.row.edit == 2 || scope.row.edit == 3">
+                                <div class="putaway_logo" v-if="scope.row.showEdiy">
                                     <div class="ju"><img src="@/assets/img/edit.png" alt=""></div>
                                     <div class="tc">編輯計劃</div>
                                 </div>
                                 <!-- <div v-else></div> -->
-                                <div class="putaway_logo centerL" v-if="scope.row.edit == 3">
+                                <div class="putaway_logo centerL" v-if="scope.row.showShangJia">
                                     <div class="ju "><img src="@/assets/img/up.png" alt=""></div>
                                     <div class="tc">上架計劃</div>
                                 </div>
                                 <!-- <div v-else></div> -->
-                                <div class="putaway_logo centerL" v-if="scope.row.edit == 1">
+                                <div class="putaway_logo centerL" v-if="scope.row.showXiaJia">
                                     <div class="ju"><img src="@/assets/img/down.png" alt=""></div>
                                     <div class="tc">下架計劃</div>
                                 </div>
                                 <!-- <div v-else></div> -->
-                                <div class="putaway_logo" v-if="scope.row.edit == 2">
+                                <div class="putaway_logo" v-if="scope.row.showDelete">
                                     <div class="ju"><img src="@/assets/img/delete.png" alt=""></div>
                                     <div class="tc">刪除計劃</div>
                                 </div>
@@ -128,18 +135,24 @@
 </template>
 
 <script>
+import { managerUserDetail } from "@/axios/request.js"
 export default {
     data () {
         return {
+            storeName: localStorage.getItem('storeName'),
             tableHeight:0,
             tableData: [
-                {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
-                outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 1, content: '查看預覽', edit: 1},
-                {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
-                outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 2, content: '查看預覽', edit: 2},
-                {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
-                outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 3, content: '查看預覽', edit: 3},
-            ]
+                // {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
+                // outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 1, content: '查看預覽', edit: 1},
+                // {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
+                // outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 2, content: '查看預覽', edit: 2},
+                // {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
+                // outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 3, content: '查看預覽', edit: 3},
+            ],
+            pageNum: 0,
+            pageSize: 10,
+            storeList: [],
+            loading: false
         }
     },
     mounted () {
@@ -149,7 +162,52 @@ export default {
         });
         this.resi()
     },
+    created () {
+        this.managerUserDetail()
+    },
     methods: {
+        managerUserDetail () {
+            this.loading = true
+            let data = {
+                pageNum: this.pageNum,
+                pageSize: this.pageSize,
+                userId: this.$route.query.id
+            }
+            managerUserDetail(data).then(res => {
+                this.loading = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    res.data.data.pageT.forEach(item => {
+                        this.tableData.push({
+                            name: item.guangGaoTitle,
+                            category: item.guangGaoTypeName,
+                            area: item.guangGaoAddressLisr, 
+                            time: item.launchTypeName,
+                            outTime: item.startTime.split(' ')[0] + "~" + item.endTime.split(' ')[0], 
+                            price: '$' + item.totalPrice + 'HKD', 
+                            status: item.guangGaoStateName,
+                            content: '查看預覽', 
+                            edit: 0,
+                            showDelete: item.showDelete,
+                            showEdiy: item.showEdiy,
+                            showShangJia: item.showShangJia,
+                            showXiaJia: item.showXiaJia
+                        })
+                    })
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.loading')
+                })
+            })
+        },
         resi () {
             let that = this
             this.$nextTick(() => {
@@ -230,6 +288,9 @@ export default {
     }
     .no_state {
         color: #FA3A3A;
+    }
+    .wait {
+        color: rgb(83, 0, 179);
     }
     .preview {
         font-size: 12px;

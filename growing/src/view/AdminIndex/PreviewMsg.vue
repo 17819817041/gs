@@ -1,5 +1,5 @@
 <template>
-    <div class="PreviewMsg" id="AddStore">
+    <div class="PreviewMsg" id="AddStore" v-loading='loading'>
         <div class="content mg bar">
             <!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">預覽全部資料</div> -->
             <div class="back mg al">
@@ -14,29 +14,27 @@
                 <el-form :model="ruleForm" :label-position="labelPosition" ref="ruleForm" label-width="155px" class="demo-ruleForm">
                     <el-form-item label="店鋪名" prop="name" class="bcolor">
                         <div class="al width30">
-                            旺角美食店
+                            {{ruleForm.name}}
                         </div>
                     </el-form-item>
                     <el-form-item label="店鋪所屬類型">
                         <div class="al width30">
-                            食品
+                            {{ruleForm.storeType}}
                         </div>
                     </el-form-item>
                     <el-form-item label="店鋪所在區域" class="bcolor">
                         <div class="al width30">
-                            旺角
+                            {{ruleForm.area}}
                         </div>
                     </el-form-item>
                     <el-form-item label="店鋪詳細位置地址">
                         <div class="al width30">
-                            旺角彌敦道1區66棟606
+                            {{ruleForm.address}}
                         </div>
                     </el-form-item>
                     <el-form-item label="店鋪描述" class="bcolor">
                         <div class="al width30">
-                            欢迎光临本店，本店新开张，诚信经营，只赚信誉不赚钱。
-                        　　本店商品均属正品，假一罚十信誉保证。 欢迎广大顾客前来放心选购，我们将竭诚为您服务!
-                        　　本店专门营销什么什么商品，假一罚十信誉保证。本店的服务宗旨是用心服务，以诚待人!
+                            {{ruleForm.content}}
                         </div>
                     </el-form-item>
                 </el-form>
@@ -55,7 +53,7 @@
                     <el-form-item label="接收外來廣告時段">
                         <div class="al br">
 							<div class="list clear">
-								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in timeList" :key="i">
+								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in ruleForm.time" :key="i">
 									{{item}} 
 								</div>
 							</div>
@@ -65,7 +63,7 @@
                     <el-form-item label="可接收外來廣告類型" class="bcolor">
                         <div class="al br">
 							<div class="list clear">
-								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
+								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in ruleForm.type" :key="i">
 									{{item}}
 								</div>
 							</div>
@@ -82,25 +80,26 @@
                 <el-form :model="ruleForm" :label-position="labelPosition" ref="ruleForm" label-width="155px" class="demo-ruleForm">
                     <el-form-item label="店鋪廣告媒體類型" class="bcolor">
                         <div class="al" style="color: gray;">
-                            圖片
+                            <span v-if="ruleForm.cmediaType == '1'">圖片</span>
+                            <span v-else-if="ruleForm.cmediaType == '3'">視頻</span>
                         </div>
                     </el-form-item>
                     <el-form-item label="店鋪廣告媒體時長">
                         <div class="al block" style="color: gray;">
-                            <div style="margin-right: 20px;">2</div>分鐘
+                            <div style="margin-right: 20px;"> {{ruleForm.inp}} </div>分鐘
                         </div>
                     </el-form-item>
                     <el-form-item label="店鋪廣告媒體內容" class="bcolor">
                         <div class="textarea_wrap clear">
-							<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
+							<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm.adContentList" :key="i">
 								<div class="imageList_wrap">
 									<div class="textarea_wrap_item_child ju al">
-										<img v-if="ruleForm.mediaType == 'image'" style="height: 100%;" :src="item.url" alt="">
-										<img v-else-if="ruleForm.mediaType == 'video'" style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+										<img v-if="ruleForm.cmediaType == '1'" style="height: 100%;" :src="item.fileUrl" alt="">
+										<img v-else-if="ruleForm.cmediaType == '3'" style="height: 50%;" src="@/assets/img/video_file.png" alt="">
 									</div>
 								</div>
-								<div class="imageList_name tc">{{item.name}}</div>
-								<div class="imageList_size tc">{{item.size}}</div>
+								<div class="imageList_name tc">{{item.fileName}}</div>
+								<div class="imageList_size tc">{{item.fileSize}}</div>
 							</div>
 						</div>
 						<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
@@ -118,11 +117,12 @@
         </div>
     </div>
 </template>
-
 <script>
+import { AdGetShopDetailsById } from "@/axios/request.js"
 export default {
     data() {
         return {
+            loading: false,
             video: true,
             ruleForm: {
                 name: '',
@@ -157,7 +157,106 @@ export default {
     mounted () {
         
     },
+    watch: {
+		addressList: {
+			handler (val) {
+				if (val) {
+					this.addressList = val
+                    this.getShopDetailsById()
+				}
+			}
+		},
+		getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+				}
+			},
+		},
+	},
+	computed: {
+		addressList: {           //地址列表
+			get () { return this.$store.state.user.addressList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'addressList',
+					value: val
+				})
+			}
+		},
+        getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		}
+	},
+    created () {
+        this.$store.dispatch('getAddress',this) 
+        this.$store.dispatch('getTypeList',this)
+    },
     methods: {
+        getShopDetailsById () {
+            this.loading = true
+            let that = this
+            let data = {
+                shopId: this.$route.query.id
+            }
+            AdGetShopDetailsById(data).then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    let item = res.data.data
+                    this.ruleForm = {
+                        name: item.shopName,
+                        area: item.addressParentId,
+                        address: item.addressName,
+                        time: item.timeIntervals,
+                        type: item.types,
+                        storeType: item.shopTypeId,
+                        mediaType: '',
+                        cmediaType: item.shopGuangGaoDto.shopGuangGaoContents[0].type,
+                        inp: item.shopGuangGaoDto.shopGuangGaoLength,
+                        ratio: '',
+                        date: '',
+                        content: item.content,
+                        message: "",
+                        imageList: item.shopImages,
+                        adContentList: item.shopGuangGaoDto.shopGuangGaoContents
+                    }
+                    this.addressList.forEach(item => {
+						if (item.id == this.ruleForm.area) {
+							item.addressLanguageDtos.find( res => res.language == "zh-TW") && this.$i18n.locale == "zh-CN" ? 
+							this.ruleForm.area = item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+							this.ruleForm.area = item.addressLanguageDtos.find( res => res.language == "en-US").addressName
+						}
+					})
+                    this.getTypeList.forEach(item => {
+						item.forEach(child => {
+							if (child.id == res.data.data.shopTypeId && child.language == 'zh-TW' && this.$i18n.locale == 'zh-CN') {
+								that.ruleForm.storeType = child.guangGaoTypeName
+							} else if (child.id == res.data.data.shopTypeId && child.language == 'en-US' && this.$i18n.locale == 'en-US') {
+								that.ruleForm.storeType = child.guangGaoTypeName
+							}
+						})
+					})
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: this.$t('lang.loading')
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.loading')
+                })
+            })
+        },
         fun () {
 			if (window.innerWidth <= 564) {
                 this.labelPosition = 'top'
@@ -310,8 +409,22 @@ export default {
     }
     .textarea_wrap_item {
 		width: 100px;
-		height: 110px;
+		height: 140px;
 		margin: 5px;
+		position: relative;
+		.imageList_wrap {
+			border: solid 1px rgb(230, 230, 230);
+			width: 100px;
+			height: 100px;
+			@media screen and (max-width: 564px) {
+				width: 70px;
+				height: 70px;
+			}
+		}
+		@media screen and (max-width: 564px) {
+			width: 70px;
+			height: 110px;
+		}
 	}
     .imageList_name, .imageList_size {
 		max-width: 100px;

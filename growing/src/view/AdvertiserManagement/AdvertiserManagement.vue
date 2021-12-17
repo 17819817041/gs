@@ -1,5 +1,5 @@
 <template>
-    <div class="AdvertiserManagement">
+    <div class="AdvertiserManagement" v-loading='loading'>
         <div class="back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告商管理
         </div>
@@ -29,6 +29,7 @@
                                 <el-input
                                 class="width100"
                                 v-model="search"
+                                @input="searchName"
                                 size="mini"
                                 placeholder="输入关键字搜索"/>
                             </div>
@@ -45,6 +46,7 @@
                                 <el-input
                                 class="width100"
                                 v-model="search1"
+                                @input="searchCompanyName"
                                 size="mini"
                                 placeholder="输入关键字搜索"/>
                             </div>
@@ -69,7 +71,8 @@
                         min-width="170"
                         >
                         <template slot-scope="scope">
-                            <div class="tc th_color">{{scope.row.endPlan}}</div>
+                            <div class="tc th_color" v-if="scope.row.endPlan !== null">{{scope.row.endPlan}}</div>
+                            <div class="tc th_color" v-else>無</div>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -77,8 +80,8 @@
                         label="管理廣告計劃"
                         min-width="130"
                         >
-                        <template>
-                            <div class="ju al"><img class="planEdit cursor" @click="AdminPlan" src="@/assets/img/planEdit.png" alt=""> </div>
+                        <template slot-scope="scope">
+                            <div class="ju al"><img class="planEdit cursor" @click="AdminPlan(scope)" src="@/assets/img/planEdit.png" alt=""> </div>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -120,24 +123,18 @@
 </template>
 
 <script>
+import { getGuangGaoUser } from "@/axios/request.js"
 export default {
     data () {
         return {
             tableHeight:0,
             search: '',
             search1: '',
-            tableData:[
-                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
-                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'無',plan: '', userState: 2, detail: ''},
-                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
-                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
-                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'無',plan: '', userState: 2, detail: ''},
-                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
-                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
-                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'無',plan: '', userState: 2, detail: ''},
-                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
-                {name:'Jordan Cheung',company: 'XXXcompany',phone: '+852 123456', email: 'kkk@qq,com',endPlan:'2021-10-26',plan: '', userState: 1, detail: ''},
-            ],
+            pageNum: 0,
+            pageSize: 10,
+            tableData:[],
+            loading: false,
+            timer: null
         }
     },
     mounted () {
@@ -147,7 +144,61 @@ export default {
         });
         this.resi()
     },
+    created () {
+        this.getGuangGaoUser()
+    },
     methods: {
+        getGuangGaoUser () {
+            this.tableData = []
+            this.loading = true
+            let data = {
+                pageNum: this.pageNum,
+                pageSize: this.pageSize,
+                name: this.search,
+                companyName: this.search1
+            }
+            getGuangGaoUser(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    res.data.data.pageT.forEach(item => {
+                        this.tableData.push({
+                            name: item.userName,
+                            company: item.companyName,
+                            phone: item.phone, 
+                            email: item.email,
+                            id: item.userId,
+                            endPlan: item.firstTimeGuangGao,
+                            plan: '', 
+                            userState: item.usersState, 
+                            detail: ''
+                        })
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.loading')
+                })
+            })
+        },
+        searchName () {
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.getGuangGaoUser()
+            },500)  
+        },
+        searchCompanyName () {
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.getGuangGaoUser()
+            },500)  
+        },
         resi () {
             let that = this
             this.$nextTick(() => {
@@ -164,16 +215,21 @@ export default {
             return ''
         },
         UserDetailEdit (item) {
-            localStorage.setItem('userDetail',JSON.stringify(item))
             this.$router.push({
                 name: 'UserDetailEdit',
                 query: {
-                    key: item
+                    key: item.id
                 }
             })
         },
-        AdminPlan () {
-            this.$router.push('/AdminPlan')
+        AdminPlan (scope) {
+            localStorage.setItem('storeName',scope.row.name)
+            this.$router.push({
+                name: 'AdminPlan',
+                query: {
+                    id: scope.row.id
+                }
+            })
         }
     }
 }

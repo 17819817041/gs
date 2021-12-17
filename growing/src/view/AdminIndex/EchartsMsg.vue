@@ -255,7 +255,7 @@
 <template>
     <div class="EchartsMsg">
         <div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">新增店鋪
+            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">廣告活動統計數據
         </div>
         <div class="EchartsMsg_content noBar mg">
             <div class="divider_wrap">

@@ -110,6 +110,26 @@ export function incomePriceId (data) {    ///api/income/list
     )
 } 
 
+export function getTimeIntervaDetailslList (data) {    //获取时段详情列表
+    return request (
+        {
+            url: "/api/timeInterval/getTimeIntervaDetailslList",
+            method: "GET"
+        }
+    )
+} 
+
+export function getTimeIntervalList (data) {    //获取时段列表
+    return request (
+        {
+            url: "/api/timeInterval/getTimeIntervalList",
+            method: "GET"
+        }
+    )
+} 
+
+
+
 
 
 
@@ -133,6 +153,16 @@ export function getShopListByUser (data) {    //获取用户下所有店铺 根�
     return request (
         {
             url: "/api/userShop/getShopHomeDetails",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
+export function getPrice (data) {    //查询期望廣告收入
+    return request (
+        {
+            url: "/api/userShop/getPrice",
             method: "GET",
             params: data
         }
@@ -176,6 +206,46 @@ export function getShopDetailsById (data) {    //查询店鋪
     return request (
         {
             url: "/api/shop/getShopDetailsById",
+            method: "PUT",
+            params: data
+        }
+    )
+}
+
+export function getShopAndDeviceList (data) {    //获取所有店铺和设备
+    return request (
+        {
+            url: "/api/shopDetails/getShopAndDeviceList",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
+export function getShopUserListByUserId (data) {    //所有店鋪設定
+    return request (
+        {
+            url: "/api/shopDetails/getShopUserListByUserId",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
+export function getShopGuangGaoType (data) {    //查询接受的外來廣告行業
+    return request (
+        {
+            url: "/api/userShop/getShopGuangGaoType",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
+export function updateShopGuangGaoType (data) {    //修改店铺外接收广告类型（馬上可以修改的）
+    return request (
+        {
+            url: "/api/userShop/updateShopGuangGaoType",
             method: "PUT",
             params: data
         }
@@ -350,9 +420,187 @@ export function getTotalTimePeriod (data) {    //廣告活動時段總數
     )
 } 
 
+export function getShopList (data) {    //获取店铺列表 无分页
+    return request (
+        {
+            url: "/api/address/getShopListBySearch",
+            method: "GET",
+            params: data
+        }
+    )
+} 
+
+export function getShopListpage (data) {    //获取店铺列表 带分页
+    return request (
+        {
+            url: "/api/shopManager/getShopList",
+            method: "GET",
+            params: data
+        }
+    )
+} 
+
+export function AdGetShopDetailsById (data) {    //查询店鋪詳情
+    return request (
+        {
+            url: "/api/shopManager/getShopDetail",
+            method: "GET",
+            params: data
+        }
+    )
+} 
+
+export function getGuangGaoUser (data) {    //获取广告身份用户列表
+    return request (
+        {
+            url: "/api/managerUser/getGuangGaoUser",
+            method: "GET",
+            params: data
+        }
+    )
+} 
+
+export function getShopDeviceList (data) {    //查询店鋪下所有设备
+    return request (
+        {
+            url: "/api/shopManager/getShopDeviceList",
+            method: "GET",
+            params: data
+        }
+    )
+} 
+
+export function managerUserDetail (data) {    //获取广告身份用户列表
+    return request (
+        {
+            url: "/api/managerUser/list",
+            method: "GET",
+            params: data
+        }
+    )
+} 
+
+export function storeEdit (data) {    //根据userId查询账号详情
+    return request (
+        {
+            url: "/api/accountManager/getUserById",
+            method: "GET",
+            params: data
+        }
+    )
+} 
+
+export function resetPwd (data) {    //重置密碼
+    return request (
+        {
+            url: "/api/accountManager/resetPwd",
+            method: "PUT",
+            params: data
+        }
+    )
+} 
+
+export function updateCompany (data) {    //修改公司名称
+    return request (
+        {
+            url: "/api/accountManager/updateCompany",
+            method: "PUT",
+            params: data
+        }
+    )
+} 
+
+export function updatePhone1 (data) {    //修改電話
+    return request (
+        {
+            url: "/api/accountManager/updatePhone",
+            method: "PUT",
+            params: data
+        }
+    )
+} 
+
+export function updateState (data) {    //修改客戶狀態
+    return request (
+        {
+            url: "/api/accountManager/updateState",
+            method: "PUT",
+            params: data
+        }
+    )
+} 
+
+export function comboList (data) {    //根據條件獲取套餐列表
+    return request (
+        {
+            url: "/api/packageGuangGao/list",
+            method: "GET",
+            params: data
+        }
+    )
+} 
+
+export function comboupdate (data) {    //套餐包上架
+    return request (
+        {
+            url: "/api/packageGuangGao/update",
+            method: "PUT",
+            params: data
+        }
+    )
+} 
+
+export function combodown (data) {    //套餐包下架
+    return request (
+        {
+            url: "/api/packageGuangGao/xiajia",
+            method: "PUT",
+            params: data
+        }
+    )
+} 
+
+export function addCombo (data) {    //添加套餐包
+    return request (
+        {
+            url: "/api/packageGuangGao/add",
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        }
+    )
+} 
+
+export function previewAD (data) {    //添加套餐包
+    return request (
+        {
+            url: "/api/packageGuangGao/byId",
+            method: "GET",
+            params: data
+        }
+    )
+} 
+
+
+
+
+
+
 
 
 //广告商
+export function adList (data) {    //分頁獲取廣告用戶身份下的廣告列表
+    return request (
+        {
+            url: "/api/userGuangGao/list",
+            method: "GET",
+            params: data
+        }
+    )
+} 
+
 export function getCumulativeMonthly (data) {    //获取最近一年的月份（过去一年的数据）累计投放广告天数
     return request (
         {
@@ -392,6 +640,8 @@ export function genOrder (data) {    //生成订单/ 添加廣告
         }
     )
 }
+
+
 
 
 // export function AK (data) {   

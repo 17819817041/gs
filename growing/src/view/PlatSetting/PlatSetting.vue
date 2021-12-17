@@ -1,5 +1,5 @@
 <template>
-    <div class="PlatSetting">
+    <div class="PlatSetting" v-loading='loading'>
         <div class="back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">店鋪詳細設定
         </div>
@@ -33,6 +33,7 @@
                                         <el-input
                                         class="width100"
                                         v-model="search"
+                                        @input="searchByName"
                                         size="mini"
                                         placeholder="输入关键字搜索"/>
                                     </div>
@@ -46,11 +47,13 @@
                                 <template slot="header">
                                     店鋪類型
                                     <div class="searchInp mg">
-                                        <el-select class="width100" style="height: 28px;" v-model="type" placeholder="請選擇類型">
-                                            <el-option label="食品" value="食品"></el-option>
-                                            <el-option label="科技" value="科技"></el-option>
-                                            <el-option label="醫療" value="醫療"></el-option>
-                                            <el-option label="汽車" value="汽車"></el-option>
+                                        <el-select class="width100" style="height: 28px;" v-model="type" placeholder="請選擇類型" @change="searchByType">
+                                            <el-option v-for="(item,i) in getTypeList" :key="i"
+                                                :label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+                                                item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+                                                item.find( res => res.language == "en-US").guangGaoTypeName '
+                                                :value="item[0].id">
+                                            </el-option>
                                         </el-select>
                                     </div>
                                 </template>
@@ -63,10 +66,13 @@
                                 <template slot="header">
                                     店鋪區域
                                     <div class="searchInp mg">
-                                        <el-select class="width100" style="height: 28px;" v-model="area" placeholder="請選擇類型">
-                                            <el-option label="九龍" value="九龍"></el-option>
-                                            <el-option label="旺角" value="旺角"></el-option>
-                                            <el-option label="中環" value="中環"></el-option>
+                                        <el-select class="width100" style="height: 28px;" v-model="area" placeholder="請選擇類型" @change="searchByArea"> 
+                                            <el-option v-for="(item,i) in addressList" :key="i"
+                                                :label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+                                                item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+                                                item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+                                                :value="item.id">
+                                            </el-option>
                                         </el-select>
                                     </div>
                                 </template>
@@ -87,13 +93,14 @@
                                 prop="d_time"
                                 sortable
                                 label="接收外來廣告時段"
-                                min-width="170"
+                                min-width="190"
                                 >
                                 <template slot-scope="scope">
                                     <div class="tc th_color">
-                                        <div class="th_color tc" v-show="scope.row.d_time.busy">{{scope.row.d_time.busy}}</div>
+                                        <!-- <div class="th_color tc" v-show="scope.row.d_time.busy">{{scope.row.d_time.busy}}</div>
                                         <div class="th_color tc" v-show="scope.row.d_time.unbusy">{{scope.row.d_time.unbusy}}</div>
-                                        <div class="th_color tc" v-show="scope.row.d_time.busy == '' && scope.row.d_time.unbusy == '' ">無</div>
+                                        <div class="th_color tc" v-show="scope.row.d_time.busy == '' && scope.row.d_time.unbusy == '' ">無</div> -->
+                                        <div v-for="(item,i) in scope.row.d_time" :key="i">{{item}}</div>
                                     </div>
                                 </template>
                             </el-table-column>
@@ -114,8 +121,8 @@
                                 >
                                 <template slot-scope="scope">
                                     <div class="tc">
-                                        <span class="green" v-if="scope.row.d_state == 1">通過</span>
-                                        <span class="th_color" v-else-if="scope.row.d_state == 2">待審核</span>
+                                        <span class="th_color" v-if="scope.row.d_state == 1">待審核</span>
+                                        <span class="green" v-else-if="scope.row.d_state == 2">通過</span>
                                         <span class="red" v-else-if="scope.row.d_state == 3">不通過</span>
                                     </div>
                                 </template>
@@ -160,72 +167,13 @@
                     </div>
                 </div>
             </div>
-            <div class="Settingadvertising_content mg">
+            
+            <div class="Settingadvertising_content mg" v-for="(item,i) in list" :key="i">
                 <div class="divider_wrap">
                     <div class="sb al divider_message_title">
                         <div class="flex">
                             <div class="divider"></div>
-                            <div class="divider_text">美食九龍店</div>
-                        </div>
-                        <div class="flex">
-                            <div class="delUSer cursor">註銷店鋪</div>
-                            <div class="arrow_m al" @click="drawer = !drawer"><img :class="[{ rotate: drawer }]" src="@/assets/img/pull_down.png" alt=""></div>
-                        </div>
-                    </div>
-                    <div :class="['drawer_h', {'drawer_h1': drawer}]">
-                        <ModuleMin1 :columns="columns" :arr="arr" ref="child">
-                            <template slot="id" slot-scope="{ data }">
-                                <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
-                                    {{data}}
-                                    <img src="@/assets/img/copy.png" alt="">
-                                </div>
-                            </template>
-                            <template slot="key" slot-scope="{ data }">
-                                <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
-                                    {{data}}
-                                    <img src="@/assets/img/copy.png" alt="">
-                                </div>
-                            </template>
-                        </ModuleMin1>
-                    </div>
-                </div>
-            </div>
-            <div class="Settingadvertising_content mg">
-                <div class="divider_wrap">
-                    <div class="sb al divider_message_title">
-                        <div class="flex">
-                            <div class="divider"></div>
-                            <div class="divider_text">美食中環店</div>
-                        </div>
-                        <div class="flex">
-                            <div class="delUSer cursor">註銷賬戶</div>
-                            <div class="arrow_m al" @click="drawer1 = !drawer1"><img :class="[{ rotate: drawer1 }]" src="@/assets/img/pull_down.png" alt=""></div>
-                        </div>
-                    </div>
-                    <div :class="['drawer_h', {'drawer_h1': drawer1}]">
-                        <ModuleMin1 :columns="columns1" :arr="arr1" ref="child">
-                            <template slot="id" slot-scope="{ data }">
-                                <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
-                                    {{data}}
-                                    <img src="@/assets/img/copy.png" alt="">
-                                </div>
-                            </template>
-                            <template slot="key" slot-scope="{ data }">
-                                <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
-                                    {{data}}
-                                    <img src="@/assets/img/copy.png" alt="">
-                                </div>
-                            </template>
-                        </ModuleMin1>
-                    </div>
-                </div>
-            </div>
-            <div class="Settingadvertising_content mg">
-                <div class="divider_wrap">
-                    <div class="sb al divider_message_title">
-                        <div class="flex">
-                            <div class="divider"></div>
-                            <div class="divider_text">醫療九龍店</div>
+                            <div class="divider_text">{{item.shopName}}</div>
                         </div>
                         <div class="flex">
                             <div class="delUSer cursor">註銷賬戶</div>
@@ -233,7 +181,7 @@
                         </div>
                     </div>
                     <div :class="['drawer_h', {'drawer_h1': drawer2}]">
-                        <ModuleMin1 :columns="columns2" :arr="arr2" ref="child">
+                        <ModuleMin1 :columns="columns2" :arr="item.deviceList" ref="child">
                             <template slot="id" slot-scope="{ data }">
                                 <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
                                     {{data}}
@@ -256,6 +204,7 @@
 
 <script>
 import Clipboard from 'clipboard'
+import { getShopAndDeviceList, getShopUserListByUserId } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -277,35 +226,18 @@ export default {
             ],
             area: '',
             type: '',
-            columns: [
-                {title:'店鋪設備配置',key:'name'},
-                {title:'賬戶設備ID',slot:'id'},
-                {title:'賬戶設備Key',slot:'key'},
-                {title:'',key:''},
-            ],
-            columns1: [
-                {title:'店鋪設備配置',key:'name'},
-                {title:'賬戶設備ID',slot:'id'},
-                {title:'賬戶設備Key',slot:'key'},
-                {title:'',key:''},
-            ],
             columns2: [
                 {title:'店鋪設備配置',key:'name'},
                 {title:'賬戶設備ID',slot:'id'},
                 {title:'賬戶設備Key',slot:'key'},
                 {title:'',key:''},
             ],
-            arr:[
-                {name:'設備賬戶',id: 'AAC3M53Z-vphf4sCVP7Pruiwa', key: 'AAC3M53Z-vphf4s', active: true},
-            ],
-            arr1:[
-                {name:'設備賬戶',id: 'AAC3M53Z-vphf4sCVP7Pruiwa', key: 'AAC3M53Z-vphf4s',active: true},
-            ],
-            arr2:[
-                {name:'設備賬戶',id: 'AAC3M53Z-vphf4sCVP7Pruiwa', key: 'AAC3M53Z-vphf4s',active: true},
-                {name:'設備賬戶',id: 'AAC3M53Z-vphf4sCVP7Pruiwa', key: 'AAC3M53Z-vphf4s',active: true},
-                {name:'設備賬戶',id: 'AAC3M53Z-vphf4sCVP7Pruiwa', key: 'AAC3M53Z-vphf4s',active: true},
-            ],
+            list: [],
+            pageNum: 0,
+            pageSize: 5,
+
+            storeList: [],
+            loading: false
         }
     },
     mounted () {
@@ -315,7 +247,137 @@ export default {
         });
         this.resi()
     },
+    watch: {
+		addressList: {
+			handler (val) {
+				if (val) {
+					this.addressList = val
+				}
+			}
+		},
+		getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+				}
+			},
+		},
+        
+	},
+	computed: {
+		addressList: {           //地址列表
+			get () { return this.$store.state.user.addressList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'addressList',
+					value: val
+				})
+			}
+		},
+        getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		},
+        
+	},
+    created () {
+        this.$store.dispatch('getAddress',this)  
+        this.$store.dispatch('getTypeList',this)
+        
+        this.getShopUserListByUserId()
+    },
     methods: {
+        getShopAndDeviceList () {
+            this.loading = true
+            let data = {
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            getShopAndDeviceList(data).then(res => {
+                if (res.data.rtnCode == 200) {
+                    this.loading = false
+                    this.list = res.data.data
+                    this.list.forEach(item => {
+                        item.deviceList.forEach(child => {
+                            child.active = true
+                            child.name = '設備賬戶'
+                            child.key = child.pwd
+                            child.id = child.userName
+                        })
+                    })
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: this.$t('lang.loading')
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.loading')
+                })
+            })
+        },
+        getShopUserListByUserId () {
+            this.loading = true
+            this.tableData = []
+            let data = {
+                pageNum: this.pageNum,
+                pageSize: this.pageSize,
+                parentAddressId: this.area,
+                shopName: this.search,
+                typeId: this.type,
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            getShopUserListByUserId(data).then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.getShopAndDeviceList()
+                    res.data.data.pageT.forEach(item => {
+                        this.tableData.push({
+                            d_name: item.name,
+                            d_type: item.type,
+                            d_area: item.addressRegion, 
+                            d_ratio: '80', 
+                            d_time: item.timeIntervalNames,
+                            d_detail: '', 
+                            d_state: item.state, 
+                            d_auditTime: item.examineTime.split(':')[0] + ":" + item.examineTime.split(':')[1],
+                            d_storePlanDetail: ''
+                        })
+                    })
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: this.$t('lang.loading')
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.loading')
+                })
+            })
+        },
+        searchByArea () {
+            this.getShopUserListByUserId()
+        },
+        searchByType () {
+            this.getShopUserListByUserId()
+        },
+        searchByName () {
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.getShopUserListByUserId()
+            },500)
+        },
         resi () {
             let that = this
             this.$nextTick(() => {

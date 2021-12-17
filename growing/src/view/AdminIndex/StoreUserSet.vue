@@ -1,5 +1,5 @@
 <template>
-    <div class="PlatSetting">
+    <div class="PlatSetting" v-loading='loading'>
         <div class="back al mg">
             <div class="ju al block">
                 <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">
@@ -8,7 +8,7 @@
             <span class="size12">(設備賬戶用於登錄平台投影設備)</span>
         </div>
         <div class="Settingadvertising_content_wrap bar">
-            <div class="Settingadvertising_content mg">
+            <!-- <div class="Settingadvertising_content mg">
                 <div class="divider_wrap">
                     <div class="sb al divider_message_title">
                         <div class="flex">
@@ -81,13 +81,13 @@
                         </ModuleMin1>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="Settingadvertising_content mg">
                 <div class="divider_wrap">
                     <div class="sb al divider_message_title">
                         <div class="flex">
                             <div class="divider"></div>
-                            <div class="divider_text">醫療九龍店</div>
+                            <div class="divider_text">{{shopName}}</div>
                         </div>
                         <div class="flex">
                             <div class="delUSer cursor">註銷賬戶</div>
@@ -125,6 +125,7 @@
 
 <script>
 import Clipboard from 'clipboard'
+import { getShopDeviceList } from '@/axios/request.js'
 export default {
     data () {
         return {
@@ -160,9 +161,46 @@ export default {
                 {name:'設備賬戶',id: 'AAC3M53Z-vphf4sCVP7Pruiwa', key: 'AAC3M53Z-vphf4s',active: true},
                 {name:'設備賬戶',id: 'AAC3M53Z-vphf4sCVP7Pruiwa', key: 'AAC3M53Z-vphf4s',active: true},
             ],
+            loading: false,
+            shopName: ''
         }
     },
+    created () {
+        this.getShopDeviceList()
+    },
     methods: {
+        getShopDeviceList () {
+            this.arr2 = []
+            this.loading = true
+			let data = {
+				shopId: this.$route.query.id
+			}
+			getShopDeviceList(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.shopName = res.data.data.shopName
+                    res.data.data.deviceList.forEach(item => {
+                        this.arr2.push({
+                            name: '設備賬戶',
+                            id: item.userName,
+                            key: item.pwd,
+                            active: true
+                        })
+                    })
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: this.$t('lang.loading')
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.loading')
+                })
+            })
+		},
         back () {
             this.$router.back()
         },

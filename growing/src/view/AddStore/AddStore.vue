@@ -399,10 +399,9 @@
                         <el-radio label="2" border style="margin-right: 0;" @click.native="drawers = true">自定義接收的廣告時間</el-radio>
                         <el-radio label="3" border>不接受外來廣告</el-radio>
                     </el-radio-group>
-                    <el-form v-show="radio4 == '1'" :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'"
+                    <el-form v-show="radio4 == '2'" :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'"
 						:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" style="margin-top: 15px;">
-                    </el-form>
-					<div class="clear" style="margin-top: 10px;">
+						<div class="clear" style="margin-top: 10px;">
 						<div style="color: #B0B0B0;" class="list_item1 float al" v-for="(item,i) in outTimeList" :key="i">
 							{{item.time}} <span class="al" style="margin-left: 5px">
 								<img class="cursor" @click="deleOutTime1(i)" 
@@ -410,6 +409,8 @@
 							</span>
 						</div>
 					</div>
+                    </el-form>
+					
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">
@@ -661,7 +662,7 @@ export default {
             rules: {
                 name: [
                     { required: true, message: '請輸入廣告名稱', trigger: 'blur' },
-                    { min: 3, max: 5, message: '長度需3 到 5 個字符', trigger: 'blur' }
+                    { min: 3, max: 15, message: '長度需3 到 15 個字符', trigger: 'blur' }
                 ],
 				chicun: [
                     { required: true, message: '', trigger: 'change' }
@@ -1021,7 +1022,7 @@ export default {
 			let boolean = true
 			let map = new google.maps.Map(document.getElementById('map'), {
 				center: {lat: lat, lng: lng},
-				zoom: 8,
+				zoom: 11,
 				mapTypeId: "roadmap",
 				disableDefaultUI: true,
 				zoomControl: boolean,

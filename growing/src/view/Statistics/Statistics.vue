@@ -5,19 +5,19 @@
         </div>
         <div class="Statistics_content">
             <div class="clear echarts_wrap mg">
-                <div class="float echarts">
+                <div class="float echarts" style="height: 670px;">
                     <div class="e_title bold">{{$t("lang.Production")}}</div>
                     <div class="show " id="main" v-if="active"></div>
                 </div>
-                <div class="float echarts">
+                <div class="float echarts" style="height: 670px;">
                     <div class="e_title bold">{{$t("lang.num")}}</div>
                     <div class="show " id="main1" v-if="active"></div>
                 </div>
-                <div class="float echarts">
+                <div class="float echarts" style="height: 500px;">
                     <div class="e_title bold">{{$t("lang.lastnum")}}</div>
                     <div class="show " id="main2" v-if="active"></div>
                 </div>
-                <div class="float echarts">
+                <div class="float echarts" style="height: 500px;">
                     <div class="e_title bold">{{$t("lang.Cumulative")}}</div>
                     <div class="show " id="main3" v-if="active"></div>
                 </div>
@@ -351,9 +351,9 @@ export default {
         margin: 20px 5%;
         background: white;
         width: 40%;
-        min-width: 345px;
+        min-width: 320px;
         padding: 30px;
-        height: 500px;
+        
         .show {
             height: 100%;
         }

@@ -242,7 +242,12 @@ export default {
             this.$router.push('/Income')
         },
         Settingadvertising () {
-            this.$router.push('/Settingadvertising')
+            this.$router.push({
+                name: 'Settingadvertising',
+                query: {
+                    id: this.shopTitle.shopId
+                }
+            })
         },
         AddStore () {
             this.$router.push('/AddStore')

@@ -1,7 +1,7 @@
 <template>
-    <div class="AdvertiserManagement AdAdmin">
+    <div class="AdvertiserManagement AdAdmin" v-loading='loading'>
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告商管理
+            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告套餐管理
         </div>
         <div class="AdvertiserManagement_content mg bar">
             <div class="AdvertiserManagement_content_title sb al block">
@@ -92,9 +92,9 @@
                         <template slot-scope="scope">
                             <div v-if="scope.row.status == '1'" class="green">正常</div>
                             <div style="color: red;" 
-                            v-else-if="scope.row.status == '2'">已過期</div>
+                            v-else-if="scope.row.status == '3'">已過期</div>
                             <div  style="color: #6883C1;"
-                            v-else-if="scope.row.status == '3'">下架</div>
+                            v-else-if="scope.row.status == '2'">下架</div>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -104,24 +104,24 @@
                         >
                         <template slot-scope="scope">
                             <div class="sb al">
-                                <div class="cursor" @click="technology">
+                                <div class="cursor" @click="technology(scope.row.id)">
                                     <div class="ju al"><img class="planEdit"
                                     src="@/assets/img/preview.png" alt=""></div>
                                     <div class="tc size12 bold">預覽套餐信息</div>
                                 </div>
-                                <div class="cursor" v-if="scope.row.status == '1'" 
-                                @click="dialogVisible = true">
+                                <div class="cursor" v-if="scope.row.showXJ" 
+                                @click="down(scope.row)">
                                     <div class="ju al"><img class="planEdit" 
                                     src="@/assets/img/downdv.png" alt=""></div>
                                     <div class="tc size12 bold" style="color: red;">下架套餐</div>
                                 </div>
-                                <div class="cursor"  @click="dialogVisible1 = true"
-                                v-else-if="scope.row.status == '2' || scope.row.status == '3'">
+                                <div class="cursor" @click="up(scope.row)"
+                                v-else-if="scope.row.status == '2' || scope.row.showSJ">
                                     <div class="ju al"><img class="planEdit" 
                                     src="@/assets/img/updv.png" alt=""></div>
                                     <div class="tc size12 bold" style="color: #4DF13E;">重新上架</div>
                                 </div>
-                                <div class="cursor" v-if="scope.row.status == '2' || scope.row.status == '3'">
+                                <div class="cursor" v-if="scope.row.showEdit">
                                     <div class="ju al"><img class="planEdit" 
                                     src="@/assets/img/edit.png" alt=""></div>
                                     <div class="tc size12 bold">編輯套餐</div>
@@ -154,11 +154,11 @@
                     <div class="ju Logo"><img src="@/assets/img/logo.png" alt=""></div>
                     <div class="gray_text tc"> — 請您確認是否下架 — </div>
                     <div class="result sb mg">
-                        <div class="no_wrap">
+                        <div class="no_wrap cursor" @click="dialogVisible = false">
                             <div class="no ju al"><img style="height: 70%;" src="@/assets/img/no.png" alt=""></div>
                             <div class="no_text tc">取消下架</div>
                         </div>
-                        <div class="yes_wrap">
+                        <div class="yes_wrap cursor" @click="combodown">
                             <div class="yes ju al"><img style="height: 70%;" src="@/assets/img/yes.png" alt=""></div>
                             <div class="yes_text tc">繼續下架</div>
                         </div>
@@ -176,11 +176,11 @@
                     <div class="ju Logo"><img src="@/assets/img/logo.png" alt=""></div>
                     <div class="gray_text tc"> — 請您確認是否上架 — </div>
                     <div class="result sb mg">
-                        <div class="no_wrap">
+                        <div class="no_wrap cursor" @click="dialogVisible1 = false">
                             <div class="no ju al"><img style="height: 70%;" src="@/assets/img/no.png" alt=""></div>
                             <div class="no_text tc">取消上架</div>
                         </div>
-                        <div class="yes_wrap">
+                        <div class="yes_wrap cursor" @click="comboupdate">
                             <div class="yes ju al"><img style="height: 70%;" src="@/assets/img/yes.png" alt=""></div>
                             <div class="yes_text tc">繼續上架</div>
                         </div>
@@ -189,57 +189,111 @@
                 </div>
             </div>
         </el-dialog>
+        <el-dialog
+            :visible.sync="dialogVisible2"
+            width="30%">
+            <div class="al">
+                <el-form label-position="top" class="demo-ruleForm" :model="ruleForm" :rules="rules" ref="ruleForm">
+                    <el-form-item label="請選擇套餐開始時間" prop="start">
+                        <el-date-picker
+                            v-model="ruleForm.start"
+                            type="date"
+                            :placeholder="$t('lang.sdate')"
+                            :picker-options="pickerOptions1">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="請選擇套餐結束時間" prop="end">
+                        <el-date-picker
+                            v-model="ruleForm.end"
+                            type="date"
+                            :placeholder="$t('lang.enddate')"
+                            :picker-options="pickerOptions2"
+                            >
+                        </el-date-picker>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible2 = false" size="small">取 消</el-button>
+                <el-button type="primary" @click="goUp" size="small">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
+import { comboList, comboupdate, combodown } from "@/axios/request.js"
 export default {
     data () {
         return {
             tableHeight:0,
             dialogVisible: false,
             dialogVisible1: false,
+            dialogVisible2: false,
             outtype: '',
             search: '',
             select: '',
-            tableData:[
-                {
-                    name:'旺角街道高流量商鋪剛剛套餐',company: '美食',
-                    price: 'HK$39999', date: '2021-12-5',
-                    status: 1, userState: 1, 
-                    detail: ''
-                },
-                {
-                    name:'旺角街道高流量商鋪剛剛套餐',company: '美食',
-                    price: 'HK$39999', date: '2021-12-5',
-                    status: 2, userState: 1, 
-                    detail: ''
-                },
-                {
-                    name:'旺角街道高流量商鋪剛剛套餐',company: '美食',
-                    price: 'HK$39999', date: '2021-12-5',
-                    status: 3, userState: 1, 
-                    detail: ''
-                },
-                {
-                    name:'旺角街道高流量商鋪剛剛套餐',company: '美食',
-                    price: 'HK$39999', date: '2021-12-5',
-                    status: 1, userState: 1, 
-                    detail: ''
-                },
-                {
-                    name:'旺角街道高流量商鋪剛剛套餐',company: '美食',
-                    price: 'HK$39999', date: '2021-12-5',
-                    status: 1, userState: 1, 
-                    detail: ''
-                },
-                {
-                    name:'旺角街道高流量商鋪剛剛套餐',company: '美食',
-                    price: 'HK$39999', date: '2021-12-5',
-                    status: 1, userState: 1, 
-                    detail: ''
-                },
-            ],
+            pageNum: 0,
+            pageSize: 10,
+            tableData:[],
+            combo: [],
+            loading: false,
+            pickerOptions: {
+              shortcuts: [{
+                  text: '最近一周',
+                  onClick(picker) {
+                    const end = new Date();
+                    const start = new Date();
+                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                    picker.$emit('pick', [start, end]);
+                  }
+                  }, {
+                    text: '最近一个月',
+                    onClick(picker) {
+                      const end = new Date();
+                      const start = new Date();
+                      start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                      picker.$emit('pick', [start, end]);
+                    }
+                  }, {
+                    text: '最近三个月',
+                    onClick(picker) {
+                      const end = new Date();
+                      const start = new Date();
+                      start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                      picker.$emit('pick', [start, end]);
+                    }
+                }]
+            },
+			pickerOptions1: {
+                disabledDate: (time) => {
+                    if (this.ruleForm.startDate != "") {
+                        return time.getTime() < Date.now() || time.getTime() < this.ruleForm.startDate;
+                    } else {
+                        return time.getTime() < Date.now();
+                    }
+                }
+            },
+            pickerOptions2: {
+                disabledDate: (time) => {
+                    return time.getTime() < this.ruleForm.startDate || time.getTime() < Date.now() + 8.64e7;
+                }
+            },
+
+            ruleForm: {
+                start: '',
+                end: ''
+            },
+            rules: {
+                start: [
+                    { type:'date', required: true, message: '請選擇開始日期', trigger: 'change' }
+                ],
+				end: [
+                    { type: 'date', required: true, message: '請選擇結束日期', trigger: 'change' }
+                ],
+            },
+
+            adId: null,
         }
     },
     mounted () {
@@ -249,7 +303,113 @@ export default {
         });
         this.resi()
     },
+    created () {
+        this.comboList()
+    },
     methods: {
+        comboList () {
+            this.tableData = []
+            this.loading = true
+            let data = {
+                packageName: this.search,
+                pageNum: this.pageNum,
+                pageSize: this.pageSize,
+                typeId: '',
+            }
+            comboList(data).then(res => {
+                this.loading = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.combo = res.data.data.pageT
+                    res.data.data.pageT.forEach(item => {
+                        this.tableData.push({
+                            name:item.packageName,
+                            company: item.typeName,
+                            price: item.price, 
+                            date: item.endTime.split(' ')[0],
+                            status: item.state, 
+                            userState: 1, 
+                            detail: '',
+                            id: item.id,
+                            showEdit: item.showEdit,
+                            showSJ: item.showSJ,
+                            showXJ: item.showXJ
+                        })
+                    })
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.loading')
+                })
+            })
+        },
+        comboupdate () {       //up
+            this.dialogVisible1 = false
+            this.loading = true
+            let data = { 
+                endTime: String(new Date(this.ruleForm.end).toLocaleDateString().split('/').join('-')),
+                packageId: this.adId,
+                startTime: String(new Date(this.ruleForm.start).toLocaleDateString().split('/').join('-'))
+            }
+            comboupdate(data).then(res => {
+                this.loading = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: '重新上架成功'
+                    })
+                    this.comboList()
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '重新上架失敗'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '重新上架失敗'
+                })
+            })
+        },
+        combodown () {             //down
+            this.loading = true
+            let data = {
+                packageId: this.adId
+            }
+            combodown(data).then(res => {
+                this.loading = false
+                this.dialogVisible = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: '下架成功'
+                    })
+                    this.comboList()
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '下架失敗'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '下架失敗'
+                })
+            })
+        },
         resi () {
             let that = this
             this.$nextTick(() => {
@@ -265,9 +425,32 @@ export default {
             }
             return ''
         },
-        technology () {
-            this.$router.push('/technology')
+        technology (id) {
+            this.$router.push({
+                name: 'technology',
+                query: {
+                    id: id
+                }
+            })
         },
+        up (val) {
+            this.adId = val.id
+            this.dialogVisible2 = true
+
+        },
+        down (val) {
+            this.adId = val.id
+            this.dialogVisible = true
+        },
+        goUp () {
+            this.$refs.ruleForm.validate(flag => {
+                if (flag) {
+                    this.dialogVisible2 = false,
+                    this.dialogVisible1 = true
+                }
+            })
+            
+        }
     }
 }
 </script>
@@ -281,7 +464,9 @@ export default {
     }
     .auditBtn {
         // padding: 20px 0;
-        width: 45%;
+        // width: 45%;
+        min-width: 232.19px;
+        margin: 0 45px;
         @media screen and (max-width: 600px) {
 			width: 85%;
 		}

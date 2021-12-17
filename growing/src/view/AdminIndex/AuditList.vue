@@ -395,6 +395,10 @@
 								</el-select>
                             </div>
                         </template>
+                        <template slot-scope="scope"> 
+                            <div v-if="scope.row.area.length == 0">隨機投放</div>
+                            <div v-else v-for="(item,i) in scope.row.area" :key="i">item</div>
+                        </template>
                     </el-table-column>
                     <el-table-column
                         prop="time"
@@ -568,11 +572,11 @@ export default {
             ],
 
             pageNum: 0,
-            pageSize: 10,
+            pageSize: 100,
             loading: false,
 
             pageNum1: 0,
-            pageSize1: 10,
+            pageSize1: 100,
 
             id: 0,
             adId: 0,
@@ -600,7 +604,6 @@ export default {
 			handler (val) {
 				if (val) {
 					this.getTypeList = val
-					this.getShopDetailsById()
 				}
 			},
 		},
@@ -700,7 +703,7 @@ export default {
                             state: item.examineState, 
                             id: item.id,
                             adId: item.guangGaoId,
-                            auditTime: item.createTime.split(':')[0] + item.createTime.split(':')[1], 
+                            auditTime: item.createTime.split(':')[0] + ':' + item.createTime.split(':')[1], 
                             storePlanDetail: ''
                         })
                     })
@@ -874,6 +877,7 @@ export default {
             return ''
         },
         Gdetail () {
+            
             this.$router.push('/Gdetail')
         },
         Ddetail () {

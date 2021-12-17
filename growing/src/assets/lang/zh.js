@@ -23,6 +23,7 @@ export const lang = {
 	examineSuccess: '審核通過',
 	editSuccess: '操作成功',
 	editError: '操作失敗',
+	getFail: '獲取信息失敗',
 
 
 	addbtn: '添加',

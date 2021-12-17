@@ -1,192 +1,196 @@
 <template>
     <div class="StoreSet" id="AddStore">
-        <div class="content mg bar">
-            <!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div> -->
-            <div class="back mg al">
-                <img class="cursor" src="@/assets/img/back_arrow.png" @click="goBack" alt="">預覽全部資料
-            </div>
-			<div class="noBar allcontent_wrap">
-                <div class="basicsMsg boxs theme" v-show="submit">
-                <div class="flex divider_message_title">
-                    <div class="divider"></div>
-                    <div class="divider_text">店鋪信息管理</div>
-                </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="135px" class="demo-ruleForm">
-                    <el-form-item label="店鋪名" prop="name" class="bcolor">
-                        <div class="elinput boxs width30">
-                            <el-input class="width100" v-model="ruleForm.name"></el-input>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="店鋪所屬類型" prop="storeType">
-                        <div class="al br">
-                            <div class="al width30">
-								<el-select v-model="ruleForm.storeType" class="width100" placeholder="請選擇類型">
-									<el-option label="食品" value="食品"></el-option>
-									<el-option label="科技" value="科技"></el-option>
-									<el-option label="醫療" value="醫療"></el-option>
-									<el-option label="汽車" value="汽車"></el-option>
-								</el-select>
+		<div class="back mg al">
+			<img class="cursor" src="@/assets/img/back_arrow.png" @click="goBack" alt="">店鋪資料設定
+		</div>
+		<div class="noBar" style="height: 100%;overflow: auto;">
+			<div class="content mg">
+				<!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div> -->
+				
+				<div class="noBar allcontent_wrap">
+					<div class="basicsMsg boxs theme" v-show="submit">
+					<div class="flex divider_message_title">
+						<div class="divider"></div>
+						<div class="divider_text">店鋪信息管理</div>
+					</div>
+					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="135px" class="demo-ruleForm">
+						<el-form-item label="店鋪名" prop="name" class="bcolor">
+							<div class="elinput boxs width30">
+								<el-input class="width100" v-model="ruleForm.name"></el-input>
 							</div>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="店鋪所在區域" prop="area" class="bcolor">
-                        <div class="al br">
-                            <div class="al width30">
-								<el-select v-model="ruleForm.area" class="width100" placeholder="請選擇區域">
-									<el-option label="九龍區" value="九龍區"></el-option>
-									<el-option label="旺角區" value="2旺角區"></el-option>
-									<el-option label="中環區" value="中環區"></el-option>
-								</el-select>
-							</div>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="店鋪詳細位置地址" prop="address">
-                        <div class="al">
-                            <div class="al width30" style='min-width: 217px;'>
-								<div class="elinput width100">
-                                    <el-input class="width100" v-model="ruleForm.address"></el-input>
-                                </div>
-							</div>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="店鋪描述" prop="message" class="bcolor">
-                        <div class="al">
-                            <div class="al textarea boxs">
-                                <textarea v-model="ruleForm.message" id="" cols="60" rows="8"></textarea>
-							</div>
-                        </div>
-                    </el-form-item>
-                </el-form>
-            </div>
-            <div class="detailPlan boxs theme" v-show="submit">
-                <div class="flex divider_message_title">
-                    <div class="divider"></div>
-                    <div class="divider_text">接受外來廣告設定</div>
-                </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="145px" class="demo-ruleForm">
-                    <el-form-item label="接受外來廣告比例" prop="ratio"  class="bcolor">
-                        <div class="width30">
-							<!-- <el-input v-model="ruleForm.ratio "></el-input> -->
-                            <el-select v-model="ruleForm.ratio" class="width100" placeholder="請選擇比例">
-                                <el-option label="80%" value="1"></el-option>
-                                <el-option label="50%" value="2"></el-option>
-                            </el-select>
-						</div>
-                    </el-form-item>
-                    <el-form-item label="接收外來廣告時段" prop="time">
-                        <div class="al br">
-                            <div class="al width30">
-								<el-select class="width100" v-model="ruleForm.time" placeholder="請選擇時間段">
-									<el-option label="繁忙时段(9am-9pm)" value="繁忙时段(9am-9pm)"></el-option>
-									<el-option label="非繁忙时段(9pm-9am)" value="非繁忙时段(9pm-9am)"></el-option>
-								</el-select>
-								<div class="addCate al" @click="addTime(ruleForm.time)">
-									添加
+						</el-form-item>
+						<el-form-item label="店鋪所屬類型" prop="storeType">
+							<div class="al br">
+								<div class="al width30">
+									<el-select v-model="ruleForm.storeType" class="width100" placeholder="請選擇類型">
+										<el-option label="食品" value="食品"></el-option>
+										<el-option label="科技" value="科技"></el-option>
+										<el-option label="醫療" value="醫療"></el-option>
+										<el-option label="汽車" value="汽車"></el-option>
+									</el-select>
 								</div>
 							</div>
-							<div class="list clear">
-								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in timeList" :key="i">
-									{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleTime(i)" src="@/assets/img/cha.png" alt=""></span>
+						</el-form-item>
+						<el-form-item label="店鋪所在區域" prop="area" class="bcolor">
+							<div class="al br">
+								<div class="al width30">
+									<el-select v-model="ruleForm.area" class="width100" placeholder="請選擇區域">
+										<el-option label="九龍區" value="九龍區"></el-option>
+										<el-option label="旺角區" value="2旺角區"></el-option>
+										<el-option label="中環區" value="中環區"></el-option>
+									</el-select>
 								</div>
 							</div>
-                        </div>
-                    </el-form-item>
-                    
-                    <el-form-item label="可接收外來廣告類型" prop="type" class="bcolor">
-                        <div class="al br">
-                            <div class="al width30">
-								<el-select class="width100" v-model="ruleForm.type" placeholder="請選擇類型">
-									<el-option label="食品" value="食品"></el-option>
-									<el-option label="科技" value="科技"></el-option>
-									<el-option label="醫療" value="醫療"></el-option>
-									<el-option label="汽車" value="汽車"></el-option>
-								</el-select>
-								<div class="addCate al" @click="addType(ruleForm.type)">
-									添加
-								</div>
-							</div>
-							<div class="list clear">
-								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
-									{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt=""></span>
-								</div>
-							</div>
-                        </div>
-                    </el-form-item>
-                </el-form>
-            </div>
-            
-            <div class="detailPlan boxs theme" v-show="submit">
-                <div class="flex divider_message_title">
-                    <div class="divider"></div>
-                    <div class="divider_text">店鋪廣告媒體內容信息</div>
-                </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                    <el-form-item label="廣告媒體類型" prop="mediaType" class="bcolor">
-                        <div class="al">
-                            <el-select v-model="ruleForm.cmediaType" placeholder="請選擇類型" @change="getType">
-                                <el-option label="圖片" value="1"></el-option>
-                                <el-option label="視頻" value="2"></el-option>
-                            </el-select>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="廣告媒體時長" prop="inp">
-                        <div class="al block">
-                            <div class="al inp_time ju boxs">
-									<!-- <input type="text" class="tc"> -->
-									<el-input class="width100"
-									oninput ="value=value.replace(/[^0-9.]/g,'')" :disabled="video" v-model="ruleForm.inp"></el-input>
-                            </div>
-                            <div class="al">分鐘 <span style="color: gray;margin-left: 5px;">(請輸入整數)</span></div>
-                        </div>
-                    </el-form-item>
-                    <el-form-item label="廣告媒體內容" prop="content" class="bcolor">
-                        <div class="textarea_wrap clear">
-							<label for="img">
-								<div class="addImg ju al float">
-									<img src="@/assets/img/add.png" alt="">
-								</div>
-								<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
-							</label>
-							<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
-								<div class="imageList_wrap">
-									<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
-									<div class="textarea_wrap_item_child ju al">
-										<img v-if="ruleForm.mediaType == 'image'" style="height: 100%;" :src="item.url" alt="">
-										<img v-else-if="ruleForm.mediaType == 'video'" style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+						</el-form-item>
+						<el-form-item label="店鋪詳細位置地址" prop="address">
+							<div class="al">
+								<div class="al width30" style='min-width: 217px;'>
+									<div class="elinput width100">
+										<el-input class="width100" v-model="ruleForm.address"></el-input>
 									</div>
 								</div>
-								<div class="imageList_name tc">{{item.name}}</div>
-								<div class="imageList_size tc">{{item.size}}</div>
 							</div>
-						</div>
-						<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
-							圖片格式限制PNG \JPG \JPEG \GIF，数量限制10張，大小限制3M。視頻格式限制 MP4，大小限制100M(媒體建議尺寸1920*1080)。
-						</div>
-						<div style='font-size: 12px; line-height: 15px;'>媒體內容時長限制5分鐘.</div>
-                    </el-form-item>
-                </el-form>
-            </div>
-
-            <div class="addorcancel tc ju al" v-show="submit">
-                <div class="addorcancel_btn cursor" style="margin-right: 30px;" @click="submitG">確認修改</div>
-                <div class="addorcancel_btn cursor" @click="goBack">取消修改</div>
-            </div>  
-
-			<div class="basicsMsg boxs padding backWhite" v-show="!submit">
-				<div class="true_title al ju">
-					<img src="@/assets/img/success_sign.png" alt="">店鋪信息修改申請提交成功!
+						</el-form-item>
+						<el-form-item label="店鋪描述" prop="message" class="bcolor">
+							<div class="al">
+								<div class="al textarea boxs">
+									<textarea v-model="ruleForm.message" id="" cols="60" rows="8"></textarea>
+								</div>
+							</div>
+						</el-form-item>
+					</el-form>
 				</div>
-				<div class="ju">您的店鋪信息修改申請已提交至後台，管理员将蛊快蕃核您的店鋪信息.</div>
-                <div class="iknow ju al">
-                    <div class="cursor" @click="submit = true">確定</div>
-                </div>
+				<div class="detailPlan boxs theme" v-show="submit">
+					<div class="flex divider_message_title">
+						<div class="divider"></div>
+						<div class="divider_text">接受外來廣告設定</div>
+					</div>
+					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="145px" class="demo-ruleForm">
+						<el-form-item label="接受外來廣告比例" prop="ratio"  class="bcolor">
+							<div class="width30">
+								<!-- <el-input v-model="ruleForm.ratio "></el-input> -->
+								<el-select v-model="ruleForm.ratio" class="width100" placeholder="請選擇比例">
+									<el-option label="80%" value="1"></el-option>
+									<el-option label="50%" value="2"></el-option>
+								</el-select>
+							</div>
+						</el-form-item>
+						<el-form-item label="接收外來廣告時段" prop="time">
+							<div class="al br">
+								<div class="al width30">
+									<el-select class="width100" v-model="ruleForm.time" placeholder="請選擇時間段">
+										<el-option label="繁忙时段(9am-9pm)" value="繁忙时段(9am-9pm)"></el-option>
+										<el-option label="非繁忙时段(9pm-9am)" value="非繁忙时段(9pm-9am)"></el-option>
+									</el-select>
+									<div class="addCate al" @click="addTime(ruleForm.time)">
+										添加
+									</div>
+								</div>
+								<div class="list clear">
+									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in timeList" :key="i">
+										{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleTime(i)" src="@/assets/img/cha.png" alt=""></span>
+									</div>
+								</div>
+							</div>
+						</el-form-item>
+						
+						<el-form-item label="可接收外來廣告類型" prop="type" class="bcolor">
+							<div class="al br">
+								<div class="al width30">
+									<el-select class="width100" v-model="ruleForm.type" placeholder="請選擇類型">
+										<el-option label="食品" value="食品"></el-option>
+										<el-option label="科技" value="科技"></el-option>
+										<el-option label="醫療" value="醫療"></el-option>
+										<el-option label="汽車" value="汽車"></el-option>
+									</el-select>
+									<div class="addCate al" @click="addType(ruleForm.type)">
+										添加
+									</div>
+								</div>
+								<div class="list clear">
+									<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
+										{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt=""></span>
+									</div>
+								</div>
+							</div>
+						</el-form-item>
+					</el-form>
+				</div>
+				
+				<div class="detailPlan boxs theme" v-show="submit">
+					<div class="flex divider_message_title">
+						<div class="divider"></div>
+						<div class="divider_text">店鋪廣告媒體內容信息</div>
+					</div>
+					<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+						<el-form-item label="廣告媒體類型" prop="mediaType" class="bcolor">
+							<div class="al">
+								<el-select v-model="ruleForm.cmediaType" placeholder="請選擇類型" @change="getType">
+									<el-option label="圖片" value="1"></el-option>
+									<el-option label="視頻" value="2"></el-option>
+								</el-select>
+							</div>
+						</el-form-item>
+						<el-form-item label="廣告媒體時長" prop="inp">
+							<div class="al block">
+								<div class="al inp_time ju boxs">
+										<!-- <input type="text" class="tc"> -->
+										<el-input class="width100"
+										oninput ="value=value.replace(/[^0-9.]/g,'')" :disabled="video" v-model="ruleForm.inp"></el-input>
+								</div>
+								<div class="al">分鐘 <span style="color: gray;margin-left: 5px;">(請輸入整數)</span></div>
+							</div>
+						</el-form-item>
+						<el-form-item label="廣告媒體內容" prop="content" class="bcolor">
+							<div class="textarea_wrap clear">
+								<label for="img">
+									<div class="addImg ju al float">
+										<img src="@/assets/img/add.png" alt="">
+									</div>
+									<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
+								</label>
+								<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
+									<div class="imageList_wrap">
+										<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
+										<div class="textarea_wrap_item_child ju al">
+											<img v-if="ruleForm.mediaType == 'image'" style="height: 100%;" :src="item.url" alt="">
+											<img v-else-if="ruleForm.mediaType == 'video'" style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+										</div>
+									</div>
+									<div class="imageList_name tc">{{item.name}}</div>
+									<div class="imageList_size tc">{{item.size}}</div>
+								</div>
+							</div>
+							<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
+								圖片格式限制PNG \JPG \JPEG \GIF，数量限制10張，大小限制3M。視頻格式限制 MP4，大小限制100M(媒體建議尺寸1920*1080)。
+							</div>
+							<div style='font-size: 12px; line-height: 15px;'>媒體內容時長限制5分鐘.</div>
+						</el-form-item>
+					</el-form>
+				</div>
+
+				<div class="addorcancel tc ju al" v-show="submit">
+					<div class="addorcancel_btn cursor" style="margin-right: 30px;" @click="submitG">確認修改</div>
+					<div class="addorcancel_btn cursor" @click="goBack">取消修改</div>
+				</div>  
+
+				<div class="basicsMsg boxs padding backWhite" v-show="!submit">
+					<div class="true_title al ju">
+						<img src="@/assets/img/success_sign.png" alt="">店鋪信息修改申請提交成功!
+					</div>
+					<div class="ju">您的店鋪信息修改申請已提交至後台，管理员将蛊快蕃核您的店鋪信息.</div>
+					<div class="iknow ju al">
+						<div class="cursor" @click="submit = true">確定</div>
+					</div>
+				</div>
+				</div>
 			</div>
-            </div>
-        </div>
+		</div>
     </div>
 </template>
 
 <script>
+
 export default {
     data() {
         return {
@@ -264,7 +268,11 @@ export default {
     mounted () {
         
     },
+	created () {
+		
+	},
     methods: {
+		
         fun () {
 			if (window.innerWidth <= 564) {
                 this.labelPosition = 'top'
@@ -513,9 +521,9 @@ export default {
     }
     .content {
         width: 85%;
-        height: 100%;
+        // height: 100%;
         padding: 0px 7px;
-        overflow: auto;
+        // overflow: auto;
 		@media screen and (max-width: 564px) {
 			width: 100%;
 		}

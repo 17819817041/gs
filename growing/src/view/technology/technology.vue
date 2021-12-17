@@ -1,113 +1,40 @@
 <template>
-    <div class="AdvertisingAddPlus">
+    <div class="AdvertisingAddPlus" v-loading='loading'>
 		<div class="AdvertisingOperation_back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">套餐預覽
         </div>
 		<div class="noBar" style="height: calc(100% - 35px);overflow: auto;margin-top: 15px;">
 			<div :class="['content mg bar',{ heigh: !submit }]">
-				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
 				<div class="noBar" style="height: calc(100% - 0px); overflow:auto" v-show="submit">
 					<div class="basicsMsg theme" v-show="submit">
-						<!-- <div class=" basicsMsg_item bold al">
-							<div class="iden radius"></div> {{$t("lang.message")}}
-						</div>
-						<el-form :model="ruleForm" ref="ruleForm" 
-						 :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'" 
-						:label-width="$i18n.locale == 'zh-CN'? '100px': '165px'" class="demo-ruleForm">
-							<el-form-item :label="$t('lang.adname')" prop="name">
-								<el-input style="width: 40%;min-width: 200px;" v-model="ruleForm.name" disabled></el-input>
-							</el-form-item>
-							<el-form-item label="廣告所屬類型" prop="type">
-								<div class="flex br">
-									<div class="flex" style="margin-right: 10px;">
-                                        <el-input style="width: 40%;min-width: 200px;" :value="$t('lang.Technology')" disabled></el-input>
-									</div>
-									<div class="list clear">
-										<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
-											{{item}}
-										</div>
-									</div>
-								</div>
-							</el-form-item>
-							<el-form-item :label="$t('lang.cycle')" prop="date">
-								<div style="min-width: 200px;width: 100%" class='clear'>
-									<div class="float" style="margin-right: 15px;width: 140px;">
-										<el-form-item prop="startDate">
-											<el-date-picker disabled
-												@change="STIME"
-												class="width100"
-												v-model="ruleForm.startDate"
-												type="date"
-												:placeholder="$t('lang.sdate')">
-											</el-date-picker>
-										</el-form-item>
-									</div>
-									<div class="float width384" style="width: 140px;">
-										<el-form-item prop="endDate">
-											<el-date-picker disabled
-												class="width100"
-												v-model="ruleForm.endDate"
-												type="date"
-												:placeholder="$t('lang.enddate')">
-											</el-date-picker>
-										</el-form-item>
-										
-									</div>
-								</div>
-							</el-form-item>
-							<div :class="['flex br',{ br1185: $i18n.locale == 'en-US' }]">
-								<el-form-item :label="$t('lang.admediatype')" prop="mediaType" style="margin-right: 30px;">
-									<div class="al">
-                                        <el-input style="width: 40%;min-width: 200px;" :value="$t('lang.image')" disabled></el-input>
-									</div>
-								</el-form-item>
-							</div>
-							<el-form-item :label="$t('lang.adcontent')" prop="content">
-								<div class="textarea_wrap clear">
-									<div class="textarea_wrap_item float cursor" v-for="(item,i) in imageList" :key="i">
-										<div class="imageList_wrap">
-											<div class="textarea_wrap_item_child ju al" @click="imgPreview(item.url)">
-												<img style="height: 100%;" :src="item.url" alt="">
-											</div>
-										</div>
-										<div class="imageList_name tc">{{item.name}}</div>
-										<div class="imageList_size tc">{{item.size}}</div>
-									</div>
-								</div>
-								<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
-									{{$t('lang.becare')}}
-								</div>
-								<div style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
-							</el-form-item>
-						</el-form> -->
 						<div
 							:class="['technology_content_item cursor']" 
 							>
-							<div class="taocan_title bold">旺角街道高流量商鋪廣告套餐</div>
+							<div class="taocan_title bold">{{preview.packageName}}</div>
 							<div class="clear">
 								<div class="float title_p sa al">
 									<div>
-										<div class="technology_bold">繁忙時段</div>
-										<div class="technology_size12">9am-9pm廣告高曝光時間</div>
+										<div class="technology_bold">{{preview.titleOne}}</div>
+										<div class="technology_size12">{{preview.titleOneContent}}</div>
 									</div>
 									<div>
-										<div class="technology_bold">旺角街道高流量商鋪</div>
-										<div class="technology_size12">由多加旺角街道中人流量集中店鋪組成</div>
+										<div class="technology_bold">{{preview.titleTwo}}</div>
+										<div class="technology_size12">{{preview.titleTwoContent}}</div>
 									</div>
 								</div>
 								<div class="float title_p1 sa al">
 									<div>
 										<div class="technology_bold_red">計劃原價</div>
 										<div class="technology_bold_red1" style="text-decoration: line-through;">
-											$49999 HKD
+											${{preview.oldPrice}} HKD
 										</div>
 									</div>
 									<div>
-										<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
+										<div class="youhui">{{preview.concessionalRate}}%</div>
 									</div>
 									<div class="flex al">
 										<div class="technology_bold dor radius ju al">$</div>
-										<div class="technology_bold technology_price">39999</div>
+										<div class="technology_bold technology_price">{{preview.presentPrice}}</div>
 										<div class="hkd">HKD</div>
 									</div>
 								</div>
@@ -115,10 +42,11 @@
 						</div>
 						<div :class="['content_msg1']">
 							<div class="bold">套餐內容</div>
-							<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
+							<!-- <div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
 							<div class="msg_item">精確投放到指定旺角街道店鋪，由高人流量店鋪組成</div>
 							<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
-							<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
+							<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div> -->
+							<div class="msg_item" v-for="(item,i) in preview.contentList" :key="i">{{item}}</div>
 						</div>
 					</div>
 					<div class="detailPlan theme">
@@ -131,7 +59,7 @@
 								<el-form-item :label="$t('lang.duration')" prop="inp">
 									<div class="al">
 										<div class="al inp_time ju">
-											{{ruleForm.inp}}
+											{{preview['length']}}
 										</div>
 										<div style="font-size: 13px;margin-left: 5px; color: gray;">
 											{{$t('lang.minute')}}
@@ -144,7 +72,15 @@
 							:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" class="demo-ruleForm">
 								<el-form-item label="廣告媒體投放時段">
 									<div class="time_duan">
-										<div class="clear">
+										<div class="clear" v-for="(item,i) in preview.packageTimeInterVos" :key="i">
+											<div class="float float320" style="width: 70px;min-width: 70px;">{{item.name}}</div>
+											<!-- <div class="float float320"><el-checkbox v-model="checked2" disabled>10:00~11:00(15分鐘)</el-checkbox></div> -->
+											<div class="float" v-for="(child,i) in item.timeIntervalDetailsName" :key="i">
+												<el-checkbox v-model="checked2" disabled>{{child}}</el-checkbox>
+											</div>
+										</div>
+
+										<!-- <div class="clear">
 											<div class="float" style="width: 70px;min-width: 70px;">繁忙時段</div>
 											<div class="float float320"><el-checkbox v-model="checked2" disabled>10:00~11:00(15分鐘)</el-checkbox></div>
 											<div class="float"><el-checkbox v-model="checked2" disabled>11:00~12:00(15分鐘)</el-checkbox></div>
@@ -159,7 +95,7 @@
 											<div class="float float320"><el-checkbox v-model="checked2" disabled>19:00~20:00(10分鐘)</el-checkbox></div>
 											<div class="float"><el-checkbox v-model="checked2" disabled>20:00~21:00(10分鐘)</el-checkbox></div>
 											<div class="float"><el-checkbox v-model="checked2" disabled>21:00~22:00(10分鐘)</el-checkbox></div>
-										</div>
+										</div> -->
 									</div>
 								</el-form-item>
 
@@ -190,7 +126,6 @@
 									</div>
 									<div class="total_price_item">{{$t('lang.ppotd')}}: <span style="color: red;">$ 1000 HKD</span></div>
 									<div class="total_price_item">{{$t('lang.days')}}: <span style="color: red;">6天</span></div>
-									<!-- <div class="price_plan flex cursor" @click="drawer = !drawer"> -->
 									<el-popover
 										:placement="position1"
 										trigger="click"
@@ -212,148 +147,7 @@
 				</div>
 			</div>
 		</div>
-		<el-drawer
-			title="請選擇您需要的套餐內容"
-			:visible.sync="drawer_tc"
-			:direction="direction">
-			<div style="padding: 0 20px;overflw:auto;" class="noBar scale">
-				<div @click="active = !active" 
-				:class="['technology_content_item cursor',{ mgb: active, 'technology_content_item_border': choose == 1 }]" v-show="technologysubmit">
-					<div class="drawer_arrow" @click.stop="active = !active">
-						<img style="height: 90%;" :class="[{'rotate': active}]" src="@/assets/img/pull_down.png" alt="">
-					</div>
-					<div class="taocan_title bold">旺角街道高流量商鋪廣告套餐</div>
-					<div class="clear">
-						<div class="float title_p sa al">
-							<div>
-								<div class="technology_bold">繁忙時段</div>
-								<div class="technology_size12">9am-9pm廣告高曝光時間</div>
-							</div>
-							<div>
-								<div class="technology_bold">旺角街道高流量商鋪</div>
-								<div class="technology_size12">由多加旺角街道中人流量集中店鋪組成</div>
-							</div>
-						</div>
-						<div class="float title_p1 sa al">
-							<div>
-								<div class="technology_bold_red">計劃原價</div>
-								<div class="technology_bold_red1" style="text-decoration: line-through;">
-									$49999 HKD
-								</div>
-							</div>
-							<div>
-								<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
-							</div>
-							<div class="flex al">
-								<div class="technology_bold dor radius ju al">$</div>
-								<div class="technology_bold technology_price">39999</div>
-								<div class="hkd">HKD</div>
-								<div :class="['choose_btn cursor technology_bold',
-								{ 'choose_btn_background':choose == 1 }]" 
-								@click.stop='choosetaocan(1,"39999",5)'>選中</div>
-							</div>
-						</div>
-					</div>
-					<div :class="['content_msg',{ maxheight: !active }]">
-						<div class="bold">套餐內容</div>
-						<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
-						<div class="msg_item">精確投放到指定旺角街道店鋪，由高人流量店鋪組成</div>
-						<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
-						<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
-					</div>
-				</div>
-				<div @click="active1 = !active1" 
-				:class="['technology_content_item cursor',{ mgb: active1, 'technology_content_item_border': choose == 2 }]" v-show="technologysubmit">
-					<div class="drawer_arrow" @click.stop="active1 = !active1">
-						<img style="height: 90%;" :class="[{'rotate': active1}]" src="@/assets/img/pull_down.png" alt="">
-					</div>
-					<div class="taocan_title bold">中環街道高流量商鋪廣告套餐</div>
-					<div class="clear">
-						<div class="float title_p sa al">
-							<div>
-								<div class="technology_bold">非繁忙時段</div>
-								<div class="technology_size12">9pm-9am廣告播放時間</div>
-							</div>
-							<div>
-								<div class="technology_bold">中環街道高流量商鋪</div>
-								<div class="technology_size12">由多加中環街道中人流量集中店鋪組成</div>
-							</div>
-						</div>
-						<div class="float title_p1 sa al">
-							<div>
-								<div class="technology_bold_red">計劃原價</div>
-								<div class="technology_bold_red1" style="text-decoration: line-through;">
-									$69999 HKD
-								</div>
-							</div>
-							<div>
-								<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
-							</div>
-							<div class="flex al">
-								<div class="technology_bold dor radius ju al">$</div>
-								<div class="technology_bold technology_price">59999</div>
-								<div class="hkd">HKD</div>
-								<div :class="['choose_btn cursor technology_bold',
-								{ 'choose_btn_background':choose == 2 }]" 
-								@click.stop='choosetaocan(2,"59999",7)'>選中</div>
-							</div>
-						</div>
-					</div>
-					<div :class="['content_msg',{ maxheight: !active1 }]">
-						<div class="bold">套餐內容</div>
-						<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
-						<div class="msg_item">精確投放到指定中環街道店鋪，由高人流量店鋪組成</div>
-						<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
-						<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
-					</div>
-				</div>
-				<div @click="active2 = !active2" 
-				:class="['technology_content_item cursor',{ mgb: active2, 'technology_content_item_border': choose == 3 }]" v-show="technologysubmit">
-					<div class="drawer_arrow" @click.stop="active2 = !active2">
-						<img style="height: 90%;" :class="[{'rotate': active2}]" src="@/assets/img/pull_down.png" alt="">
-					</div>
-					<div class="taocan_title bold">黃大仙街道高流量商鋪廣告套餐</div>
-					<div class="clear">
-						<div class="float title_p sa al">
-							<div>
-								<div class="technology_bold">繁忙時段</div>
-								<div class="technology_size12">9am-9pm廣告高曝光時間</div>
-							</div>
-							<div>
-								<div class="technology_bold">黃大仙街道高流量商鋪</div>
-								<div class="technology_size12">由多加黃大仙街道中人流量集中店鋪組成</div>
-							</div>
-						</div>
-						<div class="float title_p1 sa al">
-							<div>
-								<div class="technology_bold_red">計劃原價</div>
-								<div class="technology_bold_red1" style="text-decoration: line-through;">
-									$79999 HKD
-								</div>
-							</div>
-							<div>
-								<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
-							</div>
-							<div class="flex al">
-								<div class="technology_bold dor radius ju al">$</div>
-								<div class="technology_bold technology_price">69999</div>
-								<div class="hkd">HKD</div>
-								<div :class="['choose_btn cursor technology_bold',
-								{ 'choose_btn_background':choose == 3 }]" 
-								@click.stop='choosetaocan(3,"69999",10)'>選中</div>
-							</div>
-						</div>
-					</div>
-					<div :class="['content_msg',{ maxheight: !active2 }]">
-						<div class="bold">套餐內容</div>
-						<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
-						<div class="msg_item">精確投放到指定黃大仙街道店鋪，由高人流量店鋪組成</div>
-						<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
-						<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
-					</div>
-				</div>
-			</div>
-		</el-drawer>
+
 		<el-dialog
 			:visible.sync="showVideo"
 			width="90%">
@@ -373,7 +167,7 @@
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import dimg from "@/assets/img/growing.jpg"
-import img1 from "@/assets/img/backimg.png"
+import { previewAD } from "@/axios/request.js"
 export default {
     data() {
         return {
@@ -403,8 +197,6 @@ export default {
 			position1: 'left-end',
 			visible: false,
 			drawer: false,
-			drawer_tc: false,
-			direction: 'rtl',
 			submit: true,
 			video: true,
             radio: '1',
@@ -467,12 +259,8 @@ export default {
 			endDate: '',
             value2: '',
 			typeList: ['旺角街道高流量商鋪廣告套餐($10000HKD/day)/旺角區域店鋪/廣告100分鐘'],
-			areaList: [],
-			timeList: [],
-			imageList: [{url: img1,name: 'image1',size: '13KB'}, {url: dimg,name: 'image2',size: '500KB'}],
 			minute: [],         //时长
             storeList: [],
-            streetList: [],
             map: '',
             place: null,
 			infowindow: null,
@@ -484,7 +272,28 @@ export default {
             active1: false,
             active2: false,
 			choose: null,
-			technologysubmit: true,
+
+			preview: {
+				concessionalRate: 0,
+				contentList: [],
+				endTime: "",
+				length: 9,
+				oldPrice: 0,
+				packageName: "",
+				packageShopVos: [],
+				packageTimeInterVos:[],
+				pageckageId: 8,
+				presentPrice: 0,
+				startTime: "",
+				titleOne: "",
+				titleOneContent: "",
+				titleTwo: "",
+				titleTwoContent: "",
+				totalLength: 3,
+				typeId: 2
+			},
+			loading: false
+
 		}
     },
 	components: { ElImageViewer },
@@ -515,6 +324,7 @@ export default {
     },
 	created () {
 		this.dimg = dimg
+		this.previewAD()
 	},
     mounted () {
         this.initMap(22.6,114.1,1)
@@ -523,6 +333,31 @@ export default {
 		window.closewin = this.closewin;
     },
     methods: {
+		previewAD () {
+			this.loading = true
+			let data = {
+				packageId: this.$route.query.id
+			}
+			previewAD(data).then(res => {
+				console.log(res)
+				this.loading = false
+				if (res.data.rtnCode == 200) {
+					this.preview = res.data.data
+				} else {
+					this.$message({
+						type: 'error',
+						message: this.$t('lang.loading')
+					})
+				}
+			}).catch(e => {
+				that.loading = false
+				this.$message({
+					type: 'error',
+					message: this.$t('lang.loading')
+				})
+			})
+		},
+
 		previewVideo (item) {
 			this.src = item.url
 			this.showVideo = true
@@ -551,7 +386,6 @@ export default {
 			this.ruleForm.inp = minute
 			this.taocanDetail = true
 			this.typeList = []
-			this.drawer_tc = false
 			this.choose = i
 			this.allprice = val
 			if (i == 1) {
@@ -1057,9 +891,6 @@ export default {
 				}
 			}
 		},
-		shopadd (val) {
-			this.addStore(val)
-		},
 		openwin (contentString1,marker1,map) {
 			if (this.infowindow) {
 				this.infowindow.close()
@@ -1106,112 +937,8 @@ export default {
 				this.position = 'left-end'
 			}
 		},
-		STIME (val) {
-			let D = new Date(val)
-			let start = D.getTime()
-			if (this.ruleForm.endDate) {
-				if (start > this.ruleForm.endDate.getTime()) {
-					this.ruleForm.endDate = ''
-				}
-			}
-		},
-		submitForm(formName) {
-			this.$refs[formName].validate((valid) => {
-			if (valid) {
-				alert('submit!');
-			} else {
-				console.log('error submit!!');
-				return false;
-			}
-			});
-		},
-		resetForm(formName) {
-			this.$refs[formName].resetFields();
-		},
-		submitG () {
-			this.submit = false
-		},
 		goBack () {
 			this.$router.back()
-		},
-		addType (item) {
-			if (item) {
-				this.typeList.push(item)
-				let arr = new Set(this.typeList)
-				this.typeList = Array.from(arr)
-			}
-		},
-		addArea (item) {
-			if (item) {
-				this.areaList.push(item)
-				let arr = new Set(this.areaList)
-				this.areaList = Array.from(arr)
-			}
-		},
-        addStore (item) {
-			this.infowindow.close()
-			if (item) {
-				this.storeList.push(item)
-				let arr = new Set(this.storeList)
-				this.storeList = Array.from(arr)
-			}
-		},
-        addStreet (item) {
-			if (item) {
-				this.streetList.push(item)
-				let arr = new Set(this.streetList)
-				this.streetList = Array.from(arr)
-			}
-		},
-		deleType (i) {
-			this.taocanDetail = false
-			this.typeList.splice(i,1)
-		},
-        deleStore (i) {
-			this.storeList.splice(i,1)
-		},
-        deleStreet (i) {
-			this.streetList.splice(i,1)
-		},
-		deleArea (i) {
-			this.areaList.splice(i,1)
-		},
-		addTime (item) {
-			if (item) {
-				this.timeList.push(item)
-				let arr = new Set(this.timeList)
-				this.timeList = Array.from(arr)
-			}
-		},
-		deleTime (i) {
-			this.timeList.splice(i,1)
-		},
-		getType (e) {
-			this.imageList = []
-			// this.ruleForm.inp = ''
-			this.minute = []
-			if (e == 1) {
-				this.video = false
-				this.ruleForm.mediaType = 'image'
-				this.ruleForm.cmediaType = '圖片'
-			} else if (e == 2) {
-				this.video = true
-				this.ruleForm.mediaType = 'video'
-				this.ruleForm.cmediaType = '視頻'
-			}
-		},
-		deleImg (i) {
-			if (this.ruleForm.mediaType == 'video') {
-				this.minute.splice(i,1)
-				this.ruleForm.inp = 0
-				for (let i=0;i<Array.from(this.minute).length;i++) {
-					this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
-					this.$forceUpdate()
-				}
-				this.imageList.splice(i,1)
-			} else {
-				this.imageList.splice(i,1)
-			}
 		},
     }
 }
@@ -1228,9 +955,9 @@ export default {
 	}
 }
 .float320 {
-	margin-left: 15px;
+	margin-right: 15px;
 	@media screen and (max-width: 315px) {
-		margin-left: 0px;
+		margin-right: 0px;
 	}
 }
 	.time_duan {
@@ -1364,13 +1091,9 @@ export default {
         }
     }
     .youhui {
-        width: 95px;
-        @media screen and (max-width: 970px) {
-            width: 55px;
-        }
-        img {
-            width: 100%;
-        }
+        // width: 95px;
+		color: red;
+		font-weight: bold;
     }
     .technology_bold {
         font-size: 14px;

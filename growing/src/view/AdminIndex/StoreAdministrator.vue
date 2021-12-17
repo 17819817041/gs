@@ -1,5 +1,5 @@
 <template>
-    <div class="StoreAdministrator">
+    <div class="StoreAdministrator" v-loading='loading'>
         <div class="back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">店鋪管理
         </div>
@@ -29,7 +29,7 @@
                                 <el-input
                                 class="width100"
                                 v-model="search"
-                                size="mini"
+                                size="mini" @input="searchByName"
                                 placeholder="输入关键字搜索"/>
                             </div>
                         </template>
@@ -42,11 +42,13 @@
                         <template slot="header">
                             店鋪類型
                             <div class="searchInp mg">
-                                <el-select class="width100" style="height: 28px;" v-model="type" placeholder="請選擇類型">
-									<el-option label="食品" value="食品"></el-option>
-									<el-option label="科技" value="科技"></el-option>
-									<el-option label="醫療" value="醫療"></el-option>
-									<el-option label="汽車" value="汽車"></el-option>
+                                <el-select class="width100" style="height: 28px;" v-model="type" placeholder="請選擇類型" @change="searchByType">
+									<el-option v-for="(item,i) in getTypeList" :key="i"
+                                        :label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+                                        item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+                                        item.find( res => res.language == "en-US").guangGaoTypeName '
+                                        :value="item[0].id">
+                                    </el-option>
 								</el-select>
                             </div>
                         </template>
@@ -59,11 +61,13 @@
                         <template slot="header">
                             店鋪區域
                             <div class="searchInp mg">
-                                <el-select class="width100" style="height: 28px;" v-model="area" placeholder="請選擇區域">
-                                    <el-option label="九龍" value="九龍"></el-option>
-                                    <el-option label="中環" value="中環"></el-option>
-                                    <el-option label="黃大仙" value="黃大仙"></el-option>
-                                    <el-option label="旺角" value="旺角"></el-option>
+                                <el-select class="width100" style="height: 28px;" v-model="area" placeholder="請選擇區域" @change="searchByArea">
+                                    <el-option v-for="(item,i) in addressList" :key="i"
+                                        :label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+                                        item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+                                        item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+                                        :value="item.id">
+                                    </el-option>
                                 </el-select>
                             </div>
                         </template>
@@ -83,22 +87,26 @@
                     <el-table-column
                         prop="gtime"
                         label="接收外來廣告時段"
-                        min-width="180"
+                        min-width="250"
                         >
                         <template slot="header">
                             接收外來廣告時段
-                            <div class="searchInp mg">
-                                <el-select class="width100" style="height: 28px;" v-model="time" placeholder="請選擇區域">
-                                    <el-option label="繁忙時段(9am - 9pm)" value="繁忙時段(9am - 9pm)"></el-option>
-                                    <el-option label="非繁忙時段(9pm - 9am)" value="非繁忙時段(9pm - 9am)"></el-option>
+                            <div class="mg" style="margin-top: 10px; width: 200px">
+                                <el-select class="width100" style="height: 28px;" v-model="timeIntervalId" placeholder="請選擇區域" @change="searchByTime">
+                                    <!-- <el-option label="繁忙時段(9am - 9pm)" value="繁忙時段(9am - 9pm)"></el-option>
+                                    <el-option label="非繁忙時段(9pm - 9am)" value="非繁忙時段(9pm - 9am)"></el-option> -->
+
+                                    <el-option v-for="(item,i) in getTimeIntervalList" :key='i'
+                                    :label="item.timeIntervalName" :value="item.timeIntervalId"></el-option>
                                 </el-select>
                             </div>
                         </template>
                         <template slot-scope="scope">
                             <div class="">
-                                <div class="th_color tc" v-show="scope.row.gtime.busy">{{scope.row.gtime.busy}}</div>
-                                <div class="th_color tc" v-show="scope.row.gtime.unbusy">{{scope.row.gtime.unbusy}}</div>
-                                <div class="th_color tc" v-show="scope.row.gtime.busy == '' && scope.row.gtime.unbusy == '' ">無</div>
+                                <div class="th_color tc" v-for="(item,i) in scope.row.gtime" :key="i">
+                                    <span v-if="item">{{item}}</span>
+                                    <span v-else>無</span>
+                                </div>
                             </div>
                         </template>
                     </el-table-column>
@@ -111,15 +119,20 @@
                             接受外來廣告類型
                             <div class="searchInp mg">
                                 <el-select class="width100" style="height: 28px;" v-model="outtype" placeholder="請選擇類型">
-									<el-option label="食品" value="食品"></el-option>
-									<el-option label="科技" value="科技"></el-option>
-									<el-option label="醫療" value="醫療"></el-option>
-									<el-option label="汽車" value="汽車"></el-option>
+									<el-option v-for="(item,i) in getTypeList" :key="i"
+                                        :label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+                                        item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+                                        item.find( res => res.language == "en-US").guangGaoTypeName '
+                                        :value="item[0].id">
+                                    </el-option>
 								</el-select>
                             </div>
                         </template>
                         <template slot-scope="scope">
-                            <div class="tc th_color">{{scope.row.gtype}}</div>
+                            <div class="tc th_color" v-for="(item,i) in scope.row.gtype" :key='i'>
+                                <span v-if="item">{{item}}</span>
+                                <span v-else>無</span>
+                            </div>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -127,9 +140,9 @@
                         label="店鋪詳細設定操作"
                         min-width="250"
                         >
-                        <template>
+                        <template slot-scope="scope">
                             <div class="sb al">
-                                <div class="cursor" @click="PreviewMsg">
+                                <div class="cursor" @click="PreviewMsg(scope.row.shopId)">
                                     <div class="ju al"><img class="planEdit" src="@/assets/img/preview.png" alt=""></div>
                                     <div class="tc size12">預覽全部資料</div>
                                 </div>
@@ -137,7 +150,7 @@
                                     <div class="ju al"><img class="planEdit" src="@/assets/img/plat.png" alt=""></div>
                                     <div class="tc size12">店鋪資料設定</div>
                                 </div>
-                                <div class="cursor" @click="StoreUserSet">
+                                <div class="cursor" @click="StoreUserSet(scope.row.shopId)">
                                     <div class="ju al"><img class="planEdit" src="@/assets/img/userDetail.png" alt=""></div>
                                     <div class="tc size12">店鋪賬戶設定</div>
                                 </div>
@@ -163,9 +176,11 @@
 </template>
 
 <script>
+import { getShopListpage } from "@/axios/request.js"
 export default {
     data () {
         return {
+            loading: false,
             tableHeight:0,
             type: '',
             outtype: '',
@@ -190,6 +205,11 @@ export default {
                 {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '繁忙時段(9am - 9pm)', unbusy: ''},gtype: '美食，生活', detail: ''},
                 {name:'Jordan Cheung',type: '美食',area: '九龍', ratio: '80%',gtime: {busy: '', unbusy: '非繁忙時段(9pm - 9am)'},gtype: '美食，生活', detail: ''},
             ],
+
+            timer: null,
+            pageNum: 0,
+            pageSize: 10,
+            timeIntervalId: ''
         }
     },
     mounted () {
@@ -199,7 +219,121 @@ export default {
         });
         this.resi()
     },
+    created () {
+        this.$store.dispatch('getAddress',this) 
+        this.$store.dispatch('getTypeList',this)
+        this.$store.dispatch('getTimeIntervalList')
+        this.getShopList()
+    },
+    watch: {
+		addressList: {
+			handler (val) {
+				if (val) {
+					this.addressList = val
+				}
+			}
+		},
+		getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+				}
+			},
+		},
+        getTimeIntervalList: {
+			handler (val) {
+				if (val) {
+					this.getTimeIntervalList = val
+				}
+			},
+		},
+	},
+	computed: {
+		addressList: {           //地址列表
+			get () { return this.$store.state.user.addressList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'addressList',
+					value: val
+				})
+			}
+		},
+        getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		},
+        getTimeIntervalList:{             //類型列表
+			get () { return this.$store.state.user.busyTimeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'busyTimeList',
+					value: val
+				})
+			}
+		},
+	},
     methods: {
+        searchByName (val) {
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.getShopList()
+            }, 1000)
+        },
+        searchByArea (val) {
+            this.getShopList()
+        },
+        searchByType () {
+            this.getShopList()
+        },
+        searchByTime () {
+            this.getShopList()
+        },
+        getShopList () {
+            this.loading = true
+            this.tableData = []
+            let data = {
+                pageNum: this.pageNum,
+                pageSize: this.pageSize,
+                parentAddressId: this.area,
+                shopName: this.search,
+                timeIntervalId: this.timeIntervalId,
+                typeId: this.type
+            }
+            getShopListpage(data).then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    res.data.data.pageT.forEach(item => {
+                        this.tableData.push({
+                            name: item.name,
+                            type: item.type,
+                            area: item.addressRegion, 
+                            ratio: '100%',
+                            gtime: item.timeIntervalNames,
+                            gtype: item.typeNams, 
+                            detail: '',
+                            shopId: item.shopId
+                        })
+                    })
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: this.$t('lang.loading')
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.loading')
+                })
+            })
+        },
         resi () {
             let that = this
             this.$nextTick(() => {
@@ -224,11 +358,21 @@ export default {
         StoreSet () {
             this.$router.push('/StoreSet')
         },
-        PreviewMsg () {
-            this.$router.push('/PreviewMsg')
+        PreviewMsg (id) {
+            this.$router.push({
+                name: 'PreviewMsg',
+                query: {
+                    id: id
+                }
+            })
         },
-        StoreUserSet () {
-            this.$router.push('/StoreUserSet')
+        StoreUserSet (id) {
+            this.$router.push({
+                name: 'StoreUserSet',
+                query: {
+                    id: id
+                }
+            })
         }
     }
 }

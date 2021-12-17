@@ -368,6 +368,10 @@ export default {
 	.AddStore .el-dialog {
 		min-width: 300px !important;
 	}
+	
+	.UserDetailEdit .el-dialog {
+		max-width: 300px !important;
+	}
 
 
 

@@ -23,6 +23,7 @@ export const lang = {
 	examineSuccess: 'Examination passed',
 	editSuccess: 'Successful operation',
 	editError: 'operation failed',
+	getFail: 'Failed to obtain information',
 
 
 	addbtn: 'Add',

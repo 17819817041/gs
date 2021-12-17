@@ -1,5 +1,5 @@
 <template>
-    <div class="Settingadvertising">
+    <div class="Settingadvertising" v-loading='loading'>
         <div class="back mg al">
             <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">{{$t("lang.Foreign")}}
         </div>
@@ -89,8 +89,8 @@
 					 class="demo-ruleForm">
 						<el-form-item :label="$t('lang.set_price')" prop="name">
                             <el-select v-model="ruleForm.name" :placeholder="$t('lang.pldselecttype')">
-                                <el-option v-for="(item,i) in price_list" :key="i" 
-                                :label="'$ ' + item.price + ' HKD'" :value="'$ ' + item.price + ' HKD'">
+                                <el-option v-for="(item,i) in incomePriceIdList" :key="i" 
+                                :label="'$ ' + item.price + ' HKD'" :value="item.id">
                                 </el-option>
                             </el-select>
 						</el-form-item>
@@ -140,10 +140,12 @@
                             </el-radio-group>
                             <div class="flex" style="margin-top: 5px" v-if="radio3 == '2'">
                                 <el-select v-model="ruleForm2.name" :placeholder="$t('lang.pldselecttype')">
-                                    <el-option :label="$t('lang.food')" :value="$t('lang.food')"></el-option>
-                                    <el-option :label="$t('lang.Technology')" :value="$t('lang.Technology')"></el-option>
-                                    <el-option :label="$t('lang.medical')" :value="$t('lang.medical')"></el-option>
-                                    <el-option :label="$t('lang.car')" :value="$t('lang.car')"></el-option>
+                                    <el-option v-for="(item,i) in getTypeList" :key="i"
+                                        :label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+                                        item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+                                        item.find( res => res.language == "en-US").guangGaoTypeName '
+                                        :value="item">
+                                    </el-option>
                                 </el-select>
                                 <div class="addCate cursor al" @click="addType(ruleForm2.name)">
                                     {{$t("lang.addbtn")}}
@@ -151,7 +153,9 @@
                             </div>
                             <div class="list clear" v-if="radio3 == '2'">
                                 <div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in typeList" :key="i">
-                                    {{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt=""></span>
+                                    {{item.name}} <span class="al" style="margin-left: 5px">
+                                        <img class="cursor" @click="deleType(i)" src="@/assets/img/cha.png" alt="">
+                                    </span>
                                 </div>
                             </div>
 						</el-form-item>
@@ -160,7 +164,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible2 = false">取 消</el-button>
-                <el-button type="primary" @click="changeType">确 定</el-button>
+                <el-button type="primary" @click="updateShopGuangGaoType">确 定</el-button>
             </span>
         </el-dialog>
         <el-dialog
@@ -320,7 +324,7 @@
 </template>
 
 <script>
-import { updatePrice } from "@/axios/request.js"
+import { updatePrice, getPrice, getShopGuangGaoType, updateShopGuangGaoType } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -404,15 +408,14 @@ export default {
                 {name:'',set: 'set',active: true,br: true,nodv: false,adList1: [],ids: '100%'},
             ],
             arr2:[
-                {name:this.$t("lang.set_type") + ': ' + this.$t("lang.food"),set: 'set',active: true,adList1: [],},
+                {name:'',set: 'set',active: true,adList1: [],},
             ],
             arr3:[
                 {name:'$ 80000 HKD',set: 'set',active: true,adList1: [],},
             ],
-            price_list: [],
             idsList: [],
 
-            typeList: [this.$t("lang.food"), this.$t("lang.car")],
+            typeList: [],
 
             timeList: [this.$t("lang.busyhour")],
 
@@ -443,7 +446,9 @@ export default {
             cityOptions2: [],
             checkAll2: false,
             isIndeterminate2: false,
-            radio3: '1'
+            radio3: '1',
+
+            loading: false
         }
     },
     beforeMount() {
@@ -454,11 +459,10 @@ export default {
 		this.fun()
     },
     created () {
-        let num = 10000
-        for (let i=0;i<10;i++) {
-            num += 5000
-            this.price_list.push({price: num})
-        }
+        this.$store.dispatch('getTypeList',this)
+        this.$store.dispatch('incomePriceId')
+        this.getPrice()
+        this.getShopGuangGaoType()
         let num1 = 110
         for (let i=0;i<11;i++) {
             num1 -= 10
@@ -511,13 +515,8 @@ export default {
                     this.columns2[0].title = this.$t("lang.set_title2")
                     this.columns3[1].title = this.$t("lang.set_edit")
                     this.columns3[0].title = this.$t("lang.set_price")
-                    this.arr[0].name = this.$t("lang.set_bili") + ': 80%'
 
                     this.timeList = [this.$t("lang.busyhour")]
-                    // this.changeTime()
-
-                    this.typeList = [this.$t("lang.food"), this.$t("lang.car")]
-                    this.changeType()
                 }
                 if (val == 'en-US') {
                     this.labelPosition = 'top'
@@ -525,13 +524,147 @@ export default {
                     this.labelPosition = 'left'
                 }
             },
-            immediate: true
-        }
+            // immediate: true
+        },
+        incomePriceIdList: {
+			handler (val) {
+				if (val) {
+					this.incomePriceIdList = val
+				}
+			},
+		},
+        getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+				}
+			},
+		},
     },
     computed: {
-        lang () { return this.$i18n.locale }
+        lang () { return this.$i18n.locale },
+        incomePriceIdList:{             //類型列表
+			get () { return this.$store.state.user.incomePriceIdList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'incomePriceIdList',
+					value: val
+				})
+			}
+		},
+        getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		},
     },
     methods: {
+        getShopGuangGaoType () {  //查詢接收行業
+            this.loading = true
+            let data = {
+                shopId: this.$route.query.id
+            }
+            getShopGuangGaoType(data).then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.typeList = res.data.data
+                    if (this.typeList.length != 0) {
+                        let obj = this.typeList[0].name
+                        for (let i=0;i<this.typeList.length-1;i++) {
+                            obj = obj + ',' + this.typeList[i+1].name
+                        }
+                        this.arr2[0].name = this.$t("lang.set_type") + ': ' + obj
+                    } else {
+                        this.arr2[0].name = this.$t("lang.nodata")
+                    }
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: this.$t('lang.getFail')
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.getFail')
+                })
+            })
+        }, 
+        updateShopGuangGaoType () {            //修改店铺外接收广告类型（馬上可以修改的）
+            this.loading = true
+            let arr = []
+            if (this.radio3 == '1') {
+                this.getTypeList.forEach(item => {
+                    arr.push(item[0].id)
+                })
+            } else if (this.radio3 == '2') {
+                if (this.typeList.length != 0) {
+                    this.typeList.forEach(item => {
+                        arr.push(item.value)
+                    })
+                } else {
+                    this.getTypeList.forEach(item => {
+                        arr.push(item[0].id)
+                    })
+                }
+            }
+            
+            let data = {
+                shopId: this.$route.query.id,
+                typeIds: String(arr)
+            }
+            updateShopGuangGaoType(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: this.$t('lang.editSuccess')
+                    })
+                    this.getShopGuangGaoType()
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: this.$t('lang.editError')
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.editError')
+                })
+            })
+            this.dialogVisible2 = false
+        },
+        getPrice () {  //查詢期望收入
+            this.loading = true
+            let data = {
+                shopId: this.$route.query.id
+            }
+            getPrice(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.arr3[0].name = res.data.data
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: this.$t('lang.getFail')
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.getFail')
+                })
+            })
+        },
         reset () {
 			this.checkedCities21 = []
 			this.checkedCities11 = []
@@ -591,14 +724,20 @@ export default {
         },
         changemoney () {      //修改店铺期望收入价格(馬上修改)
             let data = {
-                incomePriceId: 0,
-                shopId: 0
+                incomePriceId: this.ruleForm.name,
+                shopId: this.$route.query.id
             }
             updatePrice(data).then(res => {
-                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: this.$t('lang.editSuccess')
+                    })
+                    this.getPrice()
+                }
             })
             this.dialogVisible = false
-            this.arr3[0].name = this.ruleForm.name
+            
         },
         bilisure () {
             this.dialogVisible1 = false
@@ -667,7 +806,14 @@ export default {
         },
         addType (item) {
 			if (item) {
-				this.typeList.push(item)
+                let obj = {
+                    name: item.find( 
+                        res => res.language == "zh-TW") && this.$i18n.locale == "zh-CN" ? 
+                        item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+                        item.find( res => res.language == "en-US").guangGaoTypeName,
+                    value: item[0].id
+                }
+				this.typeList.push(obj)
 				let arr = new Set(this.typeList)
 				this.typeList = Array.from(arr)
                 // this.changeType()
@@ -677,19 +823,6 @@ export default {
 			this.typeList.splice(i,1)
             // this.changeType()
 		},
-        changeType () {
-            this.dialogVisible2 = false
-            if (this.typeList.length != 0) {
-                let obj = this.typeList[0]
-                for (let i=0;i<this.typeList.length-1;i++) {
-                    obj = obj + ',' + this.typeList[i+1]
-                }
-                this.arr2[0].name = this.$t("lang.set_type") + ': ' + obj
-            } else {
-                this.arr2[0].name = this.$t("lang.nodata")
-            }
-            
-        },
         addTime (item) {
 			if (item) {
 				this.timeList.push(item)

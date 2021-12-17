@@ -12,7 +12,7 @@
 						<div class=" basicsMsg_item bold al">
 							<div class="iden radius"></div> {{$t("lang.message")}}
 						</div>
-						<el-form :model="ruleForm1" :label-position="labelPosition" :rules="rules1" ref="ruleForm" 
+						<el-form :model="ruleForm1" :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'" :rules="rules1" ref="ruleForm1" 
 						:label-width="$i18n.locale == 'zh-CN'? '100px': '165px'" class="demo-ruleForm">
 							<el-form-item :label="$t('lang.adname')" prop="name">
 								<el-input style="width: 40%;min-width: 200px;" v-model="ruleForm1.name"></el-input>
@@ -49,9 +49,9 @@
 						<div class=" basicsMsg_item bold al">
 							<div class="iden radius"></div> {{$t("lang.DetailedPlan")}}
 						</div>
-						<el-form :model="ruleForm" :label-position="labelPosition" :rules="rules" ref="ruleForm" 
+						<el-form :model="ruleForm" :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'" :rules="rules" ref="ruleForm" 
 							:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" class="demo-ruleForm">
-							<el-form-item :label="$t('lang.cycle')" prop="date">
+							<el-form-item :label="$t('lang.cycle')">
 								<div style="min-width: 200px;width: 100%" class='clear'>
 									<div class="float" style="margin-right: 15px;width: 140px;">
 										<el-form-item prop="startDate">
@@ -92,7 +92,7 @@
 								</el-form-item>
 								<el-form-item :label="$t('lang.duration')" prop="inp">
 									<div class="al">
-										<div class="al inp_time ju">
+										<div :class="['al inp_time ju', { marleft0: $i18n.locale == 'en-US' }]">
 											<!-- <input type="text" class="tc"> -->
 											<!-- <el-input class="width100"
 											oninput ="value=value.replace(/[^0-9]/g,'')" :disabled="video" v-model="ruleForm.inp"></el-input> -->
@@ -104,7 +104,7 @@
 								</el-form-item>
 							</div>
 							<el-form-item :label="$t('lang.adcontent')" prop="imageList">
-								<div class="textarea_wrap clear">
+								<div class="textarea_wrap clear content_down">
 									<label for="img">
 										<div class="addImg ju al float">
 											<img style="height: 30%;" src="@/assets/img/add.png" alt="">
@@ -249,30 +249,19 @@ export default {
 			video: true,
             ruleForm: {
                 cmediaType1: 1,
-				date: '',
                 startDate: '',
 				endDate: '',
                 content: '',
 				mediaType: '',
 				cmediaType: '',
 				inp: 60,
-				videoMinute: 0,
+				videoMinute: 1,
 				imageList: [],
             },
 			labelPosition: 'left',
             rules: {
-                name: [
-                    { required: true, message: '請輸入廣告名稱', trigger: 'blur' },
-                    { min: 3, max: 5, message: '長度需3 到 5 個字符', trigger: 'blur' }
-                ],
-                type: [
-                    { required: true, message: '請選擇媒體類型', trigger: 'blur' }
-                ], 
 				mediaType: [
                     { required: true, message: '請選擇媒體類型', trigger: 'blur' }
-                ],
-				date: [
-                    { required: true, message: '', trigger: 'blur' }
                 ],
                 startDate: [
                     { type:'date', required: true, message: '請選擇投放起始日期', trigger: 'change' }
@@ -424,76 +413,90 @@ export default {
 	},
     methods: {
 		genOrder () {
-			this.loading = true
+			
 			let that = this
-			let arr = []
-			this.ruleForm.imageList.forEach(item => {
-				arr.push({
-					"fileType": this.ruleForm.cmediaType1,
-					"url": item.url,
-					"fileName": item.name,
-					"fileSize": item.size,
-					"filePlayTime": item.videoTime
-				})
+			let boo = true
+			let boo1 = false
+			this.$refs.ruleForm.validate(flag => {
+                if (flag) { boo = true }
+            })
+			this.$refs.ruleForm1.validate(flag => {
+				if (flag) { boo1 = true }
 			})
-			let data = {
-				guangGaoDtoJson: {
-					"endTime": new Date(this.ruleForm.startDate).toLocaleDateString().split('/').join('-'),
-					"guangGaoAddressAndTimeDto": {
-						"guangGaoTimeDtos": [{
-							"guangGaoTimeMinDtos": [{
-								"timeIntervalDetailsId": 1,
-								"timeMin": 2
-							}],
-							"timeIntervalId": 1,
-							"totalMinLength": 12
-						}],
-						"shopAndAddressDtos": [{
-							"addressId": 0,
-							"addressParentId": 0,
-							"shopId": 0
-						}]
-					},
-					// "guangGaoContentDto": [{
-					// 	"fileType": this.ruleForm.cmediaType1,
-					// 	"url": "www.csada.sc"
-					// }],
-					"guangGaoContentDto": arr,
-					"length": 6,
-					"startTime": new Date(this.ruleForm.endDate).toLocaleDateString().split('/').join('-'),
-					"title": this.ruleForm1.name,
-					"totalLength": 63, 
-					"type": 2,    //隨機
-					"typeId": 1,
-					"userId": localStorage.getItem('compoundeyesUserId')
-				}
-			}
-			let str = JSON.stringify(data.guangGaoDtoJson)
-			const qs = require('qs')
-			let data1 = qs.stringify({
-				guangGaoDtoJson: str
-			})
-			genOrder(data1).then(res => {
-				that.loading = false
-				if (res.data.rtnCode == 200) {
-					that.$message({
-						type: 'success',
-						message: that.$t('lang.addSuccess')
+			// return
+			if (boo && boo1) {
+				let arr = []
+				this.loading = true	
+				this.ruleForm.imageList.forEach(item => {
+					arr.push({
+						"fileType": Number(this.ruleForm.cmediaType1),
+						"url": item.url,
+						"fileName": item.name,
+						"fileSize": item.size,
+						"filePlayTime": item.videoTime
 					})
-					that.submit = false
-				} else {
+				})
+				let data = {
+					guangGaoDtoJson: {
+						"endTime": String(new Date(this.ruleForm.endDate).toLocaleDateString().split('/').join('-')),
+						"guangGaoAddressAndTimeDto": {
+							"guangGaoTimeDtos": [{
+								"guangGaoTimeMinDtos": [{
+									"timeIntervalDetailsId": 1,
+									"timeMin": 2
+								}],
+								"timeIntervalId": 1,
+								"totalMinLength": 12
+							}],
+							"shopAndAddressDtos": [{
+								"addressId": 19,
+								"addressParentId": 9,
+								"shopId": 52
+							}]
+						},
+						// "guangGaoContentDto": [{
+						// 	"fileType": this.ruleForm.cmediaType1,
+						// 	"url": "www.csada.sc"
+						// }],
+						"guangGaoContentDto": arr,
+						"length": this.ruleForm.videoMinute,
+						"startTime": String(new Date(this.ruleForm.startDate).toLocaleDateString().split('/').join('-')),
+						"title": this.ruleForm1.name,
+						"totalLength": this.ruleForm.inp, 
+						"type": 2,    //隨機
+						"typeId": this.ruleForm1.type[0].id,
+						"userId": localStorage.getItem('compoundeyesUserId')
+					},
+				}
+				console.log(data.guangGaoDtoJson)
+				let str = JSON.stringify(data.guangGaoDtoJson)
+				const qs = require('qs')
+				let data1 = qs.stringify({
+					guangGaoDtoJson: str
+				})
+				genOrder(data1).then(res => {
+					that.loading = false
+					if (res.data.rtnCode == 200) {
+						that.$message({
+							type: 'success',
+							message: that.$t('lang.addSuccess')
+						})
+						that.submit = false
+					} else {
+						this.$message({
+							type: 'error',
+							message: this.$t('lang.addFail')
+						})
+					}
+				}).catch(e => {
+					that.loading = false
 					this.$message({
 						type: 'error',
 						message: this.$t('lang.addFail')
 					})
-				}
-			}).catch(e => {
-				that.loading = false
-				this.$message({
-					type: 'error',
-					message: this.$t('lang.addFail')
 				})
-			})
+			}
+			
 		},
 		closeVideo () {
 			this.showVideo = false
@@ -555,6 +558,7 @@ export default {
 		},
 		addType (item) {
 			if (item) {
+				this.typeList = []
 				this.typeList.push(item)
 				let arr = new Set(this.typeList)
 				this.typeList = Array.from(arr)
@@ -788,6 +792,17 @@ export default {
 
 <style lang='less' scoped>
 @import "@/less/style.less";
+.content_down {
+		width: calc(100% + 115px);
+		position: relative;
+		margin-top: 35px;
+		margin-left: -105px;
+		@media screen and (max-width: 564px) {
+            margin-left: 5px;
+			margin-top: 0px;
+			width: 98%;
+        }
+	}
 .AdvertisingOperation_back {
         width: 98%;
         font-size: 20px;
@@ -835,7 +850,7 @@ export default {
         background: white;
     }
 	.width384 {
-		@media screen and (max-width: 384px) {
+		@media screen and (max-width: 348px) {
 			margin-top: 20px;
 		}
 	}
@@ -881,8 +896,11 @@ export default {
 			margin-left: 0px;
 		}
     }
+	.marleft0 {
+		margin-left: 0 !important;
+	}
     .textarea_wrap {
-		width: 100%;
+		// width: 100%;
 		min-height: 250px;
 		background: white;
 		box-shadow: 0 0 8px rgb(212, 212, 212) inset;
@@ -983,9 +1001,7 @@ export default {
 		// opacity: 0.9;
 	}
 	.br1185 {
-		@media screen and (max-width: 1185px) {
 			display: block;
-		}
 	}
 	.total {
 		width: 90%;

@@ -21,10 +21,12 @@
 								<div class="flex br">
 									<div class="flex">
 										<el-select v-model="ruleForm.type" :placeholder="$t('lang.pldselecttype')">
-											<el-option :label="$t('lang.food')" :value="$t('lang.food')"></el-option>
-											<el-option :label="$t('lang.Technology')" :value="$t('lang.Technology')"></el-option>
-											<el-option :label="$t('lang.medical')" :value="$t('lang.medical')"></el-option>
-											<el-option :label="$t('lang.car')" :value="$t('lang.car')"></el-option>
+											<el-option v-for="(item,i) in getTypeList" :key="i"
+												:label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+												item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+												item.find( res => res.language == "en-US").guangGaoTypeName '
+												:value="item">
+											</el-option>
 										</el-select>
 										<!-- <div class="addCate cursor al" @click="addType(ruleForm.type)">
 											{{$t("lang.addbtn")}}
@@ -38,7 +40,7 @@
 									</div>
 								</div>
 							</el-form-item>
-							<el-form-item :label="$t('lang.cycle')" prop="date">
+							<el-form-item :label="$t('lang.cycle')">
 								<div style="min-width: 200px;width: 100%" class='clear'>
 									<div class="float" style="margin-right: 15px;width: 140px;">
 										<el-form-item prop="startDate">
@@ -63,7 +65,6 @@
 												>
 											</el-date-picker>
 										</el-form-item>
-										
 									</div>
 								</div>
 							</el-form-item>
@@ -73,7 +74,7 @@
 										<el-select v-model="ruleForm.cmediaType" :placeholder="$t('lang.pldselecttype')" 
 										@change="getType">
 											<el-option :label="$t('lang.image')" value="1" @click.native="videolong = false"></el-option>
-											<el-option :label="$t('lang.video')" value="2" @click.native="videolong = true"></el-option>
+											<el-option :label="$t('lang.video')" value="3" @click.native="videolong = true"></el-option>
 										</el-select>
 									</div>
 								</el-form-item>
@@ -98,7 +99,7 @@
 									<div>{{$t('lang.minute')}}</div>
 								</div>
 							</el-form-item>
-							<el-form-item :label="$t('lang.adcontent')" prop="content">
+							<el-form-item :label="$t('lang.adcontent')">
 								<div class="textarea_wrap clear">
 									<label for="img">
 										<div class="addImg ju al float">
@@ -106,7 +107,7 @@
 										</div>
 										<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
 									</label>
-									<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
+									<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm.imageList" :key="i">
 										<div class="imageList_wrap cursor">
 											<div class="deleImg radius ju al" @click.stop="deleImg(i)">
 												<img style="heihgt: 100%;" src="@/assets/img/cha.png" alt="">
@@ -191,8 +192,7 @@
 						<div class=" basicsMsg_item bold al">
 							<div class="iden radius"></div> {{$t("lang.DetailedPlan")}}
 						</div>
-						<el-form :model="ruleForm" :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'" 
-						:rules="rules" ref="ruleForm" 
+						<el-form :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'" 
 						:label-width="$i18n.locale == 'zh-CN'? '100px': '100px'" class="demo-ruleForm">
 							<el-form-item :label="$t('lang.aplan')">
 								<el-radio-group v-model="radio" size="small" @change="mount">
@@ -202,44 +202,17 @@
 								</el-radio-group>
 							</el-form-item>
 						</el-form>
-						<el-form :model="ruleForm" label-position="top" 
-						:rules="rules" ref="ruleForm" 
+						<el-form :model="ruleForm1" label-position="top" 
+						:rules="rules" ref="ruleForm1" 
 						:label-width="$i18n.locale == 'zh-CN'? '100px': '100px'" class="demo-ruleForm">
-							<!-- <el-form-item :label="$t('lang.adserving')" prop="time">
-								<div class="flex br">
-									<div class="flex">
-										<el-select v-model="ruleForm.time" :placeholder="$t('lang.pldselecttime')">
-											<el-option :label="$t('lang.busyhour')" :value="$t('lang.busyhour')"></el-option>
-											<el-option :label="$t('lang.unbusyhour')" :value="$t('lang.unbusyhour')"></el-option>
-										</el-select>
-										<div class="addCate cursor al" @click="addTime(ruleForm.time)">
-											{{$t("lang.addbtn")}}
-										</div>
-									</div>
-									<div class="list clear">
-										<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in timeList" :key="i">
-											{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleTime(i)" src="@/assets/img/cha.png" alt=""></span>
-										</div>
-									</div>
-								</div>
-							</el-form-item> -->
-
-							<!-- <el-form-item :label="$t('lang.aplan')">
-								<el-radio-group v-model="radio" size="small" @change="mount">
-									<el-radio label="1" border>{{$t("lang.dp")}}</el-radio>
-									<el-radio label="2" border>{{$t("lang.sa")}}</el-radio>
-									<el-radio label="3" border>{{$t("lang.ds")}}</el-radio>
-								</el-radio-group>
-							</el-form-item> -->
-							
 							<el-form-item :label="$t('lang.chooseStore')" 
-							prop="store" v-show="radio == 1" style="position: relative;">
+								prop="storeList" v-show="radio == 1" style="position: relative;">
 								<div class="fixedt"> (請在下放地圖選取店鋪)</div>
 								<div class="flex br">
 									<div style="color: #B0B0B0;" class="list_item float al cursor"
-										@click="storehit(i)" 
-										v-for="(item,i) in storeList" :key="i">
-										{{item}} <span class="al" style="margin-left: 5px">
+										@click="storehit(item)" 
+										v-for="(item,i) in ruleForm1.storeList" :key="i">
+										{{item.msg}} <span class="al" style="margin-left: 5px">
 											<img class="cursor" @click.stop="deleStore(i)" src="@/assets/img/cha.png" alt="">
 										</span>
 									</div>
@@ -248,19 +221,24 @@
 							<el-form-item :label="$t('lang.AdvertisingArea')" prop="area" v-show="radio == 2">
 								<div class="flex br">
 									<div class="flex">
-										<el-select v-model="ruleForm.area" :placeholder="$t('lang.pldselectarea')" @change="changeLight">
-											<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
-											<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
-											<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
+										<el-select v-model="ruleForm1.area" :placeholder="$t('lang.pldselectarea')" @change="changeLight">
+											<el-option v-for="(item,i) in addressList" :key="i"
+												:label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+												item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+												item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+												:value="item.id">
+											</el-option>
 										</el-select>
-										<div class="addCate cursor al" @click="addArea(ruleForm.area)">
+										<div class="addCate cursor al" @click="addArea(ruleForm1.area)">
 											{{$t("lang.addbtn")}}
 										</div>
 									</div>
 									<div class="list clear">
 										<div style="color: #B0B0B0;" class="list_item float al" 
 										v-for="(item,i) in areaList" :key="i">
-											{{item}} <span class="al" style="margin-left: 5px">
+											{{item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+												item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+												item.addressLanguageDtos.find( res => res.language == "en-US").addressName}} <span class="al" style="margin-left: 5px">
 												<img class="cursor" @click="deleArea(i)" src="@/assets/img/cha.png" alt="">
 											</span>
 										</div>
@@ -352,7 +330,7 @@
 							</div>
 						</div>
 						<div class="sure_plan_wrap">
-							<div class="sure_plan cursor" @click="submitG">{{$t('lang.adconfirm')}}</div>
+							<div class="sure_plan cursor" @click="genOrder">{{$t('lang.adconfirm')}}</div>
 						</div>
 					</div>
 				</div>
@@ -375,7 +353,7 @@
 			:before-close="handleClose">
 			<div class="dra_content noBar">
 				<div>
-					<el-form :label-position="labelPosition"  ref="ruleForm" 
+					<el-form :label-position="labelPosition"
 						:label-width="$i18n.locale == 'zh-CN'? '80px': '205px'" class="demo-ruleForm">
 						<el-form-item label="繁忙時段">
 							<el-checkbox-group v-model="checkedCities" @change="adListadd">
@@ -515,7 +493,9 @@
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import dimg from "@/assets/img/growing.jpg"
+import mar from "@/assets/img/marker.png"
 import { number } from 'echarts'
+import { genOrder } from "@/axios/request.js"
 export default {
     data() {
         return {
@@ -575,34 +555,33 @@ export default {
 			labelPosition: 'left',
             ruleForm: {
                 name: '',
-                area: '',
-                store: '',
-                street: '',
+                // store: '',
+                // street: '',
                 // time: '',
                 type: '',
-				date: '',
                 startDate: '',
 				endtDate: '',
                 content: '',
 				mediaType: '',
 				cmediaType: '',
+				cmediaType1: 1,
+				imageList: [],
+				
 				inp: 60,
-				videoMinute: 0
+				videoMinute: 1
             },
             rules: {
                 name: [
                     { required: true, message: '請輸入廣告名稱', trigger: 'blur' },
                     { min: 3, max: 15, message: '長度需3 到 15 個字符', trigger: 'blur' }
                 ],
-                area: [
-                    { required: true, message: '請選擇投放區域', trigger: 'blur' }
-                ], 
                 store: [
                     { required: true, message: '請選擇店鋪', trigger: 'blur' }
                 ],
-                street: [
-                    { required: true, message: '請選擇街道', trigger: 'blur' }
-                ],
+				
+                // street: [
+                //     { required: true, message: '請選擇街道', trigger: 'blur' }
+                // ],
                 // time: [
                 //     { required: true, message: '請選擇时间段', trigger: 'blur' }
                 // ],
@@ -611,9 +590,6 @@ export default {
                 ], 
 				mediaType: [
                     { required: true, message: '請選擇媒體類型', trigger: 'blur' }
-                ],
-				date: [
-                    { required: true, message: '', trigger: 'blur' }
                 ],
                 startDate: [
                     { type:'date', required: true, message: '請選擇投放起始日期', trigger: 'change' }
@@ -626,8 +602,23 @@ export default {
                 ],
                 content: [
                     { required: true, message: '請選擇媒體內容', trigger: 'blur' }
-                ]
+                ],
+				imageList: [
+					{ required: true, message: '請添加媒體內容', trigger: 'change' }
+				],
             },
+			ruleForm1: {
+				area: '',
+				storeList: [],
+			},
+			rules1: {
+				area: [
+                    { required: true, message: '請選擇投放區域', trigger: 'blur' }
+                ], 
+				storeList: [
+                    { required: true, message: '請選擇店鋪', trigger: 'blur' }
+                ],
+			},
             pickerOptions: {
               shortcuts: [{
                   text: '最近一周',
@@ -669,15 +660,13 @@ export default {
                     return time.getTime() < this.ruleForm.startDate || time.getTime() < Date.now() + 8.64e7;
                 }
             },
-            startDate: '',
-			endDate: '',
             value2: '',
 			typeList: [],
 			areaList: [],
 			timeList: [],
-			imageList: [],
+			
 			minute: [],
-            storeList: [],
+            
             streetList: [],
             map: '',
 			bermudaTriangle: null,
@@ -687,6 +676,9 @@ export default {
 			last: [],
 			dimg: '',
 			dimg1: '',
+
+			mapStoreListShow: [],
+			totalContentLength: 0
 		}
     },
 	beforeMount() {
@@ -697,6 +689,8 @@ export default {
 		this.fun()
     },
 	created () {
+		this.$store.dispatch('getTimeIntervaDetailslList',this)
+		this.$store.dispatch('getTypeList',this)
 		this.dimg = dimg
 		let that = this
 		let h = 8
@@ -734,7 +728,6 @@ export default {
 		}
 	},
     mounted () {
-        this.initMap1(22.6,114.1,1)
 		window.shopadd = this.shopadd;
 		window.onPreview = this.onPreview;
 		window.closewin = this.closewin
@@ -762,7 +755,63 @@ export default {
 					}
                 }
             }
-        }
+        },
+		getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+					this.$store.dispatch('getAddress',this) 
+				}
+			},
+		},
+		addressList: {
+			handler (val) {
+				if (val) {
+					this.addressList = val
+					this.getStore()
+				}
+			}
+		},
+		clockList: {
+			handler (val) {
+				if (val) {
+					this.clockList = val
+				}
+			}
+		},
+		mapstoreList: {
+			handler (val) {
+				if (val) {
+					this.mapStoreListShow = []
+					this.mapstoreList = val
+					val.forEach((child,i) => {
+						child.area = '暫無地區'
+						this.addressList.forEach(item => {
+							if (child.addressParentId == item.id) {
+								child.area = item.addressLanguageDtos.find( res => res.language == "zh-TW") && this.$i18n.locale == "zh-CN" ? 
+								item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+								item.addressLanguageDtos.find( res => res.language == "en-US").addressName
+							}
+						})
+						this.mapStoreListShow.push({
+							position: new google.maps.LatLng(child.latitude,child.longitude),
+							type: "info",
+							msg: child.shopName,
+							area: child.area,
+							address: child.shopAddressName,
+							widthAndHeihth: child.widthAndHeihth,
+							shopId: child.shopId,
+							timeIntervalNames: child.timeIntervalNames,
+							typeNames: child.typeNames,
+							priceContents: child.priceContents,
+							addressParentId: child.addressParentId,
+							addressId: child.addressId
+						})
+					})
+					this.initMap1(22.6,114.1,1)
+				}
+			},
+		},
     },
 	components: { ElImageViewer },
 	props: {
@@ -784,9 +833,134 @@ export default {
 		}
 	},
     computed: {
-        lang () { return this.$i18n.locale }
+        lang () { return this.$i18n.locale },
+		getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		},
+		addressList: {           //地址列表
+			get () { return this.$store.state.user.addressList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'addressList',
+					value: val
+				})
+			}
+		},
+		mapstoreList:{             //店鋪列表
+			get () { return this.$store.state.user.storeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'storeList',
+					value: val
+				})
+			}
+		},
+		clockList: {             //時間列表
+			get () { return this.$store.state.user.clockList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'clockList',
+					value: val
+				})
+			}
+		},
     },
     methods: {
+		getStore () {
+			let data = {
+				parentAddressId: this.ruleForm1.area,
+				shopName: '',
+				addressId: '',
+				typeId: this.ruleForm.type
+			}
+			this.$store.dispatch('getShopList',data)
+		},
+		genOrder () {    //tinajie
+			let that = this
+			let boo = false
+			let boo1 = false
+			this.$refs.ruleForm.validate(flag => {
+                if (flag) { boo = true }
+            })
+			this.$refs.ruleForm1.validate(flag => {
+				if (flag) { boo1 = true }
+			})
+			if (boo && boo1) {
+				let arr = []
+				this.loading = true	
+				this.ruleForm.imageList.forEach(item => {
+					arr.push({
+						"fileType": Number(this.ruleForm.cmediaType1),
+						"url": item.url,
+						"fileName": item.name,
+						"fileSize": item.size,
+						"filePlayTime": item.videoTime
+					})
+				})
+				let data = {
+					guangGaoDtoJson: {
+						"endTime": String(new Date(this.ruleForm.endDate).toLocaleDateString().split('/').join('-')),
+						"guangGaoAddressAndTimeDto": {
+							"guangGaoTimeDtos": [{
+								"guangGaoTimeMinDtos": [{
+									"timeIntervalDetailsId": 1,
+									"timeMin": 2
+								}],
+								"timeIntervalId": 1,
+								"totalMinLength": 12
+							}],
+							"shopAndAddressDtos": [{
+								"addressId": 19,
+								"addressParentId": 9,
+								"shopId": 52
+							}]
+						},
+						"guangGaoContentDto": arr,
+						"length": this.ruleForm.videoMinute,
+						"startTime": String(new Date(this.ruleForm.startDate).toLocaleDateString().split('/').join('-')),
+						"title": this.ruleForm.name,
+						"totalLength": this.ruleForm.inp, 
+						"type": 2,    //隨機
+						"typeId": this.ruleForm.type[0].id,
+						"userId": localStorage.getItem('compoundeyesUserId')
+					},
+				}
+				console.log(data.guangGaoDtoJson)
+				let str = JSON.stringify(data.guangGaoDtoJson)
+				const qs = require('qs')
+				let data1 = qs.stringify({
+					guangGaoDtoJson: str
+				})
+				genOrder(data1).then(res => {
+					that.loading = false
+					if (res.data.rtnCode == 200) {
+						that.$message({
+							type: 'success',
+							message: that.$t('lang.addSuccess')
+						})
+						that.submit = false
+					} else {
+						this.$message({
+							type: 'error',
+							message: this.$t('lang.addFail')
+						})
+					}
+				}).catch(e => {
+					that.loading = false
+					this.$message({
+						type: 'error',
+						message: this.$t('lang.addFail')
+					})
+				})
+			}
+		},
+
 		imgPreview (url) {
 			this.dimg1 = url
 			this.showViewer1 = true
@@ -805,87 +979,23 @@ export default {
 		closeViewer1() {
           this.showViewer1 = false
         },
-
 		storehit (i) {
 			let that = this
 			let map = this.map
-			const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
+			const iconBase = mar
 			const icons = {
-				parking: {
-				icon: iconBase + "parking_lot_maps.png",
-				},
-				library: {
-				icon: iconBase + "library_maps.png",
-				},
 				info: {
-				icon: iconBase + "info-i_maps.png",
+					icon: iconBase
 				},
 			};
-			const features = [
-				{
-				position: new google.maps.LatLng(22.7, 114.1),
-				type: "info",
-				msg: this.$t("lang.ks")
-				},
-				{
-				position: new google.maps.LatLng(22.79, 114.16),
-				type: "info",
-				msg: '車展會'
-				},
-				{
-				position: new google.maps.LatLng(22.87, 114.13),
-				type: "info",
-				msg: '科技大廈'
-				},
-				{
-				position: new google.maps.LatLng(22.66, 114.10),
-				type: "info",
-				msg: '醫院'
-				},
-				{
-				position: new google.maps.LatLng(22.8, 114.1),
-				type: "info",
-				msg: '時尚大廳'
-				},
-				{
-				position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
-				type: "library",
-				},
-			];
-			// Create markers.
-			if (that.$i18n.locale == 'zh-CN') {
-				// for (let i = 0; i < features.length; i++) {
+			const features = this.mapStoreListShow
+			features.forEach(item => {
+				if (item.shopId == i.shopId) {
+					// Create markers.
+				if (that.$i18n.locale == 'zh-CN') {
 					const marker1 = new google.maps.Marker({
-						position: features[i].position,
-						icon: icons[features[i].type].icon,
+						position: item.position,
+						icon: 'info',
 						map: map,
 					});
 					
@@ -906,25 +1016,25 @@ export default {
 						` +
 						`
 							<div class="sb" style="margin-top:5px;">
-								<div class='bold tc'>${features[i].msg}(旺角店)</div>
+								<div class='bold tc'>${item.msg}(${item.area})</div>
 								<div class="contentString1_address" 
 								style="text-decoration: underline;
-								font-size:12px;">香港旺角區旺角街道666號</div>
+								font-size:12px;">${item.area}</div>
 							</div>
 						` + 
 						`
 							<div class="size12">
 								<div>
-									<span>廣告顯示的尺寸(高 × 寬):</span>
+									<span>廣告顯示的尺寸(${item.widthAndHeihth}):</span>
 									<span style="color: blue;">2m × 1m</span>
 								</div>
 								<div>
 									<span>為廣告商開放的可用時間:</span>
-									<span style="color: blue;">9am~23pm</span>
+									<span style="color: blue;">${item.timeIntervalNames}</span>
 								</div>
 								<div>
 									<span>廣告不接受的業務類型:</span>
-									<span style="color: blue;">食品</span>
+									<span style="color: blue;">${item.typeNames}</span>
 								</div>
 								<div>
 									<span>高峰/非高峰時段的每月價格:</span>
@@ -934,34 +1044,12 @@ export default {
 									</span>
 								</div>
 							</div>
-						` 
-						// +
-						// 	`<div style='margin-top: 10px;' class='ju al'>
-						// 		<div onclick="closewin()" class='cursor close'
-						// 		style='padding: 5px 20px;
-						// 		color: gray;
-						// 		font-size: 12px;
-						// 		border: solid 1px rgb(201, 201, 201);
-						// 		border-radius: 4px;
-						// 		margin-right: 5px;'>取消</div>
-
-						// 		<div onclick="shopadd('${features[i].msg}')"
-						// 		class='cursor' style='padding: 5px 20px;
-						// 		color: rgb(253, 253, 253);
-						// 		background: rgb(0, 153, 255);
-						// 		font-size: 12px;
-						// 		border-radius: 4px;'>添加</div>
-						// 	</div>
-						// `
-					
+						`
 					that.openwin(contentString1,marker1,map)
-				// }
-			} else if (that.$i18n.locale == 'en-US') {
-				console.log(that.$i18n.locale)
-				// for (let i = 0; i < features.length; i++) {
+				} else if (that.$i18n.locale == 'en-US') {
 					const marker1 = new google.maps.Marker({
-						position: features[i].position,
-						icon: icons[features[i].type].icon,
+						position: item.position,
+						icon: 'info',
 						map: map,
 					});
 					
@@ -982,7 +1070,7 @@ export default {
 						` +
 						`
 							<div class="sb" style="margin-top:5px;">
-								<div class='bold tc'>${features[i].msg}(Mong Kok Store)</div>
+								<div class='bold tc'>${item.msg}(Mong Kok Store)</div>
 								<div class="contentString1_address" 
 								style="text-decoration: underline;
 								font-size:12px;">HongKong street at six</div>
@@ -991,32 +1079,30 @@ export default {
 						`
 							<div class="size12">
 								<div>
-									<span>size (height x width) of adv display:</span>
+									<span>廣告顯示的尺寸(${item.widthAndHeihth}):</span>
 									<span style="color: blue;">2m × 1m</span>
 								</div>
 								<div>
-									<span>available hour opened for advertisers:</span>
-									<span style="color: blue;">9am~23pm</span>
+									<span>為廣告商開放的可用時間:</span>
+									<span style="color: blue;">${item.timeIntervalNames}</span>
 								</div>
 								<div>
-									<span>type of business unaccepted for adv:</span>
-									<span style="color: blue;">Food</span>
+									<span>廣告不接受的業務類型:</span>
+									<span style="color: blue;">${item.typeNames}</span>
 								</div>
 								<div>
-									<span>monthly price at rush/non-rush hour:</span>
+									<span>高峰/非高峰時段的每月價格:</span>
 									<span style="color: blue;">
-										<div>rush(20000HKD/month)</div>
-										<div>non-rush(10000HKD/month)</div>
+										<div>高峰(20000HKD/month)</div>
+										<div>非高峰(10000HKD/month)</div>
 									</span>
 								</div>
 							</div>
 						` 
-
-					// marker1.addListener("click", () => {
 						that.openwin(contentString1,marker1,map)
-					// });
-				// }
-			}
+					}
+				}
+			})
 		},
 		onPreview() {
 			console.log(123)
@@ -1083,7 +1169,7 @@ export default {
 			let boolean = true
 			let map = new google.maps.Map(document.getElementById('map'), {
 				center: {lat: lat, lng: lng},
-				zoom: 8,
+				zoom: 11,
 				mapTypeId: "roadmap",
 				disableDefaultUI: true,
 				zoomControl: boolean,
@@ -1105,18 +1191,6 @@ export default {
 					map.setCenter(pos);
 				})
 			}
-			// const myLatLng = {lat: 22.6, lng: 114.1}
-			// new google.maps.Marker({
-			// 	position: myLatLng,
-			// 	map,
-			// 	title: "Hello World!",
-			// });
-
-			let msg = this.msg
-			var data = [
-				{id:1,name:'小李'},
-			]
-			// let input = document.getElementById("pac-input");
 			let input = this.$refs.pac
 			let searchBox = new google.maps.places.SearchBox(input);
 			map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
@@ -1174,80 +1248,15 @@ export default {
 			});
 
 			if (val == 1) {
-				const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
+				const iconBase = mar
 				const icons = {
-					parking: {
-					icon: iconBase + "parking_lot_maps.png",
-					},
-					library: {
-					icon: iconBase + "library_maps.png",
-					},
 					info: {
-					icon: iconBase + "info-i_maps.png",
+						icon: iconBase
 					},
 				};
-				const features = [
-					{
-					position: new google.maps.LatLng(22.7, 114.1),
-					type: "info",
-					msg: this.$t("lang.ks")
-					},
-					{
-					position: new google.maps.LatLng(22.79, 114.16),
-					type: "info",
-					msg: this.$t("lang.car")
-					},
-					{
-					position: new google.maps.LatLng(22.87, 114.13),
-					type: "info",
-					msg: this.$t("lang.Technology")
-					},
-					{
-					position: new google.maps.LatLng(22.66, 114.10),
-					type: "info",
-					msg: this.$t("lang.medical")
-					},
-					{
-					position: new google.maps.LatLng(22.8, 114.1),
-					type: "info",
-					msg: this.$t("lang.foodclient")
-					},
-					{
-					position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
-					type: "library",
-					},
-				];
+				const features = this.mapStoreListShow
 				// Create markers.
 				if (that.$i18n.locale == 'zh-CN') {
-					console.log(that.$i18n.locale)
 					for (let i = 0; i < features.length; i++) {
 						const marker1 = new google.maps.Marker({
 							position: features[i].position,
@@ -1272,25 +1281,25 @@ export default {
 							` +
 							`
 								<div class="sb" style="margin-top:5px;">
-									<div class='bold tc'>${features[i].msg}(旺角店)</div>
+									<div class='bold tc'>${features[i].msg}(${features[i].area})</div>
 									<div class="contentString1_address" 
 									style="text-decoration: underline;
-									font-size:12px;">香港旺角區旺角街道666號</div>
+									font-size:12px;">${features[i].area}</div>
 								</div>
 							` + 
 							`
 								<div class="size12">
 									<div>
-										<span>廣告顯示的尺寸(高 × 寬):</span>
-										<span style="color: blue;">2m × 1m</span>
+										<span>廣告顯示的尺寸(寬 × 高):</span>
+										<span style="color: blue;">${features[i].widthAndHeihth}</span>
 									</div>
 									<div>
 										<span>為廣告商開放的可用時間:</span>
-										<span style="color: blue;">9am~23pm</span>
+										<span style="color: blue;">${features[i].timeIntervalNames}</span>
 									</div>
 									<div>
 										<span>廣告不接受的業務類型:</span>
-										<span style="color: blue;">食品</span>
+										<span style="color: blue;">${features[i].typeNames}</span>
 									</div>
 									<div>
 										<span>高峰/非高峰時段的每月價格:</span>
@@ -1310,7 +1319,7 @@ export default {
 								border-radius: 4px;
 								margin-right: 5px;'>取消</div>
 
-								<div onclick="shopadd('${features[i].msg}')"
+								<div onclick="shopadd('${i}')"
 								class='cursor' style='padding: 5px 20px;
 								color: rgb(253, 253, 253);
 								background: rgb(0, 153, 255);
@@ -1324,7 +1333,6 @@ export default {
 						});
 					}
 				} else if (that.$i18n.locale == 'en-US') {
-					console.log(that.$i18n.locale)
 					for (let i = 0; i < features.length; i++) {
 						const marker1 = new google.maps.Marker({
 							position: features[i].position,
@@ -1349,25 +1357,25 @@ export default {
 							` +
 							`
 								<div class="sb" style="margin-top:5px;">
-									<div class='bold tc'>${features[i].msg}(Mong Kok Store)</div>
+									<div class='bold tc'>${features[i].msg}(${features[i].area})</div>
 									<div class="contentString1_address" 
 									style="text-decoration: underline;
-									font-size:12px;">HongKong street at six</div>
+									font-size:12px;">${features[i].area}</div>
 								</div>
 							` + 
 							`
 								<div class="size12">
 									<div>
 										<span>size (height x width) of adv display:</span>
-										<span style="color: blue;">2m × 1m</span>
+										<span style="color: blue;">${features[i].widthAndHeihth}</span>
 									</div>
 									<div>
 										<span>available hour opened for advertisers:</span>
-										<span style="color: blue;">9am~23pm</span>
+										<span style="color: blue;">${features[i].timeIntervalNames}</span>
 									</div>
 									<div>
 										<span>type of business unaccepted for adv:</span>
-										<span style="color: blue;">Food</span>
+										<span style="color: blue;">${features[i].typeNames}</span>
 									</div>
 									<div>
 										<span>monthly price at rush/non-rush hour:</span>
@@ -1387,7 +1395,7 @@ export default {
 								border-radius: 4px;
 								margin-right: 5px;'>Cancel</div>
 
-								<div onclick="shopadd('${features[i].msg}')"
+								<div onclick="shopadd('${i}')"
 								class='cursor' style='padding: 5px 20px;
 								color: rgb(253, 253, 253);
 								background: rgb(0, 153, 255);
@@ -1407,8 +1415,13 @@ export default {
 				
 			}
 		},
-		shopadd (val) {
-			this.addStore(val)
+		shopadd (item) {
+			this.infowindow.close()
+			if (item) {
+				this.ruleForm1.storeList.push(this.mapStoreListShow[item])
+				let arr = new Set(this.ruleForm1.storeList)
+				this.ruleForm1.storeList = Array.from(arr)
+			}
 		},
 		openwin (contentString1,marker1,map) {
 			if (this.infowindow) {
@@ -1570,20 +1583,22 @@ export default {
 				this.typeList = Array.from(arr)
 			}
 		},
-		addArea (item) {
-			if (item) {
-				this.areaList.push(item)
-				let arr = new Set(this.areaList)
-				this.areaList = Array.from(arr)
-			}
-		},
-        addStore (item) {
-			this.infowindow.close()
-			if (item) {
-				this.storeList.push(item)
-				let arr = new Set(this.storeList)
-				this.storeList = Array.from(arr)
-			}
+		addArea (id) {
+			this.ruleForm1.storeList = this.ruleForm1.storeList.concat(this.mapStoreListShow) 
+			var arr = this.ruleForm1.storeList.filter(function(element,index,self){
+				return self.findIndex(el => el.shopId == element.shopId ) === index  //如果是根据name去重就江id改为name
+			})
+			this.ruleForm1.storeList = arr
+
+			this.addressList.forEach(item => {
+				if (item.id == id) {
+					this.areaList.push(item)
+				}
+			})
+			var arr1 = this.areaList.filter(function(element,index,self){
+				return self.findIndex(el => el.id == element.id ) === index  //如果是根据name去重就江id改为name
+			})
+			this.areaList = arr1
 		},
         addStreet (item) {
 			if (item) {
@@ -1596,7 +1611,7 @@ export default {
 			this.typeList.splice(i,1)
 		},
         deleStore (i) {
-			this.storeList.splice(i,1)
+			this.ruleForm1.storeList.splice(i,1)
 		},
         deleStreet (i) {
 			this.streetList.splice(i,1)
@@ -1626,17 +1641,19 @@ export default {
 		},
 
 		getType (e) {
-			this.imageList = []
+			this.ruleForm.imageList = []
 			this.ruleForm.inp = ''
 			this.minute = []
 			if (e == 1) {
 				this.video = false
 				this.ruleForm.mediaType = 'image'
 				this.ruleForm.cmediaType = this.$t('lang.image')
+				this.ruleForm.cmediaType1 = 1
 			} else if (e == 2) {
 				this.video = true
 				this.ruleForm.mediaType = 'video'
 				this.ruleForm.cmediaType = this.$t('lang.video')
+				this.ruleForm.cmediaType1 = 3
 			}
 		},
 		cahngeFile (e) {
@@ -1646,7 +1663,7 @@ export default {
 				if (this.video) {
 					if (this.ruleForm.mediaType == 'video') {
 						
-						if (e.target.files.length<=5 && this.imageList.length < 5) {
+						if (e.target.files.length<=5 && this.ruleForm.imageList.length < 5) {
 							for(let ff=0;ff<e.target.files.length;ff++){
 								let file = e.target.files[ff].type.split('/')[0]
 								let fileSize = e.target.files[ff].size
@@ -1677,14 +1694,14 @@ export default {
 												//获取秒数，秒数取佘，得到整数秒数
 												sTime = parseInt(sTime % 60);
 											}
-											that.imageList.push({ 
+											that.ruleForm.imageList.push({ 
 												url: fileurl, 
 												name: name, 
 												size: size, 
 												time: time, 
 												videoTime: mTime + '分' + sTime + '秒'
 											})
-											let index = that.imageList.length -1
+											let index = that.ruleForm.imageList.length -1
 											setTimeout(() => {
 												that.initialize(index)
 											},200)
@@ -1733,7 +1750,7 @@ export default {
 				}
 				if (!this.video) {
 					if (this.ruleForm.mediaType == 'image') {
-						if (e.target.files.length<=10 && this.imageList.length <= 10) {
+						if (e.target.files.length<=10 && this.ruleForm.imageList.length <= 10) {
 							for(var ff=0;ff<e.target.files.length;ff++){
 								let file = e.target.files[ff].type.split('/')[0]
 								let fileSize = e.target.files[ff].size
@@ -1751,7 +1768,7 @@ export default {
 											size = s.toFixed(0) + 'KB'
 											// size = Math.ceil(files[ff].size/1000) + 'kb'
 										}
-										that.imageList.push({ url: fileurl, name: name, size: size })
+										that.ruleForm.imageList.push({ url: fileurl, name: name, size: size })
 									} else {
 										this.$message({
 											type: 'error',
@@ -1795,9 +1812,9 @@ export default {
 				time = Math.ceil(Number(mTime + '.' + sTime))
 				that.ruleForm.videoMinute = time
 				this.$forceUpdate()
-				this.imageList.splice(i,1)
+				this.ruleForm.imageList.splice(i,1)
 			} else {
-				this.imageList.splice(i,1)
+				this.ruleForm.imageList.splice(i,1)
 			}
 		},
 		initialize (ff) {

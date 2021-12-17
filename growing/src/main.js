@@ -16,8 +16,9 @@ Vue.component("Header",Header)
 import element from "element-ui"
 // import "@/assets/theme/index.css"
 import 'element-ui/lib/theme-chalk/index.css'; 
-// import locale from 'element-ui/lib/locale/lang/en'         //设置英文
-// Vue.use(element,{locale})
+// import locale1 from 'element-ui/lib/locale/lang/en'         //设置英文
+
+// Vue.use(element,{locale1})
 Vue.use(element)
 
 

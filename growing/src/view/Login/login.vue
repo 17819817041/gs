@@ -78,7 +78,7 @@ export default {
             active: false,
             lists: [],
             userName: '雾里看花',
-            password: '123',
+            password: 'jOdkihK',
             
             // userName: '666666',
             // password: '123',
