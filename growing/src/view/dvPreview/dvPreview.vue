@@ -1,11 +1,11 @@
 <template>
     <div class="AdvertisingAdd AdvertisingAdd1">
 		<div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">廣告計劃詳細內容預覽
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="" @click="goBack">廣告計劃詳細內容預覽
         </div>
 		<div class="noBar" style="height: calc(100% - 35px);overflow: auto;margin-top: 15px;">
 			<div :class="['content mg bar',{ heigh: !submit }]">
-				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
+				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
 				<div class="noBar" style="height: calc(100% - 0px); overflow:auto" v-show="submit">
 					<div class="basicsMsg theme" v-show="submit">
 						<div class=" basicsMsg_item bold al">
@@ -19,7 +19,8 @@
 							<el-form-item :label="$t('lang.industry')" prop="type">
 								<div class="flex br">
 									<div class="flex">
-                                        <el-input style="width: 40%;min-width: 200px;" :value="$t('lang.Technology')" disabled></el-input>
+                                        <el-input style="width: 40%;min-width: 200px;" 
+										:value="ruleForm.type" disabled></el-input>
 									</div>
 									<div class="list clear">
 										<div style="color: #B0B0B0;" class="list_item1 float al" v-for="(item,i) in typeList" :key="i">
@@ -57,14 +58,16 @@
 							<div :class="['flex br',{ br1185: $i18n.locale == 'en-US' }]">
 								<el-form-item :label="$t('lang.admediatype')" prop="mediaType" style="margin-right: 30px;">
 									<div class="al">
-                                        <el-input style="width: 40%;min-width: 200px;" :value="$t('lang.image')" disabled></el-input>
+                                        <el-input style="width: 40%;min-width: 200px;" 
+										:value=" ruleForm.mediaType == 1? $t('lang.image') : $t('lang.video') " 
+										disabled></el-input>
 									</div>
 								</el-form-item>
 								<el-form-item :label="$t('lang.duration')" prop="inp" v-show="$i18n.locale == 'zh-CN'">
 									<div :class="['al',{ mar20: $i18n.locale == 'zh-CN'  }]">
 										<div class="al inp_time ju">
 											<el-input-number v-model="ruleForm.inp" :step="10" step-strictly size="small" disabled
-											:min="60" :max="900" label="描述文字"></el-input-number>
+											:min="0" :max="900" label="描述文字"></el-input-number>
 										</div>
 										<div>{{$t('lang.minute')}}</div>
 									</div>
@@ -87,8 +90,8 @@
 												<img style="height: 100%;" :src="item.url" alt="">
 											</div>
 										</div>
-										<div class="imageList_name tc">{{item.name}}</div>
-										<div class="imageList_size tc">{{item.size}}</div>
+										<div class="imageList_name tc">{{item.fileName}}</div>
+										<div class="imageList_size tc">{{item.fileSize}}</div>
 									</div>
 								</div>
 								<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
@@ -99,22 +102,31 @@
 							<el-form-item :label="$t('lang.amt')">
 								<div>
 									<el-radio-group v-model="radio1" size="small" :class="[{marl: $i18n.locale == 'en-US' }]">
-										<el-radio style="margin-right: 20px !important;" label="1" border>{{$t('lang.sate')}}</el-radio>
-										<el-radio :class="[{ 'en_martop': $i18n.locale == 'en-US' }]" 
-										style="margin-left: 0;margin-right: 15px !important;" label="2" border>{{$t('lang.cat')}}</el-radio>
+										<el-radio style="margin-right: 20px !important;" label="1" border>{{$t('lang.cat')}}</el-radio>
+										<!-- <el-radio :class="[{ 'en_martop': $i18n.locale == 'en-US' }]" 
+										style="margin-left: 0;margin-right: 15px !important;" label="2" border>{{$t('lang.sate')}}</el-radio> -->
 									</el-radio-group> 
 								</div>
 								<div class="list1 clear" v-show="radio1 == '1'">
-									<div style="color: #B0B0B0;font-size: 13px;" class="list_itemjunfen ju float al" v-for="(item,i) in adList" :key="i">
-										<span>{{item}} </span>
+									<div v-if="adList.length != 0">
+										<div style="color: #B0B0B0;font-size: 13px;" 
+											class="list_itemjunfen ju float al" v-for="(item,i) in adList" :key="i">
+											<div v-if="item.guangGaoTimeMinDtos.length != 0">
+												<span>{{item.guangGaoTimeMinDtos[0].packageName}} </span>
+												<span style="margin-left: 3px;">
+													({{item.guangGaoTimeMinDtos[0].timeMin}}分鐘)
+												</span>
+											</div>
+										</div>
 									</div>
 								</div>
-								<div class="list1 clear" v-show="radio1 == '2'">
-									<div style="color: #B0B0B0;font-size: 12px;" class="list_itemzdy float ju al" v-for="(item,i) in adList1" :key="i">
+								<!-- <div class="list1 clear" v-show="radio1 == '2'">
+									<div style="color: #B0B0B0;font-size: 12px;" 
+									class="list_itemzdy float ju al" v-for="(item,i) in adList1" :key="i">
 										<span>{{item.time}} </span>
 										<span class="" style="margin-left: 3px;">({{item.num}}分鐘)</span>
 									</div>
-								</div>
+								</div> -->
 							</el-form-item>
 						</el-form>
 					</div>
@@ -135,33 +147,6 @@
 						</el-form>
 						<el-form :model="ruleForm" label-position="top" ref="ruleForm" 
 						:label-width="$i18n.locale == 'zh-CN'? '100px': '100px'" class="demo-ruleForm">
-							<!-- <el-form-item :label="$t('lang.adserving')" prop="time">
-								<div class="flex br">
-									<div class="flex">
-										<el-select v-model="ruleForm.time" :placeholder="$t('lang.pldselecttime')">
-											<el-option :label="$t('lang.busyhour')" :value="$t('lang.busyhour')"></el-option>
-											<el-option :label="$t('lang.unbusyhour')" :value="$t('lang.unbusyhour')"></el-option>
-										</el-select>
-										<div class="addCate cursor al" @click="addTime(ruleForm.time)">
-											{{$t("lang.addbtn")}}
-										</div>
-									</div>
-									<div class="list clear">
-										<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in timeList" :key="i">
-											{{item}} <span class="al" style="margin-left: 5px"><img class="cursor" @click="deleTime(i)" src="@/assets/img/cha.png" alt=""></span>
-										</div>
-									</div>
-								</div>
-							</el-form-item> -->
-
-							<!-- <el-form-item :label="$t('lang.aplan')">
-								<el-radio-group v-model="radio" size="small" @change="mount">
-									<el-radio label="1" border>{{$t("lang.dp")}}</el-radio>
-									<el-radio label="2" border>{{$t("lang.sa")}}</el-radio>
-									<el-radio label="3" border>{{$t("lang.ds")}}</el-radio>
-								</el-radio-group>
-							</el-form-item> -->
-							
 							<el-form-item :label="$t('lang.chooseStore')" 
 							prop="store" v-show="radio == 1" style="position: relative;">
 								<!-- <div class="fixedt"> (請在下放地圖選取店鋪)</div> -->
@@ -188,12 +173,6 @@
 							<el-form-item :label="$t('lang.AdvertisingArea')" prop="street" v-show="radio == 3">
 								<div class="flex br">
 									<div class="flex">
-										<!-- <el-select v-model="ruleForm.area" @change="changeArea"
-											:placeholder="$t('lang.pldselectarea')" style="margin-right: 10px;">
-											<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
-											<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
-											<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
-										</el-select> -->
                                         <el-input style="width: 40%;min-width: 200px;" v-model="ruleForm.area" disabled></el-input>
                                         <el-input style="width: 40%;min-width: 200px;margin-left: 10px;" v-model="ruleForm.street" disabled></el-input>
 										<!-- <el-select v-model="ruleForm.street" :placeholder="$t('lang.pldselectstreet')">
@@ -412,13 +391,14 @@
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import dimg from "@/assets/img/growing.jpg"
 import img1 from "@/assets/img/backimg.png"
+import { guangGaoById } from "@/axios/request.js"
 export default {
     data() {
         return {
 			showViewer: false, 
 			showViewer1: false, 
 
-			adList: ['9:00~10:00','10:00~11:00','14:00~15:00'],
+			adList: [],
 			adList1: [{ time: '9:00~10:00', num: 5 }, { time: '10:00~11:00', num: 10 }, { time: '15:00~16:00', num: 5 }],
 			copy1: [],
 			copy2: [],
@@ -471,7 +451,7 @@ export default {
 				endDate: '2021-12-07',
                 content: '',
 				mediaType: '',
-				inp: 10,
+				inp: 0,
             },
             rules: {
                 name: [
@@ -540,7 +520,7 @@ export default {
                 }]
             },
             value2: '',
-			typeList: ['旺角街道高流量商鋪廣告套餐($10000HKD/day)/旺角區域店鋪/廣告100分鐘'],
+			typeList: [],
 			areaList: ['九龍區'],
 			timeList: [],
 			imageList: [{url: img1,name: 'image1',size: '13KB'}, {url: dimg,name: 'image2',size: '500KB'}],
@@ -564,6 +544,7 @@ export default {
 		this.fun()
     },
 	created () {
+		this.$store.dispatch('getTypeList',this)
 		this.dimg = dimg
 		let that = this
 		let h = 8
@@ -614,14 +595,62 @@ export default {
 					this.$nextTick(() => {
 						that.initMap1(22.6,114.1,1)
 					})
-					// if (val == 'zh-CN') {
-					// 	this.labelPosition = 'left'
-					// } else if (val == 'en-US') {
-					// 	this.labelPosition = 'top'
-					// }
                 }
             }
-        }
+        },
+		getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+					this.$store.dispatch('getTimeIntervaDetailslList',this)
+				}
+			},
+		},
+		clockList: {
+			handler (val) {
+				if (val) {
+					this.clockList = val
+					this.guangGaoById()
+				}
+			}
+		},
+		mapstoreList: {
+			handler (val) {
+				let that = this
+				if (val) {
+					this.$nextTick(() => {
+						that.mapStoreListShow = []
+						that.mapstoreList = val
+						val.forEach((child,i) => {
+							child.area = '暫無地區'
+							that.addressList.forEach(item => {
+								if (child.addressParentId == item.id) {
+									child.area = item.addressLanguageDtos.find( res => res.language == "zh-TW") && this.$i18n.locale == "zh-CN" ? 
+									item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+									item.addressLanguageDtos.find( res => res.language == "en-US").addressName
+								}
+							})
+							that.mapStoreListShow.push({
+								position: new google.maps.LatLng(child.latitude,child.longitude),
+								type: "info",
+								msg: child.shopName,
+								area: child.area,
+								address: child.shopAddressName,
+								widthAndHeihth: child.widthAndHeihth,
+								shopId: child.shopId,
+								timeIntervalNames: child.timeIntervalNames,
+								typeNames: child.typeNames,
+								priceContents: child.priceContents,
+								addressParentId: child.addressParentId,
+								addressId: child.addressId,
+								images: child.images
+							})
+						})
+						that.initMap1(22.6,114.1,1)
+					})
+				}
+			},
+		},
     },
 	components: { ElImageViewer },
 	props: {
@@ -643,9 +672,78 @@ export default {
 		}
 	},
     computed: {
-        lang () { return this.$i18n.locale }
+        lang () { return this.$i18n.locale },
+		getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		},
+		clockList: {             //時間列表
+			get () { return this.$store.state.user.clockList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'clockList',
+					value: val
+				})
+			}
+		},
+		mapstoreList:{             //店鋪列表
+			get () { return this.$store.state.user.storeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'storeList',
+					value: val
+				})
+			}
+		},
     },
     methods: {
+		guangGaoById () {
+			let data = {
+				guangGaoId: this.$route.query.id
+			}
+			guangGaoById(data).then(res => {
+				console.log(res)
+				if (res.data.rtnCode == 200) {
+					let obj = this.ruleForm
+					let item = res.data.data
+					obj.name = item.title
+					this.getTypeList.forEach(item1 => {
+						item1.forEach(child => {
+							if (child.id == res.data.data.typeId && child.language == 'zh-TW' && this.$i18n.locale == 'zh-CN') {
+								obj.type = child.guangGaoTypeName
+							} else if (child.id == res.data.data.typeId && child.language == 'en-US' && this.$i18n.locale == 'en-US') {
+								obj.type = child.guangGaoTypeName
+							}
+						})
+					})
+					obj.startDate = new Date(item.startTime).toLocaleDateString().split('/').join('-')
+					obj.endDate = new Date(item.endTime).toLocaleDateString().split('/').join('-')
+					obj.mediaType = item.type
+					obj.inp = item.totalLength
+					this.imageList = item.guangGaoContentDto
+					this.clockList.forEach(item1 => {
+						item1.timeIntervalList.forEach(child => {
+							item.guangGaoAddressAndTimeDto.guangGaoTimeDtos.forEach(val => {
+								val.guangGaoTimeMinDtos.forEach(last => {
+									if (child.id == last.timeIntervalDetailsId) {
+										last.packageName = child.packageName
+									}
+								})
+							})
+						})
+					})
+					this.adList = item.guangGaoAddressAndTimeDto.guangGaoTimeDtos
+
+				}
+			})
+		},
+
+
         imgPreview (url) {
 			this.dimg1 = url
 			this.showViewer1 = true

@@ -239,7 +239,12 @@ export default {
             }
         },
         Income () {
-            this.$router.push('/Income')
+            this.$router.push({
+                name: 'Income',
+                query: {
+                    id: this.shopTitle.shopId
+                }
+            })
         },
         Settingadvertising () {
             this.$router.push({

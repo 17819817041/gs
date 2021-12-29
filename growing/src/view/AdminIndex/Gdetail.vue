@@ -1,8 +1,8 @@
 <template>
     <div class="Gdetail">
-		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
+		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt=""> -->
 		<div class="back mg al">
-			<img class="cursor" src="@/assets/img/back_arrow.png" @click="goBack" alt="">廣告詳細計劃
+			<img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" @click="goBack" alt="">廣告詳細計劃
 		</div>
         <div class="content mg bar">
 			<div class="noBar" style="height: calc(100% - 0px); overflow:auto">
@@ -153,6 +153,7 @@
 </template>
 
 <script>
+import {  } from "@/axios/request.js"
 export default {
     data() {
         return {

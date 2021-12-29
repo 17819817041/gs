@@ -136,6 +136,39 @@ export default {
 		}
 	}
 
+	.el-upload{
+		margin: 5px;
+		width: 100px !important;
+    	height: 100px !important;
+		line-height: 106px !important;
+		float: left !important;
+		@media screen and (max-width: 564px) {
+			line-height: 80px !important;
+			width: 70px !important;
+			height: 70px !important;
+		}
+	}
+	.el-progress{
+		width: 80px !important;
+    	height: 80px !important;
+		// line-height: 106px !important;
+		transform: translate(0px, -97px);
+		background: white;
+		@media screen and (max-width: 564px) {
+			transform: translate(0px, -105px);
+			width: 50px !important;
+			height: 50px !important;
+		}
+	}
+	.el-progress-circle {
+		width: 80px !important;
+    	height: 80px !important;
+		@media screen and (max-width: 564px) {
+			width: 50px !important;
+			height: 50px !important;
+		}
+	}
+
 
 	.header .el-popover__reference {
 		// transform: translate(0px, 20px);
@@ -221,6 +254,9 @@ export default {
 	}
 	.AdvertisingAdd .basicsMsg .el-radio-group .el-radio, .AdvertisingAddPlus .basicsMsg .el-radio-group .el-radio {
 		margin-right: 0px !important;
+		@media screen and (max-width: 352px) {
+			margin-bottom: 10px !important;
+		}
 	}  
 	.AdvertisingAdd .detailPlan .el-radio-group, .AdvertisingAddPlus .detailPlan .el-radio-group {
 		margin-left: 0px !important;

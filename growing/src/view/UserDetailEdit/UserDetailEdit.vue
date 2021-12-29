@@ -1,7 +1,7 @@
 <template>
     <div class="UserDetailEdit" v-loading='loading'>
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">賬戶詳細管理
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" @click="back" alt="">賬戶詳細管理
         </div>
         <div class="AdvertiserManagement_content mg bar">
             <div class="AdvertiserManagement_content_title sb al block">

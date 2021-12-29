@@ -1,18 +1,18 @@
 <template>
-    <div class="AdvertisingAdd AdvertisingAdd1">
-		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
+    <div class="AdvertisingAdd AdvertisingAdd1" v-loading='loading'>
 		<div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">Pro廣告計劃
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="" @click="goBack">Pro{{$t('lang.comboPlan')}}
         </div>
 		<div class="noBar" style="height: calc(100% - 35px);overflow: auto;margin-top: 15px;">
 			<div :class="['content mg noBar',{ heigh: !submit }]">
-				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
+				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
 				<div class="noBar" style="height: calc(100% - 0px); overflow:auto" v-show="submit">
 					<div class="basicsMsg theme" v-show="submit">
 						<div class=" basicsMsg_item bold al">
 							<div class="iden radius"></div> {{$t("lang.message")}}
 						</div>
-						<el-form :model="ruleForm" :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'" :rules="rules" ref="ruleForm" 
+						<el-form :model="ruleForm" :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'" 
+						:rules="rules" ref="ruleForm" 
 						:label-width="$i18n.locale == 'zh-CN'? '100px': '165px'" class="demo-ruleForm">
 							<el-form-item :label="$t('lang.adname')" prop="name">
 								<el-input style="width: 40%;min-width: 200px;" v-model="ruleForm.name"></el-input>
@@ -40,7 +40,7 @@
 									</div>
 								</div>
 							</el-form-item>
-							<el-form-item :label="$t('lang.cycle')">
+							<el-form-item :label="$t('lang.cycle')" prop="date">
 								<div style="min-width: 200px;width: 100%" class='clear'>
 									<div class="float" style="margin-right: 15px;width: 140px;">
 										<el-form-item prop="startDate">
@@ -99,14 +99,16 @@
 									<div>{{$t('lang.minute')}}</div>
 								</div>
 							</el-form-item>
-							<el-form-item :label="$t('lang.adcontent')">
-								<div class="textarea_wrap clear">
-									<label for="img">
-										<div class="addImg ju al float">
-											<img style="height: 30%;" src="@/assets/img/add.png" alt="">
-										</div>
-										<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
-									</label>
+							<el-form-item :label="$t('lang.adcontent')" prop="imageList">
+								<div :class="['textarea_wrap clear', { content_down: $i18n.locale == 'zh-CN' }]">
+									<el-upload
+                                        ref="fileUpload" action="" :headers="uploadProps.headers" list-type="picture-card" 
+										:show-file-list="false" multiple :limit='listLength' :on-change="videoChange"
+                                        :http-request="fnUploadRequest" :on-success="handleSuccess" :on-error="handleError" :on-progress="uploadProcess"
+										:before-upload="handleUpload" :on-exceed='outFile'>
+                                        <i class="el-icon-plus"></i>
+										<el-progress v-show="imgFlag == true" type="circle" :percentage="percent"></el-progress>
+                                    </el-upload>
 									<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm.imageList" :key="i">
 										<div class="imageList_wrap cursor">
 											<div class="deleImg radius ju al" @click.stop="deleImg(i)">
@@ -118,8 +120,9 @@
 
 												<div class="video_outWrap" v-else-if="ruleForm.mediaType == 'video'">
 													<img class="img" src="@/assets/img/start.png" alt="">
-													<div class="videoImage ju al" id="output" ref="output"  
-													@click="previewVideo(item)">
+													<div class="cutImage ju al"><img style="height: 100%;" 
+													@click="previewVideo(item)" :src="item.imageUrl" alt=""></div>
+													<div class="videoImage ju al" id="output" ref="output">
 														
 													</div>
 													<video class="width100" id="video1" ref="video"
@@ -135,12 +138,9 @@
 										>時長：{{item.videoTime}}</div>
 									</div>
 								</div>
-								<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
-									{{$t('lang.becare')}}
-								</div>
-								<div style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
+								<div :class="[{content_down1: $i18n.locale == 'zh-CN'}]" style='font-size: 12px;line-height: 15px;margin-top: 5px;'>{{$t('lang.becare')}}</div>
+								<div :class="[{content_down1: $i18n.locale == 'zh-CN'}]" style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
 							</el-form-item>
-
 							<el-form-item label="廣告視頻時長" prop="videoMinute" v-show="$i18n.locale == 'zh-CN'" v-if="videolong">
 								<div class="al media564">
 										<div class="al">
@@ -157,7 +157,6 @@
 										<div class="size12" style="color: gray;">( 媒體時長按每分鐘計數，不足一分鐘按一分鐘計算. )</div>
 									</div>
 							</el-form-item>
-
 							<el-form-item :label="$t('lang.amt')">
 								<div>
 									<el-radio-group v-model="radio1" size="small" :class="[{marl: $i18n.locale == 'en-US' }]">
@@ -169,8 +168,9 @@
 									class="elbtn" v-show="radio1">{{$t('lang.sptime')}}</el-button>
 								</div>
 								<div class="list1 clear" v-show="radio1 == '1'">
-									<div style="color: #B0B0B0;font-size: 13px;" class="list_itemjunfen ju float al" v-for="(item,i) in adList" :key="i">
-										<span>{{item}} </span>
+									<div style="color: #B0B0B0;font-size: 13px;" class="list_itemjunfen ju float al" v-for="(item,i) in ruleForm.adList" :key="i">
+										<span>{{item.packageName}} </span>
+										<span class="" style="margin-left: 3px;">({{floorMath}}分鐘)</span>
 										<span class="al" style="margin-left: 5px">
 											<img class="cursor" @click="deleItem(i)" src="@/assets/img/cha.png" alt="">
 										</span>
@@ -178,7 +178,7 @@
 								</div>
 								<div class="list1 clear" v-show="radio1 == '2'">
 									<div style="color: #B0B0B0;font-size: 12px;" class="list_itemzdy float ju al" v-for="(item,i) in adList1" :key="i">
-										<span>{{item.time}} </span>
+										<span>{{item.packageName}} </span>
 										<span class="" style="margin-left: 3px;">({{item.num}}分鐘)</span>
 										<span class="al" style="margin-left: 5px">
 											<img class="cursor" @click="deleItem1(i)" src="@/assets/img/cha.png" alt="">
@@ -203,10 +203,10 @@
 							</el-form-item>
 						</el-form>
 						<el-form :model="ruleForm1" label-position="top" 
-						:rules="rules" ref="ruleForm1" 
+						:rules="rules1" ref="ruleForm1" 
 						:label-width="$i18n.locale == 'zh-CN'? '100px': '100px'" class="demo-ruleForm">
 							<el-form-item :label="$t('lang.chooseStore')" 
-								prop="storeList" v-show="radio == 1" style="position: relative;">
+								 v-show="radio == 1" style="position: relative;">
 								<div class="fixedt"> (請在下放地圖選取店鋪)</div>
 								<div class="flex br">
 									<div style="color: #B0B0B0;" class="list_item float al cursor"
@@ -218,7 +218,7 @@
 									</div>
 								</div>
 							</el-form-item>
-							<el-form-item :label="$t('lang.AdvertisingArea')" prop="area" v-show="radio == 2">
+							<el-form-item :label="$t('lang.AdvertisingArea')" v-show="radio == 2">
 								<div class="flex br">
 									<div class="flex">
 										<el-select v-model="ruleForm1.area" :placeholder="$t('lang.pldselectarea')" @change="changeLight">
@@ -228,7 +228,7 @@
 												item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
 												:value="item.id">
 											</el-option>
-										</el-select>
+										</el-select> 
 										<div class="addCate cursor al" @click="addArea(ruleForm1.area)">
 											{{$t("lang.addbtn")}}
 										</div>
@@ -290,15 +290,15 @@
 								</div>
 							</el-form-item>
 						</el-form>
-						<div class="total mg sb">
+						<div :class="['total mg sb',{ colorMsg: !btnActive }]">
 							<div></div>
 							<div class="total_price">
 								<div class="t_price bold">
-									<span>{{$t('lang.total')}}:</span><span class="math_price"> $ 6000 </span><span class="p_d">HKD</span>
+									<span>{{$t('lang.total')}}:</span><span class="math_price"> $ {{orderPrice.price}} </span><span class="p_d">HKD</span>
 								</div>
-								<div class="total_price_item">{{$t('lang.phprice')}}: $4000 HKD</div>
-								<div class="total_price_item">{{$t('lang.unphprice')}}: $2000 HKD</div>
-								<!-- <div class="price_plan flex cursor" @click="drawer = !drawer"> -->
+								<div class="total_price_item">{{$t('lang.phprice')}}: ${{orderPrice.fMprice}} HKD</div>
+								<div class="total_price_item">{{$t('lang.unphprice')}}: ${{orderPrice.fFMprice}} HKD</div>  
+								<div class="total_price_item">{{$t('lang.sphprice')}}: ${{orderPrice.cFMprice}} HKD</div>
 								<el-popover
 									:placement="position1"
 									trigger="click"
@@ -330,7 +330,10 @@
 							</div>
 						</div>
 						<div class="sure_plan_wrap">
-							<div class="sure_plan cursor" @click="genOrder">{{$t('lang.adconfirm')}}</div>
+							<div class="sure_plan cursor" v-if="btnActive" @click="genOrder">計算價格</div>
+
+							<el-button :class="['elbtnsure',{ colorMsg: !btnActive }]" v-else style="width: 150px;height: 50px;" @click.native="submitMsg"
+								type="primary">{{$t('lang.adconfirm')}}</el-button>
 						</div>
 					</div>
 				</div>
@@ -353,21 +356,21 @@
 			:before-close="handleClose">
 			<div class="dra_content noBar">
 				<div>
-					<el-form :label-position="labelPosition"
+					<el-form :label-position="labelPosition" v-if="clockList.length != 0"
 						:label-width="$i18n.locale == 'zh-CN'? '80px': '205px'" class="demo-ruleForm">
-						<el-form-item label="繁忙時段">
+						<el-form-item :label="clockList[0].timeIntervalName">
 							<el-checkbox-group v-model="checkedCities" @change="adListadd">
-								<el-checkbox v-for="(item,i) in busyTimeList" :label="item" :key="i">{{item}}</el-checkbox>
+								<el-checkbox v-for="(item,i) in clockList[0].timeIntervalList" :label="item" :key="i">{{item.packageName}}</el-checkbox>
 							</el-checkbox-group>
 						</el-form-item>
-						<el-form-item label="超繁忙時段">
+						<el-form-item :label="clockList[2].timeIntervalName">
 							<el-checkbox-group v-model="checkedCities12" @change="adsListadd">
-								<el-checkbox v-for="(item,i) in sbusyTimeList" :label="item" :key="i">{{item}}</el-checkbox>
+								<el-checkbox v-for="(item,i) in clockList[2].timeIntervalList" :label="item" :key="i">{{item.packageName}}</el-checkbox>
 							</el-checkbox-group>
 						</el-form-item>
-						<el-form-item label="非繁忙時段">
+						<el-form-item :label="clockList[1].timeIntervalName">
 							<el-checkbox-group v-model="checkedCities2" @change="adunListadd">
-								<el-checkbox v-for="(item,i) in unbusyTimeList" :label="item" :key="i">{{item}}</el-checkbox>
+								<el-checkbox v-for="(item,i) in clockList[1].timeIntervalList" :label="item" :key="i">{{item.packageName}}</el-checkbox>
 							</el-checkbox-group>
 						</el-form-item>
 					</el-form>
@@ -396,7 +399,7 @@
 						:label-width="$i18n.locale == 'zh-CN'? '80px': '205px'" class="demo-ruleForm">
 						<el-form-item label="繁忙時段:">
 							<div class="al size12 ju" v-for="(item,i) in addTimeList" :key="i+11" style="margin-bottom: 15px;">
-								<span class="l_time">{{item.time}}</span> <el-input-number @change="handleChange" 
+								<span class="l_time">{{item.packageName}}</span> <el-input-number @change="handleChange" 
 								style="margin: 0 5px;width: 107px;" v-model="item.num"
 								:min="1" :max="100" label="描述文字" size="mini"></el-input-number> 分鐘
 								<el-button plain size="mini" style="margin-left: 7px;" @click.native="deleList(i)">刪除</el-button>
@@ -404,7 +407,7 @@
 						</el-form-item>
 						<el-form-item label="超繁忙時段:">
 							<div class="al size12 ju" v-for="(item,i) in addTimeList1" :key="i+16" style="margin-bottom: 15px;">
-								<span class="l_time">{{item.time}}</span> <el-input-number @change="handleChange" 
+								<span class="l_time">{{item.packageName}}</span> <el-input-number @change="handleChange" 
 								style="margin: 0 5px;width: 107px;" v-model="item.num"
 								:min="1" :max="100" label="描述文字" size="mini"></el-input-number> 分鐘
 								<el-button plain size="mini" style="margin-left: 7px;" @click.native="deleList1(i)">刪除</el-button>
@@ -412,15 +415,13 @@
 						</el-form-item>
 						<el-form-item label="非繁忙時段:">
 							<div class="al size12 ju" v-for="(item,i) in addTimeList2" :key="i+30" style="margin-bottom: 15px;">
-								<span class="l_time">{{item.time}}</span> <el-input-number @change="handleChange" 
+								<span class="l_time">{{item.packageName}}</span> <el-input-number @change="handleChange" 
 								style="margin: 0 5px;width: 107px;" v-model="item.num"
 								:min="1" :max="100" label="描述文字" size="mini"></el-input-number> 分鐘
 								<el-button plain size="mini" style="margin-left: 7px;" @click.native="deleList2(i)">刪除</el-button>
 							</div>
 						</el-form-item>
 					</el-form>
-
-					
 					<div class="ju" style="margin-top: 20px;">
 						<el-popover
 							style="width: 80px;"
@@ -428,21 +429,24 @@
 							width="270"
 							trigger="click">
 							<div class="popover_item noBar" ref='popover'>
-								<el-form label-position="top"  ref="ruleForm" 
+								<el-form label-position="top"  v-if="clockList.length != 0"
 									:label-width="$i18n.locale == 'zh-CN'? '80px': '205px'" class="demo-ruleForm">
-									<el-form-item label="繁忙時段">
+									<el-form-item :label="clockList[0].timeIntervalName">
 										<el-checkbox-group v-model="checkedCities1" @change="group">
-											<el-checkbox v-for="(item,i) in busyTimeList1" :label="item" :key="i+1">{{item.time}}</el-checkbox>
+											<el-checkbox v-for="(item,i) in clockList[0].timeIntervalList" 
+											:label="item" :key="i+1">{{item.packageName}}</el-checkbox>
 										</el-checkbox-group>
 									</el-form-item>
-									<el-form-item label="超繁忙時段">
+									<el-form-item :label="clockList[2].timeIntervalName">
 										<el-checkbox-group v-model="checkedCities11" @change="group1">
-											<el-checkbox v-for="(item,i) in sbusyTimeList1" :label="item" :key="i+2">{{item.time}}</el-checkbox>
+											<el-checkbox v-for="(item,i) in clockList[2].timeIntervalList" 
+											:label="item" :key="i+2">{{item.packageName}}</el-checkbox>
 										</el-checkbox-group>
 									</el-form-item>
-									<el-form-item label="繁忙時段">
+									<el-form-item :label="clockList[1].timeIntervalName">
 										<el-checkbox-group v-model="checkedCities21" @change="group2">
-											<el-checkbox v-for="(item,i) in unbusyTimeList1" :label="item" :key="i">{{item.time}}</el-checkbox>
+											<el-checkbox v-for="(item,i) in clockList[1].timeIntervalList" 
+											:label="item" :key="i">{{item.packageName}}</el-checkbox>
 										</el-checkbox-group>
 									</el-form-item>
 								</el-form>
@@ -494,11 +498,24 @@
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import dimg from "@/assets/img/growing.jpg"
 import mar from "@/assets/img/marker.png"
-import { number } from 'echarts'
-import { genOrder } from "@/axios/request.js"
+import areajs from "@/assets/js/area.js"
+import { uploadOSS } from '@/utils/oss';
+import { genOrder, gaode, gerArea, getShopList, getuploadtoken, submit } from "@/axios/request.js"
 export default {
     data() {
         return {
+			listLength: 1,
+			orderPrice: {
+				"price": 0,
+				"fMprice": 0,
+				"fFMprice": 0,
+				"cFMprice": 0
+			},
+			gen: '',
+			imageUrl: '',
+			imgFlag: false,
+			percent: 0,
+			btnActive: true,
 			showVideo: false,
 			videoWrap: false,
 			videolong: false,
@@ -512,7 +529,7 @@ export default {
 			showViewer: false, 
 			showViewer1: false, 
 
-			adList: [],
+			
 			adList1: [],
 			copy1: [],
 			copy2: [],
@@ -526,19 +543,16 @@ export default {
 			busyTimeList: [],
 
 			checkedCities1: [],
-			busyTimeList1: [],
 
 			checkedCities12: [],
 			sbusyTimeList: ['12:00~13:00','18:00~19:00'],
 
 			checkedCities11: [],
-			sbusyTimeList1: [{ time: '12:00~13:00', num: 1 },{ time:'18:00~19:00', num: 1 }],
 
 			checkedCities2: [],
 			unbusyTimeList: [],
 
 			checkedCities21: [],
-			unbusyTimeList1: [],
 
 
 
@@ -555,9 +569,11 @@ export default {
 			labelPosition: 'left',
             ruleForm: {
                 name: '',
+				date: 'full',
                 // store: '',
                 // street: '',
                 // time: '',
+				adList: [],
                 type: '',
                 startDate: '',
 				endtDate: '',
@@ -566,7 +582,6 @@ export default {
 				cmediaType: '',
 				cmediaType1: 1,
 				imageList: [],
-				
 				inp: 60,
 				videoMinute: 1
             },
@@ -578,6 +593,9 @@ export default {
                 store: [
                     { required: true, message: '請選擇店鋪', trigger: 'blur' }
                 ],
+				date: [
+					{ required: true, message: '', trigger: 'change' }
+				],
 				
                 // street: [
                 //     { required: true, message: '請選擇街道', trigger: 'blur' }
@@ -609,14 +627,14 @@ export default {
             },
 			ruleForm1: {
 				area: '',
-				storeList: [],
+				storeList: []
 			},
 			rules1: {
 				area: [
                     { required: true, message: '請選擇投放區域', trigger: 'blur' }
                 ], 
 				storeList: [
-                    { required: true, message: '請選擇店鋪', trigger: 'blur' }
+                    { required: true, message: '請選擇店鋪', trigger: 'change' }
                 ],
 			},
             pickerOptions: {
@@ -678,7 +696,10 @@ export default {
 			dimg1: '',
 
 			mapStoreListShow: [],
-			totalContentLength: 0
+			totalContentLength: 0,
+
+			floorMath: 0,
+			loading: false
 		}
     },
 	beforeMount() {
@@ -689,8 +710,6 @@ export default {
 		this.fun()
     },
 	created () {
-		this.$store.dispatch('getTimeIntervaDetailslList',this)
-		this.$store.dispatch('getTypeList',this)
 		this.dimg = dimg
 		let that = this
 		let h = 8
@@ -699,13 +718,10 @@ export default {
 			s += 1
 			h += 1
 			this.busyTimeList.push(h + ':00~' + s + ':00')
-			this.busyTimeList1.push( {time: h + ':00~' + s + ':00', num: 1} )
 		}
 		this.$nextTick(() => {
 			that.busyTimeList.splice(3,1)
 			that.busyTimeList.splice(8,1)
-			that.busyTimeList1.splice(3,1)
-			that.busyTimeList1.splice(8,1)
 		})
 
 		let unh = 20
@@ -714,20 +730,20 @@ export default {
 			uns += 1
 			unh += 1
 			this.unbusyTimeList.push(unh + ':00~' + uns + ':00')
-			this.unbusyTimeList1.push( {time: unh + ':00~' + uns + ':00', num: 1} )
 		}
 		this.unbusyTimeList.push('23:00~00:00')
-		this.unbusyTimeList1.push( { time: '23:00~00:00', num: 1 } )
 		let unh1 = -1
 		let uns1 = 0
 		for (let i=0;i<9;i++) {
 			uns1 += 1
 			unh1 += 1
 			this.unbusyTimeList.push(unh1 + ':00~' + uns1 + ':00')
-			this.unbusyTimeList1.push( {time: unh1 + ':00~' + uns1 + ':00', num: 1} )
 		}
 	},
     mounted () {
+		this.$store.dispatch('getTimeIntervaDetailslList',this)
+		this.$store.dispatch('getTypeList',this)
+		// this.initMap1(22.6,114.1,1)
 		window.shopadd = this.shopadd;
 		window.onPreview = this.onPreview;
 		window.closewin = this.closewin
@@ -781,37 +797,54 @@ export default {
 		},
 		mapstoreList: {
 			handler (val) {
+				let that = this
 				if (val) {
-					this.mapStoreListShow = []
-					this.mapstoreList = val
-					val.forEach((child,i) => {
-						child.area = '暫無地區'
-						this.addressList.forEach(item => {
-							if (child.addressParentId == item.id) {
-								child.area = item.addressLanguageDtos.find( res => res.language == "zh-TW") && this.$i18n.locale == "zh-CN" ? 
-								item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-								item.addressLanguageDtos.find( res => res.language == "en-US").addressName
-							}
+					this.$nextTick(() => {
+						that.mapStoreListShow = []
+						that.mapstoreList = val
+						val.forEach((child,i) => {
+							child.area = '暫無地區'
+							that.addressList.forEach(item => {
+								if (child.addressParentId == item.id) {
+									child.area = item.addressLanguageDtos.find( res => res.language == "zh-TW") && this.$i18n.locale == "zh-CN" ? 
+									item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+									item.addressLanguageDtos.find( res => res.language == "en-US").addressName
+								}
+							})
+							that.mapStoreListShow.push({
+								position: new google.maps.LatLng(child.latitude,child.longitude),
+								type: "info",
+								msg: child.shopName,
+								area: child.area,
+								address: child.shopAddressName,
+								widthAndHeihth: child.widthAndHeihth,
+								shopId: child.shopId,
+								timeIntervalNames: child.timeIntervalNames,
+								typeNames: child.typeNames,
+								priceContents: child.priceContents,
+								addressParentId: child.addressParentId,
+								addressId: child.addressId,
+								images: child.images
+							})
 						})
-						this.mapStoreListShow.push({
-							position: new google.maps.LatLng(child.latitude,child.longitude),
-							type: "info",
-							msg: child.shopName,
-							area: child.area,
-							address: child.shopAddressName,
-							widthAndHeihth: child.widthAndHeihth,
-							shopId: child.shopId,
-							timeIntervalNames: child.timeIntervalNames,
-							typeNames: child.typeNames,
-							priceContents: child.priceContents,
-							addressParentId: child.addressParentId,
-							addressId: child.addressId
-						})
+						that.initMap1(22.6,114.1,1)
 					})
-					this.initMap1(22.6,114.1,1)
 				}
 			},
 		},
+		percent: {
+			handler (val) {
+				if (val == 75) {
+					const interval1 = setInterval(() => {
+						if (this.percent >= 99) {
+							clearInterval(interval1)
+							return
+						}
+						this.percent += 1 //进度条进度
+					}, 350)
+				}
+			}
+		}
     },
 	components: { ElImageViewer },
 	props: {
@@ -870,13 +903,23 @@ export default {
 				})
 			}
 		},
+		uploadProps() {
+            return {
+                // action: `${process.env.VUE_APP_BASE_API}/api/file/upload`,
+                headers: {
+                    // 接口可能要带token: "",
+                    Authorization: getuploadtoken(),
+                },
+                data: {},
+            };
+        },
     },
     methods: {
 		getStore () {
 			let data = {
 				parentAddressId: this.ruleForm1.area,
 				shopName: '',
-				addressId: '',
+				addressId: this.ruleForm1.area,
 				typeId: this.ruleForm.type
 			}
 			this.$store.dispatch('getShopList',data)
@@ -885,6 +928,8 @@ export default {
 			let that = this
 			let boo = false
 			let boo1 = false
+			// let boo = true
+			// let boo1 = true
 			this.$refs.ruleForm.validate(flag => {
                 if (flag) { boo = true }
             })
@@ -903,35 +948,91 @@ export default {
 						"filePlayTime": item.videoTime
 					})
 				})
+				let shopAndAddressDtos = []
+				this.ruleForm1.storeList.forEach(item => {
+					shopAndAddressDtos.push({
+						"addressId": Number(item.addressId),
+						"addressParentId": Number(item.addressParentId),
+						"shopId": Number(item.shopId)
+					})
+				})
+				let timeArr = []
+				if (this.radio1 == '2') {
+					let clock = []
+					if (this.addTimeList.length != 0) { clock.push(this.addTimeList) }
+					if (this.addTimeList1.length != 0) { clock.push(this.addTimeList1) }
+					if (this.addTimeList2.length != 0) { clock.push(this.addTimeList2) }
+					clock.forEach(item => {
+						let arrc = []
+						let total = 0
+						item.forEach(child => {
+							total += child.num
+							arrc.push({
+								"timeIntervalDetailsId": child.id,
+								"timeMin": child.num
+								// "timeMin": 2
+							})
+						})
+						timeArr.push({
+							"guangGaoTimeMinDtos": arrc,
+							"timeIntervalId": item[0].timeIntervalId,
+							"totalMinLength": total
+							// "totalMinLength": 20
+						})
+					})
+				} else if (this.radio1 == '1') {
+					let clock = []
+					if (this.copy1.length != 0) { clock.push(this.copy1) }
+					if (this.copy2.length != 0) { clock.push(this.copy2) }
+					if (this.copy3.length != 0) { clock.push(this.copy3) }
+					clock.forEach(item => {
+						let arrc = []
+						let total = this.ruleForm.inp/this.ruleForm.adList.length
+						item.forEach(child => {
+							arrc.push({
+								"timeIntervalDetailsId": child.id,
+								"timeMin": child.num
+							})
+						})
+						timeArr.push({
+							"guangGaoTimeMinDtos": arrc,
+							"timeIntervalId": item[0].timeIntervalId,
+							"totalMinLength": total
+						})
+					})
+				}
 				let data = {
 					guangGaoDtoJson: {
 						"endTime": String(new Date(this.ruleForm.endDate).toLocaleDateString().split('/').join('-')),
 						"guangGaoAddressAndTimeDto": {
-							"guangGaoTimeDtos": [{
-								"guangGaoTimeMinDtos": [{
-									"timeIntervalDetailsId": 1,
-									"timeMin": 2
-								}],
-								"timeIntervalId": 1,
-								"totalMinLength": 12
-							}],
-							"shopAndAddressDtos": [{
-								"addressId": 19,
-								"addressParentId": 9,
-								"shopId": 52
-							}]
+							// "guangGaoTimeDtos": [{
+							// 	"guangGaoTimeMinDtos": [{
+							// 		"timeIntervalDetailsId": 1,
+							// 		"timeMin": 2
+							// 	}],
+							// 	"timeIntervalId": 1,
+							// 	"totalMinLength": 12
+							// }],
+							"guangGaoTimeDtos": timeArr,
+
+							// "shopAndAddressDtos": [{
+							// 	"addressId": 19,
+							// 	"addressParentId": 9,
+							// 	"shopId": 52
+							// }]
+							"shopAndAddressDtos": shopAndAddressDtos
 						},
 						"guangGaoContentDto": arr,
 						"length": this.ruleForm.videoMinute,
 						"startTime": String(new Date(this.ruleForm.startDate).toLocaleDateString().split('/').join('-')),
 						"title": this.ruleForm.name,
 						"totalLength": this.ruleForm.inp, 
-						"type": 2,    //隨機
+						"type": 1,    //精準
 						"typeId": this.ruleForm.type[0].id,
 						"userId": localStorage.getItem('compoundeyesUserId')
 					},
 				}
-				console.log(data.guangGaoDtoJson)
+				// return
 				let str = JSON.stringify(data.guangGaoDtoJson)
 				const qs = require('qs')
 				let data1 = qs.stringify({
@@ -940,19 +1041,17 @@ export default {
 				genOrder(data1).then(res => {
 					that.loading = false
 					if (res.data.rtnCode == 200) {
-						that.$message({
-							type: 'success',
-							message: that.$t('lang.addSuccess')
-						})
-						that.submit = false
+						this.gen = data1
+						this.orderPrice = res.data.data
+						this.btnActive = false
 					} else {
 						this.$message({
 							type: 'error',
-							message: this.$t('lang.addFail')
+							message: res.data.msg
 						})
 					}
 				}).catch(e => {
-					that.loading = false
+					this.loading = false
 					this.$message({
 						type: 'error',
 						message: this.$t('lang.addFail')
@@ -960,13 +1059,252 @@ export default {
 				})
 			}
 		},
+		submitMsg () {
+			let that = this
+			this.loading = true
+			let data = this.gen
+			submit(data).then(res => {
+				this.loading = false
+				if (res.data.rtnCode == 200) {
+					this.$message({
+						type: 'success',
+						message: that.$t('lang.addSuccess')
+					})
+					this.submit = false
+				} else {
+					this.$message({
+						type: 'error',
+						message: this.$t('lang.addFail')
+					})
+				}
+			}).catch(e => {
+				this.loading = false
+				this.$message({
+					type: 'error',
+					message: this.$t('lang.addFail')
+				})
+			})
+		},
+
+
+		handleExceed(file, fileList){
+            this.$message.error('上传失败，限制上传数量10个文件以内！');
+        },
+        handleUpload(file){
+			if (this.ruleForm.mediaType == 'image') {
+				let boo = false
+				if (this.ruleForm.imageList.length <= 10 ) { boo = true }
+
+				if (boo) {
+					var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+					const extension =  testmsg === 'png' || testmsg === 'jpeg' || testmsg === 'gif' || testmsg === 'jpg'
+
+					const isLimit10M = file.size / 1024 / 1024 < 3
+					var bool = false;
+					if (extension && isLimit10M) { bool = true; } else { bool = false; }
+					if (!extension) {
+						this.$message.error('請選擇圖片文件！');
+						return bool;
+					}
+					if (!isLimit10M) {
+						this.$message.error('上傳失敗，圖片不能超過3M！');
+						return bool;
+					}
+					return bool;
+				}
+				
+			} else if (this.ruleForm.mediaType == 'video') {
+				let boo = false
+				if ( this.ruleForm.imageList.length <= 5 ) { boo = true }
+
+				if (boo) {
+					var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+					const extension = testmsg === 'mp4'
+
+					const isLimit10M = file.size / 1024 / 1024 < 100
+					var bool = false;
+					if (extension && isLimit10M) { bool = true; } else { bool = false; }
+					if (!extension) {
+						this.$message.error('請選擇視頻文件！');
+						return bool;
+					}
+					if (!isLimit10M) {
+						this.$message.error('上傳失敗，視頻不能超過100M！');
+						return bool;
+					}
+					return bool;
+				}
+			} else {
+				this.$message({
+					type: 'warning',
+					message: '請選擇廣告媒體類型!'
+				})
+				this.imgFlag = false;
+				this.percent = 0;
+				return false
+			}
+        },
+        handleSuccess(res) {
+            // console.log(res);
+            if (res) {
+				this.imageUrl = URL.createObjectURL(file.raw); // 项目中用后台返回的真实地址
+                this.$emit('fileData', res)
+                this.$message.success("上传附件成功！");
+            }
+        },
+		async videoChange(file, fileList) {
+			//刚开始上传的时候，可以拿到ready状态，给个定时器，让进度条显示
+			if (file.status === 'ready') {
+				this.imgFlag = true //进度条显示
+				const interval = setInterval(() => {
+					if (this.percent >= 75) {
+						clearInterval(interval)
+						return
+					}
+					this.percent += 1 //进度条进度
+				}, 80)
+			}
+		},
+        handleError(err){
+            this.$message.error('上传附件失败！');
+        },
+        // 上传图片
+        async fnUploadRequest(options) {
+			console.log(options)
+            try {
+				let that = this
+                let file = options.file; // 拿到 file
+                let res = await uploadOSS(file)
+				let size
+				if (file.size >= 1000000) {
+					var s = file.size/1000000
+					size = s.toFixed(1) + 'M'
+					// size = Math.ceil(files[ff].size/1000000) + 'm'
+				} else {
+					var s = file.size/1000
+					size = s.toFixed(0) + 'KB'
+					// size = Math.ceil(files[ff].size/1000) + 'kb'
+				}
+				this.percent = 100;
+				setTimeout(() => {
+					that.imgFlag = false;
+					that.percent = 0;
+				},1000)
+				let fileurl = res.fileUrl
+				let name = res.fileName
+				let audioElement = new Audio(fileurl);
+				if (this.ruleForm.mediaType == 'video') {
+					audioElement.addEventListener("loadedmetadata", function (_event) {
+						var time = Math.ceil(audioElement.duration)
+						var sTime = parseInt(time);// 秒
+						var mTime = 0;// 分
+						if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+							//获取分钟，除以60取整数，得到整数分钟
+							mTime = parseInt(sTime / 60);
+							//获取秒数，秒数取佘，得到整数秒数
+							sTime = parseInt(sTime % 60);
+						}
+						that.ruleForm.imageList.push({ 
+							url: fileurl, 
+							name: name, 
+							size: size, 
+							time: time, 
+							videoTime: mTime + '分' + sTime + '秒'
+						})
+						let obj = {
+							url: fileurl, 
+							name: name, 
+							size: size, 
+							time: time, 
+							videoTime: mTime + '分' + sTime + '秒'
+						}
+						let index = that.ruleForm.imageList.length -1
+						setTimeout(() => {
+							that.initialize(index,obj)
+						},200)
+						// that.minute.push(Math.ceil(audioElement.duration))
+						that.minute.push(time)
+						that.$forceUpdate()
+					});
+				} else if (this.ruleForm.mediaType == 'image') {
+					that.ruleForm.imageList.push({ 
+						url: fileurl, 
+						name: name, 
+						size: size, 
+						time: null, 
+						videoTime: null
+					})
+				}
+                // 返回数据
+                this.$emit("fileData", res);
+                this.$message.success("上传附件成功！");
+            } catch (e) {
+                this.$message.error('上传附件失败！');
+            }
+        },
+		initialize (ff, obj) {
+			var scale = 0.8;
+			var output = this.$refs.output[ff]
+			var video = this.$refs.video[ff]
+			// console.log(ff)
+			video.addEventListener('loadeddata',this.captureImage(video,output,scale, obj));
+		},
+		captureImage (video,output,scale,obj) {
+			let that = this
+			setTimeout(() => {
+				var canvas = document.createElement("canvas");
+				canvas.width = video.videoWidth * scale;
+				canvas.height = video.videoHeight * scale;
+				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+				var img = document.createElement("img");
+				img.src = canvas.toDataURL("image/png");
+				canvas.toBlob(function (blob) {
+					let files = new window.File([blob], 'image.png', {type: blob.type})
+					files.uid = new Date().getTime()
+					that.cutVideo(files,obj)
+				})
+				// img.width = 400;
+				// img.height = 100;
+				output.appendChild(img);
+			},100)
+		},
+        // 上传图片
+        async cutVideo(options,obj) {
+            try {
+                let file = options; // 拿到 file
+                let res = await uploadOSS(file)
+				obj.imageUrl = res.fileUrl
+				this.ruleForm.imageList.forEach(item => {
+					if (item.url == obj.url) {
+						item.imageUrl = obj.imageUrl
+					}
+				})
+				this.$forceUpdate()
+                // 返回数据
+                this.$emit("fileData", res);
+                this.$message.success("視頻截幀成功！");
+            } catch (e) {
+                this.$message.error('視頻封面獲取失败！');
+            }
+        },
+		outFile (e) {
+			this.$message.error('上传失败，限制上传数量' + this.listLength + '个文件以内！');
+        },
+		uploadProcess(event, file, fileList) {
+			console.log(event);
+			// this.imgFlag = true;
+			// console.log(event.percent);
+			// this.percent = Math.floor(event.percent);
+		},
+
+
+		
 
 		imgPreview (url) {
 			this.dimg1 = url
 			this.showViewer1 = true
 		},
 		previewVideo (item) {
-			console.log(item.url)
 			this.src = item.url
 			this.showVideo = true
 			this.videoWrap = true
@@ -975,7 +1313,6 @@ export default {
 			this.showVideo = false
 			this.videoWrap = false
 		},
-
 		closeViewer1() {
           this.showViewer1 = false
         },
@@ -1113,6 +1450,13 @@ export default {
           this.showViewer = false
         },
 		mount (i) {
+			let data = {
+				parentAddressId: '',
+				shopName: '',
+				addressId: '',
+				typeId: ''
+			}
+			this.$store.dispatch('getShopList',data)
 			if (i == '1') {
 				this.initMap1(22.6,114.1,1)
 			} else if (i == '2') {
@@ -1130,14 +1474,63 @@ export default {
 		adunListadd (val) {
 			this.copy3 = Array.from(val)
 		},
-		deleItem (i) {
-			this.adList.splice(i,1)
+		deleItem (k) {
+			for (let i=0;i<this.checkedCities.length;i++) {
+				if (this.checkedCities[i].packageName == this.ruleForm.adList[k].packageName) {
+					this.checkedCities.splice(i,1) 
+				}
+				if (this.copy1[i].packageName == this.ruleForm.adList[k].packageName) {
+					this.copy1.splice(i,1) 
+				}
+			}
+			for (let i=0;i<this.checkedCities12.length;i++) {
+				if (this.checkedCities12[i].packageName == this.ruleForm.adList[k].packageName) {
+					this.checkedCities12.splice(i,1) 
+				}
+				if (this.copy2[i].packageName == this.ruleForm.adList[k].packageName) {
+					this.copy2.splice(i,1) 
+				}
+			}
+			for (let i=0;i<this.checkedCities2.length;i++) {
+				if (this.checkedCities2[i].packageName == this.ruleForm.adList[k].packageName) {
+					this.checkedCities2.splice(i,1) 
+				}
+				if (this.copy3[i].packageName == this.ruleForm.adList[k].packageName) {
+					this.copy3.splice(i,1) 
+				}
+			}
+			this.ruleForm.adList.splice(k,1)
 		},
-		deleItem1 (i) {
-			this.adList1.splice(i,1)
+		deleItem1 (k) {
+			for (let i=0;i<this.addTimeList.length;i++) {
+				if (this.addTimeList[i].packageName == this.adList1[k].packageName) {
+					this.addTimeList.splice(i,1) 
+				}
+				if (this.checkedCities1[i].packageName == this.adList1[k].packageName) {
+					this.checkedCities1.splice(i,1) 
+				}
+			}
+			for (let i=0;i<this.addTimeList1.length;i++) {
+				if (this.addTimeList1[i].packageName == this.adList1[k].packageName) {
+					this.addTimeList1.splice(i,1) 
+				}
+				if (this.checkedCities11[i].packageName == this.adList1[k].packageName) {
+					this.checkedCities11.splice(i,1) 
+				}
+			}
+			for (let i=0;i<this.addTimeList2.length;i++) {
+				if (this.addTimeList2[i].packageName == this.adList1[k].packageName) {
+					this.addTimeList2.splice(i,1) 
+				}
+				if (this.checkedCities21[i].packageName == this.adList1[k].packageName) {
+					this.checkedCities21.splice(i,1) 
+				}
+			}
+			this.adList1.splice(k,1)
 		},
 		sureaddadList () {
-			this.adList = this.copy1.concat(this.copy2.concat(this.copy3))
+			this.ruleForm.adList = this.copy1.concat(this.copy2.concat(this.copy3))
+			this.floorMath = Math.floor(this.ruleForm.inp/this.ruleForm.adList.length)
 			this.drawer1 = false
 		},
 		sueraddList1 () {
@@ -1146,16 +1539,16 @@ export default {
 			arr.forEach(item => {
 				i = i + item.num
 			})
-			if (i == this.ruleForm.inp) {
+			// if (i == this.ruleForm.inp) {
 				this.adList1 = this.addTimeList.concat(this.addTimeList1.concat(this.addTimeList2))
 				this.drawer2 = false
 				this.ruleForm.inp = i
-			} else {
-				this.$message({
-					type: 'error',
-					message: '確認自定義時間等於投放時長'
-				})
-			}
+			// } else {
+			// 	this.$message({
+			// 		type: 'error',
+			// 		message: '確認自定義時間等於投放時長'
+			// 	})
+			// }
 		},
 		changeArea (val) {
 			this.ruleForm.street = ''
@@ -1168,7 +1561,7 @@ export default {
 			let that = this
 			let boolean = true
 			let map = new google.maps.Map(document.getElementById('map'), {
-				center: {lat: lat, lng: lng},
+				// center: {lat: lat, lng: lng},
 				zoom: 11,
 				mapTypeId: "roadmap",
 				disableDefaultUI: true,
@@ -1197,6 +1590,16 @@ export default {
 			map.addListener("bounds_changed", () => {
 				searchBox.setBounds(map.getBounds());
 			});
+			// map.addListener('click', function(e) {   //点击获取经纬度
+			// 	console.log(e.latLng.lat(),e.latLng.lng()); 
+			// 	let data = {
+			// 		key: '66b48ee066b6ada810d662b110cfc463',
+			// 		location: String(e.latLng.lng()) + ',' + String(e.latLng.lat())
+			// 	}
+			// 	gaode(data).then(res => {
+			// 		console.log(res)    //地理解析，详细地址
+			// 	})
+			// });
 			let markers = [];
 			searchBox.addListener("places_changed", () => {
 				let places = searchBox.getPlaces();
@@ -1439,40 +1842,48 @@ export default {
 		closewin (val) {
 			this.infowindow.close()
 		},
-		changeLight (val) {
-			this.last = JSON.parse(JSON.stringify(this.deLight))
-			if (val == this.$t('lang.jiulong')) {
-				this.deLight = [
-					{ lat: 22.27, lng: 113.46 },
-					{ lat: 22.28, lng: 113.50 },
-					{ lat: 22.30, lng: 113.55 },
-					{ lat: 22.32, lng: 113.57 },
-					{ lat: 22.35, lng: 113.59 },
-					{ lat: 22.37, lng: 113.60 },
-					{ lat: 22.40, lng: 113.62 },
-				]
-			} else if (val == this.$t('lang.wangjiao')) {
-				this.deLight = [
-					{ lat: 22.37, lng: 113.56 },
-					{ lat: 22.38, lng: 113.60 },
-					{ lat: 22.40, lng: 113.55 },
-					{ lat: 22.52, lng: 113.67 },
-					{ lat: 22.45, lng: 113.69 },
-					{ lat: 22.47, lng: 113.70 },
-					{ lat: 22.50, lng: 113.72 },
-				]
-			} else if (val == this.$t('lang.zhonghuan')) {
-				this.deLight = [
-					{ lat: 22.37, lng: 113.66 },
-					{ lat: 22.48, lng: 113.70 },
-					{ lat: 22.50, lng: 113.65 },
-					{ lat: 22.62, lng: 113.77 },
-					{ lat: 22.55, lng: 113.79 },
-					{ lat: 22.57, lng: 113.80 },
-					{ lat: 22.60, lng: 113.82 },
-				]
+		changeLight (id) {
+			let areaName
+			this.addressList.forEach(item => {
+				if (id == item.id) {
+					areaName = item.addressLanguageDtos.find( res => res.language == "zh-TW") ? 
+					item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+					item.addressLanguageDtos.find( res => res.language == "en-US").addressName
+				}
+			})
+			
+			let data = {
+				// keywords: areaName,
+				id: 810000,
+				// keyword: areaName,
+				// key: '66b48ee066b6ada810d662b110cfc463',
+				key: 'SXXBZ-ZPCKD-GI24C-HLC2D-YUKYS-LYFLK',
+				get_polygon: 2,
+				max_offset: 100
+				// subdistrict: 0,
+				// extensions: 'all'
 			}
-			this.lightArea()
+			// gerArea(data).then(res => {
+			// 	console.log(res)
+				if (areajs.data.message == 'query ok') {
+					let arr
+					areajs.data.result[0].forEach(item => {
+						if (item.fullname == areaName) {
+							arr = item.polygon[0]
+						}
+					})
+					this.deLight = []
+					for (let i=0;i<arr.length;i++) {
+						if (i%2 == 0) {
+							arr[i] -= 0.005
+							arr[i+1] += 0.003
+							// console.log(i)
+							this.deLight.push({ lng: arr[i],lat: arr[i+1] })
+						}
+					}
+					this.lightArea()
+				}
+			// })
 			
 		},
 		lightArea () {
@@ -1484,10 +1895,10 @@ export default {
 			const bermudaTriangle = new google.maps.Polygon({
 				paths: that.deLight,
 				strokeColor: "#FF0000",
-				strokeOpacity: 0.8,
+				strokeOpacity: 0.4,
 				strokeWeight: 2,
-				fillColor: "#FF0000",
-				fillOpacity: 0.35,
+				fillColor: "#EBF2FF",
+				fillOpacity: 0.45,
 			})
 			this.bermudaTriangle = bermudaTriangle
 			bermudaTriangle.setMap(map);
@@ -1497,9 +1908,6 @@ export default {
 				bermudaTriangle.setMap(null);
 			}
 		},
-
-
-
 		reset () {
 			this.checkedCities21 = []
 			this.checkedCities11 = []
@@ -1584,7 +1992,45 @@ export default {
 			}
 		},
 		addArea (id) {
-			this.ruleForm1.storeList = this.ruleForm1.storeList.concat(this.mapStoreListShow) 
+			let data1 = {
+				parentAddressId: this.ruleForm1.area,
+				shopName: '',
+				addressId: '',
+				typeId: this.ruleForm.type[0].id
+			}
+			getShopList(data1).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+					res.data.data.forEach(child => {
+						this.ruleForm1.storeList.push({
+							position: new google.maps.LatLng(child.latitude,child.longitude),
+							type: "info",
+							msg: child.shopName,
+							area: child.area,
+							address: child.shopAddressName,
+							widthAndHeihth: child.widthAndHeihth,
+							shopId: child.shopId,
+							timeIntervalNames: child.timeIntervalNames,
+							typeNames: child.typeNames,
+							priceContents: child.priceContents,
+							addressParentId: child.addressParentId,
+							addressId: child.addressId,
+							images: child.images
+						})
+					})
+                } else {
+					this.$message({
+						type: 'warning',
+						message: '該地區暫無店鋪'
+					})
+				}
+            }).catch(e => {
+				this.$message({
+					type: 'error',
+					message: '加載失敗'
+				})
+			})
+			// this.ruleForm1.storeList = this.ruleForm1.storeList.concat(this.mapStoreListShow)  
 			var arr = this.ruleForm1.storeList.filter(function(element,index,self){
 				return self.findIndex(el => el.shopId == element.shopId ) === index  //如果是根据name去重就江id改为name
 			})
@@ -1629,11 +2075,18 @@ export default {
 		deleTime (i) {
 			this.timeList.splice(i,1)
 		},
-		deleList (i) {
-			this.addTimeList.splice(i,1)
+		deleList (k) {
+			for (let i=0;i<this.checkedCities1.length;i++) {
+				if (this.checkedCities1[i].packageName == this.addTimeList[k].packageName) {
+					console.log(this.checkedCities1[i])
+					this.checkedCities1.splice(i,1)   //同步勾选繁忙时段列表
+				}
+			}
+			this.addTimeList.splice(k,1)
 		},
 		deleList1 (i) {
 			this.addTimeList1.splice(i,1)
+			this.checkedCities11.splice(i,1)
 		},
 		deleList2 (i) {
 			this.addTimeList2.splice(i,1)
@@ -1645,151 +2098,17 @@ export default {
 			this.ruleForm.inp = ''
 			this.minute = []
 			if (e == 1) {
+				this.listLength = 10
 				this.video = false
 				this.ruleForm.mediaType = 'image'
 				this.ruleForm.cmediaType = this.$t('lang.image')
 				this.ruleForm.cmediaType1 = 1
-			} else if (e == 2) {
+			} else if (e == 3) {
+				this.listLength = 5
 				this.video = true
 				this.ruleForm.mediaType = 'video'
 				this.ruleForm.cmediaType = this.$t('lang.video')
 				this.ruleForm.cmediaType1 = 3
-			}
-		},
-		cahngeFile (e) {
-			var files = e.target.files
-			let that = this
-			if (this.ruleForm.mediaType) {
-				if (this.video) {
-					if (this.ruleForm.mediaType == 'video') {
-						
-						if (e.target.files.length<=5 && this.ruleForm.imageList.length < 5) {
-							for(let ff=0;ff<e.target.files.length;ff++){
-								let file = e.target.files[ff].type.split('/')[0]
-								let fileSize = e.target.files[ff].size
-								if (file == 'video') {
-									if (fileSize <= 100000000) {
-										let fileurl = URL.createObjectURL(e.target.files[ff])
-										let name = files[ff].name
-										let size
-										if (files[ff].size >= 1000000) {
-											var s = files[ff].size/1000000
-											size = s.toFixed(1) + 'M'
-											// size = Math.ceil(files[ff].size/1000000) + 'm'
-										} else {
-											var s = files[ff].size/1000
-											size = s.toFixed(0) + 'KB'
-											// size = Math.ceil(files[ff].size/1000) + 'kb'
-										}
-										
-										
-										let audioElement = new Audio(fileurl);
-										audioElement.addEventListener("loadedmetadata", function (_event) {
-											var time = Math.ceil(audioElement.duration)
-											var sTime = parseInt(time);// 秒
-											var mTime = 0;// 分
-											if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
-												//获取分钟，除以60取整数，得到整数分钟
-												mTime = parseInt(sTime / 60);
-												//获取秒数，秒数取佘，得到整数秒数
-												sTime = parseInt(sTime % 60);
-											}
-											that.ruleForm.imageList.push({ 
-												url: fileurl, 
-												name: name, 
-												size: size, 
-												time: time, 
-												videoTime: mTime + '分' + sTime + '秒'
-											})
-											let index = that.ruleForm.imageList.length -1
-											setTimeout(() => {
-												that.initialize(index)
-											},200)
-											
-											// that.minute.push(Math.ceil(audioElement.duration))
-											that.minute.push(time)
-											that.$forceUpdate()
-										});
-									} else {
-										this.$message({
-											type: 'error',
-											message: '單個視頻最大限制100M !'
-										})
-									}
-								} else {}
-							}
-							setTimeout(() => {
-								let that = this
-								this.$nextTick(() => {
-									let num = 0
-									for (let i=0;i<that.minute.length;i++) {
-										num += that.minute[i]
-									}
-									let time = num
-									var sTime = parseInt(time);// 秒
-									var mTime = 0;// 分
-									if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
-										//获取分钟，除以60取整数，得到整数分钟
-										mTime = parseInt(sTime / 60);
-										//获取秒数，秒数取佘，得到整数秒数
-										sTime = parseInt(sTime % 60);
-									}
-									// console.log(sTime, mTime, mTime + '.' + sTime, Number(mTime + '.' + sTime))
-									time = Math.ceil(Number(mTime + '.' + sTime))
-									that.ruleForm.videoMinute = time
-									that.$forceUpdate()
-								})
-							},100)
-						} else {
-							this.$message({
-								type: 'error',
-								message: '最大限制5個視頻文件!'
-							})
-						}
-					} else {}
-				}
-				if (!this.video) {
-					if (this.ruleForm.mediaType == 'image') {
-						if (e.target.files.length<=10 && this.ruleForm.imageList.length <= 10) {
-							for(var ff=0;ff<e.target.files.length;ff++){
-								let file = e.target.files[ff].type.split('/')[0]
-								let fileSize = e.target.files[ff].size
-								if (file == 'image') {
-									if (fileSize <= 3000000) {
-										let fileurl = URL.createObjectURL(e.target.files[ff])
-										let name = files[ff].name
-										let size
-										if (files[ff].size >= 1000000) {
-											var s = files[ff].size/1000000
-											size = s.toFixed(1) + 'M'
-											// size = Math.ceil(files[ff].size/1000000) + 'm'
-										} else {
-											var s = files[ff].size/1000
-											size = s.toFixed(0) + 'KB'
-											// size = Math.ceil(files[ff].size/1000) + 'kb'
-										}
-										that.ruleForm.imageList.push({ url: fileurl, name: name, size: size })
-									} else {
-										this.$message({
-											type: 'error',
-											message: '單個圖片最大限制3M!'
-										})
-									}
-								} else { }
-							}
-						} else {
-							this.$message({
-								type: 'error',
-								message: '最大限制10個圖片文件!'
-							})
-						}
-					} else { }
-				}
-			} else {
-				this.$message({
-					type: 'warning',
-					message: '請選擇文件類型!'
-				})
 			}
 		},
 		deleImg (i) {
@@ -1817,33 +2136,44 @@ export default {
 				this.ruleForm.imageList.splice(i,1)
 			}
 		},
-		initialize (ff) {
-			var scale = 0.8;
-			var output = this.$refs.output[ff]
-			var video = this.$refs.video[ff]
-			// console.log(ff)
-			video.addEventListener('loadeddata',this.captureImage(video,output,scale));
-		},
-		captureImage (video,output,scale) {
-			setTimeout(() => {
-				var canvas = document.createElement("canvas");
-				canvas.width = video.videoWidth * scale;
-				canvas.height = video.videoHeight * scale;
-				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-				var img = document.createElement("img");
-				img.src = canvas.toDataURL("image/png");
-				
-				// img.width = 400;
-				// img.height = 100;
-				output.appendChild(img);
-			},100)
-		}
     }
 }
 </script>
 
 <style lang='less' scoped>
 @import "@/less/style.less";
+	.content_down {
+		width: calc(100% + 111px);
+		position: relative;
+		margin-top: 35px;
+		margin-left: -105px;
+		@media screen and (max-width: 564px) {
+            margin-left: 5px;
+			margin-top: 0px;
+			width: 98%;
+        }
+	}
+	.content_down1 {
+		width: calc(100% + 111px);
+		// margin-top: 35px;
+		margin-left: -105px;
+		@media screen and (max-width: 564px) {
+            margin-left: 5px;
+			width: 98%;
+        }
+	}
+	.colorMsg {
+		border-radius: 7px;
+		animation: key 2s;
+		// transition: 2s;
+	}
+	@keyframes key {
+		0%{border-color: #67C23A;}
+		30%{border-color: #F2F2F2 ;}
+		60%{border-color: #67C23A;}
+		100%{border-color: #F2F2F2; padding: 2px !important;}
+	}
+
 	.video_outWrap {
 		height: 100%;
 		position: relative;
@@ -1854,6 +2184,21 @@ export default {
 			z-index: 125;
 			transform: translate(-50%, -50%);
 			pointer-events: none;
+		}
+		.cutImage {
+			position: absolute;
+			left: 0;
+			z-index: 124;
+			top: 0;
+			width: 100%;
+			height: 100%;
+		}
+	}
+	.elbtnsure {
+		margin-top: 50px;
+		border: solid 2px #F2F2F2;
+		@media screen and (max-width: 564px) {
+			margin-top: 30px;
 		}
 	}
 	.popover_item {
@@ -1958,7 +2303,7 @@ export default {
         background: white;
     }
 	.width384 {
-		@media screen and (max-width: 384px) {
+		@media screen and (max-width: 348px) {
 			margin-top: 20px;
 		}
 	}
@@ -2013,7 +2358,7 @@ export default {
 		margin-right: 5px;
     }
     .textarea_wrap {
-		width: 100%;
+		// width: 100%;
 		min-height: 250px;
 		background: white;
 		box-shadow: 0 0 8px rgb(212, 212, 212) inset;
@@ -2114,6 +2459,9 @@ export default {
 	}
 	.total {
 		width: 90%;
+		border: 2px;
+		// padding: 2px;
+		border: solid 2px #F2F2F2;
 		font-size: 14px;
 		@media screen and (max-width: 774px) {
 			font-size: 12px;

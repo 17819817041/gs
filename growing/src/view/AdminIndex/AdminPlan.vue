@@ -1,7 +1,7 @@
 <template>
     <div class="AdminPlan" v-loading='loading'>
         <div class="AdminPlan_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="back"><span>管理廣告計劃</span>
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="" @click="back"><span>管理廣告計劃</span>
         </div>
         <div class="AdvertiserManagement_content mg bar">
             <div class="AdvertiserManagement_content_title sb al block">

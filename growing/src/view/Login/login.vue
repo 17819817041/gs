@@ -77,13 +77,19 @@ export default {
         return {
             active: false,
             lists: [],
-            userName: '雾里看花',
-            password: 'jOdkihK',
+            // userName: '雾里看花',
+            // password: 'jOdkihK',
             
             // userName: '666666',
             // password: '123',
 
-            // userName: '123',
+            // userName: 'admin',
+            // password: '123',
+
+            userName: 'AD',
+            password: '123',
+
+            // userName: 'store',
             // password: '123',
 
             // userName: '',
@@ -126,10 +132,6 @@ export default {
                             localStorage.setItem('plat','廣告後台')
                             this.$router.push('/AdminIndex')
                             localStorage.setItem('platform',3)
-                        } else {
-                            localStorage.setItem('plat','廣告商')
-                            this.$router.push('/Index')
-                            localStorage.setItem('platform',1)
                         }
                     } else {
                         this.$message({
@@ -194,6 +196,7 @@ export default {
         position: relative;
         .lang_item {
             padding: 5px;
+            white-space: nowrap;
         }
     }
     .changeLang {

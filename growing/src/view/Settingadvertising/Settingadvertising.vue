@@ -1,7 +1,7 @@
 <template>
     <div class="Settingadvertising" v-loading='loading'>
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">{{$t("lang.Foreign")}}
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" @click="back" alt="">{{$t("lang.Foreign")}}
         </div>
         <div class="Settingadvertising_content_wrap bar">
             <div class="Settingadvertising_content mg">

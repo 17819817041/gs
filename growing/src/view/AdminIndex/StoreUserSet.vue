@@ -2,7 +2,7 @@
     <div class="PlatSetting" v-loading='loading'>
         <div class="back al mg">
             <div class="ju al block">
-                <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">
+                <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" @click="back" alt="">
                 <span class="size20">店鋪賬戶設定</span>
             </div>
             <span class="size12">(設備賬戶用於登錄平台投影設備)</span>
@@ -90,7 +90,12 @@
                             <div class="divider_text">{{shopName}}</div>
                         </div>
                         <div class="flex">
-                            <div class="delUSer cursor">註銷賬戶</div>
+                            <el-popconfirm
+                                :title="$t('lang.setting_del') + '？'"
+                                @confirm='admincancelAccount'
+                                >
+                                <div class="delUSer cursor" slot="reference" @click.stop="">註銷賬戶</div>
+                            </el-popconfirm>
                             <div class="arrow_m al" @click="drawer2 = !drawer2"><img :class="[{ rotate: drawer2 }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
@@ -125,7 +130,7 @@
 
 <script>
 import Clipboard from 'clipboard'
-import { getShopDeviceList } from '@/axios/request.js'
+import { getShopDeviceList, admincancelAccount } from '@/axios/request.js'
 export default {
     data () {
         return {
@@ -177,6 +182,7 @@ export default {
 			}
 			getShopDeviceList(data).then(res => {
                 this.loading = false
+                console.log(res)
                 if (res.data.rtnCode == 200) {
                     this.shopName = res.data.data.shopName
                     res.data.data.deviceList.forEach(item => {
@@ -184,7 +190,8 @@ export default {
                             name: '設備賬戶',
                             id: item.userName,
                             key: item.pwd,
-                            active: true
+                            active: true,
+                            shopId: res.data.data.shopId
                         })
                     })
                 } else {
@@ -224,6 +231,33 @@ export default {
                 })
                 // 释放内存
                 clipboard.destroy()
+            })
+        },
+        admincancelAccount (id) {
+            let data = {
+                shopId: this.$route.query.id
+            }
+            this.loading = true
+            admincancelAccount(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: '註銷成功'
+                    })
+                    this.back()
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '註銷失敗'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '註銷失敗'
+                })
             })
         }
     },

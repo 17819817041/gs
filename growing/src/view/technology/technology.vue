@@ -1,7 +1,7 @@
 <template>
     <div class="AdvertisingAddPlus" v-loading='loading'>
 		<div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">套餐預覽
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="" @click="goBack">套餐預覽
         </div>
 		<div class="noBar" style="height: calc(100% - 35px);overflow: auto;margin-top: 15px;">
 			<div :class="['content mg bar',{ heigh: !submit }]">
@@ -74,28 +74,10 @@
 									<div class="time_duan">
 										<div class="clear" v-for="(item,i) in preview.packageTimeInterVos" :key="i">
 											<div class="float float320" style="width: 70px;min-width: 70px;">{{item.name}}</div>
-											<!-- <div class="float float320"><el-checkbox v-model="checked2" disabled>10:00~11:00(15分鐘)</el-checkbox></div> -->
 											<div class="float" v-for="(child,i) in item.timeIntervalDetailsName" :key="i">
 												<el-checkbox v-model="checked2" disabled>{{child}}</el-checkbox>
 											</div>
 										</div>
-
-										<!-- <div class="clear">
-											<div class="float" style="width: 70px;min-width: 70px;">繁忙時段</div>
-											<div class="float float320"><el-checkbox v-model="checked2" disabled>10:00~11:00(15分鐘)</el-checkbox></div>
-											<div class="float"><el-checkbox v-model="checked2" disabled>11:00~12:00(15分鐘)</el-checkbox></div>
-										</div>
-										<div class="clear" style="margin: 15px 0;">
-											<div class="float" style="width: 70px;min-width: 70px;">超繁忙時段</div>
-											<div class="float float320"><el-checkbox v-model="checked2" disabled>12:00~13:00(20分鐘)</el-checkbox></div>
-											<div class="float"><el-checkbox v-model="checked2" disabled>18:00~19:00(20分鐘)</el-checkbox></div>
-										</div>
-										<div class="clear">
-											<div class="float" style="width: 70px;min-width: 70px;">非繁忙時段</div>
-											<div class="float float320"><el-checkbox v-model="checked2" disabled>19:00~20:00(10分鐘)</el-checkbox></div>
-											<div class="float"><el-checkbox v-model="checked2" disabled>20:00~21:00(10分鐘)</el-checkbox></div>
-											<div class="float"><el-checkbox v-model="checked2" disabled>21:00~22:00(10分鐘)</el-checkbox></div>
-										</div> -->
 									</div>
 								</el-form-item>
 
@@ -382,26 +364,6 @@ export default {
 		closeViewer1() {
           this.showViewer1 = false
         },
-		choosetaocan (i,val,minute) {
-			this.ruleForm.inp = minute
-			this.taocanDetail = true
-			this.typeList = []
-			this.choose = i
-			this.allprice = val
-			if (i == 1) {
-				this.typeList.push('旺角街道高流量商鋪廣告套餐($10000HKD/day)/旺角區域店鋪/廣告100分鐘')
-				let arr = new Set(this.typeList)
-				this.typeList = Array.from(arr)
-			} else if (i == 2) {
-				this.typeList.push('中環街道高流量商鋪廣告套餐($10000HKD/day)/旺角區域店鋪/廣告100分鐘')
-				let arr = new Set(this.typeList)
-				this.typeList = Array.from(arr)
-			} else if (i == 3) {
-				this.typeList.push('黃大仙街道高流量商鋪廣告套餐($10000HKD/day)/旺角區域店鋪/廣告100分鐘')
-				let arr = new Set(this.typeList)
-				this.typeList = Array.from(arr)
-			}
-		},
 		storehit (i) {
 			let that = this
 			let map = this.map

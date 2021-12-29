@@ -167,7 +167,7 @@
 <template>
     <div class="AuditList" v-loading='loading'>
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">審核申請列表
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" @click="back" alt="">審核申請列表
         </div>
         <div class="AuditList_content mg bar">
             <div class="AuditList_content_title al">
@@ -200,6 +200,7 @@
                                 <el-input
                                 class="width100"
                                 v-model="search"
+                                @input="storeSearchByName"
                                 size="mini"
                                 placeholder="输入关键字搜索"/>
                             </div>
@@ -213,7 +214,7 @@
                         <template slot="header">
                             店鋪類型
                             <div class="searchInp mg">
-                                <el-select class="width100" style="height: 28px;" v-model="type" placeholder="請選擇類型">
+                                <el-select class="width100" style="height: 28px;" v-model="type" @change="shopExamine" placeholder="請選擇類型">
 									<el-option v-for="(item,i) in getTypeList" :key="i"
                                         :label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
                                         item.find( res => res.language == "zh-TW").guangGaoTypeName: 
@@ -232,7 +233,7 @@
                         <template slot="header">
                             店鋪區域
                             <div class="searchInp mg">
-                                <el-select class="width100" style="height: 28px;" v-model="area" placeholder="請選擇類型">
+                                <el-select class="width100" style="height: 28px;" v-model="area" @change="shopExamine" placeholder="請選擇類型">
 									<el-option v-for="(item,i) in addressList" :key="i"
                                         :label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
                                         item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
@@ -266,7 +267,9 @@
                                 <!-- <div class="th_color tc" v-show="scope.row.d_time.busy">{{scope.row.d_time.busy}}</div>
                                 <div class="th_color tc" v-show="scope.row.d_time.unbusy">{{scope.row.d_time.unbusy}}</div>
                                 <div class="th_color tc" v-show="scope.row.d_time.busy == '' && scope.row.d_time.unbusy == '' ">無</div> -->
-                                <div class="th_color tc" v-show="scope.row.d_time">{{scope.row.d_time}}</div>
+                                <div class="th_color tc" v-if="scope.row.d_time.length != 0">
+                                    <div v-for=" (item,i) in scope.row.d_time" :key='i'>{{item}}</div>
+                                </div>
                             </div>
                         </template>
                     </el-table-column>
@@ -275,8 +278,8 @@
                         label="店鋪詳細計劃"
                         min-width="105"
                         >
-                        <template>
-                            <div class="ju al"><img class="planEdit cursor" @click="Ddetail" src="@/assets/img/planEdit.png" alt=""> </div>
+                        <template slot-scope="scope">
+                            <div class="ju al"><img class="planEdit cursor" @click="Ddetail(scope.row.id)" src="@/assets/img/planEdit.png" alt=""> </div>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -353,6 +356,7 @@
                                 <el-input
                                 class="width100"
                                 v-model="search1"
+                                @input="searchByName"
                                 size="mini"
                                 placeholder="输入关键字搜索"/>
                             </div>
@@ -366,7 +370,7 @@
                         <template slot="header">
                             廣告投放類型
                             <div class="searchInp mg">
-                                <el-select class="width100" style="height: 28px;" v-model="d_type" placeholder="請選擇類型">
+                                <el-select class="width100" style="height: 28px;" v-model="d_type" @change="examine" placeholder="請選擇類型">
 									<el-option v-for="(item,i) in getTypeList" :key="i"
                                         :label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
                                         item.find( res => res.language == "zh-TW").guangGaoTypeName: 
@@ -385,7 +389,7 @@
                         <template slot="header">
                             廣告投放區域
                             <div class="searchInp mg">
-                                <el-select class="width100" style="height: 28px;" v-model="d_area" placeholder="請選擇類型">
+                                <el-select class="width100" style="height: 28px;" v-model="d_area" @change="examine" placeholder="請選擇類型">
 									<el-option v-for="(item,i) in addressList" :key="i"
                                         :label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
                                         item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
@@ -397,7 +401,7 @@
                         </template>
                         <template slot-scope="scope"> 
                             <div v-if="scope.row.area.length == 0">隨機投放</div>
-                            <div v-else v-for="(item,i) in scope.row.area" :key="i">item</div>
+                            <div v-else v-for="(item,i) in scope.row.area" :key="i">{{item}}</div>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -439,8 +443,8 @@
                         label="廣告詳細計劃"
                         min-width="105"
                         >
-                        <template>
-                            <div class="ju al"><img class="planEdit cursor" @click="Gdetail" 
+                        <template slot-scope="scope">
+                            <div class="ju al"><img class="planEdit cursor" @click="Gdetail(scope.row.id)" 
                             src="@/assets/img/planEdit.png" alt=""> </div>
                         </template>
                     </el-table-column>
@@ -552,6 +556,7 @@ import { shopExamine, examine, examineAdopt, examineError, shopExamineAdopt, sho
 export default {
     data () {
         return {
+            timer: null,
             tableHeight:0,
             dialogVisible: false,
             dialogVisible1: false,
@@ -641,7 +646,10 @@ export default {
             this.loading = true
             let data = {
                 pageNum: this.pageNum,
-                pageSize: this.pageSize
+                pageSize: this.pageSize,
+                addressParent: this.area,
+                shopName:this.search,
+                shopTypeId: this.type
             }
             shopExamine(data).then(res => {
                 this.loading = false
@@ -662,7 +670,8 @@ export default {
                             d_detail: '', 
                             d_state: item.examineState, 
                             d_auditTime: item.createTime.split(' ')[0], 
-                            d_storePlanDetail: ''
+                            d_storePlanDetail: '',
+                            id: item.shopId
                         })
                     })
                 } else {
@@ -685,7 +694,11 @@ export default {
             this.loading = true
             let data = {
                 pageNum: this.pageNum1,
-                pageSize: this.pageSize1
+                pageSize: this.pageSize1,
+                addressId: this.d_area,
+                date: '',
+                name: this.search1,
+                typeId: this.d_type
             }
             examine(data).then(res => {
                 console.log(res)
@@ -710,7 +723,7 @@ export default {
                 } else {
                     this.$message({
                         type: 'warning',
-                        messsage: res.data.msg
+                        message: res.data.msg
                     })
                 }
             }).catch(e => {
@@ -720,7 +733,18 @@ export default {
                 })
             })
         },
-
+        searchByName () {
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.examine()
+            },500)
+        },
+        storeSearchByName () {
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                this.shopExamine()
+            },500)
+        },
 
         adExamine (id,adId) {
             this.dialogVisible = true
@@ -876,12 +900,21 @@ export default {
             }
             return ''
         },
-        Gdetail () {
-            
-            this.$router.push('/Gdetail')
+        Gdetail (id) {
+            this.$router.push({
+                name: 'Gdetail',
+                query: {
+                    id: id
+                }
+            })
         },
-        Ddetail () {
-            this.$router.push('/Ddetail')
+        Ddetail (id) {
+            this.$router.push({
+                name: 'Ddetail',
+                query: {
+                    id: id
+                }
+            })
         },
         switchB () {
             this.boo = !this.boo

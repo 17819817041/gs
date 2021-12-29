@@ -24,6 +24,9 @@ export const lang = {
 	editSuccess: '操作成功',
 	editError: '操作失敗',
 	getFail: '獲取信息失敗',
+	buTime: '繁忙時段',
+	ubbuTime: '非繁忙時段',
+	sbuTime: '超繁忙時段',
 
 
 	addbtn: '添加',
@@ -34,6 +37,25 @@ export const lang = {
 	addressLoadFail: '地址加載失敗',
 	typeLoadFail: '類型加載失敗',
 
+
+	//个人中心
+	pCenter: '個人中心',
+	headImg: '選擇頭像',
+	myEmail: '電郵地址',
+	working: '您正使用電子郵件驗證身份',
+	ver: '驗證碼',
+	e_email: '電郵',
+	getVer: '點擊獲取驗證碼',
+	newEmail: '請輸入您修改的電郵地址',
+	checkEmail: '修改電郵',
+	myPhone: '聯繫電話',
+	newPhone: '請輸入您修改的聯繫電話',
+	checkPhone: '修改聯繫電話',
+	password: '密碼',
+	oldPwd: '請輸入原密碼',
+	newPwd: '請輸入您修改的密碼',
+	checkPwd: '修改密碼',
+	createTime: '賬戶啟用時間',
 
 
 	//登錄
@@ -103,6 +125,7 @@ export const lang = {
 	total: '計劃投放總價',
 	phprice: '繁忙時段價格',
 	unphprice: '非繁忙時段價格',
+	sphprice: '超繁忙時段價格',
 	ppotd: '套餐當日價格',
 	days: '廣告投放天數',
 	base: '基礎價格',
@@ -214,5 +237,37 @@ export const lang = {
 
 	//setting
 	setting_del: '確定刪除嗎',
+
+
+	//combo
+	comboPlan: '廣告計劃',
+	basic: '基礎選項',
+	custom: '自定媒體廣告',
+	fee: '費用規矩透明',
+	serviceFile: '專業服務文件',
+	startPlan: '開始計劃',
+	moreShop: '多店鋪指定投放',
+	Precise: '精準區域/街道投放',
+	specify: '指定準確時間投放',
+	effect: '廣告同步播放效應',
+	bprice: '價格更佳優惠',
+	compare: '比較Basic，Pro，Plus廣告計劃',
+	Features: '特點',
+	basic_plan: 'Basic計劃',
+	pro_plan: 'Pro計劃',
+	plus_plan: 'Plus計劃',
+	adBasic: '廣告基礎選項',
+	moredetail: '更加細緻廣告選項',
+	Searchable: '可搜索目標位置投放',
+	contact: '聯絡我們獲取專業技術',
+	faq: '定價和許可常見問題解答',
+	con1: '本廣告計劃投放由Compoundeyes平台所以，並且提供計數支持服務許可。',
+	con2: '在您所選擇的廣告計劃中，在選擇廣告計劃的選擇之後，將會有各項費用總覽，您也可以使用我們的費用計算器進行查看。如果您有任何疑問，請直接聯繫我們！我們將不留餘力問你解答。',
+	con3: '當然可以，如果您對於Compoundeyes廣告平台有任何問題，可以直接聯繫我們！',
+	tit1: '關於廣告計劃投放？',
+	tit2: '關於廣告計劃費用？',
+	tit3: '我可以在購買廣告計劃之前提出問題嗎？',
+	
+
 
 }

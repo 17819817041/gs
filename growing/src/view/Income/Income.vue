@@ -1,7 +1,7 @@
 <template>
     <div class="Income">  
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告收入統計
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告收入統計
         </div>
         <div class="noBar" style="height: calc(100% - 35px);overflow: auto;margin-top: 15px;">
             <div class="Income_content mg noBar">
@@ -254,7 +254,7 @@
 </template>
 
 <script>
-import { getShopIncomeStatistics } from "@/axios/request.js"
+import { getShopIncomeStatistics, getShopIncomeAnalysis } from "@/axios/request.js"
 import * as echarts from 'echarts';
 export default {
     data () {
@@ -373,7 +373,8 @@ export default {
 			this.timeList.push(unh1 + ':00~' + uns1 + ':00')
 		}
 
-        // this.getShopIncomeStatistics()
+        this.getShopIncomeStatistics()
+        this.getShopIncomeAnalysis()
     },
     mounted () {
         let that = this
@@ -428,14 +429,28 @@ export default {
         },
         getShopIncomeStatistics () {
             let data = {
-                date: '',
+                date: '2021-12-29',
                 pageNum: this.goToPage,
                 pageSize: this.pageSize,
-                shopId: 1,
-                userId: localStorage.getItem('compoundeyseUserId')
+                shopId: this.$route.query.id,
+                userId: Number(localStorage.getItem('compoundeyesUserId'))
             }
             getShopIncomeStatistics(data).then(res => {
                 console.log(res)
+                
+            })
+        },
+        getShopIncomeAnalysis () {
+            let data = {
+                shopId: Number(this.$route.query.id),
+                userId: Number(localStorage.getItem('compoundeyesUserId')),
+                type: 1
+            }
+            getShopIncomeAnalysis(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    
+                }
             })
         }
     },

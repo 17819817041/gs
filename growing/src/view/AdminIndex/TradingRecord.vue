@@ -198,9 +198,9 @@
     }
 </style>
 <template>
-    <div class="TradingRecord">
+    <div class="TradingRecord" v-loading='loading'>
         <div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">收入和支出
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="" @click="goBack">收入和支出
         </div>
         <div class="TradingRecord_content bar mg">
             <div class="divider_wrap">
@@ -216,18 +216,18 @@
                             <div class="trading_item_title">本月收入 ($HKD)</div>
                             <div class="trading_item_detail"><img src="@/assets/img/point.png" alt=""></div>
                         </div>
-                        <div class="total_money bold">9317.00</div>
-                        <div class="bili al">上月同比 12% <img src="@/assets/img/arrow_drop_down.png" alt=""></div>
-                        <div class="lastMonth">上月收入 $6000HKD</div>
+                        <div class="total_money bold">{{thisMonthIn.thisMonth}}</div>
+                        <div class="bili al">上月同比 {{thisMonthIn.lastMonth}}% <img src="@/assets/img/arrow_drop_down.png" alt=""></div>
+                        <div class="lastMonth">上月收入 ${{thisMonthIn.increase}}HKD</div>
                     </div>
                     <div class="trading_item float center">
                         <div class="sb al">
                             <div class="trading_item_title">收入總數 ($HKD)</div>
                             <div class="trading_item_detail"><img src="@/assets/img/point.png" alt=""></div>
                         </div>
-                        <div class="total_money bold">46521.00</div>
-                        <div class="bili al">上月同比 18% <img src="@/assets/img/arrow_drop_down.png" alt=""></div>
-                        <div class="lastMonth">昨日新增 $6000HKD</div>
+                        <div class="total_money bold">{{allin.totalIncome}}</div>
+                        <div class="bili al">上月同比 {{allin.increase}}% <img src="@/assets/img/arrow_drop_down.png" alt=""></div>
+                        <div class="lastMonth">昨日新增 ${{allin.yesterdayIncome}}HKD</div>
                     </div>
                     <div class="trading_item float center1">
                         <div class="sb al">
@@ -243,9 +243,9 @@
                             <div class="trading_item_title">支出總數 ($HKD)</div>
                             <div class="trading_item_detail"><img src="@/assets/img/point.png" alt=""></div>
                         </div>
-                        <div class="total_money bold">5317.00</div>
-                        <div class="bili al">上月同比 10% <img src="@/assets/img/arrow_drop_down.png" alt=""></div>
-                        <div class="lastMonth">昨日新增 $6000HKD</div>
+                        <div class="total_money bold">{{allout.totalIncome}}</div>
+                        <div class="bili al">上月同比 {{allout.increase}}% <img src="@/assets/img/arrow_drop_down.png" alt=""></div>
+                        <div class="lastMonth">昨日新增 ${{allout.yesterdayIncome}}HKD</div>
                     </div>
                 </div>
             </div>
@@ -256,29 +256,29 @@
                         <div class="flex msg_detail_wrap">
                             <div class="msg_detail">
                                 <div class="msg_detail_title">昨日收入</div>
-                                <div class="msg_detail_money">2000</div>
+                                <div class="msg_detail_money">{{twoDays.yesterdayIncome}}</div>
                             </div>
                             <div class="msg_detail">
                                 <div class="msg_detail_title">昨日支出</div>
-                                <div class="msg_detail_money">1000</div>
+                                <div class="msg_detail_money">{{twoDays.yesterdayExpenditure}}</div>
                             </div>
                             <div class="msg_detail">
                                 <div class="msg_detail_title">昨日淨收入</div>
-                                <div class="msg_detail_money1">1000</div>
+                                <div class="msg_detail_money1">{{twoDays.yesterdayNetIncome}}</div>
                             </div>
                         </div>
                         <div class="flex msg_detail_wrap">
                             <div class="msg_detail">
                                 <div class="msg_detail_title">今日收入</div>
-                                <div class="msg_detail_money">2000</div>
+                                <div class="msg_detail_money">{{twoDays.todayIncome}}</div>
                             </div>
                             <div class="msg_detail">
                                 <div class="msg_detail_title">今日支出</div>
-                                <div class="msg_detail_money">1000</div>
+                                <div class="msg_detail_money">{{twoDays.todayExpenditure}}</div>
                             </div>
                             <div class="msg_detail">
                                 <div class="msg_detail_title">今日淨收入</div>
-                                <div class="msg_detail_money1">1000</div>
+                                <div class="msg_detail_money1">{{twoDays.todayNetIncome}}</div>
                             </div>
                         </div>
                     </div>
@@ -306,9 +306,12 @@
 
 <script>
 import * as echarts from 'echarts';
+import { getIncomeThisMonth, getTotalExpenditure, getTotalIncome, getStatisticsInTheLast7Days, 
+    getIncomeStatisticsInRecentYears, getIncomeAndExpenditureInTheLast2Days } from "@/axios/request.js"
 export default {
     data () {
         return {
+            loading: false,
             option: {
                 xAxis: {
                     type: 'category',
@@ -320,9 +323,9 @@ export default {
                 },
                 series: [
                     {
-                    data: [820, 932, 901, 934, 1290, 1330, 1320],
-                    type: 'line',
-                    areaStyle: {}
+                        data: [820, 932, 901, 934, 1290, 1330, 1320],
+                        type: 'line',
+                        areaStyle: {}
                     }
                 ]
             },
@@ -331,11 +334,11 @@ export default {
                 tooltip: {},
                 dataset: {
                     source: [
-                    ['product', '2016', '2017'],
-                    ['Matcha Latte', 43.3, 93.7],
-                    ['Milk Tea', 83.1, 55.1],
-                    ['Cheese Cocoa', 86.4, 82.5],
-                    ['Walnut Brownie', 72.4, 39.1]
+                        ['product', '2016', '2017'],
+                        ['Matcha Latte', 43.3, 93.7],
+                        ['Milk Tea', 83.1, 55.1],
+                        ['Cheese Cocoa', 86.4, 82.5],
+                        ['Walnut Brownie', 72.4, 39.1]
                     ]
                 },
                 xAxis: { type: 'category' },
@@ -344,24 +347,166 @@ export default {
                 // to a column of dataset.source by default.
                 series: [{ type: 'bar' }, { type: 'bar' }]
             },
+            allout: {},
+            allin: {},
+            thisMonthIn: {},
+            twoDays: {}
         }
     },
     mounted () {
-        var myChart = echarts.init(document.getElementById('main'));
-        myChart.setOption(this.option);
-
-        var myChart1 = echarts.init(document.getElementById('main1'));
-        myChart1.setOption(this.option1);
-
-        window.addEventListener("resize",function(){
-            myChart.resize();
-            myChart1.resize();
-        });
+        
+    },
+    created () {
+        this.getIncomeThisMonth()
+        this.getTotalIncome()
+        this.getTotalExpenditure()
+        this.getIncomeAndExpenditureInTheLast2Days()
+        this.getStatisticsInTheLast7Days()
+        this.getIncomeStatisticsInRecentYears()
     },
     methods: {
         goBack () {
 			this.$router.back()
 		},
+        getIncomeThisMonth () {      //本月收入 ($HKD)
+            this.loading = true
+            getIncomeThisMonth().then(res => {
+                this.loading = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.thisMonthIn = res.data.data
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '本月收入加載失敗'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '本月收入加載失敗'
+                })
+            })
+        },
+        getTotalExpenditure () {       //支出總數 ($HKD)
+            this.loading = true
+            getTotalExpenditure().then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.allout = res.data.data
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '支出總數加載失敗'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '支出總數加載失敗'
+                })
+            })
+        },
+        getTotalIncome () { //收入總數 ($HKD)
+            this.loading = true
+            getTotalIncome().then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.allin = res.data.data
+                } else {
+                    this.$message({
+                        type:'error',
+                        message: '收入總數加載失敗'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type:'error',
+                    message: '收入總數加載失敗'
+                })
+            })
+        }, 
+        getStatisticsInTheLast7Days () {      //近7天收入支出統計
+            this.loading = true
+            getStatisticsInTheLast7Days().then(res => {
+                this.loading = false
+                // console.log(Object.values(res.data.data))
+                if (res.data.rtnCode == 200) {
+                    let arr = []
+                    for (let key in Object.values(res.data.data)[0]) {
+                        arr.push([key, Object.values(res.data.data)[0][key], Object.values(res.data.data)[1][key]])
+                    }
+                    arr.unshift(['product', '收入', '支出'])
+
+                    this.option1.dataset.source = arr
+                    var myChart1 = echarts.init(document.getElementById('main1'));
+                    myChart1.setOption(this.option1);
+
+                    window.addEventListener("resize",function(){
+                        myChart1.resize();
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '近7天收入支出統計加載失敗'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '近7天收入支出統計加載失敗'
+                })
+            })
+        },
+        getIncomeStatisticsInRecentYears () {   //近年收入金額統計
+            this.loading = true
+            getIncomeStatisticsInRecentYears().then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    let arr = []
+                    let arr1 = []
+                    for (let key in res.data.data) {
+                        arr.push(key)
+                        arr1.push(res.data.data[key])
+                    }
+                    this.option.xAxis.data = arr
+                    this.option.series[0].data = arr
+
+                    var myChart = echarts.init(document.getElementById('main'));
+                    myChart.setOption(this.option);
+                    window.addEventListener("resize",function(){
+                        myChart.resize();
+                    });
+                }
+            }).catch(e => {
+                this.loading = false
+            })
+        },
+        getIncomeAndExpenditureInTheLast2Days () {   //近2日收入支出分析
+            getIncomeAndExpenditureInTheLast2Days().then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.twoDays = res.data.data
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '進2日收入支出分析加載失敗'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '進2日收入支出分析加載失敗'
+                })
+            })
+        }
     }
 }
 </script>

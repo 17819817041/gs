@@ -1,5 +1,32 @@
 import request from "./axios"
 
+export function getuploadtoken(data) {   //oss tokrn
+    return request({
+        url: '/api/oss/token',
+        method: 'GET'
+    })
+} 
+
+export function gaode (data) {    //地理解析
+    return request (
+        {
+            url: "https://restapi.amap.com/v3/geocode/regeo",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
+export function gerArea (data) {    //获取边界 腾讯
+    return request (
+        {
+            url: "https://apis.map.qq.com/ws/district/v1/getchildren",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
 export function signUp (data) {    //注册
     return request (
         {
@@ -90,7 +117,6 @@ export function updateHead (data) {    //修改头像
     )
 } 
 
-
 export function setLang (data) {    //设置语言
     return request (
         {
@@ -127,10 +153,6 @@ export function getTimeIntervalList (data) {    //获取时段列表
         }
     )
 } 
-
-
-
-
 
 
 
@@ -183,6 +205,16 @@ export function getShopIncomeStatistics (data) {    //查询店鋪廣告收入�
     return request (
         {
             url: "/api/userShop/getShopIncomeStatistics",
+            method: "PUT",
+            params: data
+        }
+    )
+}
+
+export function getShopIncomeAnalysis (data) {    //查询店鋪廣告收入分析
+    return request (
+        {
+            url: "/api/userShop/getShopIncomeAnalysis",
             method: "PUT",
             params: data
         }
@@ -252,6 +284,26 @@ export function updateShopGuangGaoType (data) {    //修改店铺外接收广告
     )
 }
 
+export function addShopUser (data) {    //新增账户
+    return request (
+        {
+            url: "/api/shopDetails/addShopUser",
+            method: "POST",
+            params: data
+        }
+    )
+}
+
+export function cancelAccount (data) {    //注销店铺
+    return request (
+        {
+            url: "/api/shopDetails/cancelAccount",
+            method: "DELETE",
+            params: data
+        }
+    )
+}
+
 
 
 
@@ -298,7 +350,40 @@ export function adTypeAdd (data) {    //添加广告类型
     return request (
         {
             url: "/api/admin/guangGaoType/add",
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        }
+    )
+} 
+
+export function adTypeDel (data) {    //删除广告类型
+    return request (
+        {
+            url: "/api/admin/guangGaoType/del",
             method: "DELETE",
+            params: data
+        }
+    )
+} 
+
+export function addTextGuangGaoService (data) {    //添加文字广告
+    return request (
+        {
+            url: "/api/manager/TextGuangGaoService/add",
+            method: "POST",
+            params: data
+        }
+    )
+} 
+
+export function delTextGuangGaoService (data) {    //删除文字广告
+    return request (
+        {
+            url: "/api/manager/TextGuangGaoService/del",
+            method: "PUT",
             params: data
         }
     )
@@ -317,7 +402,7 @@ export function shopExamine (data) {    //获取店铺审核列表
 export function examine (data) {    //获取广告商审核列表 
     return request (
         {
-            url: "/api/manager/examine/getExamineList",
+            url: "/api/manager/examine/getExamineListByDate",
             method: "PUT",
             params: data
         }
@@ -401,6 +486,24 @@ export function getStatisticsForThepastSixMonths (data) {    //近半年廣告�
     )
 } 
 
+export function getIncomeStatisticsInRecentYears (data) {    //近年收入金額統計
+    return request (
+        {
+            url: "/api/manager/IncomeAndExpenditure/getIncomeStatisticsInRecentYears",
+            method: "GET"
+        }
+    )
+} 
+
+export function getIncomeAndExpenditureInTheLast2Days (data) {    //近2日收入支出分析
+    return request (
+        {
+            url: "/api/manager/IncomeAndExpenditure/getIncomeAndExpenditureInTheLast2Days",
+            method: "GET"
+        }
+    )
+} 
+
 export function getTimeActiveStatus (data) {    //廣告時段活動狀態
     return request (
         {
@@ -440,7 +543,7 @@ export function getShopListpage (data) {    //获取店铺列表 带分页
     )
 } 
 
-export function AdGetShopDetailsById (data) {    //查询店鋪詳情
+export function AdGetShopDetailsById (data) {    //預覽店鋪
     return request (
         {
             url: "/api/shopManager/getShopDetail",
@@ -581,8 +684,72 @@ export function previewAD (data) {    //添加套餐包
             params: data
         }
     )
-} 
+}
 
+export function getIncomeThisMonth (data) {    //本月收入 ($HKD)
+    return request (
+        {
+            url: "/api/manager/IncomeAndExpenditure/getIncomeThisMonth",
+            method: "GET"
+        }
+    )
+}
+
+export function getTotalIncome (data) {    //收入總數 ($HKD)
+    return request (
+        {
+            url: "/api/manager/IncomeAndExpenditure/getTotalIncome",
+            method: "GET"
+        }
+    )
+}
+
+export function getTotalExpenditure (data) {    //支出總數 ($HKD)
+    return request (
+        {
+            url: "/api/manager/IncomeAndExpenditure/getTotalExpenditure",
+            method: "GET"
+        }
+    )
+}
+
+export function getStatisticsInTheLast7Days (data) {    //近7天收入支出統計
+    return request (
+        {
+            url: "/api/manager/IncomeAndExpenditure/getStatisticsInTheLast7Days",
+            method: "GET"
+        }
+    )
+}
+
+export function admincancelAccount (data) {    //近7天收入支出統計
+    return request (
+        {
+            url: "/api/shopManager/cancelAccount",
+            method: "DELETE",
+            params: data
+        }
+    )
+}
+
+export function getTextGuangGaoList (data) {    //获取文字广告列表
+    return request (
+        {
+            url: "/api/manager/TextGuangGaoService/getTextGuangGaoList",
+            method: "GET"
+        }
+    )
+}
+
+export function getShopDetails (data) {    //查询店鋪详情
+    return request (
+        {
+            url: "/api/shopManager/getShopDetails",
+            method: "GET",
+            params: data
+        }
+    )
+}
 
 
 
@@ -628,7 +795,20 @@ export function getRemainderDay (data) {    //获取每个区域的所有广告
     )
 } 
 
-export function genOrder (data) {    //生成订单/ 添加廣告
+export function genOrder (data) {    //匹配生产价钱
+    return request (
+        {
+            url: "/api/userOrder/check",
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        }
+    )
+}
+
+export function submit (data) {    //生成订单/ 添加廣告
     return request (
         {
             url: "/api/userOrder/genOrder",
@@ -641,14 +821,45 @@ export function genOrder (data) {    //生成订单/ 添加廣告
     )
 }
 
+export function genPackageOrder (data) {    //选择套餐类型投放的广告
+    return request (
+        {
+            url: "/api/userOrder/genPackageOrder",
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        }
+    )
+}
 
+export function getListByTypeId (data) {    //根据类型获取套餐列表
+    return request (
+        {
+            url: "/api/userOrder/getListByTypeId",
+            method: "GET",
+            params: data
+        }
+    )
+}
 
+export function getbyId (data) {    //查询套餐
+    return request (
+        {
+            url: "/api/packageGuangGao/getbyId",
+            method: "GET",
+            params: data
+        }
+    )
+}
 
-// export function AK (data) {   
-//     return request (
-//         {
-//             url: "http://api.map.baidu.com/api_region_search/v1/?keyword=香港&sub_admin=0&ak=6GAWAG891l60tKygT8GcbFB45PGbUrZC",
-//             method: "GET",
-//         }
-//     )
-// }
+export function guangGaoById (data) {    //查询套餐
+    return request (
+        {
+            url: "/api/userGuangGao/guangGaoById",
+            method: "GET",
+            params: data
+        }
+    )
+}

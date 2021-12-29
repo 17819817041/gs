@@ -125,7 +125,7 @@
                             <div class="addUser ju al" style="opacity: 0" v-if="item.key == 'name'">新增賬戶</div>
                             <div v-else></div>
                             <div>{{item.title}}</div>
-                            <div class="addUser cursor ju al" v-if="item.key == 'name'">新增賬戶</div>
+                            <div class="addUser cursor ju al" v-if="item.key == 'name'" @click="addShopUser(arr)">新增賬戶</div>
                             <div v-else></div>
                         </div>
                     </div>
@@ -168,6 +168,7 @@
 </template>
 
 <script>
+import { addShopUser } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -216,6 +217,37 @@ export default {
         }
     },
     methods: {
+        addShopUser (val) {    //新增賬戶
+            console.log(val)
+            let data = {
+                shopId: val[0].shopId,
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            addShopUser(data).then(res => {
+                if (res.data.rtnCode == 200) {
+                    if (this.$parent.getShopAndDeviceList != undefined) {
+                        this.$parent.getShopAndDeviceList()
+                    } else if (this.$parent.getShopDeviceList != undefined) {
+                        this.$parent.getShopDeviceList()
+                    }
+                    
+                    this.$message({
+                        type: 'success',
+                        message: this.$t('lang.addSuccess')
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: this.$t('lang.addFail')
+                    })
+                }
+            }).catch(e => {
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.addFail')
+                })
+            })
+        },
         matching (val,key) {
             this.arr.forEach(item => {
                 console.log(item[key],item[key].includes(val),val)

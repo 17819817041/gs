@@ -1,7 +1,7 @@
 <template>
     <div class="AdvertiserManagement AdAdmin" v-loading='loading'>
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告套餐管理
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告套餐管理
         </div>
         <div class="AdvertiserManagement_content mg bar">
             <div class="AdvertiserManagement_content_title sb al block">
@@ -29,6 +29,7 @@
                                 <el-input
                                 class="width100"
                                 v-model="search"
+                                @input="searchByName"
                                 size="mini"
                                 placeholder="输入关键字搜索"/>
                             </div>
@@ -42,11 +43,13 @@
                         <template slot="header">
                             廣告所屬行業
                             <div class="searchInp mg">
-                               <el-select class="width100" style="height: 28px;" v-model="select" placeholder="請選擇類型">
-									<el-option label="食品" value="食品"></el-option>
-									<el-option label="科技" value="科技"></el-option>
-									<el-option label="醫療" value="醫療"></el-option>
-									<el-option label="汽車" value="汽車"></el-option>
+                               <el-select class="width100" style="height: 28px;" v-model="typeId" placeholder="請選擇類型" @change="comboList">
+									<el-option v-for="(item,i) in getTypeList" :key="i"
+                                        :label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+                                        item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+                                        item.find( res => res.language == "en-US").guangGaoTypeName '
+                                        :value="item[0].id">
+                                    </el-option>
 								</el-select>
                             </div>
                         </template>
@@ -82,10 +85,10 @@
                         <template slot="header">
                             套餐狀態
                             <div class="searchInp mg">
-                                <el-select class="width100" style="height: 28px;" v-model="outtype" placeholder="請選擇類型">
+                                <el-select class="width100" style="height: 28px;" v-model="outtype" @change="searchByState" placeholder="請選擇類型">
 									<el-option label="正常" value="1"></el-option>
-									<el-option label="已過期" value="2"></el-option>
-									<el-option label="下架" value="3"></el-option>
+									<el-option label="下架" value="2"></el-option>
+									<el-option label="已過期" value="3"></el-option>
 								</el-select>
                             </div>
                         </template>
@@ -100,33 +103,33 @@
                     <el-table-column
                         prop="userState"
                         label="套餐操作"
-                        min-width="300"
+                        min-width="250"
                         >
                         <template slot-scope="scope">
                             <div class="sb al">
-                                <div class="cursor" @click="technology(scope.row.id)">
+                                <div class="cursor" style="min-width: 72px;" @click="technology(scope.row.id)">
                                     <div class="ju al"><img class="planEdit"
                                     src="@/assets/img/preview.png" alt=""></div>
                                     <div class="tc size12 bold">預覽套餐信息</div>
                                 </div>
-                                <div class="cursor" v-if="scope.row.showXJ" 
+                                <div class="cursor" style="min-width: 72px;" v-if="scope.row.showXJ" 
                                 @click="down(scope.row)">
                                     <div class="ju al"><img class="planEdit" 
                                     src="@/assets/img/downdv.png" alt=""></div>
                                     <div class="tc size12 bold" style="color: red;">下架套餐</div>
                                 </div>
-                                <div class="cursor" @click="up(scope.row)"
+                                <div class="cursor" style="min-width: 72px;" @click="up(scope.row)"
                                 v-else-if="scope.row.status == '2' || scope.row.showSJ">
                                     <div class="ju al"><img class="planEdit" 
                                     src="@/assets/img/updv.png" alt=""></div>
                                     <div class="tc size12 bold" style="color: #4DF13E;">重新上架</div>
                                 </div>
-                                <div class="cursor" v-if="scope.row.showEdit">
+                                <div class="cursor" style="min-width: 72px;" v-if="scope.row.showEdit" @click="editcombo(scope.row.id)">
                                     <div class="ju al"><img class="planEdit" 
                                     src="@/assets/img/edit.png" alt=""></div>
                                     <div class="tc size12 bold">編輯套餐</div>
                                 </div>
-                                <div style="width: 48px;" v-else>
+                                <div style="width: 72px;" v-else>
 
                                 </div>
                             </div>
@@ -232,7 +235,7 @@ export default {
             dialogVisible2: false,
             outtype: '',
             search: '',
-            select: '',
+            typeId: '',
             pageNum: 0,
             pageSize: 10,
             tableData:[],
@@ -305,6 +308,28 @@ export default {
     },
     created () {
         this.comboList()
+        this.$store.dispatch('getTypeList',this)
+    },
+    watch: {
+        getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+					
+				}
+			},
+		} 
+    },
+    computed: {
+        getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		}
     },
     methods: {
         comboList () {
@@ -314,7 +339,8 @@ export default {
                 packageName: this.search,
                 pageNum: this.pageNum,
                 pageSize: this.pageSize,
-                typeId: '',
+                typeId: this.typeId,
+                state: this.outtype
             }
             comboList(data).then(res => {
                 this.loading = false
@@ -410,6 +436,16 @@ export default {
                 })
             })
         },
+        searchByName (val) {
+            let that = this
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
+                that.comboList()
+            },500)
+        },
+        searchByState () {
+            this.comboList()
+        },
         resi () {
             let that = this
             this.$nextTick(() => {
@@ -449,7 +485,14 @@ export default {
                     this.dialogVisible1 = true
                 }
             })
-            
+        },
+        editcombo (id) {
+            this.$router.push({
+                name: 'editcombo',
+                query: {
+                    id: id
+                }
+            })
         }
     }
 }

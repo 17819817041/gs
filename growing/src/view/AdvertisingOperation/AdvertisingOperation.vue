@@ -1,7 +1,7 @@
 <template>
-    <div class="AdvertisingOperation">
+    <div class="AdvertisingOperation" v-loading='loading'>
         <div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" 
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="" 
             @click="back">{{$t("lang.admanagement")}}
         </div>
         <div class="table mg bar" ref="tabl">
@@ -18,9 +18,7 @@
                     min-width="145"
                     >
                     <template slot-scope="scope">
-                        <span v-if="scope.row.name == '食品會'">{{$t("lang.foodclient")}}</span>
-                        <span v-if="scope.row.name == '車展會'">{{$t("lang.carclient")}}</span>
-                        <span v-if="scope.row.name == '售藥'">{{$t("lang.medicalclient")}}</span>
+                        <span>{{scope.row.name}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -29,9 +27,7 @@
                     min-width="170"
                     >
                     <template slot-scope="scope">
-                        <span v-if="scope.row.category == 1">{{$t("lang.food")}}</span>
-                        <span v-if="scope.row.category == 2">{{$t("lang.car")}}</span>
-                        <span v-if="scope.row.category == 3">{{$t("lang.medical")}}</span>
+                        <span>{{scope.row.category}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -40,9 +36,9 @@
                     min-width="150"
                     >
                     <template slot-scope="scope">
-                        <span v-if="scope.row.area == '九龍'">{{$t("lang.jiulong")}}</span>
-                        <span v-if="scope.row.area == '旺角'">{{$t("lang.wangjiao")}} - 旺角街道</span>
-                        <span v-if="scope.row.area == '中環'">{{$t("lang.zhonghuan")}}</span>
+                        <span v-if="scope.row.area.length != 0">
+                            <div v-for="(item,i) in scope.row.area" :key="i">{{item}}</div>
+                        </span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -53,32 +49,15 @@
                     <template slot-scope="scope">
                         <!-- <div class="tc">{{$t("lang.busyhour")}}</div>
                         <div class="tc">{{$t("lang.unbusyhour")}}</div> -->
-                        <div v-if="scope.row.time == 1">
-                            <div>
-                                <div class="tc">({{$t("lang.sate")}})</div>
-                                <div class="tc">9:00~10:00</div>
-                                <div class="tc">10:00~11:00</div>
+                        <div>
+                            <div :ref="'clockDom' + scope.row.id">
+                                <div v-for="(item,i) in scope.row.time" :key="i">
+                                    <div v-for="(child,ii) in item.guangGaoTimeIntervalDetialsDtos" :key='ii'>
+                                        {{child.timeIntervalDetailsName}}
+                                    </div>
+                                </div>
                             </div>
-                            <div class="ju">
-                                <div class="cursor" style="padding: 0 20px;">...</div>
-                            </div>
-                        </div>
-                        <div v-else-if="scope.row.time == 2">
-                            <div>
-                                <div class="tc">({{$t("lang.sate")}})</div>
-                                <div class="tc">9:00~10:00</div>
-                            </div>
-                            <div class="ju">
-                                <div class="cursor" style="padding: 0 20px;">...</div>
-                            </div>
-                        </div>
-                        <div v-else-if="scope.row.time == 3">
-                            <div>
-                                <div class="tc">({{$t("lang.cat")}})</div>
-                                <div class="tc">9:00~10:00(10分鐘)</div>
-                                <div class="tc">10:00~11:00(20分鐘)</div>
-                            </div>
-                            <div class="ju">
+                            <div class="ju" v-if="scope.row.dom > 46">
                                 <div class="cursor" style="padding: 0 20px;">...</div>
                             </div>
                         </div>
@@ -89,9 +68,9 @@
                     :label="$t('lang.expired')"
                     min-width="220"
                     >
-                    <template>
-                        <div class="tc">2021-06-21~2021-06-28</div>
-                        <div class="tc">(7天)</div>
+                    <template slot-scope="scope">
+                        <div class="tc">{{scope.row.outTime}}</div>
+                        <div class="tc">({{scope.row.days}}天)</div>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -106,11 +85,13 @@
                     min-width="190"
                     >
                     <template slot-scope="scope">
-                    <div :class="['cursor toufang ju', {'sure_state': scope.row.state == 1, 'no_state': scope.row.state == 2}]">
-                        <span v-if="scope.row.state == 1" >{{$t("lang.status1")}}</span>
+                    <div :class="['cursor toufang ju', {'sure_state': scope.row.state == 1, 'perple' :scope.row.state == '等待審核',
+                    'no_state': scope.row.state == '未上架(未付款)' || scope.row.state == '未上架(已付款)'}]">
+                        <!-- <span v-if="scope.row.state == 1" >{{$t("lang.status1")}}</span>
                         <span v-else-if="scope.row.state == 2">{{$t("lang.status2")}}</span>
                         <span :class="[{ 'no_state': scope.row.state == 3}]" 
-                        v-else-if="scope.row.state == 3">{{$t("lang.status3")}}</span>
+                        v-else-if="scope.row.state == 3">{{$t("lang.status3")}}</span> -->
+                        <span >{{scope.row.state}}</span>
                     </div>
                 </template>
                 </el-table-column>
@@ -121,7 +102,7 @@
                     >
                     <template slot-scope="scope">
                         <div class="preview ju">
-                            <div class="cursor" style="width: 65%; padding: 12px 0" @click="toPreview(scope.row.dv)">
+                            <div class="cursor" style="width: 65%; padding: 12px 0" @click="toPreview(scope.row.launchType)">
                                 <div class="ju"><img src="@/assets/img/eye.png" alt=""></div>
                                 <div class="tc">{{$t("lang.preview")}}</div>
                             </div>
@@ -135,22 +116,22 @@
                     >
                     <template slot-scope="scope">
                         <div class="putaway sa al">
-                            <div class="putaway_logo" v-if="scope.row.edit == 2">
+                            <div class="putaway_logo" v-if="scope.row.showEdiy">
                                 <div class="ju"><img src="@/assets/img/edit.png" alt=""></div>
                                 <div class="tc">{{$t("lang.editplan")}}</div>
                             </div>
                             <!-- <div v-else></div> -->
-                            <div class="putaway_logo centerL" v-if="scope.row.edit == 3 || scope.row.edit == 2">
+                            <div class="putaway_logo centerL" v-if="scope.row.showShangJia">
                                 <div class="ju "><img src="@/assets/img/up.png" alt=""></div>
                                 <div class="tc">{{$t("lang.shelfplan")}}</div>
                             </div>
                             <!-- <div v-else></div> -->
-                            <div class="putaway_logo centerL" v-if="scope.row.edit == 1">
+                            <div class="putaway_logo centerL" v-if="scope.row.showXiaJia">
                                 <div class="ju"><img src="@/assets/img/down.png" alt=""></div>
                                 <div class="tc">{{$t("lang.downplan")}}</div>
                             </div>
                             <!-- <div v-else></div> -->
-                            <div class="putaway_logo" v-if="scope.row.edit == 2">
+                            <div class="putaway_logo" v-if="scope.row.showDelete">
                                 <div class="ju"><img src="@/assets/img/delete.png" alt=""></div>
                                 <div class="tc">{{$t("lang.deleteplan")}}</div>
                             </div>
@@ -168,7 +149,7 @@
                     :current-page="1"
                     :page-size="10"
                     layout=" jumper, prev, pager, next"
-                    :total="tableData.length">
+                    :total="totalRecordsCount">
                 </el-pagination>
             </div>
         </div>
@@ -189,8 +170,10 @@ export default {
                 {name:'售藥',category: 3,area: '中環', time: 3, dv: 'pro',
                 outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 3, content: '查看預覽', edit: 3},
             ],
-            pageNum: 0,
-            pageSize: 100
+            pageNum: 4,
+            pageSize: 10,
+            loading: false,
+            totalRecordsCount: null
         }
     },
     mounted () {
@@ -205,20 +188,71 @@ export default {
     },
     methods: {
         adList () {
+            this.loading = true
+            let that = this
             let data = {
-                // userId: localStorage.getItem('compoundeyesUserId'),
-                userId: 5,
+                userId: localStorage.getItem('compoundeyesUserId'),
                 pageNum: this.pageNum,
                 pageSize: this.pageSize
             }
+            this.tableData = []
             adList(data).then(res => {
                 console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.totalRecordsCount = res.data.data.totalRecordsCount
+                    res.data.data.pageT.forEach(item => {
+                        this.tableData.push({
+                            name: item.guangGaoTitle,
+                            category: item.guangGaoTypeName,
+                            area: item.guangGaoAddressLisr, 
+                            time: item.guangGaoTimeIntervalDtoList,
+                            outTime: item.startTime.split(' ')[0] + '~' + item.endTime.split(' ')[0], 
+                            days: item.days,
+                            price: '$' + item.totalPrice + 'HKD', 
+                            state: item.guangGaoStateName, 
+                            content: '查看預覽', 
+                            edit: 1,
+                            id: item.id,
+                            showDelete: item.showDelete,
+                            showEdiy: item.showEdiy,
+                            showShangJia: item.showShangJia,
+                            showXiaJia: item.showXiaJia,
+                            launchType: item.launchType
+                        })
+                        this.$nextTick(() => {
+                            item.dom = that.$refs['clockDom' + item.id].clientHeight
+                            that.tableData.forEach(child => {
+                                if (child.id == item.id) {
+                                    // console.log(child)
+                                    child.dom = item.dom
+                                }
+                            })
+                        })
+                    })
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: this.$t('lang.loading')
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.loading')
+                })
             })
         },
         toPreview (val) {
-            if (val == 'pro') {
-                this.$router.push('/dvPreview')
-            } else if (val == 'plus') {
+            if (val == 1) {
+                this.$router.push({
+                    name: 'dvPreview',
+                    query: {
+                        id: val
+                    }
+                })
+            } else if (val == 3) {
                 this.$router.push('/dvPreviewPlus')
             }
         },
@@ -229,10 +263,12 @@ export default {
             })
         },
         handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
+            this.pageNum = Number(val)
+            this.adList()
         },
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+            this.pageNum = Number(val)
+            this.adList()
         },
         tableRowClassName ({ row,rowIndex }) {
             if (rowIndex%2 == 1) {
@@ -304,6 +340,9 @@ export default {
     }
     .no_state {
         color: #FA3A3A;
+    }
+    .perple {
+        color: #5C48B6;
     }
     .preview {
         font-size: 12px;

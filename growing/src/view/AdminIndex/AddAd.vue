@@ -1,12 +1,12 @@
 <template>
     <div class="AdvertisingAdd AdvertisingAdd1" v-loading='loading'>
-		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
+		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt=""> -->
 		<div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">新增廣告套餐
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="" @click="goBack">新增廣告套餐
         </div>
 		<div class="noBar" style="height: calc(100% - 35px);overflow: auto;margin-top: 15px;">
 			<div :class="['content mg bar',{ heigh: !submit }]">
-				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
+				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
 				<div class="noBar" style="height: calc(100% - 0px); overflow:auto" v-show="submit">
 					<div class="basicsMsg theme" v-show="submit">
 						<div class=" basicsMsg_item bold al">
@@ -130,7 +130,7 @@
 									<el-button type="primary" size="small" @click="openDra(radio1)"
 									class="elbtn" v-show="radio1">{{$t('lang.sptime')}}</el-button>
 								</div>
-								<div class="list1 clear" v-show="radio1 == '2'">
+								<div class="list2 clear" v-show="radio1 == '2'">
 									<div style="color: #B0B0B0;font-size: 12px;" class="list_itemzdy float ju al" v-for="(item,i) in adList1" :key="i">
 										<span>{{item.packageName}} </span>
 										<span class="" style="margin-left: 3px;">({{item.num}}分鐘)</span>
@@ -425,6 +425,7 @@
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import dimg from "@/assets/img/growing.jpg"
 import mar from "@/assets/img/marker.png"
+import areajs from "@/assets/js/area.js"
 import { addCombo } from "@/axios/request.js"
 export default {
     data() {
@@ -1823,8 +1824,9 @@ export default {
 		}
 	}
 	.elbtn {
-		@media screen and (max-width: 564px) {
+		@media screen and (max-width: 352px) {
 			margin-left: 0;
+			transform: translate(0,-5px);
 		}
 	}
 	.l_time {
@@ -1904,7 +1906,7 @@ export default {
         background: white;
     }
 	.width384 {
-		@media screen and (max-width: 384px) {
+		@media screen and (max-width: 348px) {
 			margin-top: 20px;
 		}
 	}
@@ -2051,6 +2053,14 @@ export default {
 		margin-top: 10px;
 		@media screen and (max-width: 870px) {
 			margin-left: -10px !important;
+			margin-top: 10px !important;
+		}
+	}
+	.list2 {
+		margin-top: 10px;
+		margin-left: -100px;
+		@media screen and (max-width: 564px) {
+			margin-left: 0px !important;
 			margin-top: 10px !important;
 		}
 	}

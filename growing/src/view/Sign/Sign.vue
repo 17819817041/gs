@@ -191,6 +191,7 @@ export default {
         position: relative;
         .lang_item {
             padding: 5px;
+            white-space: nowrap;
         }
     }
     .rota {

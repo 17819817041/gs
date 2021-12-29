@@ -1,12 +1,12 @@
 <template>
     <div class="AdvertisingAdd AdvertisingAdd2" v-loading='loading'>
-		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
+		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt=""> -->
 		<div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">Basic廣告計劃
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="" @click="goBack">Basic{{$t('lang.comboPlan')}}
         </div>
         <div class="noBar" style="height: calc(100% - 35px);overflow: auto;margin-top: 15px;">
 			<div :class="['content mg bar',{ heigh: !submit }]">
-				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
+				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
 				<div class="noBar" style="height: calc(100% - 0px); overflow:auto" v-show="submit">
 					<div class="basicsMsg theme" v-show="submit">
 						<div class=" basicsMsg_item bold al">
@@ -104,13 +104,14 @@
 								</el-form-item>
 							</div>
 							<el-form-item :label="$t('lang.adcontent')" prop="imageList">
-								<div class="textarea_wrap clear content_down">
-									<label for="img">
-										<div class="addImg ju al float">
-											<img style="height: 30%;" src="@/assets/img/add.png" alt="">
-										</div>
-										<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
-									</label>
+								<div :class="['textarea_wrap clear', { content_down: $i18n.locale == 'zh-CN' }]">
+                                    <el-upload action="" list-type="picture-card" 
+                                        ref="fileUpload" :headers="uploadProps.headers" :on-change="videoChange" :show-file-list="false" multiple :limit='5'
+                                        :http-request="fnUploadRequest" :on-success="handleSuccess"
+										:on-error="handleError" :before-upload="handleUpload" :on-exceed='outFile' :on-progress="uploadProcess">
+                                        <i class="el-icon-plus"></i>
+										<el-progress v-show="imgFlag == true" type="circle" :percentage="percent"></el-progress>
+                                    </el-upload>
 									<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm.imageList" :key="i">
 										<div class="imageList_wrap">
 											<div class="deleImg radius cursor ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
@@ -121,8 +122,10 @@
 
 												<div class="video_outWrap" v-else-if="ruleForm.mediaType == 'video'">
 													<img class="img" src="@/assets/img/start.png" alt="">
-													<div class="videoImage ju al" id="output" ref="output"  
-													@click="previewVideo(item)">
+													<div class="cutImage ju al"><img style="height: 100%;" 
+													@click="previewVideo(item)" :src="item.imageUrl" alt=""></div>
+
+													<div class="videoImage ju al" id="output" ref="output">
 														
 													</div>
 													<video class="width100" id="video1" ref="video"
@@ -138,10 +141,12 @@
 										>時長：{{item.videoTime}}</div>
 									</div>
 								</div>
-								<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
+								<div :class="[{content_down1: $i18n.locale == 'zh-CN'}]" 
+								style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
 									{{$t('lang.becare')}}
 								</div>
-								<div style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
+								<div :class="[{content_down1: $i18n.locale == 'zh-CN'}]" 
+								style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
 							</el-form-item>
 						</el-form>
 						<div class="total mg sb">
@@ -224,10 +229,13 @@
 
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
-import { genOrder } from "@/axios/request.js"
+import { genOrder, getuploadtoken  } from "@/axios/request.js"
+import { uploadOSS } from '@/utils/oss';
 export default {
     data() {
         return {
+			percent: 0,
+			imgFlag: false,
 			showViewer: false, 
 			showViewer1: false, 
 
@@ -338,8 +346,8 @@ export default {
 			areaList: [],
 			timeList: [],
 			loading: false,
-			minute: []
-        };
+			minute: [],
+		};
     },
 	watch: {
         lang: {
@@ -395,7 +403,17 @@ export default {
 					value: val
 				})
 			}
-		}
+		},
+        uploadProps() {
+            return {
+                // action: `${process.env.VUE_APP_BASE_API}/api/file/upload`,
+                headers: {
+                    // 接口可能要带token: "",
+                    Authorization: getuploadtoken(),
+                },
+                data: {},
+            };
+        },
 	},
 	components: { ElImageViewer },
 	beforeMount() {
@@ -408,14 +426,219 @@ export default {
 	created () {
 		this.$store.dispatch('getAddress',this) 
         this.$store.dispatch('getTypeList',this)
-		let D = new Date('Wed Dec 15 2021 00:00:00 GMT+0800 (中国标准时间)').toLocaleDateString().split('/').join('-')
-		console.log(D)
 	},
     methods: {
+		handleExceed(file, fileList){
+            this.$message.error('上传失败，限制上传数量10个文件以内！');
+        },
+        handleUpload(file){
+			if (this.ruleForm.mediaType == 'image') {
+				let boo = false
+				if (this.ruleForm.imageList.length <= 10 ) { boo = true }
+
+				if (boo) {
+					var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+					const extension =  testmsg === 'png' || testmsg === 'jpeg' || testmsg === 'gif' || testmsg === 'jpg'
+
+					const isLimit10M = file.size / 1024 / 1024 < 3
+					var bool = false;
+					if (extension && isLimit10M) { bool = true; } else { bool = false; }
+					if (!extension) {
+						this.$message.error('請選擇圖片文件！');
+						return bool;
+					}
+					if (!isLimit10M) {
+						this.$message.error('上傳失敗，不能超過3M！');
+						return bool;
+					}
+					return bool;
+				}
+				
+			} else if (this.ruleForm.mediaType == 'video') {
+				let boo = false
+				if ( this.ruleForm.imageList.length <= 5 ) { boo = true }
+
+				if (boo) {
+					var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+					const extension = testmsg === 'mp4'
+
+					const isLimit10M = file.size / 1024 / 1024 < 100
+					var bool = false;
+					if (extension && isLimit10M) { bool = true; } else { bool = false; }
+					if (!extension) {
+						this.$message.error('請選擇視頻文件！');
+						return bool;
+					}
+					if (!isLimit10M) {
+						this.$message.error('上傳失敗，不能超過100M！');
+						return bool;
+					}
+					return bool;
+				}
+			}
+        },
+        handleSuccess(res) {
+            // console.log(res);
+            if (res) {
+                this.$emit('fileData', res)
+                this.$message.success("上传附件成功！");
+            }
+        },
+        handleError(err){
+            this.$message.error('上传附件失败！');
+        },
+        // 上传图片
+        async fnUploadRequest(options) {
+            try {
+                // console.log(options);
+				let that = this
+                let file = options.file; // 拿到 file
+                let res = await uploadOSS(file)
+				let size
+				if (file.size >= 1000000) {
+					var s = file.size/1000000
+					size = s.toFixed(1) + 'M'
+					// size = Math.ceil(files[ff].size/1000000) + 'm'
+				} else {
+					var s = file.size/1000
+					size = s.toFixed(0) + 'KB'
+					// size = Math.ceil(files[ff].size/1000) + 'kb'
+				}
+				let fileurl = res.fileUrl
+				let name = res.fileName
+				this.percent = 100;
+				setTimeout(() => {
+					that.imgFlag = false;
+					that.percent = 0;
+				},1000)
+				let audioElement = new Audio(fileurl);
+				if (this.ruleForm.mediaType == 'video') {
+					audioElement.addEventListener("loadedmetadata", function (_event) {
+						var time = Math.ceil(audioElement.duration)
+						var sTime = parseInt(time);// 秒
+						var mTime = 0;// 分
+						if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+							//获取分钟，除以60取整数，得到整数分钟
+							mTime = parseInt(sTime / 60);
+							//获取秒数，秒数取佘，得到整数秒数
+							sTime = parseInt(sTime % 60);
+						}
+						that.ruleForm.imageList.push({ 
+							url: fileurl, 
+							name: name, 
+							size: size, 
+							time: time, 
+							videoTime: mTime + '分' + sTime + '秒'
+						})
+						let obj = {
+							url: fileurl, 
+							name: name, 
+							size: size, 
+							time: time, 
+							videoTime: mTime + '分' + sTime + '秒'
+						}
+						let index = that.ruleForm.imageList.length -1
+						setTimeout(() => {
+							that.initialize(index,obj)
+						},200)
+						// that.minute.push(Math.ceil(audioElement.duration))
+						that.minute.push(time)
+						that.$forceUpdate()
+					});
+				} else if (this.ruleForm.mediaType == 'image') {
+					that.ruleForm.imageList.push({ 
+						url: fileurl, 
+						name: name, 
+						size: size, 
+						time: null, 
+						videoTime: null
+					})
+				}
+                // 返回数据
+                this.$emit("fileData", res);
+                this.$message.success("上传附件成功！");
+            } catch (e) {
+                this.$message.error('上传附件失败！');
+            }
+        },
+		async videoChange(file, fileList) {
+			console.log(file)
+			//刚开始上传的时候，可以拿到ready状态，给个定时器，让进度条显示
+			if (file.status === 'ready') {
+				this.imgFlag = true //进度条显示
+				const interval = setInterval(() => {
+					if (this.percent >= 75) {
+						clearInterval(interval)
+						return
+					}
+					this.percent += 1 //进度条进度
+				}, 80)
+				if (this.percent >= 75) {
+					const interval1 = setInterval(() => {
+						if (this.percent >= 99) {
+							clearInterval(interval1)
+							return
+						}
+						this.percent += 1 //进度条进度
+					}, 350)
+				}
+			}
+		},
+		initialize (ff, obj) {
+			var scale = 0.8;
+			var output = this.$refs.output[ff]
+			var video = this.$refs.video[ff]
+			// console.log(ff)
+			video.addEventListener('loadeddata',this.captureImage(video,output,scale, obj));
+		},
+		captureImage (video,output,scale,obj) {
+			let that = this
+			setTimeout(() => {
+				var canvas = document.createElement("canvas");
+				canvas.width = video.videoWidth * scale;
+				canvas.height = video.videoHeight * scale;
+				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+				var img = document.createElement("img");
+				img.src = canvas.toDataURL("image/png");
+				canvas.toBlob(function (blob) {
+					let files = new window.File([blob], 'image.png', {type: blob.type})
+					files.uid = new Date().getTime()
+					that.cutVideo(files,obj)
+				})
+				// img.width = 400;
+				// img.height = 100;
+				output.appendChild(img);
+			},100)
+		},
+        // 上传图片
+        async cutVideo(options,obj) {
+            try {
+                let file = options; // 拿到 file
+                let res = await uploadOSS(file)
+				obj.imageUrl = res.fileUrl
+				this.ruleForm.imageList.forEach(item => {
+					if (item.url == obj.url) {
+						item.imageUrl = obj.imageUrl
+					}
+				})
+				this.$forceUpdate()
+                // 返回数据
+                this.$emit("fileData", res);
+                this.$message.success("視頻截幀成功！");
+            } catch (e) {
+                this.$message.error('上传附件失败！');
+            }
+        },
+		outFile (e) {
+            console.log(e)
+        },
+
+
+			
 		genOrder () {
 			
 			let that = this
-			let boo = true
+			let boo = false
 			let boo1 = false
 			this.$refs.ruleForm.validate(flag => {
                 if (flag) { boo = true }
@@ -430,7 +653,7 @@ export default {
 				this.ruleForm.imageList.forEach(item => {
 					arr.push({
 						"fileType": Number(this.ruleForm.cmediaType1),
-						"url": item.url,
+						"url": item.url + '&#&' + item.imageUrl,
 						"fileName": item.name,
 						"fileSize": item.size,
 						"filePlayTime": item.videoTime
@@ -497,6 +720,12 @@ export default {
 				})
 			}
 			
+		},
+		uploadProcess(event, file, fileList) {
+			console.log(event);
+			// this.imgFlag = true;
+			// console.log(event.percent);
+			// this.percent = Math.floor(event.percent);
 		},
 		closeVideo () {
 			this.showVideo = false
@@ -606,7 +835,9 @@ export default {
 				this.ruleForm.cmediaType1 = 3
 			}
 		},
+        
 		cahngeFile (e) {
+			console.log(e)
 			var files = e.target.files
 			let that = this
 			if (this.ruleForm.mediaType) {
@@ -661,7 +892,7 @@ export default {
 									} else {
 										this.$message({
 											type: 'error',
-											message: '單個視頻最大限制100M !'
+											message: '單個視頻最大限制100M!'
 										})
 									}
 								} else {}
@@ -698,6 +929,7 @@ export default {
 				}
 				if (!this.video) {
 					if (this.ruleForm.mediaType == 'image') {
+
 						if (e.target.files.length<=10 && this.ruleForm.imageList.length <= 10) {
 							for(var ff=0;ff<e.target.files.length;ff++){
 								let file = e.target.files[ff].type.split('/')[0]
@@ -720,7 +952,7 @@ export default {
 									} else {
 										this.$message({
 											type: 'error',
-											message: '單個圖片最大限制3M !'
+											message: '單個圖片最大限制3M!'
 										})
 									}
 								} else { }
@@ -740,27 +972,7 @@ export default {
 				})
 			}
 		},
-		initialize (ff) {
-			var scale = 0.8;
-			var output = this.$refs.output[ff]
-			var video = this.$refs.video[ff]
-			// console.log(ff)
-			video.addEventListener('loadeddata',this.captureImage(video,output,scale));
-		},
-		captureImage (video,output,scale) {
-			setTimeout(() => {
-				var canvas = document.createElement("canvas");
-				canvas.width = video.videoWidth * scale;
-				canvas.height = video.videoHeight * scale;
-				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-				var img = document.createElement("img");
-				img.src = canvas.toDataURL("image/png");
-				
-				// img.width = 400;
-				// img.height = 100;
-				output.appendChild(img);
-			},100)
-		},
+
 		deleImg (i) {
 			let that = this
 			if (this.ruleForm.mediaType == 'video') {
@@ -793,13 +1005,22 @@ export default {
 <style lang='less' scoped>
 @import "@/less/style.less";
 .content_down {
-		width: calc(100% + 115px);
+		width: calc(100% + 111px);
 		position: relative;
 		margin-top: 35px;
 		margin-left: -105px;
 		@media screen and (max-width: 564px) {
             margin-left: 5px;
 			margin-top: 0px;
+			width: 98%;
+        }
+	}
+	.content_down1 {
+		width: calc(100% + 111px);
+		// margin-top: 35px;
+		margin-left: -105px;
+		@media screen and (max-width: 564px) {
+            margin-left: 5px;
 			width: 98%;
         }
 	}
@@ -909,19 +1130,6 @@ export default {
 			padding: 10px 17px;
 		}
     }
-	.addImg {
-		border: dashed 1px rgb(201, 201, 201);
-		width: 100px;
-		height: 100px;
-		margin: 5px;
-		@media screen and (max-width: 564px) {
-			width: 70px;
-			height: 70px;
-		}
-	}
-	.addImg:hover {
-		border: dashed 1px rgb(148, 148, 148);
-	}
 	.textarea_wrap_item {
 		width: 100px;
 		height: 140px;
@@ -951,6 +1159,14 @@ export default {
 			z-index: 125;
 			transform: translate(-50%, -50%);
 			pointer-events: none;
+		}
+		.cutImage {
+			position: absolute;
+			left: 0;
+			z-index: 124;
+			top: 0;
+			width: 100%;
+			height: 100%;
 		}
 	}
 	.imageList_long {

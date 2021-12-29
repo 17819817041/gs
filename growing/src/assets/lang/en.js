@@ -24,6 +24,9 @@ export const lang = {
 	editSuccess: 'Successful operation',
 	editError: 'operation failed',
 	getFail: 'Failed to obtain information',
+	buTime: 'Busy hour',
+	ubbuTime: 'Off-peak hours',
+	sbuTime: 'Super busy hour',
 
 
 	addbtn: 'Add',
@@ -33,6 +36,28 @@ export const lang = {
 	car: 'Car',
 	addressLoadFail: 'Failed to load address',
 	typeLoadFail: 'Type load failed',
+
+
+
+	//個人中心
+	pCenter: 'Personal center',
+	headImg: 'Choose Avatar',
+	myEmail: 'Email address',
+	working: 'You are using email to verify your identity',
+	ver: 'Verification code',
+	e_email: 'E-mail',
+	getVer: 'Get verification code',
+	newEmail: 'Please enter your modified email address',
+	checkEmail: 'Modify email',
+	myPhone: 'Contact number',
+	newPhone: 'Please enter your modified contact number',
+	checkPhone: 'Modify contact number',
+	password: 'Password',
+	oldPwd: 'Please enter the original password',
+	newPwd: 'Please enter your modified password',
+	checkPwd: 'Change Password',
+	createTime: 'Account activation time',
+
 
 
 	//登錄
@@ -101,6 +126,7 @@ export const lang = {
 	total: 'Planned total price',
 	phprice: 'Peak hour price',
 	unphprice: 'Non-peak hour price',
+	sphprice: 'Ultra-peak hour price',
 	ppotd: 'Package price on the day',
 	days: 'Ad serving days',
 	base: 'Base price',
@@ -209,6 +235,38 @@ export const lang = {
 
 	//setting
 	setting_del: 'confirm to delete',
+
+
+	//combo
+	comboPlan: ' advertising plan',
+	basic: 'Basic options',
+	custom: 'Custom media ads',
+	fee: 'Transparent fee rules',
+	serviceFile: 'Professional Services Document',
+	startPlan: 'Start planning',
+	moreShop: 'Multi-store designated delivery',
+	Precise: 'Precise regional/street delivery',
+	specify: 'Specify the exact time to launch',
+	effect: 'Ad synchronization effect',
+	bprice: 'Better price',
+	compare: 'Compare Basic, Pro, Plus advertising plans',
+	Features: 'Features',
+	basic_plan: 'Basic plan',
+	pro_plan: 'Pro plan',
+	plus_plan: 'Plus plan',
+	adBasic: 'Advertising basic options',
+	moredetail: 'More detailed advertising options',
+	Searchable: 'Searchable target placement',
+	contact: 'Contact us for expertise',
+	faq: 'Pricing and Licensing FAQ',
+	con1: 'This advertising plan is placed on the Compoundeyes platform and provides counting support service licenses.',
+	con2: 'In the advertising plan you have selected, after choosing the advertising plan, there will be an overview of the various costs, and you can also use our cost calculator to view it. If you have any questions, please contact us directly! We will spare no effort to ask you answers.',
+	con3: 'Of course, if you have any questions about the Compoundeyes advertising platform, you can contact us directly!',
+	tit1: 'About the advertising plan?',
+	tit2: 'About the advertising program cost?',
+	tit3: 'Can I ask questions before purchasing an advertising plan?',
+
+
 
 }
   

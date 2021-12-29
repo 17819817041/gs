@@ -1,18 +1,18 @@
 <template>
     <div class="Setting" v-loading='loading'>
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">系統設定
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" @click="back" alt="">系統設定
         </div>
         <div class="Settingadvertising_content_wrap bar">
             <div class="Settingadvertising_content mg">
                 <div class="divider_wrap">
-                    <div class="sb al divider_message_title">
+                    <div class="sb al divider_message_title" @click="drawer = !drawer">
                         <div class="flex">
                             <div class="divider"></div>
                             <div class="divider_text">廣告地區設定</div>
                         </div>
                         <div class="flex">
-                            <div :class="['arrow_m al']" @click="drawer = !drawer"><img :class="[{ rotate: drawer }]" src="@/assets/img/pull_down.png" alt=""></div>
+                            <div :class="['arrow_m al']" @click="drawer = !drawer"><img :class="['cursor',{ rotate: drawer }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
                     <div :class="[' drawer_h', {'drawer_h1': drawer}]">
@@ -77,13 +77,13 @@
             </div>
             <div class="Settingadvertising_content mg">
                 <div class="divider_wrap">
-                    <div class="sb al divider_message_title">
+                    <div class="sb al divider_message_title" @click="drawer1 = !drawer1">
                         <div class="flex">
                             <div class="divider"></div>
                             <div class="divider_text">廣告類型設定</div>
                         </div>
                         <div class="flex">
-                            <div :class="['arrow_m al']" @click="drawer1 = !drawer1"><img :class="[{ rotate: drawer1 }]" src="@/assets/img/pull_down.png" alt=""></div>
+                            <div :class="['arrow_m al']" @click="drawer1 = !drawer1"><img :class="['cursor',{ rotate: drawer1 }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
                     <div :class="['drawer_h', {'drawer_h1': drawer1}]">
@@ -98,7 +98,7 @@
                                         <div style="font-size: 12px;padding: 2px 0;">請輸入類型(中文和英文)</div>
                                         <el-form :model="ruleForm" status-icon :rules="rules1" ref="form" class="demo-ruleForm">
                                             <el-form-item prop="type">
-                                                <el-input type="text" v-model="ruleForm.type" placeholder="請輸入類型(英文)" autocomplete="off"></el-input>
+                                                <el-input type="text" v-model="ruleForm.type" placeholder="請輸入類型(繁文)" autocomplete="off"></el-input>
                                             </el-form-item>
                                             <el-form-item prop="Etype">
                                                 <el-input type="text" v-model="ruleForm.Etype" autocomplete="off" placeholder="請輸入類型(英文)"></el-input>
@@ -123,7 +123,7 @@
                                         <span class="al" style="margin-left: 5px">
                                             <el-popconfirm
                                                 title="確定刪除嗎？"
-                                                @confirm='deleType(i)'
+                                                @confirm='deleType(item[0].id)'
                                                 >
                                                 <img style="margin-top: 5px;" class="cursor" slot="reference" src="@/assets/img/cha.png" alt="">
                                             </el-popconfirm>
@@ -134,7 +134,7 @@
                                         <span class="al" style="margin-left: 5px">
                                             <el-popconfirm
                                                 title="確定刪除嗎？"
-                                                @confirm='deleType(i)'
+                                                @confirm='deleType(item[0].id)'
                                                 >
                                                 <img style="margin-top: 5px;" class="cursor" slot="reference" src="@/assets/img/cha.png" alt="">
                                             </el-popconfirm>
@@ -148,13 +148,13 @@
             </div>
             <div class="Settingadvertising_content mg">
                 <div class="divider_wrap">
-                    <div class="sb al divider_message_title">
+                    <div class="sb al divider_message_title" @click="drawer2 = !drawer2">
                         <div class="flex">
                             <div class="divider"></div>
                             <div class="divider_text">廣告電台文字Live</div>
                         </div>
                         <div class="flex">
-                            <div :class="['arrow_m al']" @click="drawer2 = !drawer2"><img :class="[{ rotate: drawer2 }]" src="@/assets/img/pull_down.png" alt=""></div>
+                            <div :class="['arrow_m al']" @click="drawer2 = !drawer2"><img :class="['cursor',{ rotate: drawer2 }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
                     <div :class="['Setting_table drawer_h', {'drawer_h1': drawer2}]">
@@ -207,7 +207,7 @@
                                     <el-popconfirm
                                         triggrt='click'
                                         title="確定刪除嗎？"  
-                                        @confirm='deleteRow(scope.$index, tableData)'
+                                        @confirm='delTextGuangGaoService(scope.row.id)'
                                         >
                                         <div class="ju al" slot="reference"><div class="ju al mg deleMsg cursor">刪除記錄</div></div>
                                     </el-popconfirm>
@@ -235,7 +235,18 @@
                     </div>
                     <div class="flex al" style="padding-top: 60px;">
                         <label for="liveLogo">
-                            <div class="addArea cursor tc">選擇Logo</div>
+                            <div class="uploadBtn ju al">
+                                <el-upload 
+                                    ref="fileUpload"
+                                    class="upload-demo" 
+                                    action="" :headers="uploadProps.headers"
+                                    :show-file-list="false" :limit='1' :on-exceed='outFile'
+                                    :http-request="fnUploadRequest" :on-success="handleSuccess" :on-error="handleError"
+                                    :before-upload="handleUpload">
+                                    <el-button size="small" type="primary">選擇Logo</el-button>
+                                </el-upload>
+                            </div>
+                            
                             <input type="file" name="" id="liveLogo" @change="getLiveLogo" v-show="false">
                         </label>
                         <div class="unmust" style="margin: 9px 0 0 10px;">(選填)</div>
@@ -258,7 +269,8 @@
 </template>
 
 <script>
-import { addressAdd, addressDel, adTypeAdd } from '@/axios/request.js'
+import { addressAdd, addressDel, adTypeAdd, getTextGuangGaoList, adTypeDel, getuploadtoken, delTextGuangGaoService, addTextGuangGaoService } from '@/axios/request.js'
+import { uploadOSS } from '@/utils/oss';
 export default {
     data () {
         return {
@@ -317,6 +329,7 @@ export default {
     created () {
         this.$store.dispatch('getAddress',this) 
         this.$store.dispatch('getTypeList',this)
+        this.getTextGuangGaoList()
     },
     watch: {
 		addressList (val) {
@@ -362,9 +375,133 @@ export default {
 					value: val
 				})
 			}
-		}
+		},
+        uploadProps() {
+            return {
+                // action: `${process.env.VUE_APP_BASE_API}/api/file/upload`,
+                headers: {
+                    // 接口可能要带token: "",
+                    Authorization: getuploadtoken(),
+                },
+                data: {},
+            };
+        },
 	},
     methods: {
+        handleExceed(file, fileList){
+            this.$message.error('上传失败，限制上传数量10个文件以内！');
+        },
+        handleUpload(file){
+            console.log(file)
+			const isJPG = file.type === 'image/jpg';
+            const isPNG = file.type === 'image/png';
+            console.log(isJPG,isPNG)
+            const isLt20M = file.size / 1024 / 1024 < 20;
+            if (!isJPG && !isPNG) {
+                this.$message.error('上传图片的格式只能是 JPG或PNG 格式!');
+            }
+            if (!isLt20M) {
+                this.$message.error('上传图片的大小不能超过 20M!');
+            }
+            const isSize = new Promise(function(resolve, reject) {
+                let width = 300;
+                let height = 300;
+                let _URL = window.URL || window.webkitURL;
+                let img = new Image();
+                img.onload = function() {
+                    let valid = img.width == width && img.height == height;
+                    valid ? resolve() : reject();
+                }
+                img.src = _URL.createObjectURL(file);
+            }).then(() => {
+                return file;
+            }, () => {
+                this.$message.error('上传的图片宽高必须是300*300!');
+                return Promise.reject();
+            });
+            return (isPNG || isJPG) && isSize && isLt20M;
+        },
+        handleSuccess(res) {
+            // console.log(res);
+            if (res) {
+				// this.imageUrl = URL.createObjectURL(file.raw); // 项目中用后台返回的真实地址
+                this.$emit('fileData', res)
+                this.$message.success("上传附件成功！");
+            }
+        },
+		async videoChange(file, fileList) {
+			//刚开始上传的时候，可以拿到ready状态，给个定时器，让进度条显示
+			if (file.status === 'ready') {
+				// this.imgFlag = true //进度条显示
+				// const interval = setInterval(() => {
+				// 	if (this.percent >= 75) {
+				// 		clearInterval(interval)
+				// 		return
+				// 	}
+				// 	this.percent += 1 //进度条进度
+				// }, 80)
+			}
+		},
+        handleError(err){
+            this.$message.error('上传附件失败！');
+        },
+        // 上传图片
+        async fnUploadRequest(options) {
+			console.log(options)
+            try {
+				let that = this
+                let file = options.file; // 拿到 file
+                let res = await uploadOSS(file)
+
+				// this.percent = 100;
+				// setTimeout(() => {
+				// 	that.imgFlag = false;
+				// 	that.percent = 0;
+				// },1000)
+                
+				this.url = res.fileUrl
+                // 返回数据
+                this.$emit("fileData", res);
+                this.$message.success("上传附件成功！");
+            } catch (e) {
+                console.log(e)
+                this.$message.error('上传附件失败！');
+            }
+        },
+        outFile (e) {
+			this.$message.error('上传失败，限制上传数量' + this.listLength + '个文件以内！');
+        },
+
+
+
+        getTextGuangGaoList () {
+            this.tableData = []
+            getTextGuangGaoList().then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    res.data.data.forEach((item,i) => {
+                        this.tableData.push({
+                            live: i+1,
+                            time: '221/06/06', 
+                            content: item.content,
+                            edit: true,
+                            url: item.icon,
+                            id: item.id
+                        })
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '廣告電台文字Live加載失敗'
+                    })
+                }
+            }).catch(e => {
+                this.$message({
+                    type: 'error',
+                    message: '廣告電台文字Live加載失敗'
+                })
+            })
+        },
         tableRowClassName ({ row,rowIndex }) {
             if (rowIndex%2 == 1) {
                 return 'el_color'
@@ -470,8 +607,20 @@ export default {
                 }
             })
 		},
-		deleType (i) {
-			this.typeList.splice(i,1)
+		deleType (id) {                   //刪除類型
+            let data = {
+                guangGaoTypeId: id
+            }
+            adTypeDel(data).then(res => {
+                if (res.data.rtnCode == 200) {
+                    this.$store.dispatch('getTypeList',this)
+                    this.$message.success(this.$t('lang.delSuccess'))
+                } else {
+                    this.$message.error(this.$t('lang.delFail'))
+                }
+            }).catch(e => {
+                this.$message.error(this.$t('lang.delFail'))
+            })
 		},
 		deleArea (id) {                 //刪除地址
             this.loading = true
@@ -499,13 +648,30 @@ export default {
             })
 		},
         getLiveLogo (e) {
+            var fileData = e.target.files[0]; 
+            //读取图片数据
+            var Max_Width = 300
+            var Max_Height = 300
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var data = e.target.result;
+                //加载图片获取图片真实宽度和高度
+                var image = new Image();
+                image.onload=function(){
+                    console.log(image.width, image.height)
+                    var width = image.width;
+                    var height = image.height;
+                    isAllow = width >= Max_Width && height >= Max_Height;
+                };
+            };
+            reader.readAsDataURL(fileData)
             let url = URL.createObjectURL(e.target.files[0])
             this.url = url
         },
         deleteRow(index, rows) {
             rows.splice(index, 1);
         },
-        addLive () {
+        addLive () {                   //添加文字广告
             let that = this
             this.$refs.forms.validate(flag => {
                 if (flag) {
@@ -514,7 +680,47 @@ export default {
                     let time = D.toLocaleDateString()
                     let content = that.ruleForms.content
                     let url = that.url
-                    that.tableData.unshift({ time:time, content: content, url: url, live: '', edit: true })
+                    let data = {
+                        content: content,
+                        icon: url,
+                        id: ''
+                    }
+                    addTextGuangGaoService(data).then(res => {
+                        console.log(res)
+                        if (res.data.rtnCode == 200) {
+                            that.getTextGuangGaoList()
+                            that.$message({
+                                type: 'success',
+                                message: that.$t('lang.addSuccess')
+                            })
+                        } else {
+                            that.$message({
+                                type: 'error',
+                                message: that.$t('lang.addFail')
+                            })
+                        }
+                    }).catch(e => {
+                        that.$message({
+                            type: 'error',
+                            message: that.$t('lang.addFail')
+                        })
+                    })
+                    // that.tableData.unshift({ time:time, content: content, url: url, live: '', edit: true })
+                }
+            })
+        },
+        delTextGuangGaoService (id) {
+            let data = {
+                id: id
+            }
+            delTextGuangGaoService(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.getTextGuangGaoList()
+                    this.$message({
+                        type: 'success',
+                        message: this.$t('lang.delSuccess')
+                    })
                 }
             })
         }
@@ -579,6 +785,7 @@ export default {
     .addArea {
         padding: 5px;
         width: 75px;
+        overflow: hidden;
         font-size: 12px;
         margin-left: 20px;
         color: white;
@@ -587,6 +794,14 @@ export default {
             padding: 3px;
             width: 70px;
         }
+    }
+    .uploadBtn {
+        padding: 5px;
+        width: 75px;
+        height: 32px;
+        overflow: hidden;
+        font-size: 12px;
+        margin-left: 20px;
     }
     .addArea1 {
         padding: 5px;

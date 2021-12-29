@@ -1,7 +1,7 @@
 <template>
     <div class="Statistics">
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告統計
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" @click="back" alt="">廣告統計
         </div>
         <div class="Statistics_content">
             <div class="clear echarts_wrap mg">
@@ -187,20 +187,6 @@ export default {
             handler (val) {
                 if (val) {
                     // this.$forceUpdate()
-                    // let data = [
-                    //     { value: 1048, name: this.$t("lang.Kowloon") },
-                    //     { value: 735, name: this.$t("lang.MongKok") },
-                    //     { value: 580, name: this.$t("lang.huangdaxian") },
-                    //     { value: 484, name: this.$t("lang.shenshuibu") },
-                    //     { value: 300, name: this.$t("lang.Central") }
-                    // ]
-                    // let data1 = [
-                    //     this.$t("lang.Kowloon") , 
-                    //     this.$t("lang.MongKok"), 
-                    //     this.$t("lang.huangdaxian"),
-                    //     this.$t("lang.shenshuibu"), 
-                    //     this.$t("lang.Central")
-                    // ]
                     // this.option.series[0].data = data
                     // this.option1.xAxis[0].data = data1
                     let that = this

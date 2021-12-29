@@ -1,18 +1,18 @@
 <template>
     <div class="PlatSetting" v-loading='loading'>
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">店鋪詳細設定
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" @click="back" alt="">店鋪詳細設定
         </div>
         <div class="Settingadvertising_content_wrap noBar">
             <div class="Settingadvertising_content mg">
                 <div class="divider_wrap">
-                    <div class="sb al divider_message_title">
+                    <div class="sb al divider_message_title" @click="drawer4 = !drawer4">
                         <div class="flex">
                             <div class="divider"></div>
                             <div class="divider_text">所有店鋪設定</div>
                         </div>
                         <div class="flex">
-                            <div class="arrow_m al" @click="drawer4 = !drawer4"><img :class="[{ rotate: drawer4 }]" src="@/assets/img/pull_down.png" alt=""></div>
+                            <div class="arrow_m al" @click.stop="drawer4 = !drawer4"><img :class="['cursor',{ rotate: drawer4 }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
                     <div :class="['drawer_h', {'drawer_h1': drawer4}]">
@@ -170,17 +170,23 @@
             
             <div class="Settingadvertising_content mg" v-for="(item,i) in list" :key="i">
                 <div class="divider_wrap">
-                    <div class="sb al divider_message_title">
+                    <div class="sb al divider_message_title" @click.stop="changeD(item)">
                         <div class="flex">
                             <div class="divider"></div>
                             <div class="divider_text">{{item.shopName}}</div>
                         </div>
                         <div class="flex">
-                            <div class="delUSer cursor">註銷賬戶</div>
-                            <div class="arrow_m al" @click="drawer2 = !drawer2"><img :class="[{ rotate: drawer2 }]" src="@/assets/img/pull_down.png" alt=""></div>
+                            <!-- <div class="delUSer cursor">註銷賬戶</div> -->
+                            <el-popconfirm
+                                :title="$t('lang.setting_del') + '？'"
+                                @confirm='cancelAccount(item.shopId)'
+                                >
+                                <div class="delUSer cursor" slot="reference" @click.stop="">註銷賬戶</div>
+                            </el-popconfirm>
+                            <div class="arrow_m al"><img :class="[{ rotate: item.drawer },'cursor']" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
                     </div>
-                    <div :class="['drawer_h', {'drawer_h1': drawer2}]">
+                    <div :class="['drawer_h', {'drawer_h1': item.drawer}]">
                         <ModuleMin1 :columns="columns2" :arr="item.deviceList" ref="child">
                             <template slot="id" slot-scope="{ data }">
                                 <div class="setText tag-read cursor ju al" :data-clipboard-text="data" @click="copyMsg">
@@ -194,6 +200,13 @@
                                     <img src="@/assets/img/copy.png" alt="">
                                 </div>
                             </template>
+                            <template slot="deleUser">
+                                <div class="ju al">
+                                    <div class='deleUser cursor'>
+                                        刪除設備賬戶
+                                    </div>
+                                </div>
+                            </template>
                         </ModuleMin1>
                     </div>
                 </div>
@@ -204,14 +217,15 @@
 
 <script>
 import Clipboard from 'clipboard'
-import { getShopAndDeviceList, getShopUserListByUserId } from "@/axios/request.js"
+import { getShopAndDeviceList, getShopUserListByUserId, cancelAccount } from "@/axios/request.js"
 export default {
     data () {
         return {
-            drawer: false,
-            drawer2: false,
+            
+            drawer3: false,
             drawer1: false,
             drawer4: false,
+            drawer2: false,
             search: '',
             tableHeight:0,
             tableData:[
@@ -230,7 +244,7 @@ export default {
                 {title:'店鋪設備配置',key:'name'},
                 {title:'賬戶設備ID',slot:'id'},
                 {title:'賬戶設備Key',slot:'key'},
-                {title:'',key:''},
+                {title:'操作',slot:'slot'},
             ],
             list: [],
             pageNum: 0,
@@ -298,15 +312,18 @@ export default {
                 userId: localStorage.getItem('compoundeyesUserId')
             }
             getShopAndDeviceList(data).then(res => {
+                console.log(res)
                 if (res.data.rtnCode == 200) {
                     this.loading = false
                     this.list = res.data.data
                     this.list.forEach(item => {
+                        item.drawer = false
                         item.deviceList.forEach(child => {
                             child.active = true
                             child.name = '設備賬戶'
                             child.key = child.pwd
-                            child.id = child.userName
+                            child.id = child.userName,
+                            child.shopId = item.shopId
                         })
                     })
                 } else {
@@ -335,7 +352,7 @@ export default {
                 userId: localStorage.getItem('compoundeyesUserId')
             }
             getShopUserListByUserId(data).then(res => {
-                console.log(res)
+                // console.log(res)
                 this.loading = false
                 if (res.data.rtnCode == 200) {
                     this.getShopAndDeviceList()
@@ -366,6 +383,31 @@ export default {
                 })
             })
         },
+        cancelAccount (id) {
+            let data = {
+                shopId: id
+            }
+            cancelAccount(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.getShopAndDeviceList()
+                    this.$message({
+                        type: 'success',
+                        message: "註銷成功"
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '註銷失敗'
+                    })
+                }
+            }).catch(e => {
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.editError')
+                })
+            })
+        },
         searchByArea () {
             this.getShopUserListByUserId()
         },
@@ -378,6 +420,12 @@ export default {
                 this.getShopUserListByUserId()
             },500)
         },
+        changeD (item) {
+            console.log(item)
+            item.drawer = !item.drawer
+            this.$forceUpdate()
+        },
+
         resi () {
             let that = this
             this.$nextTick(() => {
@@ -514,6 +562,13 @@ export default {
         /deep/.el-table .cell {
             text-align: center;
         }
+    }
+    .deleUser {
+        color: white;
+        padding: 6px 20px;
+        background: red;
+        font-size: 12px;
+        margin-right: 20px;
     }
     .th_color {
         color: #7868C1;

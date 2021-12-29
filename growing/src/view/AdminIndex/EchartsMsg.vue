@@ -105,7 +105,7 @@
         width: 100%;
         min-width: 345px;
         padding: 0 20px;
-        height: 400px;
+        height: 500px;
         @media screen and (max-width: 564px) {
            margin: 20px 0;
            padding: 0;
@@ -255,7 +255,7 @@
 <template>
     <div class="EchartsMsg">
         <div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">廣告活動統計數據
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="" @click="goBack">廣告活動統計數據
         </div>
         <div class="EchartsMsg_content noBar mg">
             <div class="divider_wrap">
@@ -357,7 +357,7 @@
                             </div>
                             <div class="ECHARTS1" id="main4"></div>
                         </div>
-                        <div class="footer_echarts2 totalMSG">
+                        <div class="footer_echarts2 totalMSG" v-if="totalMsg.length != 0">
                             <div class="echarts_title sb">
                                 <div class="al echarts_title_text">
                                     <div class="point"></div>
@@ -367,18 +367,29 @@
                             <div class="sa block410" style="padding: 20px;">
                                 <div class="busyTime bold">
                                     <div>
-                                        <div class="size15">繁忙時段</div>
+                                        <div class="size15">{{totalMsg[0].time}}</div>
                                         <div>
-                                            <span class='size25'>4000</span>
+                                            <span class='size25'>{{totalMsg[0].totalMin}}</span>
                                             <span class="size15">分鐘</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="unbusyTime bold">
                                     <div>
-                                        <div class="size15">非繁忙時段</div>
+                                        <div class="size15">{{totalMsg[1].time}}</div>
                                         <div>
-                                            <span class='size25'>2585</span>
+                                            <span class='size25'>{{totalMsg[1].totalMin}}</span>
+                                            <span class="size15">分鐘</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ju">
+                                <div class="unbusyTime bold">
+                                    <div>
+                                        <div class="size15">{{totalMsg[2].time}}</div>
+                                        <div>
+                                            <span class='size25'>{{totalMsg[2].totalMin}}</span>
                                             <span class="size15">分鐘</span>
                                         </div>
                                     </div>
@@ -653,6 +664,8 @@ export default {
             value1: '',
             value2: '',
             value3: '',
+
+            totalMsg: []
         }
     },
     mounted () {
@@ -662,30 +675,28 @@ export default {
         this.getStatisticsForThepastSixMonths()
         this.getTimeActiveStatus()
 
-        var myChart = echarts.init(document.getElementById('main'));
-        myChart.setOption(this.option);
+        // var myChart = echarts.init(document.getElementById('main'));
+        // myChart.setOption(this.option);
 
-        var myChart1 = echarts.init(document.getElementById('main1'));
-        myChart1.setOption(this.option1);
+        // var myChart1 = echarts.init(document.getElementById('main1'));
+        // myChart1.setOption(this.option1);
 
-        var myChart2 = echarts.init(document.getElementById('main2'));
-        myChart2.setOption(this.option2);
+        // var myChart2 = echarts.init(document.getElementById('main2'));
+        // myChart2.setOption(this.option2);
 
-        var myChart3 = echarts.init(document.getElementById('main3'));
-        myChart3.setOption(this.option3);
+        // var myChart3 = echarts.init(document.getElementById('main3'));
+        // myChart3.setOption(this.option3);
 
-        var myChart4 = echarts.init(document.getElementById('main4'));
-        myChart4.setOption(this.option4);
+        // var myChart4 = echarts.init(document.getElementById('main4'));
+        // myChart4.setOption(this.option4);
 
-        window.addEventListener("resize",function(){
-            myChart.resize();
-            myChart1.resize();
-            myChart2.resize();
-            myChart3.resize();
-            myChart4.resize();
-        });
-
-
+        // window.addEventListener("resize",function(){
+        //     myChart.resize();
+        //     myChart1.resize();
+        //     myChart2.resize();
+        //     myChart3.resize();
+        //     myChart4.resize();
+        // });
     },
     created () {
         this.getTotalTimePeriod()
@@ -778,9 +789,13 @@ export default {
                 }
             })
         },
+
         getTotalTimePeriod () {                 //廣告活動時段總數
             getTotalTimePeriod().then(res => {
                 console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.totalMsg = res.data.data
+                }
             })
         }
     }

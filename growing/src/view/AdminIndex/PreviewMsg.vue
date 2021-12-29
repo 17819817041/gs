@@ -1,10 +1,11 @@
 <template>
     <div class="PreviewMsg" id="AddStore" v-loading='loading'>
+        <div class="back mg al">
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" @click="goBack" alt="">預覽全部資料
+        </div>
         <div class="content mg bar">
-            <!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">預覽全部資料</div> -->
-            <div class="back mg al">
-                <img class="cursor" src="@/assets/img/back_arrow.png" @click="goBack" alt="">預覽全部資料
-            </div>
+            <!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="">預覽全部資料</div> -->
+            
             <div class="noBar allcontent_wrap">
                 <div class="basicsMsg boxs theme">
                 <div class="flex divider_message_title">

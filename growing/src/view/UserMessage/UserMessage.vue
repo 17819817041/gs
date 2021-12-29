@@ -22,7 +22,7 @@
     }
     .headmsg_wrap {
         width: 100%;
-        @media screen and (max-width: 1000px) {
+        @media screen and (max-width: 1025px) {
             display: block;
         }
     }
@@ -50,7 +50,7 @@
         width: 30%;
         border-right: solid 1px rgb(212, 212, 212);
         height: 270px;
-        @media screen and (max-width: 1000px) {
+        @media screen and (max-width: 1025px) {
             width: 100%;
             height: auto;
             border: none;
@@ -59,7 +59,7 @@
     .message {
         width: 70%;
         padding-left: 100px;
-        @media screen and (max-width: 1000px) {
+        @media screen and (max-width: 1025px) {
             width: 100%;
             padding-left: 0px;
         }
@@ -79,7 +79,7 @@
     }
     .chooseHead {
         padding: 3px 0px;
-        width: 90px;
+        width: 116.5px;
         font-size: 13px;
         color: gray;
         border: solid 1px rgb(180, 180, 180);
@@ -116,6 +116,9 @@
     .message_text {
         font-size: 12px;
         color: gray;
+    }
+    .mar25 {
+        margin-top: -25px;
     }
     .edit_btn {
         padding: 5px 17px;
@@ -176,6 +179,9 @@
             color: rgb(250, 20, 20);
         }
     }
+    .mar10 {
+        margin-top: -10px;
+    }
     .sizetitle {
         transform: scale(0.9);
         color: gray;
@@ -184,7 +190,7 @@
 <template>
     <div class="UserMessage noBar" v-loading='loading'>
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">個人中心
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" @click="back" alt="">{{$t('lang.pCenter')}}
         </div>
         <div class="message_wrap mg">
             <div class="headmsg_wrap flex">
@@ -192,11 +198,11 @@
                     <div class="border">
                         <div>
                             <div class="img_wrap radius mg ju al">
-                                <img style="height: 100%;" :src="imgUrl" v-if="imgUrl" alt="">
+                                <img style="height: 100%;" :src="user.userHead" v-if="user.userHead" alt="">
                                 <img v-else style="height: 150%;" src="@/assets/img/defaultImg.png" alt="">
                             </div>
                             <label for="url">
-                                <div class="chooseHead cursor mg tc">選擇頭像</div>
+                                <div class="chooseHead cursor mg tc">{{$t('lang.headImg')}}</div>
                                 <input type="file" id="url" @change="getUrl" v-show="false">
                             </label>
                         </div>
@@ -205,7 +211,7 @@
                 </div>
                 <div class="message">
                     <div class="message_index">
-                        <div class="message_title bold">電郵地址</div>
+                        <div class="message_title bold">{{$t('lang.myEmail')}}</div>
                         <div class="message_msg sb al">
                             <div class="message_text">{{user.email}}</div>
                             <el-popover
@@ -215,52 +221,56 @@
                                 <div class="" style="width: 225px;" v-show="active">
                                     <div class="al" style="margin-bottom: 10px;">
                                         <img src="@/assets/img/notice.png" alt="">
-                                        <div class="size12 sizetitle">您正使用電子郵件驗證身份</div>
+                                        <div class="size12 sizetitle">{{$t('lang.working')}}</div>
                                     </div>
-                                    <el-form :model="ruleForm" status-icon label-position='right' :rules="rules" ref="form" label-width="65px">
-                                        <el-form-item label="電郵" style="margin-bottom: 0">
-                                            <div class="message_text">{{user.email}}</div>
+                                    <el-form :model="ruleForm" status-icon 
+                                    :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'"
+                                        :rules="rules" ref="form" label-width="65px">
+                                        <el-form-item :label="$t('lang.e_email')" style="margin-bottom: 0;">
+                                            <div :class="['message_text', { mar25: $i18n.locale == 'en-US'}]">{{user.email}}</div>
                                         </el-form-item>
-                                        <el-form-item prop="veri" label="驗證碼">
+                                        <el-form-item prop="veri" :label="$t('lang.ver')">
                                             <div class="al">
-                                                <div class="verify al">
-                                                    <input type="text" @keyup.enter="sure" v-model="ruleForm.veri" oninput="value=value.replace(/[^\d]/g,'')">
-                                                    <div class="getVerify cursor tc" @click="getVerify">點擊獲取驗證碼<span v-if="sixty != 0">({{sixty}})</span></div>
+                                                <div :class="['verify al', { mar10: $i18n.locale == 'en-US' }]">
+                                                    <input type="text" @keyup.enter="sure" v-model="ruleForm.veri" 
+                                                    oninput="value=value.replace(/[^\d]/g,'')">
+                                                    <div class="getVerify cursor tc"
+                                                     @click="getVerify">{{$t('lang.getVer')}}<span v-if="sixty != 0">({{sixty}})</span></div>
                                                 </div>
                                             </div>
                                         </el-form-item>
                                     </el-form>
                                     <div class="sb">
                                         <div class="addCate cursor al" @click='sure' >
-                                            確定
+                                            {{$t('lang.sure')}}
                                         </div>
-                                        <div class="addCate cursor al" @click='visible = false,active = true'>取消</div>
+                                        <div class="addCate cursor al" @click='visible = false,active = true'>{{$t('lang.cancel')}}</div>
                                     </div>
                                 </div>
                                 <div class="width: 225px" v-show="!active">
                                     <el-form :model="ruleForm1" status-icon label-position='right' :rules="rules1" ref="form1">
-                                        <div class="size12" style="padding: 5px;">請輸入您修改的電郵地址</div>
+                                        <div class="size12" style="padding: 5px;">{{$t('lang.newEmail')}}</div>
                                         <el-form-item prop="newemail">
                                             <el-input v-model="ruleForm1.newemail" @keyup.enter.native="sure1"></el-input>
                                         </el-form-item>
                                     </el-form>
                                     <div class="sb">
                                         <div class="addCate cursor al" @click='sure1' >
-                                            確定
+                                            {{$t('lang.sure')}}
                                         </div>
-                                        <div class="addCate cursor al" @click='visible = false,active = true'>取消</div>
+                                        <div class="addCate cursor al" @click='visible = false,active = true'>{{$t('lang.cancel')}}</div>
                                     </div>
                                 </div>
                                 <div class="edit_btn ju al cursor" slot="reference" 
                                 @click="visible = true,ruleForm.veri = '',ruleForm1.newemail = '',visible1 = false,visible2 = false">
                                     <img src="@/assets/img/email.png" alt="">
-                                    修改電郵
+                                    {{$t('lang.checkEmail')}}
                                 </div>
                             </el-popover>
                         </div>
                     </div>
                     <div class="message_index">
-                        <div class="message_title bold">聯繫電話</div>
+                        <div class="message_title bold">{{$t('lang.myPhone')}}</div>
                         <div class="message_msg sb al">
                             <div class="message_text">+852 {{user.phone}}</div>
                             <el-popover
@@ -270,52 +280,53 @@
                                 <div class="" style="width: 245px;" v-show="active1">
                                     <div class="al" style="margin-bottom: 10px;">
                                         <img src="@/assets/img/notice.png" alt="">
-                                        <div class="size12 sizetitle">您正使用電子郵件驗證身份</div>
+                                        <div class="size12 sizetitle">{{$t('lang.working')}}</div>
                                     </div>
-                                    <el-form :model="ruleForm2" status-icon label-position='right' :rules="rules2" ref="form2" label-width="75px">
-                                        <el-form-item label="電郵" style="margin-bottom: 0">
-                                            <div class="message_text">{{user.email}}</div>
+                                    <el-form :model="ruleForm2" status-icon  :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'"
+                                    :rules="rules2" ref="form2" label-width="75px">
+                                        <el-form-item :label="$t('lang.e_email')" style="margin-bottom: 0">
+                                            <div :class="['message_text', { mar25: $i18n.locale == 'en-US'}]">{{user.email}}</div>
                                         </el-form-item>
-                                        <el-form-item prop="veri" label="驗證碼">
+                                        <el-form-item prop="veri" :label="$t('lang.ver')">
                                             <div class="al">
-                                                <div class="verify al">
+                                                <div :class="['verify al', { mar10: $i18n.locale == 'en-US' }]">
                                                     <input type="text" @keyup.enter="sure2" v-model="ruleForm2.veri" oninput="value=value.replace(/[^\d]/g,'')">
-                                                    <div class="getVerify cursor tc" @click="getVerify">點擊獲取驗證碼<span v-if="sixty != 0">({{sixty}})</span></div>
+                                                    <div class="getVerify cursor tc" @click="getVerify">{{$t('lang.getVer')}}<span v-if="sixty != 0">({{sixty}})</span></div>
                                                 </div>
                                             </div>
                                         </el-form-item>
                                     </el-form>
                                     <div class="sb">
                                         <div class="addCate cursor al" @click='sure2' >
-                                            確定
+                                            {{$t('lang.sure')}}
                                         </div>
-                                        <div class="addCate cursor al" @click='visible1 = false,active1 = true'>取消</div>
+                                        <div class="addCate cursor al" @click='visible1 = false,active1 = true'>{{$t('lang.cancel')}}</div>
                                     </div>
                                 </div>
                                 <div class="width: 225px" v-show="!active1">
                                     <el-form :model="ruleForm3" status-icon label-position='right' :rules="rules3" ref="form3">
-                                        <div class="size12" style="padding: 5px;">請輸入您修改的聯繫電話</div>
+                                        <div class="size12" style="padding: 5px;">{{$t('lang.newPhone')}}</div>
                                         <el-form-item prop="newphone">
                                             <el-input @keyup.enter.native="sure3" v-model="ruleForm3.newphone"></el-input>
                                         </el-form-item>
                                     </el-form>
                                     <div class="sb">
                                         <div class="addCate cursor al" @click='sure3'>
-                                            確定
+                                            {{$t('lang.sure')}}
                                         </div>
-                                        <div class="addCate cursor al" @click='visible1 = false,active1 = true'>取消</div>
+                                        <div class="addCate cursor al" @click='visible1 = false,active1 = true'>{{$t('lang.cancel')}}</div>
                                     </div>
                                 </div>
                                 <div class="edit_btn ju al cursor" slot="reference" 
                                 @click="visible1 = true,ruleForm2.veri = '',visible = false,visible2 = false">
                                     <img src="@/assets/img/phone.png" alt="">
-                                    修改聯繫電話
+                                    {{$t('lang.checkPhone')}}
                                 </div>
                             </el-popover>
                         </div>
                     </div>
                     <div class="message_index">
-                        <div class="message_title bold">密碼</div>
+                        <div class="message_title bold">{{$t('lang.password')}}</div>
                         <div class="message_msg sb al">
                             <div class="message_text">**********</div>
                             <el-popover
@@ -325,72 +336,75 @@
                                 <div class="" style="width: 245px;" v-show="active2">
                                     <div class="al" style="margin-bottom: 10px;">
                                         <img src="@/assets/img/notice.png" alt="">
-                                        <div class="size12 sizetitle">您正使用電子郵件驗證身份</div>
+                                        <div class="size12 sizetitle">{{$t('lang.working')}}</div>
                                     </div>
-                                    <el-form :model="ruleForm6" status-icon label-position='right' :rules="rules6" ref="form4" label-width="75px">
-                                        <el-form-item label="電郵" style="margin-bottom: 0">
-                                            <div class="message_text">{{user.email}}</div>
+                                    <el-form :model="ruleForm6" status-icon 
+                                    :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'" :rules="rules6" ref="form4" label-width="75px">
+                                        <el-form-item :label="$t('lang.e_email')" style="margin-bottom: 0">
+                                            <div :class="['message_text', { mar25: $i18n.locale == 'en-US'}]">{{user.email}}</div>
                                         </el-form-item>
-                                        <el-form-item prop="veri" label="驗證碼">
+                                        <el-form-item prop="veri" :label="$t('lang.ver')">
                                             <div class="al">
-                                                <div class="verify al">
+                                                <div :class="['verify al', { mar10: $i18n.locale == 'en-US' }]">
                                                     <input type="text" @keyup.enter="sure4" v-model="ruleForm6.veri" oninput="value=value.replace(/[^\d]/g,'')">
-                                                    <div class="getVerify cursor tc" @click="getVerify">點擊獲取驗證碼<span v-if="sixty != 0">({{sixty}})</span></div>
+                                                    <div class="getVerify cursor tc" @click="getVerify">{{$t('lang.getVer')}}<span v-if="sixty != 0">({{sixty}})</span></div>
                                                 </div>
                                             </div>
                                         </el-form-item>
                                     </el-form>
                                     <div class="sb">
                                         <div class="addCate cursor al" @click='sure4' >
-                                            確定
+                                            {{$t('lang.sure')}}
                                         </div>
-                                        <div class="addCate cursor al" @click='visible2 = false,active2 = true'>取消</div>
+                                        <div class="addCate cursor al" @click='visible2 = false,active2 = true'>{{$t('lang.cancel')}}</div>
                                     </div>
                                 </div>
                                 <div style="width: 265px" v-show="!active2">
-                                    <el-form :model="ruleForm5" status-icon label-position='right' :rules="rules5" ref="form5">
+                                    <el-form :model="ruleForm5" status-icon 
+                                    :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'" :rules="rules5" ref="form5">
                                         <!-- <div class="size12" style="padding: 5px;">請輸入您修改的聯繫電話</div> -->
-                                        <el-form-item prop="oldPassword" label="情輸入原密碼" style="margin-bottom: 12px;">
+                                        <el-form-item prop="oldPassword" :label="$t('lang.oldPwd')" style="margin-bottom: 12px;">
                                             <el-input v-model="ruleForm5.oldPassword"></el-input>
                                         </el-form-item>
-                                        <el-form-item prop="newPassword" label="請輸入您修改的密碼">
+                                        <el-form-item prop="newPassword" :label="$t('lang.newPwd')">
                                             <el-input @keyup.enter.native="sure5" v-model="ruleForm5.newPassword"></el-input>
                                         </el-form-item>
                                     </el-form>
                                     <div class="sb">
                                         <div class="addCate cursor al" @click='sure5'>
-                                            確定
+                                            {{$t('lang.sure')}}
                                         </div>
-                                        <div class="addCate cursor al" @click='visible2 = false,active2 = true'>取消</div>
+                                        <div class="addCate cursor al" @click='visible2 = false,active2 = true'>{{$t('lang.cancel')}}</div>
                                     </div>
                                 </div>
                                 <div class="edit_btn ju al cursor" slot="reference" 
                                 @click="visible2 = true,ruleForm6.veri = '',visible1 = false,visible = false">
                                     <img src="@/assets/img/password.png" alt="">
-                                    修改密碼
+                                    {{$t('lang.checkPwd')}}
                                 </div>
                             </el-popover>
                         </div>
                     </div>
                     <div class="message_index">
-                        <div class="message_title bold">賬戶啟用時間</div>
+                        <div class="message_title bold">{{$t('lang.createTime')}}</div>
                         <div class="message_msg sb al">
                             <div class="message_text">{{user.createTime}}</div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="ju">
+            <!-- <div class="ju">
                 <div class="save mg al cursor">
                     <img src="@/assets/img/download.png" alt="">保存設置
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
 
 <script>
-import { generateCode, getUserById, verify, updateEmail, updatePhone, updatePwd, updateHead } from '@/axios/request.js'
+import { generateCode, verify, updateEmail, updatePhone, updatePwd, updateHead } from '@/axios/request.js'
+import { uploadOSS } from '@/utils/oss';
 export default {
     data () {
         return {
@@ -458,25 +472,49 @@ export default {
                     { required:true, message:'請輸入驗證碼', trigger:"blur" }
                 ],
             },
-            loading: false,
-            user: {
-                company: "無",
-                createTime: "無",
-                email: "無",
-                id: 0,
-                phone: "無",
-                pwd: "無",
-                userHead: "",
-                userState: 0,
-                userType: 0,
-                username: "無",
-            },
+            // loading: false,
             sixty: 0,
             time: null
         }
     },
     created () {
-        this.getUser()
+        this.$store.dispatch('getUser', this)
+    },
+    watch: {
+		user: {
+			handler (val) {
+				if (val) {
+					this.user = val
+				}
+			},
+		},
+        loading: {
+			handler (val) {
+				if (val) {
+					this.loading = val
+				}
+			},
+		},
+    },
+    computed: {
+		user:{             //類型列表
+			get () { return this.$store.state.user.user },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'user',
+					value: val
+				})
+			}
+		},
+        loading:{            //類型列表
+			get () { return this.$store.state.user.loading },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'loading',
+					value: val
+				})
+			}
+		},
     },
     methods: {
         start () {
@@ -491,34 +529,6 @@ export default {
         },
         stop () {
             clearInterval(this.time)
-        },
-        getUser () {       //獲取賬戶信息
-            this.loading = true
-            let data = {
-                userId: localStorage.getItem('compoundeyesUserId')
-            }
-            getUserById(data).then(res => {
-                this.loading = false
-                if (res.data.rtnCode == 200) {
-                    let D = new Date(res.data.data.createTime)
-                    let T = D.toLocaleDateString()
-                    res.data.data.createTime = T.split('/').join('-')
-                    this.user = res.data.data
-                } else {
-                    this.$message({
-                        type: 'warning',
-                        message: '登錄過期,請重新登錄'
-                    })
-                    this.$router.replace('/Login')
-                }
-            }).catch(e => {
-                this.loading = false
-                this.$message({
-                    type: 'error',
-                    message: '獲取信息失敗'
-                })
-                this.$router.replace('/Login')
-            })
         },
         back () {
             this.$router.back()
@@ -739,21 +749,41 @@ export default {
                 })
             })
         },
-
-
         getUrl (e) {            //上傳本地圖片
             let url = URL.createObjectURL(e.target.files[0])
             this.imgUrl = url
+            this.cutVideo(e.target.files[0])
         },
-        // updateHead () {         //修改頭像
-        //     let data = {
-        //         head: '',
-        //         userId: localStorage.getItem('compoundeyesUserId')
-        //     }
-        //     updateHead(data).then(res => {
-        //         sonsole.log(res)
-        //     })
-        // }
+        async cutVideo(options) {
+            options.uid = new Date().getTime()
+            this.loading = true
+            try {
+                let file = options; // 拿到 file
+                let files = new window.File([file], 'image.png', {type: file.type})
+                let res = await uploadOSS(files)
+                this.updateHead(res.fileUrl)
+                // 返回数据
+                this.$emit("fileData", res);
+            } catch (e) {
+                this.loading = false
+                this.$message.error('圖片上傳失败！');
+            }
+        },
+        updateHead (img) {         //修改頭像
+            let data = {
+                head: img,
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            updateHead(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.$store.dispatch('getUser', this)
+                    this.$message.success('頭像修改成功')
+                } else {
+
+                }
+            })
+        }
     }
 }
 </script>

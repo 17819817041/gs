@@ -1,12 +1,11 @@
 <template>
-    <div class="AdvertisingAddPlus">
-		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
+    <div class="AdvertisingAddPlus" v-loading='loading'>
 		<div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">Plus廣告計劃
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="" @click="goBack">Plus{{$t('lang.comboPlan')}}
         </div>
 		<div class="noBar" style="height: calc(100% - 35px);overflow: auto;margin-top: 15px;">
 			<div :class="['content mg bar',{ heigh: !submit }]">
-				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
+				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
 				<div class="noBar" style="height: calc(100% - 0px); overflow:auto" v-show="submit">
 					<div class="basicsMsg theme" v-show="submit">
 						<div class=" basicsMsg_item bold al">
@@ -20,19 +19,21 @@
 								v-model="ruleForm.name"></el-input>
 							</el-form-item>
 							<el-form-item :label="$t('lang.industry')" prop="type">  
-								<div class="flex br al">
-									<div class="flex" style="margin-right: 10px;">
+								<div class="flex br al clear">
+									<div class="float" style="margin-right: 10px;">
 										<el-select v-model="ruleForm.type" :placeholder="$t('lang.pldselecttype')">
-											<el-option :label="$t('lang.food')" :value="$t('lang.food')" @click.native="drawer_tc = true"></el-option>
-											<el-option :label="$t('lang.Technology')" :value="$t('lang.Technology')" @click.native="drawer_tc = true"></el-option>
-											<el-option :label="$t('lang.medical')" :value="$t('lang.medical')" @click.native="drawer_tc = true"></el-option>
-											<el-option :label="$t('lang.car')" :value="$t('lang.car')" @click.native="drawer_tc = true"></el-option>
+											<el-option v-for="(item,i) in getTypeList" :key="i" @click.native="getListByTypeId"
+												:label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
+												item.find( res => res.language == "zh-TW").guangGaoTypeName: 
+												item.find( res => res.language == "en-US").guangGaoTypeName '
+												:value="item[0].id">
+											</el-option>
 										</el-select>
 										<!-- <div class="addCate cursor al" @click="addType(ruleForm.type)">
 											{{$t("lang.addbtn")}}
 										</div> -->
 									</div>
-									<div class="list clear">
+									<div class="list clear float">
 										<div style="color: #B0B0B0;" class="list_item1 float al" v-for="(item,i) in typeList" :key="i">
 											{{item}} <span class="al" style="margin-left: 5px"><img class="cursor"
 											@click="deleType(i)" src="@/assets/img/cha.png" alt=""></span>
@@ -75,20 +76,22 @@
 										<el-select v-model="ruleForm.cmediaType" :placeholder="$t('lang.pldselecttype')" 
 										@change="getType">
 											<el-option :label="$t('lang.image')" value="1"></el-option>
-											<el-option :label="$t('lang.video')" value="2"></el-option>
+											<el-option :label="$t('lang.video')" value="3"></el-option>
 										</el-select>
 									</div>
 								</el-form-item>
 							</div>
 							<el-form-item :label="$t('lang.adcontent')" prop="content">
-								<div class="textarea_wrap clear">
-									<label for="img">
-										<div class="addImg ju al float">
-											<img style="height: 30%;" src="@/assets/img/add.png" alt="">
-										</div>
-										<input type="file" id="img" v-show="false" multiple="multiple" @change="cahngeFile">
-									</label>
-									<div class="textarea_wrap_item float" v-for="(item,i) in imageList" :key="i">
+								<div :class="['textarea_wrap clear', { content_down: $i18n.locale == 'zh-CN' }]">
+									<el-upload
+                                        ref="fileUpload" action="" :headers="uploadProps.headers" list-type="picture-card" 
+										:show-file-list="false" multiple :limit='listLength' :on-change="videoChange"
+                                        :http-request="fnUploadRequest" :on-success="handleSuccess" :on-error="handleError" :on-progress="uploadProcess"
+										:before-upload="handleUpload" :on-exceed='outFile'>
+                                        <i class="el-icon-plus"></i>
+										<el-progress v-show="imgFlag == true" type="circle" :percentage="percent"></el-progress>
+                                    </el-upload>
+									<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm.imageList" :key="i">
 										<div class="imageList_wrap">
 											<div class="deleImg radius ju al" @click.stop="deleImg(i)"><img style="heihgt: 100%;" src="@/assets/img/cha.png" alt=""></div>
 											<div class="textarea_wrap_item_child ju al cursor">
@@ -112,10 +115,10 @@
 										<div class="imageList_size tc">{{item.size}}</div>
 									</div>
 								</div>
-								<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
+								<div :class="[{content_down1: $i18n.locale == 'zh-CN'}]" style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
 									{{$t('lang.becare')}}
 								</div>
-								<div style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
+								<div :class="[{content_down1: $i18n.locale == 'zh-CN'}]" style='font-size: 12px; line-height: 15px;'>{{$t('lang.becare1')}}</div>
 							</el-form-item>
 						</el-form>
 					</div>
@@ -145,21 +148,22 @@
 							:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" class="demo-ruleForm">
 								<el-form-item label="廣告媒體投放時段">
 									<div class="time_duan">
-										<div class="clear">
-											<div class="float" style="width: 70px;min-width: 70px;">繁忙時段</div>
-											<div class="float float320"><el-checkbox v-model="checked2" disabled>10:00~11:00(15分鐘)</el-checkbox></div>
-											<div class="float"><el-checkbox v-model="checked2" disabled>11:00~12:00(15分鐘)</el-checkbox></div>
-										</div>
-										<div class="clear" style="margin: 15px 0;">
-											<div class="float" style="width: 70px;min-width: 70px;">超繁忙時段</div>
-											<div class="float float320"><el-checkbox v-model="checked2" disabled>12:00~13:00(20分鐘)</el-checkbox></div>
-											<div class="float"><el-checkbox v-model="checked2" disabled>18:00~19:00(20分鐘)</el-checkbox></div>
-										</div>
-										<div class="clear">
-											<div class="float" style="width: 70px;min-width: 70px;">非繁忙時段</div>
-											<div class="float float320"><el-checkbox v-model="checked2" disabled>19:00~20:00(10分鐘)</el-checkbox></div>
-											<div class="float"><el-checkbox v-model="checked2" disabled>20:00~21:00(10分鐘)</el-checkbox></div>
-											<div class="float"><el-checkbox v-model="checked2" disabled>21:00~22:00(10分鐘)</el-checkbox></div>
+										<div class="clear" v-for="(item,i) in pageTimeList" :key="i">
+											<div class="float float320" style="width: 70px;min-width: 70px;" v-if="item.name == '1' && item.timeList.length != 0">{{$t('lang.buTime')}}</div>
+											<div class="float float320" style="width: 70px;min-width: 70px;" v-else-if="item.name == '2' && item.timeList.length != 0">{{$t('lang.ubbuTime')}}</div>
+											<div class="float float320" style="width: 70px;min-width: 70px;" v-else-if="item.name == '3' && item.timeList.length != 0">{{$t('lang.sbuTime')}}</div>
+											<div class="float" v-if="item.name == '1' && item.timeList.length != 0">
+												<div class="float" v-for="(res,i) in item.timeList" :key="i"><el-checkbox v-model="checked2" 
+												disabled>{{res.packageName}}({{res.num}}分鐘)</el-checkbox></div>
+											</div>
+											<div class="float" v-if="item.name == '2' && item.timeList.length != 0">
+												<div class="float" v-for="(res,i) in item.timeList" :key="i"><el-checkbox v-model="checked2" 
+												disabled>{{res.packageName}}({{res.num}}分鐘)</el-checkbox></div>
+											</div>
+											<div class="float" v-if="item.name == '3' && item.timeList.length != 0">
+												<div class="float" v-for="(res,i) in item.timeList" :key="i"><el-checkbox v-model="checked2" 
+												disabled>{{res.packageName}}({{res.num}}分鐘)</el-checkbox></div>
+											</div>
 										</div>
 									</div>
 								</el-form-item>
@@ -168,8 +172,8 @@
 									<div class="list clear">
 										<div style="color: #B0B0B0;" class="list_item float al cursor" 
 										@click="storehit(i)"
-										v-for="(item,i) in tc_storeList" :key="i">
-											{{item}} <span class="al" style="margin-left: 5px"></span>
+										v-for="(item,i) in storeList" :key="i">
+											{{item.msg}} <span class="al" style="margin-left: 5px"></span>
 										</div>
 									</div>
 									<div class="map_wrap">
@@ -230,140 +234,47 @@
 			title="請選擇您需要的套餐內容"
 			:visible.sync="drawer_tc"
 			:direction="direction">
-			<div style="padding: 0 20px;overflw:auto;" class="noBar scale">
-				<div @click="active = !active" 
-				:class="['technology_content_item cursor',{ mgb: active, 'technology_content_item_border': choose == 1 }]" v-show="technologysubmit">
-					<div class="drawer_arrow" @click.stop="active = !active">
-						<img style="height: 90%;" :class="[{'rotate': active}]" src="@/assets/img/pull_down.png" alt="">
+			<div style="padding: 0 20px;overflw:auto;height: 100%" class="noBar scale" v-loading='dloading'>
+				<div @click="item.active = !item.active" v-for="(item,i) in combo" :key="i"
+					:class="['technology_content_item cursor',{'technology_content_item_border': choose == 1 }]" v-show="technologysubmit">
+					<div class="drawer_arrow" @click="active = !item.active">
+						<img style="height: 90%;" :class="[{'rotate': item.active}]" src="@/assets/img/pull_down.png" alt="">
 					</div>
-					<div class="taocan_title bold">旺角街道高流量商鋪廣告套餐</div>
+					<div class="taocan_title bold">{{item.packageName}}</div>
 					<div class="clear">
 						<div class="float title_p sa al">
 							<div>
-								<div class="technology_bold">繁忙時段</div>
-								<div class="technology_size12">9am-9pm廣告高曝光時間</div>
+								<div class="technology_bold">{{item.titleOne}}</div>
+								<div class="technology_size12">{{item.titleOneContent}}</div>
 							</div>
 							<div>
-								<div class="technology_bold">旺角街道高流量商鋪</div>
-								<div class="technology_size12">由多加旺角街道中人流量集中店鋪組成</div>
+								<div class="technology_bold">{{item.titleTwo}}</div>
+								<div class="technology_size12">{{item.titleTwoContent}}</div>
 							</div>
 						</div>
 						<div class="float title_p1 sa al">
 							<div>
 								<div class="technology_bold_red">計劃原價</div>
 								<div class="technology_bold_red1" style="text-decoration: line-through;">
-									$49999 HKD
+									${{item.oldPrice}} HKD
 								</div>
 							</div>
-							<div>
-								<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
+							<div class="bold" style="font-size: 14px">
+								{{item.concessionalRate}}%
 							</div>
 							<div class="flex al">
 								<div class="technology_bold dor radius ju al">$</div>
-								<div class="technology_bold technology_price">39999</div>
+								<div class="technology_bold technology_price">{{item.presentPrice}}</div>
 								<div class="hkd">HKD</div>
 								<div :class="['choose_btn cursor technology_bold',
-								{ 'choose_btn_background':choose == 1 }]" 
-								@click.stop='choosetaocan(1,"39999",5)'>選中</div>
+								{ 'choose_btn_background':choose == item.pageckageId }]" 
+								@click.stop='choosetaocan(item.pageckageId)'>選中</div>
 							</div>
 						</div>
 					</div>
-					<div :class="['content_msg',{ maxheight: !active }]">
+					<div :class="['content_msg',{ maxheight: !item.active }]">
 						<div class="bold">套餐內容</div>
-						<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
-						<div class="msg_item">精確投放到指定旺角街道店鋪，由高人流量店鋪組成</div>
-						<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
-						<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
-					</div>
-				</div>
-				<div @click="active1 = !active1" 
-				:class="['technology_content_item cursor',{ mgb: active1, 'technology_content_item_border': choose == 2 }]" v-show="technologysubmit">
-					<div class="drawer_arrow" @click.stop="active1 = !active1">
-						<img style="height: 90%;" :class="[{'rotate': active1}]" src="@/assets/img/pull_down.png" alt="">
-					</div>
-					<div class="taocan_title bold">中環街道高流量商鋪廣告套餐</div>
-					<div class="clear">
-						<div class="float title_p sa al">
-							<div>
-								<div class="technology_bold">非繁忙時段</div>
-								<div class="technology_size12">9pm-9am廣告播放時間</div>
-							</div>
-							<div>
-								<div class="technology_bold">中環街道高流量商鋪</div>
-								<div class="technology_size12">由多加中環街道中人流量集中店鋪組成</div>
-							</div>
-						</div>
-						<div class="float title_p1 sa al">
-							<div>
-								<div class="technology_bold_red">計劃原價</div>
-								<div class="technology_bold_red1" style="text-decoration: line-through;">
-									$69999 HKD
-								</div>
-							</div>
-							<div>
-								<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
-							</div>
-							<div class="flex al">
-								<div class="technology_bold dor radius ju al">$</div>
-								<div class="technology_bold technology_price">59999</div>
-								<div class="hkd">HKD</div>
-								<div :class="['choose_btn cursor technology_bold',
-								{ 'choose_btn_background':choose == 2 }]" 
-								@click.stop='choosetaocan(2,"59999",7)'>選中</div>
-							</div>
-						</div>
-					</div>
-					<div :class="['content_msg',{ maxheight: !active1 }]">
-						<div class="bold">套餐內容</div>
-						<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
-						<div class="msg_item">精確投放到指定中環街道店鋪，由高人流量店鋪組成</div>
-						<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
-						<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
-					</div>
-				</div>
-				<div @click="active2 = !active2" 
-				:class="['technology_content_item cursor',{ mgb: active2, 'technology_content_item_border': choose == 3 }]" v-show="technologysubmit">
-					<div class="drawer_arrow" @click.stop="active2 = !active2">
-						<img style="height: 90%;" :class="[{'rotate': active2}]" src="@/assets/img/pull_down.png" alt="">
-					</div>
-					<div class="taocan_title bold">黃大仙街道高流量商鋪廣告套餐</div>
-					<div class="clear">
-						<div class="float title_p sa al">
-							<div>
-								<div class="technology_bold">繁忙時段</div>
-								<div class="technology_size12">9am-9pm廣告高曝光時間</div>
-							</div>
-							<div>
-								<div class="technology_bold">黃大仙街道高流量商鋪</div>
-								<div class="technology_size12">由多加黃大仙街道中人流量集中店鋪組成</div>
-							</div>
-						</div>
-						<div class="float title_p1 sa al">
-							<div>
-								<div class="technology_bold_red">計劃原價</div>
-								<div class="technology_bold_red1" style="text-decoration: line-through;">
-									$79999 HKD
-								</div>
-							</div>
-							<div>
-								<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
-							</div>
-							<div class="flex al">
-								<div class="technology_bold dor radius ju al">$</div>
-								<div class="technology_bold technology_price">69999</div>
-								<div class="hkd">HKD</div>
-								<div :class="['choose_btn cursor technology_bold',
-								{ 'choose_btn_background':choose == 3 }]" 
-								@click.stop='choosetaocan(3,"69999",10)'>選中</div>
-							</div>
-						</div>
-					</div>
-					<div :class="['content_msg',{ maxheight: !active2 }]">
-						<div class="bold">套餐內容</div>
-						<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
-						<div class="msg_item">精確投放到指定黃大仙街道店鋪，由高人流量店鋪組成</div>
-						<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
-						<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
+						<div class="msg_item" v-for="(res,i) in item.contentList" :key='i'>{{res}}</div>
 					</div>
 				</div>
 			</div>
@@ -388,9 +299,16 @@
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import dimg from "@/assets/img/growing.jpg"
+import mar from "@/assets/img/marker.png"
+import { uploadOSS } from '@/utils/oss';
+import { genPackageOrder, getListByTypeId, getbyId, getuploadtoken } from "@/axios/request.js"
 export default {
     data() {
         return {
+			listLength: 1,
+			imgFlag: false,
+			percent: 0,
+
 			previewMP: {},
 			videoWrap: false,
 			showVideo: false,
@@ -407,7 +325,6 @@ export default {
 			dimg1: '',
 			taocanDetail: false,
 			checked2: true,
-			tc_storeList: ['九龍店', '車展會','科技大廈', '醫院', '時尚大廳'],
 
 			copy1: [],
 			copy2: [],
@@ -431,11 +348,13 @@ export default {
                 // time: '',
                 type: '',
 				date: '',
+				cmediaType1: 0,
                 startDate: '',
-				endtDate: '',
+				endDate: '',
                 content: '',
 				mediaType: '',
 				cmediaType: '',
+				imageList: [],
 				inp: 1,
             },
             rules: {
@@ -518,8 +437,6 @@ export default {
                     return time.getTime() < this.ruleForm.startDate || time.getTime() < Date.now() + 8.64e7;
                 }
             },
-            startDate: '',
-			endDate: '',
             value2: '',
 			typeList: [],
 			areaList: [],
@@ -540,6 +457,11 @@ export default {
             active2: false,
 			choose: null,
 			technologysubmit: true,
+			combo: [],
+			dloading: false,
+			loading: false,
+			pageTimeList: [],
+			pagecomboId: null
 		}
     },
 	components: { ElImageViewer },
@@ -569,10 +491,10 @@ export default {
 		this.fun()
     },
 	created () {
+		this.$store.dispatch('getTypeList',this)
 		this.dimg = dimg
 	},
     mounted () {
-        this.initMap(22.6,114.1,1)
 		window.shopadd = this.shopadd;
 		window.onPreview = this.onPreview;
 		window.closewin = this.closewin;
@@ -596,12 +518,383 @@ export default {
 					}
                 }
             }
-        }
+        },
+		getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+					this.$store.dispatch('getAddress',this) 
+				}
+			},
+		},
+		addressList: {
+			handler (val) {
+				if (val) {
+					this.addressList = val
+				}
+			}
+		},
+		mapstoreList: {
+			handler (val) {
+				if (val) {
+					this.mapStoreListShow = []
+					this.mapstoreList = val
+					val.forEach((child,i) => {
+						child.area = '暫無地區'
+						this.addressList.forEach(item => {
+							if (child.addressParentId == item.id) {
+								child.area = item.addressLanguageDtos.find( res => res.language == "zh-TW") && this.$i18n.locale == "zh-CN" ? 
+								item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+								item.addressLanguageDtos.find( res => res.language == "en-US").addressName
+							}
+						})
+						this.mapStoreListShow.push({
+							position: new google.maps.LatLng(child.latitude,child.longitude),
+							type: "info",
+							msg: child.shopName,
+							area: child.area,
+							address: child.shopAddressName,
+							widthAndHeihth: child.widthAndHeihth,
+							shopId: child.shopId,
+							timeIntervalNames: child.timeIntervalNames,
+							typeNames: child.typeNames,
+							priceContents: child.priceContents,
+							addressParentId: child.addressParentId,
+							addressId: child.addressId,
+							images: child.images
+						})
+					})
+					this.initMap(22.6,114.1,1)
+				}
+			},
+		},
     },
 	computed: {
-        lang () { return this.$i18n.locale }
+        lang () { return this.$i18n.locale },
+		getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		},
+		addressList: {           //地址列表
+			get () { return this.$store.state.user.addressList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'addressList',
+					value: val
+				})
+			}
+		},
+		mapstoreList:{             //店鋪列表
+			get () { return this.$store.state.user.storeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'storeList',
+					value: val
+				})
+			}
+		},
+		uploadProps() {
+            return {
+                // action: `${process.env.VUE_APP_BASE_API}/api/file/upload`,
+                headers: {
+                    // 接口可能要带token: "",
+                    Authorization: getuploadtoken(),
+                },
+                data: {},
+            };
+        },
     },
     methods: {
+		genPackageOrder () {
+			this.loading = true
+			let data = {
+				guangGaoPackageOrderDtoJson: {
+					"endTime": String(new Date(this.ruleForm.endDate).toLocaleDateString().split('/').join('-')),
+					"guangGaoContentDtos": [{
+						"fileType":  Number(this.ruleForm.cmediaType1),
+						"url": "www.baidu.png"
+					}],
+					"length": this.ruleForm.inp,
+					"name": this.ruleForm.name,
+					"packageId": this.pagecomboId,
+					"startTime": String(new Date(this.ruleForm.startDate).toLocaleDateString().split('/').join('-')),
+					"typeId": this.ruleForm.type,
+					"userId": Number(localStorage.getItem('compoundeyesUserId'))
+				}
+			}
+			let str = JSON.stringify(data.guangGaoPackageOrderDtoJson)
+			const qs = require('qs')
+			let data1 = qs.stringify({
+				guangGaoPackageOrderDtoJson: str
+			})
+			genPackageOrder(data1).then(res => {
+				this.loading = false
+				console.log(res)
+				if (res.data.rtnCode == 200) {
+					this.submit = false
+					this.$message({
+						type: 'success',
+						message: this.$t('lang.addSuccess')
+					})
+				} else {
+					this.$message({
+						type: 'error',
+						message: res.data.msg
+					})
+				}
+			}).catch(e => {
+				this.loading = false
+				this.$message({
+					type: 'error',
+					message: this.$t('lang.addFail')
+				})
+			})
+		},
+
+		handleExceed(file, fileList){
+            this.$message.error('上传失败，限制上传数量10个文件以内！');
+        },
+        handleUpload(file){
+			if (this.ruleForm.mediaType == 'image') {
+				let boo = false
+				if (this.ruleForm.imageList.length <= 10 ) { boo = true }
+
+				if (boo) {
+					var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+					const extension =  testmsg === 'png' || testmsg === 'jpeg' || testmsg === 'gif' || testmsg === 'jpg'
+
+					const isLimit10M = file.size / 1024 / 1024 < 3
+					var bool = false;
+					if (extension && isLimit10M) { bool = true; } else { bool = false; }
+					if (!extension) {
+						this.$message.error('請選擇圖片文件！');
+						return bool;
+					}
+					if (!isLimit10M) {
+						this.$message.error('上傳失敗，圖片不能超過3M！');
+						return bool;
+					}
+					return bool;
+				}
+				
+			} else if (this.ruleForm.mediaType == 'video') {
+				let boo = false
+				if ( this.ruleForm.imageList.length <= 5 ) { boo = true }
+
+				if (boo) {
+					var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+					const extension = testmsg === 'mp4'
+
+					const isLimit10M = file.size / 1024 / 1024 < 100
+					var bool = false;
+					if (extension && isLimit10M) { bool = true; } else { bool = false; }
+					if (!extension) {
+						this.$message.error('請選擇視頻文件！');
+						return bool;
+					}
+					if (!isLimit10M) {
+						this.$message.error('上傳失敗，視頻不能超過100M！');
+						return bool;
+					}
+					return bool;
+				}
+			} else {
+				this.$message({
+					type: 'warning',
+					message: '請選擇廣告媒體類型!'
+				})
+				this.imgFlag = false;
+				this.percent = 0;
+				return false
+			}
+        },
+        handleSuccess(res) {
+            // console.log(res);
+            if (res) {
+				this.imageUrl = URL.createObjectURL(file.raw); // 项目中用后台返回的真实地址
+                this.$emit('fileData', res)
+                this.$message.success("上传附件成功！");
+            }
+        },
+		async videoChange(file, fileList) {
+			//刚开始上传的时候，可以拿到ready状态，给个定时器，让进度条显示
+			if (file.status === 'ready') {
+				this.imgFlag = true //进度条显示
+				const interval = setInterval(() => {
+					if (this.percent >= 75) {
+						clearInterval(interval)
+						return
+					}
+					this.percent += 1 //进度条进度
+				}, 80)
+			}
+		},
+        handleError(err){
+            this.$message.error('上传附件失败！');
+        },
+        // 上传图片
+        async fnUploadRequest(options) {
+            try {
+				let that = this
+                let file = options.file; // 拿到 file
+                let res = await uploadOSS(file)
+				let size
+				if (file.size >= 1000000) {
+					var s = file.size/1000000
+					size = s.toFixed(1) + 'M'
+					// size = Math.ceil(files[ff].size/1000000) + 'm'
+				} else {
+					var s = file.size/1000
+					size = s.toFixed(0) + 'KB'
+					// size = Math.ceil(files[ff].size/1000) + 'kb'
+				}
+				this.percent = 100;
+				setTimeout(() => {
+					that.imgFlag = false;
+					that.percent = 0;
+				},1000)
+				let fileurl = res.fileUrl
+				let name = res.fileName
+				let audioElement = new Audio(fileurl);
+				if (this.ruleForm.mediaType == 'video') {
+					audioElement.addEventListener("loadedmetadata", function (_event) {
+						var time = Math.ceil(audioElement.duration)
+						var sTime = parseInt(time);// 秒
+						var mTime = 0;// 分
+						if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+							//获取分钟，除以60取整数，得到整数分钟
+							mTime = parseInt(sTime / 60);
+							//获取秒数，秒数取佘，得到整数秒数
+							sTime = parseInt(sTime % 60);
+						}
+						that.ruleForm.imageList.push({ 
+							url: fileurl, 
+							name: name, 
+							size: size, 
+							time: time, 
+							videoTime: mTime + '分' + sTime + '秒'
+						})
+						let obj = {
+							url: fileurl, 
+							name: name, 
+							size: size, 
+							time: time, 
+							videoTime: mTime + '分' + sTime + '秒'
+						}
+						let index = that.ruleForm.imageList.length -1
+						setTimeout(() => {
+							that.initialize(index,obj)
+						},200)
+						// that.minute.push(Math.ceil(audioElement.duration))
+						that.minute.push(time)
+						that.$forceUpdate()
+					});
+				} else if (this.ruleForm.mediaType == 'image') {
+					that.ruleForm.imageList.push({ 
+						url: fileurl, 
+						name: name, 
+						size: size, 
+						time: null, 
+						videoTime: null
+					})
+				}
+                // 返回数据
+                this.$emit("fileData", res);
+                this.$message.success("上传附件成功！");
+            } catch (e) {
+                this.$message.error('上传附件失败！');
+            }
+        },
+		initialize (ff, obj) {
+			var scale = 0.8;
+			var output = this.$refs.output[ff]
+			var video = this.$refs.video[ff]
+			// console.log(ff)
+			video.addEventListener('loadeddata',this.captureImage(video,output,scale, obj));
+		},
+		captureImage (video,output,scale,obj) {
+			let that = this
+			setTimeout(() => {
+				var canvas = document.createElement("canvas");
+				canvas.width = video.videoWidth * scale;
+				canvas.height = video.videoHeight * scale;
+				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+				var img = document.createElement("img");
+				img.src = canvas.toDataURL("image/png");
+				canvas.toBlob(function (blob) {
+					let files = new window.File([blob], 'image.png', {type: blob.type})
+					files.uid = new Date().getTime()
+					that.cutVideo(files,obj)
+				})
+				// img.width = 400;
+				// img.height = 100;
+				output.appendChild(img);
+			},100)
+		},
+        // 上传图片
+        async cutVideo(options,obj) {
+            try {
+                let file = options; // 拿到 file
+                let res = await uploadOSS(file)
+				obj.imageUrl = res.fileUrl
+				this.ruleForm.imageList.forEach(item => {
+					if (item.url == obj.url) {
+						item.imageUrl = obj.imageUrl
+					}
+				})
+				this.$forceUpdate()
+                // 返回数据
+                this.$emit("fileData", res);
+                this.$message.success("視頻截幀成功！");
+            } catch (e) {
+                this.$message.error('視頻封面獲取失败！');
+            }
+        },
+		outFile (e) {
+			this.$message.error('上传失败，限制上传数量' + this.listLength + '个文件以内！');
+        },
+		uploadProcess(event, file, fileList) {
+			console.log(event);
+			// this.imgFlag = true;
+			// console.log(event.percent);
+			// this.percent = Math.floor(event.percent);
+		},
+
+
+		getListByTypeId () {
+            this.tableData = []
+			this.drawer_tc = true
+            this.dloading = true
+            let data = {
+                typeId: this.ruleForm.type,
+            }
+            getListByTypeId(data).then(res => {
+                this.dloading = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+					res.data.data.forEach(item => {
+						item.active = false
+					})
+                    this.combo = res.data.data
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.dloading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.loading')
+                })
+            })
+        },
 		previewVideo (item) {
 			this.src = item.url
 			this.showVideo = true
@@ -626,26 +919,100 @@ export default {
 		closeViewer1() {
           this.showViewer1 = false
         },
-		choosetaocan (i,val,minute) {
-			this.ruleForm.inp = minute
-			this.taocanDetail = true
-			this.typeList = []
-			this.drawer_tc = false
-			this.choose = i
-			this.allprice = val
-			if (i == 1) {
-				this.typeList.push('旺角街道高流量商鋪廣告套餐($10000HKD/day)/旺角區域店鋪/廣告100分鐘')
-				let arr = new Set(this.typeList)
-				this.typeList = Array.from(arr)
-			} else if (i == 2) {
-				this.typeList.push('中環街道高流量商鋪廣告套餐($10000HKD/day)/旺角區域店鋪/廣告100分鐘')
-				let arr = new Set(this.typeList)
-				this.typeList = Array.from(arr)
-			} else if (i == 3) {
-				this.typeList.push('黃大仙街道高流量商鋪廣告套餐($10000HKD/day)/旺角區域店鋪/廣告100分鐘')
-				let arr = new Set(this.typeList)
-				this.typeList = Array.from(arr)
+		getbyId (id) {
+			let data = {
+				packageId: id
 			}
+			let that = this
+			this.loading = true
+			getbyId(data).then(res => {
+				this.loading = false
+				if (res.data.rtnCode == 200) {
+					let obj = res.data.data
+					this.ruleForm.startDate = new Date(obj.startTime)
+					this.ruleForm.endDate = new Date(obj.endTime)
+					this.ruleForm.inp = obj['length']
+					this.taocanDetail = true
+					this.drawer_tc = false
+					this.typeList = []
+					this.choose = obj.pageckageId
+					this.allprice = obj.presentPrice
+					// this.pageTimeList = obj.packageTimeInterList
+					this.typeList.push(obj.packageName)
+					let arr1 = new Set(this.typeList)
+					this.typeList = Array.from(arr1)
+					let arr = [
+						{
+							name: 1,
+							timeList: []
+						},
+						{
+							name: 2,
+							timeList: []
+						},
+						{
+							name: 3,
+							timeList: []
+						}
+					]
+					obj.packageTimeInterList.forEach(item => {
+						if (item.timeIntervalId == '1') {
+							arr[0].timeList.push(item)
+						}
+						if (item.timeIntervalId == '2') {
+							arr[1].timeList.push(item)
+						}
+						if (item.timeIntervalId == '3') {
+							arr[2].timeList.push(item)
+						}
+					})
+					this.pageTimeList = arr
+					this.storeList = obj.shopVoList
+
+					this.storeList.forEach(child => {
+						this.addressList.forEach(item => {
+							if (item.addressParentId == child.id) {
+								item.addressLanguageDtos.find( res => res.language == "zh-TW") && this.$i18n.locale == "zh-CN" ? 
+								child.area = item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+								child.area = item.addressLanguageDtos.find( res => res.language == "en-US").addressName
+							}
+						})
+						child.type = 'info'
+						child.position = new google.maps.LatLng(child.latitude,child.longitude)
+						child.address = child.shopAddressName
+						child.addressId = child.addressId
+						child.addressParentId = child.addressParentId
+						// child.area = "暫無地區"
+						child.msg = child.shopName
+						child.priceContents = child.priceContents
+						child.shopId = child.shopId
+						child.timeIntervalNames = child.timeIntervalNames
+						child.typeNames = child.typeNames
+						child.widthAndHeihth = child.widthAndHeihth
+
+					})
+					this.$nextTick(() => {
+						that.initMap(22.6,114.1,1)
+					})
+				}
+				console.log(res)
+			}).catch(e => {
+				this.loading = false
+			})
+		},
+		choosetaocan (i) {
+			this.getbyId(i)
+			this.pagecomboId = i
+			// this.ruleForm.inp = minute
+			
+			// this.typeList = []
+			// this.drawer_tc = false
+			// this.choose = i
+			// this.allprice = val
+			// this.pageTimeList = list
+			// this.typeList.push(value)
+			// let arr = new Set(this.typeList)
+			// this.typeList = Array.from(arr)
 		},
 		storehit (i) {
 			let that = this
@@ -846,7 +1213,7 @@ export default {
 			let boolean = true
 			let map = new google.maps.Map(document.getElementById('map'), {
 				center: {lat: lat, lng: lng},
-				zoom: 8,
+				zoom: 11,
 				mapTypeId: "roadmap",
 				disableDefaultUI: true,
 				zoomControl: boolean,
@@ -874,109 +1241,14 @@ export default {
 			// 	map,
 			// 	title: "Hello World!",
 			// });
-
-			let msg = this.msg
-			var data = [
-				{id:1,name:'小李'},
-			]
-			this.$nextTick(() => {
-				// const contentString = `
-				// 	<div>
-				// 		${data.map((item) => {
-				// 			return `<div><span>${item.name}</span></div>`
-				// 		}).join('')}
-				// 	</div>
-				// `
-				// const infowindow = new google.maps.InfoWindow({
-				// 	content: contentString,
-				// });
-				// const marker = new google.maps.Marker({
-				// 	position: myLatLng,
-				// 	map,
-				// 	title: "Uluru (Ayers Rock)",
-				// });
-				// marker.addListener("click", () => {
-				// 	infowindow.open({
-				// 		anchor: marker,
-				// 		map,
-				// 		shouldFocus: false,
-				// 	});
-				// })
-				// this.lightArea(map)
-			})
-
 			if (val == 1) {
-				const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
+				const iconBase = mar
 				const icons = {
-					parking: {
-					icon: iconBase + "parking_lot_maps.png",
-					},
-					library: {
-					icon: iconBase + "library_maps.png",
-					},
 					info: {
-					icon: iconBase + "info-i_maps.png",
+						icon: iconBase
 					},
 				};
-				const features = [
-					{
-					position: new google.maps.LatLng(22.7, 114.1),
-					type: "info",
-					msg: this.$t("lang.ks")
-					},
-					{
-					position: new google.maps.LatLng(22.79, 114.16),
-					type: "info",
-					msg: '車展會'
-					},
-					{
-					position: new google.maps.LatLng(22.87, 114.13),
-					type: "info",
-					msg: '科技大廈'
-					},
-					{
-					position: new google.maps.LatLng(22.66, 114.10),
-					type: "info",
-					msg: '醫院'
-					},
-					{
-					position: new google.maps.LatLng(22.8, 114.1),
-					type: "info",
-					msg: '時尚大廳'
-					},
-					{
-					position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
-					type: "library",
-					},
-				];
+				const features = this.storeList
 				// Create markers.
 				if (that.$i18n.locale == 'zh-CN') {
 					console.log(that.$i18n.locale)
@@ -1004,25 +1276,25 @@ export default {
 							` +
 							`
 								<div class="sb" style="margin-top:5px;">
-									<div class='bold tc'>${features[i].msg}(旺角店)</div>
+									<div class='bold tc'>${features[i].msg}(${features[i].area})</div>
 									<div class="contentString1_address" 
 									style="text-decoration: underline;
-									font-size:12px;">香港旺角區旺角街道666號</div>
+									font-size:12px;">${features[i].area}</div>
 								</div>
 							` + 
 							`
 								<div class="size12">
 									<div>
-										<span>廣告顯示的尺寸(高 × 寬):</span>
-										<span style="color: blue;">2m × 1m</span>
+										<span>廣告顯示的尺寸(寬 × 高):</span>
+										<span style="color: blue;">${features[i].widthAndHeihth}</span>
 									</div>
 									<div>
 										<span>為廣告商開放的可用時間:</span>
-										<span style="color: blue;">9am~23pm</span>
+										<span style="color: blue;">${features[i].timeIntervalNames}</span>
 									</div>
 									<div>
 										<span>廣告不接受的業務類型:</span>
-										<span style="color: blue;">食品</span>
+										<span style="color: blue;">${features[i].typeNames}</span>
 									</div>
 									<div>
 										<span>高峰/非高峰時段的每月價格:</span>
@@ -1032,32 +1304,14 @@ export default {
 										</span>
 									</div>
 								</div>
-							` 
-						// 	+
-						// 	`<div style='margin-top: 10px;' class='ju al'>
-						// 		<div onclick="closewin()" class='cursor close'
-						// 		style='padding: 5px 20px;
-						// 		color: gray;
-						// 		font-size: 12px;
-						// 		border: solid 1px rgb(201, 201, 201);
-						// 		border-radius: 4px;
-						// 		margin-right: 5px;'>取消</div>
+							`
 
-						// 		<div onclick="shopadd('${features[i].msg}')"
-						// 		class='cursor' style='padding: 5px 20px;
-						// 		color: rgb(253, 253, 253);
-						// 		background: rgb(0, 153, 255);
-						// 		font-size: 12px;
-						// 		border-radius: 4px;'>添加</div>
-						// 	</div>
-						// `
 
 						marker1.addListener("click", () => {
 							that.openwin(contentString1,marker1,map)
 						});
 					}
 				} else if (that.$i18n.locale == 'en-US') {
-					console.log(that.$i18n.locale)
 					for (let i = 0; i < features.length; i++) {
 						const marker1 = new google.maps.Marker({
 							position: features[i].position,
@@ -1082,25 +1336,25 @@ export default {
 							` +
 							`
 								<div class="sb" style="margin-top:5px;">
-									<div class='bold tc'>${features[i].msg}(Mong Kok Store)</div>
+									<div class='bold tc'>${features[i].msg}(${features[i].area})</div>
 									<div class="contentString1_address" 
 									style="text-decoration: underline;
-									font-size:12px;">HongKong street at six</div>
+									font-size:12px;">${features[i].area}</div>
 								</div>
 							` + 
 							`
 								<div class="size12">
 									<div>
 										<span>size (height x width) of adv display:</span>
-										<span style="color: blue;">2m × 1m</span>
+										<span style="color: blue;">${features[i].widthAndHeihth}</span>
 									</div>
 									<div>
 										<span>available hour opened for advertisers:</span>
-										<span style="color: blue;">9am~23pm</span>
+										<span style="color: blue;">${features[i].timeIntervalNames}</span>
 									</div>
 									<div>
 										<span>type of business unaccepted for adv:</span>
-										<span style="color: blue;">Food</span>
+										<span style="color: blue;">${features[i].typeNames}</span>
 									</div>
 									<div>
 										<span>monthly price at rush/non-rush hour:</span>
@@ -1110,24 +1364,7 @@ export default {
 										</span>
 									</div>
 								</div>
-							` 
-						// 	+ `<div style='margin-top: 10px;' class='ju al'>
-						// 		<div onclick="closewin()" class='cursor close'
-						// 		style='padding: 5px 20px;
-						// 		color: gray;
-						// 		font-size: 12px;
-						// 		border: solid 1px rgb(201, 201, 201);
-						// 		border-radius: 4px;
-						// 		margin-right: 5px;'>Cancel</div>
-
-						// 		<div onclick="shopadd('${features[i].msg}')"
-						// 		class='cursor' style='padding: 5px 20px;
-						// 		color: rgb(253, 253, 253);
-						// 		background: rgb(0, 153, 255);
-						// 		font-size: 12px;
-						// 		border-radius: 4px;'>Add</div>
-						// 	</div>
-						// `
+							`
 
 						marker1.addListener("click", () => {
 							that.openwin(contentString1,marker1,map)
@@ -1208,7 +1445,8 @@ export default {
 			this.$refs[formName].resetFields();
 		},
 		submitG () {
-			this.submit = false
+			this.genPackageOrder()
+			
 		},
 		goBack () {
 			this.$router.back()
@@ -1266,152 +1504,21 @@ export default {
 			this.timeList.splice(i,1)
 		},
 		getType (e) {
-			this.imageList = []
+			this.ruleForm.imageList = []
 			// this.ruleForm.inp = ''
 			this.minute = []
 			if (e == 1) {
+				this.listLength = 10
 				this.video = false
 				this.ruleForm.mediaType = 'image'
 				this.ruleForm.cmediaType = this.$t('lang.image')
-			} else if (e == 2) {
+				this.ruleForm.cmediaType1 = 1
+			} else if (e == 3) {
+				this.listLength = 5
 				this.video = true
 				this.ruleForm.mediaType = 'video'
 				this.ruleForm.cmediaType = this.$t('lang.video')
-			}
-		},
-		cahngeFile (e) {
-			var files = e.target.files
-			let that = this
-			if (this.ruleForm.mediaType) {
-				if (this.video) {
-					if (this.ruleForm.mediaType == 'video') {
-						if (e.target.files.length<=5 && this.imageList.length <= 5) {
-							for(var ff=0;ff<e.target.files.length;ff++){
-								let file = e.target.files[ff].type.split('/')[0]
-								let fileSize = e.target.files[ff].size
-								if (file == 'video') {
-									if (fileSize <= 100000000) {
-										let fileurl = URL.createObjectURL(e.target.files[ff])
-										let name = files[ff].name
-										let size
-										if (files[ff].size >= 1000000) {
-											var s = files[ff].size/1000000
-											size = s.toFixed(1) + 'M'
-											// size = Math.ceil(files[ff].size/1000000) + 'm'
-										} else {
-											var s = files[ff].size/1000
-											size = s.toFixed(0) + 'KB'
-											// size = Math.ceil(files[ff].size/1000) + 'kb'
-										}
-										that.imageList.push({ url: fileurl, name: name, size: size })
-										let index = that.imageList.length -1
-										setTimeout(() => {
-											that.initialize(index)
-										},200)
-										let audioElement = new Audio(fileurl);
-										audioElement.addEventListener("loadedmetadata", function (_event) {
-											var time = Math.ceil(audioElement.duration)
-											if (null != time && "" != time) {
-												if (time > 60 && time < 60 * 60) {
-													time = parseInt(time / 60.0)
-												}
-												// else if (time >= 60 * 60 && time < 60 * 60 * 24) {
-												// 	time = parseInt(time / 3600.0) + "小时" + parseInt((parseFloat(time / 3600.0) -
-												// 	parseInt(time / 3600.0)) * 60) + "分钟" +
-												// 	parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
-												// 	parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60) + "秒";
-												// }
-												else {
-													// time = parseInt(time) + "秒";
-													time =	1;
-												}
-											}
-											// that.minute.push(Math.ceil(audioElement.duration))
-											that.minute.push(time)
-											that.$forceUpdate()
-											// that.ruleForm.inp = that.ruleForm.inp*1 +  Math.ceil(audioElement.duration)                   //时长为秒，小数，182.36   / 向上取整
-											// console.log(audioElement.duration)
-										});
-									} else {
-										this.$message({
-											type: 'error',
-											message: '單個視頻最大限制100M !'
-										})
-									}
-								} else {}
-							}
-							setTimeout(() => {
-								// this.$nextTick(() => {
-								// 	this.ruleForm.inp = 0
-								// 	for (let i=0;i<Array.from(this.minute).length;i++) {
-								// 		this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
-								// 		this.$forceUpdate()
-								// 	}
-								// })
-								this.$nextTick(() => {
-									let num = 0
-									for (let i=0;i<Array.from(this.minute).length;i++) {
-										num = num*1 + this.minute[i]
-										this.$forceUpdate()
-									}
-									if (num > that.ruleForm.inp) {
-										that.$message({
-											type: 'warning',
-											message: '廣告媒體時長不能超過' + that.ruleForm.inp + '分鐘'
-										})
-									}
-								})
-							},100)
-						} else {
-							this.$message({
-								type: 'error',
-								message: '最大限制5個視頻文件!'
-							})
-						}
-					} else {}
-				}
-				if (!this.video) {
-					if (this.ruleForm.mediaType == 'image') {
-						if (e.target.files.length<=10 && this.imageList.length <= 10) {
-							for(var ff=0;ff<e.target.files.length;ff++){
-								let file = e.target.files[ff].type.split('/')[0]
-								let fileSize = e.target.files[ff].size
-								if (file == 'image') {
-									if (fileSize <= 3000000) {
-										let fileurl = URL.createObjectURL(e.target.files[ff])
-										let name = files[ff].name
-										let size
-										if (files[ff].size >= 1000000) {
-											var s = files[ff].size/1000000
-											size = s.toFixed(1) + 'M'
-											// size = Math.ceil(files[ff].size/1000000) + 'm'
-										} else {
-											var s = files[ff].size/1000
-											size = s.toFixed(0) + 'KB'
-											// size = Math.ceil(files[ff].size/1000) + 'kb'
-										}
-										that.imageList.push({ url: fileurl, name: name, size: size })
-									} else {
-										this.$message({
-											type: 'error',
-											message: '單個圖片最大限制3M!'
-										})
-									}
-								} else { }
-							}
-						} else {
-							this.$message({
-								type: 'error',
-								message: '最大限制10個圖片文件!'
-							})
-						}
-					} else { }
-				}
-			} else {
-				this.$message({
-					type: 'warning',
-					message: '請選擇文件類型!'
-				})
+				this.ruleForm.cmediaType1 = 3
 			}
 		},
 		deleImg (i) {
@@ -1422,9 +1529,9 @@ export default {
 					this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
 					this.$forceUpdate()
 				}
-				this.imageList.splice(i,1)
+				this.ruleForm.imageList.splice(i,1)
 			} else {
-				this.imageList.splice(i,1)
+				this.ruleForm.imageList.splice(i,1)
 			}
 		},
 		initialize (ff) {
@@ -1454,20 +1561,40 @@ export default {
 
 <style lang='less' scoped>
 @import "@/less/style.less";
-.scale {
-	@media screen and (max-width: 564px) {
-		margin-top: -50px;
-		transform: scale(0.8);
-		width: calc(100% + 100px);
-		margin-left: -50px;
+	.content_down {
+		width: calc(100% + 111px);
+		position: relative;
+		margin-top: 35px;
+		margin-left: -105px;
+		@media screen and (max-width: 564px) {
+            margin-left: 5px;
+			margin-top: 0px;
+			width: 98%;
+        }
 	}
-}
-.float320 {
-	margin-left: 15px;
-	@media screen and (max-width: 315px) {
-		margin-left: 0px;
+	.content_down1 {
+		width: calc(100% + 111px);
+		// margin-top: 35px;
+		margin-left: -105px;
+		@media screen and (max-width: 564px) {
+            margin-left: 5px;
+			width: 98%;
+        }
 	}
-}
+	.scale {
+		@media screen and (max-width: 564px) {
+			margin-top: -50px;
+			transform: scale(0.8);
+			width: calc(100% + 100px);
+			margin-left: -50px;
+		}
+	}
+	.float320 {
+		margin-right: 15px;
+		@media screen and (max-width: 315px) {
+			margin-right: 0px;
+		}
+	}
 	.time_duan {
 		background: white;
 		padding: 17px 10px;
@@ -1507,7 +1634,7 @@ export default {
             width: 20px;
             height: 20px;
             right: 10px;
-            top: 50%;
+            top: 60px;
             transform: translate(0,-20%);
             img {
                 transition: 0.2s; 
@@ -1517,9 +1644,6 @@ export default {
             }
         }
         .content_msg {
-            position: absolute;
-            left: 0;
-            top: 121px;
             font-size: 13px;
             width: 100%;
             padding: 10px 20px 20px 20px;
@@ -1527,18 +1651,11 @@ export default {
             max-height: 300px;
             transition: 0.2s;
             overflow: hidden;
-            border: solid 1px rgb(230, 230, 230);
-            @media screen and (max-width: 970px) {
-                top: 155px;
-            }
         }
     }
     .technology_content_item_border {
         // border: solid 2px #3DFFFC;
 		border: solid 2px #e9e8e8;
-    }
-    .mgb {
-        margin-bottom: 285px;
     }
     .rotate {
         transform: rotateZ(-180deg);
@@ -1662,17 +1779,6 @@ export default {
 	.heigh {
 		height: auto !important;
 	}
-
-
-
-
-
-
-
-
-
-
-
 	.elbtn {
 		margin-left: 20px;
 		@media screen and (max-width: 564px) {
@@ -1984,7 +2090,7 @@ export default {
 	}
 	.list {
 		@media screen and (max-width: 870px) {
-			margin-top: 10px !important;
+			// margin-top: 10px !important;
 		}
 	}
 	.list1 {
@@ -2012,13 +2118,13 @@ export default {
 		min-width: 36px;
 		line-height: 15px;
 		padding: 9px 15px;
-		// white-space: nowrap;
-		@media screen and (max-width: 1090px) {
-			padding: 0px 15px;
-		}
-		@media screen and (max-width: 870px) {
-			margin-top: 5px;
-		}
+		// // white-space: nowrap;
+		// @media screen and (max-width: 1090px) {
+		// 	padding: 0px 15px;
+		// }
+		// @media screen and (max-width: 870px) {
+		// 	margin-top: 5px;
+		// }
 	}
 	.br {
 		@media screen and (max-width: 870px) {

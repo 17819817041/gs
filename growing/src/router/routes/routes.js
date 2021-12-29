@@ -184,6 +184,11 @@ export default [
                 component: () => import("@/view/AdAdmin/AdAdmin.vue")
             },  
             {
+                path:"/editcombo",
+                name: "editcombo",
+                component: () => import("@/view/AdAdmin/editcombo.vue")
+            },
+            {
                 path:"/AddAd",
                 name: "AddAd",
                 component: () => import("@/view/AdminIndex/AddAd.vue")

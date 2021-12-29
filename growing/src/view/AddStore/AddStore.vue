@@ -1,12 +1,12 @@
 <template>
     <div class="AddStore" id="AddStore" v-loading='loading'>
-		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" src="@/assets/img/back_arrow.png" alt=""> -->
+		<!-- <img class="back_a cursor" v-show="!submit" @click="submit = true" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt=""> -->
 		<div class="AdvertisingOperation_back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" alt="" @click="goBack">新增店鋪
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="" @click="goBack">新增店鋪
         </div>
 		<div class="noBar" style="height: calc(100% - 11px);overflow-y: auto;overflow-x: hidden;padding-bottom: 30px;">
 			<div class="content mg">
-				<!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div> -->
+				<!-- <div class="content_title al"><img class="cursor" v-show="submit" style="width: 25px;" @click="goBack" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="">店鋪管理</div> -->
 				<div style="height: calc(100% - 27px)">
 					<div class="basicsMsg boxs theme" v-show="submit">
 					<div class="flex divider_message_title">
@@ -104,12 +104,20 @@
 						</el-form-item>
 						<el-form-item label="店鋪展示圖片" prop="imageList1" class="bcolor">
 							<div class="textarea_wrap clear content_down">
-								<label for="img1">
+								<!-- <label for="img1">
 									<div class="addImg ju al float">
 										<img src="@/assets/img/add.png" alt="">
 									</div>
 									<input type="file" id="img1" v-show="false" multiple="multiple" @change="changeFile1">
-								</label>
+								</label> -->
+								<el-upload
+									ref="fileUpload" action="" :headers="uploadProps.headers" list-type="picture-card" 
+									:show-file-list="false" multiple :limit='10' :on-change="videoChange1"
+									:http-request="fnUploadRequest1" :on-success="handleSuccess1" :on-error="handleError1" :on-progress="uploadProcess1"
+									:before-upload="handleUpload1" :on-exceed='outFile1'>
+									<i class="el-icon-plus"></i>
+									<el-progress v-show="imgFlag1 == true" type="circle" :percentage="percent1"></el-progress>
+								</el-upload>
 								<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm.imageList1" :key="i">
 									<div class="imageList_wrap">
 										<div class="deleImg radius ju al" @click.stop="deleImg1(i)">
@@ -239,12 +247,20 @@
 						</el-form-item>
 						<el-form-item label="廣告媒體內容" prop="imageList" class="bcolor">
 							<div class="textarea_wrap clear content_down">
-								<label for="img">
+								<!-- <label for="img">
 									<div class="addImg ju al float">
 										<img src="@/assets/img/add.png" alt="">
 									</div>
 									<input type="file" id="img" v-show="false" multiple="multiple" @change="changeFile">
-								</label>
+								</label> -->
+								<el-upload
+									ref="fileUpload" action="" :headers="uploadProps.headers" list-type="picture-card" 
+									:show-file-list="false" multiple :limit='listLength' :on-change="videoChange"
+									:http-request="fnUploadRequest" :on-success="handleSuccess" :on-error="handleError" :on-progress="uploadProcess"
+									:before-upload="handleUpload" :on-exceed='outFile'>
+									<i class="el-icon-plus"></i>
+									<el-progress v-show="imgFlag == true" type="circle" :percentage="percent"></el-progress>
+								</el-upload>
 								<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm2.imageList" :key="i">
 									<div class="imageList_wrap">
 										<div class="deleImg cursor radius ju al" @click.stop="deleImg(i)">
@@ -362,7 +378,7 @@
 										:value="item">
 									</el-option>
                                 </el-select>
-                                <div class="addCate cursor al" @click="addType1(chooseType)">
+                                <div class="addCate1 cursor al" @click="addType1(chooseType)">
                                     {{$t("lang.addbtn")}}
                                 </div>
                             </div>
@@ -520,7 +536,8 @@
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import dimg from "@/assets/img/growing.jpg"
 import mapPoint from "@/assets/img/marker.png"
-import { AddStore } from '@/axios/request.js'
+import { uploadOSS } from '@/utils/oss';
+import { AddStore, getuploadtoken } from '@/axios/request.js'
 export default {
     data() {
         return {
@@ -733,6 +750,13 @@ export default {
 			dList3: [],  //需删除drawer非繁忙时段列表
 			dList4: [],  //需删除勾选超繁忙时段列表
 			dList5: [],  //需删除勾选非繁忙时段列表
+
+			percent: 0,
+			listLength: 0,
+			imgFlag: false,
+
+			percent1: 0,
+			imgFlag1: false
         };
     },
 	created () {
@@ -864,9 +888,407 @@ export default {
 				})
 			}
 		},
+		uploadProps() {
+            return {
+                // action: `${process.env.VUE_APP_BASE_API}/api/file/upload`,
+                headers: {
+                    // 接口可能要带token: "",
+                    Authorization: getuploadtoken(),
+                },
+                data: {},
+            };
+        },
 	},
 	components: { ElImageViewer },
     methods: {
+		handleExceed(file, fileList){
+            this.$message.error('上传失败，限制上传数量10个文件以内！');
+        },
+        handleUpload(file){
+			if (this.ruleForm.mediaType == 'image') {
+				let boo = false
+				if (this.ruleForm2.imageList.length <= 10 ) { boo = true }
+
+				if (boo) {
+					var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+					const extension =  testmsg === 'png' || testmsg === 'jpeg' || testmsg === 'gif' || testmsg === 'jpg'
+
+					const isLimit10M = file.size / 1024 / 1024 < 3
+					var bool = false;
+					if (extension && isLimit10M) { bool = true; } else { bool = false; }
+					if (!extension) {
+						this.$message.error('請選擇圖片文件！');
+						return bool;
+					}
+					if (!isLimit10M) {
+						this.$message.error('上傳失敗，圖片不能超過3M！');
+						return bool;
+					}
+					return bool;
+				}
+				
+			} else if (this.ruleForm.mediaType == 'video') {
+				let boo = false
+				if ( this.ruleForm2.imageList.length <= 5 ) { boo = true }
+
+				if (boo) {
+					var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+					const extension = testmsg === 'mp4'
+
+					const isLimit10M = file.size / 1024 / 1024 < 100
+					var bool = false;
+					if (extension && isLimit10M) { bool = true; } else { bool = false; }
+					if (!extension) {
+						this.$message.error('請選擇視頻文件！');
+						return bool;
+					}
+					if (!isLimit10M) {
+						this.$message.error('上傳失敗，視頻不能超過100M！');
+						return bool;
+					}
+					return bool;
+				}
+			} else {
+				this.$message({
+					type: 'warning',
+					message: '請選擇廣告媒體類型!'
+				})
+				this.imgFlag = false;
+				this.percent = 0;
+				return false
+			}
+        },
+        handleSuccess(res) {
+            // console.log(res);
+            if (res) {
+				this.imageUrl = URL.createObjectURL(file.raw); // 项目中用后台返回的真实地址
+                this.$emit('fileData', res)
+                this.$message.success("上传附件成功！");
+            }
+        },
+		async videoChange(file, fileList) {
+			//刚开始上传的时候，可以拿到ready状态，给个定时器，让进度条显示
+			if (file.status === 'ready') {
+				this.imgFlag = true //进度条显示
+				const interval = setInterval(() => {
+					if (this.percent >= 75) {
+						clearInterval(interval)
+						return
+					}
+					this.percent += 1 //进度条进度
+				}, 80)
+			}
+		},
+        handleError(err){
+            this.$message.error('上传附件失败！');
+        },
+        // 上传图片
+        async fnUploadRequest(options) {
+			console.log(options)
+            try {
+				let that = this
+                let file = options.file; // 拿到 file
+                let res = await uploadOSS(file)
+				let size
+				if (file.size >= 1000000) {
+					var s = file.size/1000000
+					size = s.toFixed(1) + 'M'
+					// size = Math.ceil(files[ff].size/1000000) + 'm'
+				} else {
+					var s = file.size/1000
+					size = s.toFixed(0) + 'KB'
+					// size = Math.ceil(files[ff].size/1000) + 'kb'
+				}
+				this.percent = 100;
+				setTimeout(() => {
+					that.imgFlag = false;
+					that.percent = 0;
+				},1000)
+				let fileurl = res.fileUrl
+				let name = res.fileName
+				let audioElement = new Audio(fileurl);
+				if (this.ruleForm.mediaType == 'video') {
+					audioElement.addEventListener("loadedmetadata", function (_event) {
+						var time = Math.ceil(audioElement.duration)
+						var sTime = parseInt(time);// 秒
+						var mTime = 0;// 分
+						if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+							//获取分钟，除以60取整数，得到整数分钟
+							mTime = parseInt(sTime / 60);
+							//获取秒数，秒数取佘，得到整数秒数
+							sTime = parseInt(sTime % 60);
+						}
+						that.ruleForm2.imageList.push({ 
+							url: fileurl, 
+							name: name, 
+							size: size, 
+							time: time, 
+							videoTime: mTime + '分' + sTime + '秒'
+						})
+						let obj = {
+							url: fileurl, 
+							name: name, 
+							size: size, 
+							time: time, 
+							videoTime: mTime + '分' + sTime + '秒'
+						}
+						let index = that.ruleForm2.imageList.length -1
+						setTimeout(() => {
+							that.initialize(index,obj)
+						},200)
+						// that.minute.push(Math.ceil(audioElement.duration))
+						that.minute.push(time)
+						that.$forceUpdate()
+					});
+				} else if (this.ruleForm.mediaType == 'image') {
+					that.ruleForm2.imageList.push({ 
+						url: fileurl, 
+						name: name, 
+						size: size, 
+						time: null, 
+						videoTime: null
+					})
+				}
+                // 返回数据
+                this.$emit("fileData", res);
+                this.$message.success("上传附件成功！");
+            } catch (e) {
+                this.$message.error('上传附件失败！');
+            }
+        },
+		initialize (ff, obj) {
+			var scale = 0.8;
+			var output = this.$refs.output[ff]
+			var video = this.$refs.video[ff]
+			// console.log(ff)
+			video.addEventListener('loadeddata',this.captureImage(video,output,scale, obj));
+		},
+		captureImage (video,output,scale,obj) {
+			let that = this
+			setTimeout(() => {
+				var canvas = document.createElement("canvas");
+				canvas.width = video.videoWidth * scale;
+				canvas.height = video.videoHeight * scale;
+				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+				var img = document.createElement("img");
+				img.src = canvas.toDataURL("image/png");
+				canvas.toBlob(function (blob) {
+					let files = new window.File([blob], 'image.png', {type: blob.type})
+					files.uid = new Date().getTime()
+					that.cutVideo(files,obj)
+				})
+				// img.width = 400;
+				// img.height = 100;
+				output.appendChild(img);
+			},100)
+		},
+        // 上传图片
+        async cutVideo(options,obj) {
+            try {
+                let file = options; // 拿到 file
+                let res = await uploadOSS(file)
+				obj.imageUrl = res.fileUrl
+				this.ruleForm2.imageList.forEach(item => {
+					if (item.url == obj.url) {
+						item.imageUrl = obj.imageUrl
+					}
+				})
+				this.$forceUpdate()
+                // 返回数据
+                this.$emit("fileData", res);
+                this.$message.success("視頻截幀成功！");
+            } catch (e) {
+                this.$message.error('視頻封面獲取失败！');
+            }
+        },
+		outFile (e) {
+			this.$message.error('上传失败，限制上传数量' + this.listLength + '个文件以内！');
+        },
+		uploadProcess(event, file, fileList) {
+			console.log(event);
+			// this.imgFlag = true;
+			// console.log(event.percent);
+			// this.percent = Math.floor(event.percent);
+		},
+
+		handleExceed1(file, fileList){
+            this.$message.error('上传失败，限制上传数量10个文件以内！');
+        },
+        handleUpload1(file){
+				let boo = false
+				if (this.ruleForm.imageList1.length <= 10 ) { boo = true }
+
+				if (boo) {
+					var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+					const extension =  testmsg === 'png' || testmsg === 'jpeg' || testmsg === 'gif' || testmsg === 'jpg'
+
+					const isLimit10M = file.size / 1024 / 1024 < 3
+					var bool = false;
+					if (extension && isLimit10M) { bool = true; } else { bool = false; }
+					if (!extension) {
+						this.$message.error('請選擇圖片文件！');
+						return bool;
+					}
+					if (!isLimit10M) {
+						this.$message.error('上傳失敗，圖片不能超過3M！');
+						return bool;
+					}
+					return bool;
+				}
+        },
+        handleSuccess1(res) {
+            // console.log(res);
+            if (res) {
+				// this.imageUrl = URL.createObjectURL(file.raw); // 项目中用后台返回的真实地址
+                this.$emit('fileData', res)
+                this.$message.success("上传附件成功！");
+            }
+        },
+		async videoChange1(file, fileList) {
+			//刚开始上传的时候，可以拿到ready状态，给个定时器，让进度条显示
+			if (file.status === 'ready') {
+				this.imgFlag1 = true //进度条显示
+				const interval = setInterval(() => {
+					if (this.percent1 >= 75) {
+						clearInterval(interval)
+						return
+					}
+					this.percent1 += 1 //进度条进度
+				}, 80)
+			}
+		},
+        handleError1(err){
+            this.$message.error('上传附件失败！');
+        },
+        // 上传图片
+        async fnUploadRequest1(options) {
+			console.log(options)
+            try {
+				let that = this
+                let file = options.file; // 拿到 file
+                let res = await uploadOSS(file)
+				let size
+				if (file.size >= 1000000) {
+					var s = file.size/1000000
+					size = s.toFixed(1) + 'M'
+					// size = Math.ceil(files[ff].size/1000000) + 'm'
+				} else {
+					var s = file.size/1000
+					size = s.toFixed(0) + 'KB'
+					// size = Math.ceil(files[ff].size/1000) + 'kb'
+				}
+				this.percent1 = 100;
+				setTimeout(() => {
+					that.imgFlag1 = false;
+					that.percent1 = 0;
+				},1000)
+				let fileurl = res.fileUrl
+				let name = res.fileName
+				// let audioElement = new Audio(fileurl);
+				// if (this.ruleForm.mediaType == 'video') {
+				// 	audioElement.addEventListener("loadedmetadata", function (_event) {
+				// 		var time = Math.ceil(audioElement.duration)
+				// 		var sTime = parseInt(time);// 秒
+				// 		var mTime = 0;// 分
+				// 		if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+				// 			//获取分钟，除以60取整数，得到整数分钟
+				// 			mTime = parseInt(sTime / 60);
+				// 			//获取秒数，秒数取佘，得到整数秒数
+				// 			sTime = parseInt(sTime % 60);
+				// 		}
+				// 		that.ruleForm.imageList.push({ 
+				// 			url: fileurl, 
+				// 			name: name, 
+				// 			size: size, 
+				// 			time: time, 
+				// 			videoTime: mTime + '分' + sTime + '秒'
+				// 		})
+				// 		// let obj = {
+				// 		// 	url: fileurl, 
+				// 		// 	name: name, 
+				// 		// 	size: size, 
+				// 		// 	time: time, 
+				// 		// 	videoTime: mTime + '分' + sTime + '秒'
+				// 		// }
+				// 		// let index = that.ruleForm.imageList.length -1
+				// 		// setTimeout(() => {
+				// 		// 	that.initialize(index,obj)
+				// 		// },200)
+				// 		that.minute.push(time)
+				// 		that.$forceUpdate()
+				// 	});
+				// } else if (this.ruleForm.mediaType == 'image') {
+					that.ruleForm.imageList1.push({ 
+						url: fileurl, 
+						name: name, 
+						size: size, 
+						time: null, 
+						videoTime: null
+					})
+				// }
+                // 返回数据
+                this.$emit("fileData", res);
+                this.$message.success("上传附件成功！");
+            } catch (e) {
+                this.$message.error('上传附件失败！');
+            }
+        },
+		// initialize (ff, obj) {
+		// 	var scale = 0.8;
+		// 	var output = this.$refs.output[ff]
+		// 	var video = this.$refs.video[ff]
+		// 	// console.log(ff)
+		// 	video.addEventListener('loadeddata',this.captureImage(video,output,scale, obj));
+		// },
+		// captureImage (video,output,scale,obj) {
+		// 	let that = this
+		// 	setTimeout(() => {
+		// 		var canvas = document.createElement("canvas");
+		// 		canvas.width = video.videoWidth * scale;
+		// 		canvas.height = video.videoHeight * scale;
+		// 		canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+		// 		var img = document.createElement("img");
+		// 		img.src = canvas.toDataURL("image/png");
+		// 		canvas.toBlob(function (blob) {
+		// 			let files = new window.File([blob], 'image.png', {type: blob.type})
+		// 			files.uid = new Date().getTime()
+		// 			that.cutVideo(files,obj)
+		// 		})
+		// 		// img.width = 400;
+		// 		// img.height = 100;
+		// 		output.appendChild(img);
+		// 	},100)
+		// },
+        // 上传图片
+        // async cutVideo(options,obj) {
+        //     try {
+        //         let file = options; // 拿到 file
+        //         let res = await uploadOSS(file)
+		// 		obj.imageUrl = res.fileUrl
+		// 		this.ruleForm.imageList.forEach(item => {
+		// 			if (item.url == obj.url) {
+		// 				item.imageUrl = obj.imageUrl
+		// 			}
+		// 		})
+		// 		this.$forceUpdate()
+        //         // 返回数据
+        //         this.$emit("fileData", res);
+        //         this.$message.success("視頻截幀成功！");
+        //     } catch (e) {
+        //         this.$message.error('視頻封面獲取失败！');
+        //     }
+        // },
+		outFile1 (e) {
+			this.$message.error('上传失败，限制上传数量' + this.listLength + '个文件以内！');
+        },
+		uploadProcess1(event, file, fileList) {
+			console.log(event);
+			// this.imgFlag = true;
+			// console.log(event.percent);
+			// this.percent = Math.floor(event.percent);
+		},
+
+
 		flag () {
 			this.$refs.ruleForm.validate(flag => {
                 if (flag) {  }
@@ -1239,17 +1661,17 @@ export default {
 					this.dnum5 = i
 				}
 			})
-			this.addTimeList.findIndex((res,i) => {   //同步drawer繁忙时段列表
+			this.addTimeList.findIndex((res,i) => {       //同步drawer繁忙时段列表
 				if (res.time == that.outTimeList[k].time) {
 					this.dnum1 = i
 				}
 			})
-			this.addTimeList1.findIndex((res,i) => {   //同步drawer超繁忙时段列表
+			this.addTimeList1.findIndex((res,i) => {     //同步drawer超繁忙时段列表
 				if (res.time == that.outTimeList[k].time) {
 					this.dnum2 = i
 				}
 			})
-			this.addTimeList2.findIndex((res,i) => {   //同步drawer非繁忙时段列表
+			this.addTimeList2.findIndex((res,i) => {   	 //同步drawer非繁忙时段列表
 				if (res.time == that.outTimeList[k].time) {
 					this.dnum3 = i
 				}
@@ -1540,48 +1962,6 @@ export default {
 				output.appendChild(img);
 			},100)
 		},
-		changeFile1 (e) {
-			var files = e.target.files
-			let that = this
-			if (e.target.files.length<=10 && that.ruleForm.imageList1.length <= 10) {
-				for(var ff=0;ff<e.target.files.length;ff++){
-					let file = e.target.files[ff].type.split('/')[0]
-					let fileSize = e.target.files[ff].size
-					if (file == 'image') {
-						if (fileSize <= 3000000) {
-							let fileurl = URL.createObjectURL(e.target.files[ff])
-							let name = files[ff].name
-							let size
-							if (files[ff].size >= 1000000) {
-								var s = files[ff].size/1000000
-								size = s.toFixed(1) + 'M'
-								// size = Math.ceil(files[ff].size/1000000) + 'm'
-							} else {
-								var s = files[ff].size/1000
-								size = s.toFixed(0) + 'KB'
-								// size = Math.ceil(files[ff].size/1000) + 'kb'
-							}
-							that.ruleForm.imageList1.push({ url: fileurl, name: name, size: size })
-						} else {
-							this.$message({
-								type: 'error',
-								message: '單個圖片最大限制3M !'
-							})
-						}
-					} else { 
-						this.$message({
-							type: 'error',
-							message: '請選擇圖片類型'
-						})
-					}
-				}
-			} else {
-				this.$message({
-					type: 'error',
-					message: '最大限制10個圖片文件!'
-				})
-			}
-		},
 		deleImg (i) {
 			let that = this
 			if (this.ruleForm.mediaType == 'video') {
@@ -1694,54 +2074,13 @@ export default {
 			this.typeList1.splice(i,1)
             // this.changeType()
 		},
-		changeType (item) {
-            this.dialogVisible2 = false
-			
-			if (this.radio3 == '1') {
-				this.ruleForm1.typeList = []
-				this.ruleForm1.typeList.push([
-					{
-						guangGaoTypeName:"接收全部行業廣告",
-						id:0,
-						language:"zh-TW",
-					},
-					{
-						guangGaoTypeName:"Receive all industry advertisements",
-						id:0,
-						language:"en-US",
-					}
-				])
-			} else if (this.radio3 == '2') {
-				if (this.typeList1.length != 0) {
-					this.ruleForm1.typeList = JSON.parse(JSON.stringify(this.typeList1))
-				} else {
-					this.ruleForm1.typeList = []
-					this.ruleForm1.typeList.push([
-						{
-							guangGaoTypeName:"接收全部行業廣告",
-							id:0,
-							language:"zh-TW",
-						},
-						{
-							guangGaoTypeName:"Receive all industry advertisements",
-							id:0,
-							language:"en-US",
-						}
-					])
-				}
-				
-			}
-			this.flag()
-            // if (this.typeList1.length != 0) {
-            //     let obj = this.typeList1[0]
-            //     for (let i=0;i<this.typeList1.length-1;i++) {
-            //         obj = obj + ',' + this.typeList1[i+1]
-            //     }
-            //     this.arr2[0].name = this.$t("lang.set_type") + ': ' + obj
-            // } else {
-            //     this.arr2[0].name = this.$t("lang.nodata")
-            // }
-        },
+		changeType(chooseType) {
+			this.ruleForm1.typeList = this.typeList1
+			// this.ruleForm1.typeList.push(chooseType)
+			// let arr = new Set(this.ruleForm1.typeList)
+			// this.ruleForm1.typeList = Array.from(arr)
+			this.dialogVisible2 = false
+		}
     }
 }
 </script>
@@ -1844,6 +2183,14 @@ export default {
         padding: 0 17px;
         box-shadow: 2px 2px 6px rgb(224, 224, 224) inset;
         height: 30px;
+        margin-left: 15px;
+		white-space: nowrap;
+    }
+	.addCate1 {
+        border: solid 1px rgb(206, 206, 206);
+        padding: 0 17px;
+        box-shadow: 2px 2px 6px rgb(224, 224, 224) inset;
+        height: 40px;
         margin-left: 15px;
 		white-space: nowrap;
     }

@@ -1,7 +1,7 @@
 <template>
     <div class="StoreAdministrator" v-loading='loading'>
         <div class="back mg al">
-            <img class="cursor" src="@/assets/img/back_arrow.png" @click="back" alt="">店鋪管理
+            <img class="cursor" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" @click="back" alt="">店鋪管理
         </div>
         <div class="StoreAdministrator_content mg bar">
             <div class="StoreAdministrator_content_title sb al block">
@@ -146,7 +146,7 @@
                                     <div class="ju al"><img class="planEdit" src="@/assets/img/preview.png" alt=""></div>
                                     <div class="tc size12">預覽全部資料</div>
                                 </div>
-                                <div class="cursor" @click="StoreSet">
+                                <div class="cursor" @click="StoreSet(scope.row.shopId)">
                                     <div class="ju al"><img class="planEdit" src="@/assets/img/plat.png" alt=""></div>
                                     <div class="tc size12">店鋪資料設定</div>
                                 </div>
@@ -355,8 +355,13 @@ export default {
             }
             return ''
         },
-        StoreSet () {
-            this.$router.push('/StoreSet')
+        StoreSet (id) {
+            this.$router.push({
+                name: 'StoreSet',
+                query: {
+                    id: id
+                }
+            })
         },
         PreviewMsg (id) {
             this.$router.push({
@@ -373,7 +378,8 @@ export default {
                     id: id
                 }
             })
-        }
+        },
+        
     }
 }
 </script>

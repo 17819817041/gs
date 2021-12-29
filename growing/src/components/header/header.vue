@@ -25,8 +25,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="headImg radius ju al">
-                    <img style="height: 100%;" src="@/assets/img/growing.jpg" alt="">
+                <div class="headImg radius ju al cursor" @click="UserMessage">
+                    <img style="height: 100%;" v-if="user.userHead" :src="user.userHead" alt="">
+                    <img style="height: 160%;" v-else src="@/assets/img/defaultImg.png" alt="">
                 </div>
                 <div class="al my_wrap" slot="reference" @click="visible = !visible" style="height: 100%">
                     <img class="my cursor" src="@/assets/img/arrow-down_set.png" alt="">
@@ -48,6 +49,29 @@ export default {
             visible: false,
             active: false,
         }
+    },
+    created () {
+        this.$store.dispatch('getUser', this)
+    },
+    watch: {
+		user: {
+			handler (val) {
+				if (val) {
+					this.user = val
+				}
+			},
+		},
+    },
+    computed: {
+		user:{             //類型列表
+			get () { return this.$store.state.user.user },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'user',
+					value: val
+				})
+			}
+		},
     },
     mounted () {
         let that = this
@@ -183,6 +207,7 @@ export default {
             width: 40px;
         }
         .lang_item {
+            white-space: nowrap;
             padding: 5px;
         }
     }
