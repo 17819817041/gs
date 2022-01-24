@@ -1,4 +1,4 @@
-export const lang = {
+const lang = {
   	//註冊
     user: '用戶名',
     userId: '用戶身份',
@@ -27,6 +27,8 @@ export const lang = {
 	buTime: '繁忙時段',
 	ubbuTime: '非繁忙時段',
 	sbuTime: '超繁忙時段',
+	contact1: '聯繫我們',
+	problem: '常見問題',
 
 
 	addbtn: '添加',
@@ -148,6 +150,7 @@ export const lang = {
 	dp: '指定店鋪',
 	sa: '指定區域',
 	ds: '指定街道',
+	editAd: '編輯廣告',
 
 
 
@@ -271,3 +274,5 @@ export const lang = {
 
 
 }
+
+export default {lang}

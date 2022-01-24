@@ -181,7 +181,7 @@
                     <div :class="['switchBtn radius',{ 'right': boo, 'left': !boo }]" @click.stop="switchB"></div>
                 </div>
             </div>
-            <div class="AuditList_table" v-if="boo">
+            <div class="AuditList_table" v-show="boo">
                 <el-table :row-class-name="tableRowClassName" 
                     :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
                     :data="tableData"
@@ -235,27 +235,13 @@
                             <div class="searchInp mg">
                                 <el-select class="width100" style="height: 28px;" v-model="area" @change="shopExamine" placeholder="請選擇類型">
 									<el-option v-for="(item,i) in addressList" :key="i"
-                                        :label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
-                                        item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-                                        item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+                                        :label='item.addressName '
                                         :value="item.id">
                                     </el-option>
 								</el-select>
                             </div>
                         </template>
                     </el-table-column>
-                    <!-- <el-table-column
-                        prop="d_ratio"
-                        sortable
-                        label="接收外來廣告比例"
-                        min-width="170"
-                        >
-                        <template slot-scope="scope">
-                            <div class="tc th_color">
-                                {{scope.row.d_ratio}}%
-                            </div>
-                        </template>
-                    </el-table-column> -->
                     <el-table-column
                         prop="d_time"
                         sortable
@@ -279,7 +265,7 @@
                         min-width="105"
                         >
                         <template slot-scope="scope">
-                            <div class="ju al"><img class="planEdit cursor" @click="Ddetail(scope.row.id)" src="@/assets/img/planEdit.png" alt=""> </div>
+                            <div class="ju al"><img class="planEdit cursor" @click="Ddetail(scope.row.shopId)" src="@/assets/img/planEdit.png" alt=""> </div>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -315,7 +301,7 @@
                         >
                         <template slot-scope="scope">
                             <div class="tc ju" style="font-size: 12px;">
-                                <div class="cursor" @click="storeExamine(scope.row.id,scope.row.shopId)">
+                                <div class="cursor" @click="storeExamine(scope.row.shopId,scope.row.id)">
                                     <div class="ju al"><img class="cuditImg" src="@/assets/img/audit.png" alt=""></div>
                                     <div class="tc">審核操作</div>
                                 </div>
@@ -325,19 +311,19 @@
                 </el-table>
                 <div class="footpage flexEnd">
                     <el-pagination
-                        @size-change="handleSizeChange"
-                        @current-change="handleCurrentChange"
+                        @size-change="handleSizeChange1"
+                        @current-change="handleCurrentChange1"
                         small
                         :pager-count="5"
                         :current-page="1"
                         :page-size="10"
                         layout=" jumper, prev, pager, next"
-                        :total="tableData.length">
+                        :total="storeLength">
                     </el-pagination>
                 </div>
             </div>
             <!-- 廣告 -->
-            <div class="AuditList_table" v-else>
+            <div class="AuditList_table" v-show="!boo">
                 <el-table :row-class-name="tableRowClassName"
                     :header-cell-style="{ background: '#E4E4E5', 'text-align': 'center' }"
                     :data="tableData1"
@@ -391,9 +377,7 @@
                             <div class="searchInp mg">
                                 <el-select class="width100" style="height: 28px;" v-model="d_area" @change="examine" placeholder="請選擇類型">
 									<el-option v-for="(item,i) in addressList" :key="i"
-                                        :label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
-                                        item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-                                        item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+                                        :label='item.addressName '
                                         :value="item.id">
                                     </el-option>
 								</el-select>
@@ -444,7 +428,7 @@
                         min-width="105"
                         >
                         <template slot-scope="scope">
-                            <div class="ju al"><img class="planEdit cursor" @click="Gdetail(scope.row.id)" 
+                            <div class="ju al"><img class="planEdit cursor" @click="Gdetail(scope.row.adId)" 
                             src="@/assets/img/planEdit.png" alt=""> </div>
                         </template>
                     </el-table-column>
@@ -480,10 +464,11 @@
                         min-width="130"
                         >
                         <template slot-scope="scope">
-                            <div class="tc" style="font-size: 12px;" 
-                            @click="adExamine(scope.row.id,scope.row.guangGaoId)">
-                                <div class="ju al"><img class="cuditImg" src="@/assets/img/audit.png" alt=""></div>
-                                <div class="tc">審核操作</div>
+                            <div class="tc ju" style="font-size: 12px;" @click="adExamine(scope.row.id,scope.row.guangGaoId)">
+                                <div class="cursor">
+                                    <div class="ju al"><img class="cuditImg" src="@/assets/img/audit.png" alt=""></div>
+                                    <div class="tc">審核操作</div>
+                                </div>
                             </div>
                         </template>
                     </el-table-column>
@@ -497,7 +482,7 @@
                         :current-page="1"
                         :page-size="10"
                         layout=" jumper, prev, pager, next"
-                        :total="tableData.length">
+                        :total="adLength">
                     </el-pagination>
                 </div>
             </div>
@@ -577,27 +562,41 @@ export default {
             ],
 
             pageNum: 0,
-            pageSize: 100,
+            pageSize: 10,
             loading: false,
 
             pageNum1: 0,
-            pageSize1: 100,
+            pageSize1: 10,
 
             id: 0,
             adId: 0,
 
             id1: 0,
-            shopId: 0
+            shopId: 0,
             
+            adLength: 0,
+            storeLength: 0
         }
     },
     created () {
         this.$store.dispatch('getAddress',this) 
         this.$store.dispatch('getTypeList',this)
         this.examine()
-        this.shopExamine()
+        
     },
     watch: {
+        lang: {
+            handler (val) {
+                if (val) {
+					this.$store.dispatch('getAddress',this) 
+                    if (this.boo) {
+                        this.shopExamine()
+                    } else {
+                        this.examine()
+                    }
+                }
+            }
+        },
 		addressList: {
 			handler (val) {
 				if (val) {
@@ -614,6 +613,7 @@ export default {
 		},
 	},
 	computed: {
+        lang () { return this.$i18n.locale },
 		addressList: {           //地址列表
 			get () { return this.$store.state.user.addressList },
 			set (val) {
@@ -671,9 +671,11 @@ export default {
                             d_state: item.examineState, 
                             d_auditTime: item.createTime.split(' ')[0], 
                             d_storePlanDetail: '',
-                            id: item.shopId
+                            id: item.id,
+                            shopId: item.shopId
                         })
                     })
+                    this.storeLength = res.data.data.totalRecordsCount
                 } else {
                     this.loading = false
                     this.$message({
@@ -710,7 +712,7 @@ export default {
                             type: item.typeName,
                             area: item.addressNames, 
                             time: item.startTime.split(' ')[0] + '~' + item.endTime.split(' ')[0], 
-                            total: '6000',
+                            total: item.price,
                             videoLong: item['length'],
                             gDetail: '', 
                             state: item.examineState, 
@@ -720,6 +722,7 @@ export default {
                             storePlanDetail: ''
                         })
                     })
+                    this.adLength = res.data.data.totalRecordsCount
                 } else {
                     this.$message({
                         type: 'warning',
@@ -813,7 +816,7 @@ export default {
 
 
 
-        storeExamine(id,shopId) {
+        storeExamine(shopId, id) {
             this.id1 = id
             this.shopId = shopId
             this.dialogVisible1 = true
@@ -886,11 +889,23 @@ export default {
             })
         },
         handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
+            this.pageNum1 = val
+            this.examine()
         },
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+            this.pageNum1 = val
+            this.examine()
         },
+
+        handleSizeChange1 (val) {
+            this.pageNum = val
+            this.shopExamine()
+        },
+        handleCurrentChange1 (val) {
+            this.pageNum = val
+            this.shopExamine()
+        },
+
         back () {
             this.$router.back()
         },
@@ -918,6 +933,11 @@ export default {
         },
         switchB () {
             this.boo = !this.boo
+            if (this.boo) {
+                this.shopExamine()
+            } else {
+                this.examine()
+            }
         }
     }
 }

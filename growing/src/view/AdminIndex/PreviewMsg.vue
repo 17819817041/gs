@@ -12,7 +12,8 @@
                     <div class="divider"></div>
                     <div class="divider_text">店鋪詳細資料</div>
                 </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" ref="ruleForm" label-width="155px" class="demo-ruleForm">
+                <el-form :model="ruleForm" label-position="left" 
+                ref="ruleForm" label-width="155px" class="demo-ruleForm">
                     <el-form-item label="店鋪名" prop="name" class="bcolor">
                         <div class="al width30">
                             {{ruleForm.name}}
@@ -34,40 +35,28 @@
                         </div>
                     </el-form-item>
                     <el-form-item label="店鋪描述" class="bcolor">
-                        <div class="al width30">
+                        <div class="al width30 content_down">
                             {{ruleForm.content}}
                         </div>
                     </el-form-item>
-                </el-form>
-            </div>
-            <div class="detailPlan boxs theme">
-                <div class="flex divider_message_title">
-                    <div class="divider"></div>
-                    <div class="divider_text">接受外來廣告設定</div>
-                </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" ref="ruleForm" label-width="155px" class="demo-ruleForm">
-                    <el-form-item label="接受外來廣告比例" prop="ratio"  class="bcolor">
-                        <div class="al width30">
-							80%
-						</div>
-                    </el-form-item>
-                    <el-form-item label="接收外來廣告時段">
-                        <div class="al br">
-							<div class="list clear">
-								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in ruleForm.time" :key="i">
-									{{item}} 
-								</div>
-							</div>
+                    <el-form-item label="廣告顯示的尺寸" prop="message" class="bcolor" style="background: #F2F2F2;">
+                        <div class="al adSize" style="color: gray;">
+                            <div class="inp_time1 al">{{ruleForm.size.width}}</div>
+                            <div> cm(寬)</div>
+                            <div style="margin: 0 15px;"> × </div>
+                            <div class="inp_time1 al">{{ruleForm.size.height}}</div>
+                            <div> cm(高)</div>
                         </div>
                     </el-form-item>
-                    
-                    <el-form-item label="可接收外來廣告類型" class="bcolor">
-                        <div class="al br">
-							<div class="list clear">
-								<div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in ruleForm.type" :key="i">
-									{{item}}
-								</div>
-							</div>
+                    <el-form-item label="店鋪展示圖片" prop="imageList1" class="bcolor">
+                        <div class="textarea_wrap clear content_down">
+                            <div class="textarea_wrap_item float" v-for="(item,i) in ruleForm.imageList1" :key="i">
+                                <div class="imageList_wrap cursor">
+                                    <div class="textarea_wrap_item_child ju al"  @click="imgPreview(item.fileUrl)">
+                                        <img style="height: 100%;" :src="item" alt="">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </el-form-item>
                 </el-form>
@@ -78,7 +67,8 @@
                     <div class="divider"></div>
                     <div class="divider_text">店鋪廣告媒體內容信息</div>
                 </div>
-                <el-form :model="ruleForm" :label-position="labelPosition" ref="ruleForm" label-width="155px" class="demo-ruleForm">
+                <el-form :model="ruleForm" label-position="left" 
+                ref="ruleForm" label-width="155px" class="demo-ruleForm">
                     <el-form-item label="店鋪廣告媒體類型" class="bcolor">
                         <div class="al" style="color: gray;">
                             <span v-if="ruleForm.cmediaType == '1'">圖片</span>
@@ -86,27 +76,27 @@
                         </div>
                     </el-form-item>
                     <el-form-item label="店鋪廣告媒體時長">
-                        <div class="al block" style="color: gray;">
+                        <div class="al" style="color: gray;">
                             <div style="margin-right: 20px;"> {{ruleForm.inp}} </div>分鐘
                         </div>
                     </el-form-item>
                     <el-form-item label="店鋪廣告媒體內容" class="bcolor">
-                        <div class="textarea_wrap clear">
+                        <div :class="['textarea_wrap clear content_down']">
 							<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm.adContentList" :key="i">
 								<div class="imageList_wrap">
-									<div class="textarea_wrap_item_child ju al">
-										<img v-if="ruleForm.cmediaType == '1'" style="height: 100%;" :src="item.fileUrl" alt="">
-										<img v-else-if="ruleForm.cmediaType == '3'" style="height: 50%;" src="@/assets/img/video_file.png" alt="">
+									<div class="textarea_wrap_item_child ju al cursor">
+										<img v-if="ruleForm.cmediaType == '1'"  @click="imgPreview(item.fileUrl)"
+                                        style="height: 100%;" :src="item.fileUrl" alt="">
+										<img v-else-if="ruleForm.cmediaType == '3'" @click="previewVideo(item)"
+                                        style="height: 100%;" :src="item.imageSrc" alt="">
 									</div>
 								</div>
 								<div class="imageList_name tc">{{item.fileName}}</div>
 								<div class="imageList_size tc">{{item.fileSize}}</div>
+                                <div class="imageList_size tc" v-if="ruleForm.cmediaType == '3'"
+                                >{{item.filePlayTime}}</div>
 							</div>
 						</div>
-						<div style='font-size: 12px;line-height: 15px;margin-top: 5px;'>
-							圖片格式限制PNG \JPG \JPEG \GIF，数量限制10張，大小限制3M。視頻格式限制 MP4，大小限制100M(媒體建議尺寸1920*1080)。
-						</div>
-						<div style='font-size: 12px; line-height: 15px;'>媒體內容時長限制5分鐘.</div>
                     </el-form-item>
                 </el-form>
             </div>
@@ -116,13 +106,43 @@
             </div> 
             </div>
         </div>
+        <el-dialog
+			:visible.sync="showVideo"
+			width="90%"
+			@close='closeVideo'>
+			<video id="myVideo" class="video-js" :poster="Poster" v-if="videoWrap"
+				:controls="Controls">
+				<source :src="src" type="video/mp4">
+			</video>
+			<!-- <span slot="footer" class="dialog-footer">
+				<el-button type="primary" @click="closeVideo">确 定</el-button>
+			</span> -->
+		</el-dialog>
+		<el-image-viewer 
+		v-if="showViewer" 
+		:on-close="closeViewer" 
+		:url-list="[dimg]" />
+		<el-image-viewer v-if="showViewer1" :on-close="closeViewer1" :url-list="[dimg1]" />
     </div>
 </template>
 <script>
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import { AdGetShopDetailsById } from "@/axios/request.js"
 export default {
     data() {
         return {
+            showVideo: false,
+			videoWrap: false,
+            preload: 'auto',  //  建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
+            src:'',               //视频的路径
+            type: '',                //视频的类型
+            Controls: true,              //确定播放器是否具有用户可以与之交互的控件
+            Autoplay: '',              //是否自动播放
+            Poster: '',       
+            showViewer: false, 
+			showViewer1: false, 
+
+
             loading: false,
             video: true,
             ruleForm: {
@@ -133,17 +153,20 @@ export default {
                 storeType: '',
                 mediaType: '',
                 cmediaType: '',
+                size: {
+                    width: '',
+                    height: ''
+                },
                 inp: '',
                 ratio: '',
                 date: '',
                 content: '',
                 address: '',
-                message: ""
+                message: "",
+                imageList1: []
             },
 			labelPosition: 'left',
-			typeList: ['食品', '科技', '醫療', '汽車'],
 			areaList: [],
-			timeList: ["繁忙时段(9am-9pm)","非繁忙时段(9pm-9am)"],
             imageList: [],
             minute: []
         };
@@ -158,12 +181,13 @@ export default {
     mounted () {
         
     },
+    components: { ElImageViewer },
     watch: {
 		addressList: {
 			handler (val) {
 				if (val) {
 					this.addressList = val
-                    this.getShopDetailsById()
+                    
 				}
 			}
 		},
@@ -196,8 +220,7 @@ export default {
 		}
 	},
     created () {
-        this.$store.dispatch('getAddress',this) 
-        this.$store.dispatch('getTypeList',this)
+        this.getShopDetailsById()
     },
     methods: {
         getShopDetailsById () {
@@ -211,6 +234,12 @@ export default {
                 this.loading = false
                 if (res.data.rtnCode == 200) {
                     let item = res.data.data
+                    res.data.data.shopGuangGaoDto.shopGuangGaoContents.forEach(key => {
+                        if (key.type == 3) {
+                            key.videoSrc = key.fileUrl.split('&#&')[0]
+                            key.imageSrc = key.fileUrl.split('&#&')[1]
+                        }
+                    })
                     this.ruleForm = {
                         name: item.shopName,
                         area: item.addressParentId,
@@ -225,14 +254,17 @@ export default {
                         date: '',
                         content: item.content,
                         message: "",
+                        size: {
+                            width: item.width,
+                            height: item.heigth
+                        },
                         imageList: item.shopImages,
-                        adContentList: item.shopGuangGaoDto.shopGuangGaoContents
+                        adContentList: item.shopGuangGaoDto.shopGuangGaoContents,
+                        imageList1: item.shopImages
                     }
                     this.addressList.forEach(item => {
-						if (item.id == this.ruleForm.area) {
-							item.addressLanguageDtos.find( res => res.language == "zh-TW") && this.$i18n.locale == "zh-CN" ? 
-							this.ruleForm.area = item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-							this.ruleForm.area = item.addressLanguageDtos.find( res => res.language == "en-US").addressName
+						if (item.id == res.data.data.addressParentId) {
+							this.ruleForm.area = item.addressName
 						}
 					})
                     this.getTypeList.forEach(item => {
@@ -295,32 +327,55 @@ export default {
 		goBack () {
 			this.$router.back()
 		},
-		addType (item) {
-			if (item) {
-				this.typeList.push(item)
-				let arr = new Set(this.typeList)
-				this.typeList = Array.from(arr)
-			}
-		},
 		addArea (item) {
 			this.areaList.push(item)
 		},
 		deleArea (i) {
 			this.areaList.splice(i,1)
 		},
-		addTime (item) {
-			if (item) {
-				this.timeList.push(item)
-				let arr = new Set(this.timeList)
-				this.timeList = Array.from(arr)
-			}
+        closeVideo () {
+			this.showVideo = false
+			this.videoWrap = false
 		},
+        imgPreview (url) {
+			this.dimg1 = url
+			this.showViewer1 = true
+		},
+        previewVideo (item) {
+			this.src = item.videoSrc
+			this.showVideo = true
+			this.videoWrap = true
+		},
+        closeViewer1() {
+          this.showViewer1 = false
+        },
     }
 }
 </script>
 
 <style lang='less' scoped>
     @import "@/less/style.less";
+    .adSize {
+        @media screen and (max-width: 564px) {
+            margin-top: 35px;
+		    margin-left: -155px;
+        }
+    }
+    .inp_time1 {
+        padding: 0 5px;
+    }
+    .content_down {
+		width: calc(100% + 155px);
+		position: relative;
+		margin-top: 35px;
+		margin-left: -155px;
+	}
+    .content_down1 {
+		width: calc(100% + 130px);
+		position: relative;
+		// margin-top: 35px;
+		margin-left: -155px;
+	}
     .allcontent_wrap {
 		height: calc(100% - 42px); 
 		overflow:auto;
@@ -402,7 +457,7 @@ export default {
       overflow: hidden;
     }
     .textarea_wrap {
-      width: 90%;
+    //   width: 90%;
       height: 300px;
       background: white;
       box-shadow: 0 0 8px rgb(182, 182, 182) inset;
@@ -447,15 +502,6 @@ export default {
         height: 100%;
         overflow: hidden;
     }
-    .deleImg {
-        background: rgb(224, 224, 224);
-        position: absolute;
-        top: -5px;
-        right: -5px;
-        width: 20px;
-        height: 20px;
-        // opacity: 0.9;
-    }
 	.footer_w {
 		height: 50px;
 	}
@@ -472,9 +518,8 @@ export default {
 	}
 	.list {
 		// margin-left: 15px;
-		@media screen and (max-width: 870px) {
-			margin-left: -10px !important;
-			margin-top: 10px !important;
+		@media screen and (max-width: 564px) {
+			margin-left: 10px !important;
 		}
 	}
 	.list_item {

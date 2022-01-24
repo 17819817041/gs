@@ -1,18 +1,130 @@
 <template>
     <div class="Sign flex" v-loading='loading'>
-        <div class="Logo ju">
-            <img src="@/assets/img/logo.png" alt="">
-        </div>
-        <div class="growing"><img style="height: 148%" src="@/assets/img/growing.jpg" alt=""></div>
-        <div class="form_item noBar">
-            <div class="Logo1 ju">
-                <img src="@/assets/img/logo.png" alt="">
+        <div class="form_item">
+            <div class="Back1" v-show="active" @click="active = false"></div>
+            <div class="backsh">
+                <div class="form_item_c_wrap sb">
+                    <div class="welcome sb">
+                        <div>
+                            <div class="guanggao tc">SMART WINDOW ADVERTISEMENT PLATFORM </div>
+                            <div class="guanggao tc">智能櫥窗{{$t("lang.plat")}}</div>
+                        </div>
+                    </div>
+                    <div class="VIDEO al ju">
+                        <div class="video_wrap_v">
+                            <video id="myVideo" muted autoplay="autoplay" loop
+                                :controls="Controls">
+                                <source src="@/assets/img/compoundeyes.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                    <div v-if="active1" class="overh al">
+                        <div class="i_form">
+                            <div class="Logo1 ju">
+                                <img src="@/assets/img/logo.png" alt="">
+                            </div>
+                            <div class="login_text sb al">
+                                <div class="">{{$t("lang.register")}}</div>
+                                <div class="lang bold al">
+                                    <div class="al cursor lang_item" @click="active = !active">
+                                        <div class="al" v-if="$i18n.locale == 'zh-CN'">
+                                            <img src="@/assets/img/hk.gif" alt=""><span style="margin: 0 29px 0 5px;">中文</span> 
+                                            <img :class="['l_arrow', { 'rota': active } ]" src="@/assets/img/arrow_up.png" alt="">
+                                        </div>
+                                        <div class="al" v-else-if="$i18n.locale == 'en-US'">
+                                            <img src="@/assets/img/us.gif" alt=""><span style="margin: 0 10px 0 5px;">English</span> 
+                                            <img :class="['l_arrow', { 'rota': active } ]" src="@/assets/img/arrow_up.png" alt="">
+                                        </div>
+                                    </div>
+                                    <div :class="['changeLang',{ 'height': !active }]">
+                                        <div class="al cursor" @click="zh">
+                                            <img src="@/assets/img/hk.gif" alt=""><span style="margin: 0 25px 0 5px;">中文</span>
+                                        </div>
+                                        <div class="al cursor" @click="en">
+                                            <img src="@/assets/img/us.gif" alt=""><span style="margin: 0 18px 0 5px;">English</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="msg_input">
+                                <div style="max-height: 145px;height: 145px;overflow: hidden;">
+                                    <transition name="fade">
+                                        <div v-show="step == 1 && stepActive == true" style="max-height: 145px;overflow: hidden;">
+                                            <div class="input_form">
+                                                <div class="user_title">{{$t("lang.userId")}}</div>
+                                                <div class="user">
+                                                    <el-select v-model="userType" class="width100" style="height: 30px" :placeholder="$t('lang.select')">
+                                                        <el-option :label="$t('lang.store')" :value='2'></el-option>
+                                                        <el-option :label="$t('lang.advertisers')" :value="1"></el-option>
+                                                    </el-select>
+                                                </div>
+                                            </div>
+                                            <div class="input_form pwd_inp">
+                                                <div class="user_title">{{$t("lang.name")}}</div>
+                                                <div class="user">
+                                                    <input type="text" v-model="userName">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </transition>
+                                    <transition name="fade">
+                                        <div v-show="step == 2 && stepActive == true" style="max-height: 129px;">
+                                            <div class="input_form pwd_inp">
+                                                <div class="user_title">{{$t("lang.phone")}}</div>
+                                                <div class="user">
+                                                    <input type="text" v-model="phone">
+                                                </div>
+                                            </div>
+                                            <div class="input_form pwd_inp">
+                                                <div class="user_title">{{$t("lang.email")}}</div>
+                                                <div class="user">
+                                                    <input type="text" v-model="email" oninput="value=value.replace(^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$,'')">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </transition>
+                                    <transition name="fade">
+                                        <div v-show="step == 3 && stepActive == true">
+                                            <div class="input_form pwd_inp">
+                                                <div class="user_title">{{$t("lang.company")}}</div>
+                                                <div class="user">
+                                                    <input type="text" v-model="companyName">
+                                                </div>
+                                            </div>
+                                            <div class="input_form pwd_inp">
+                                                <div class="user_title">{{$t("lang.pwd")}}</div>
+                                                <div class="user">
+                                                    <input type="password" v-model="pwd">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </transition>
+                                </div>
+                                <div class="sb" style="margin-top: 24px">
+                                    <el-button class="width48" @click.native="last" size="small">上一步</el-button>
+                                    <el-button class="width48" @click.native="next" v-if="signButon" size="small">下一步</el-button>
+                                    <div class="sign_btns tc cursor" @click="sign" v-else>{{$t("lang.register")}}</div>
+                                </div>
+                                <div class="sign_btn1 tc cursor" @click="back">返回登錄</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="jiao"></div>
+                    <div class="yuan"></div>
+                </div>
             </div>
-            <div v-if="active1" class="noBar overh" style="overflow: auto; height: 100%; max-height: 700px;
-                box-shadow: rgb(0, 0, 0) 30px 30px 60px;background: #5C48B7;">
-                <div class="i_form">
-                    <div class="login_text sb al">
-                        <div class="">{{$t("lang.register")}}</div>
+        </div>
+
+        <div class="mobile_back al">
+            <div>
+                <div class="mobile_logo mg"><img src="@/assets/img/logo.png" alt=""></div>
+                <div class="mobile_login_page mg">
+                    <div>
+                        <div class="mobile_guanggao tc">SMART WINDOW ADVERTISEMENT PLATFORM </div>
+                        <div class="mobile_guanggao tc">智能櫥窗{{$t("lang.plat")}}</div>
+                    </div>
+                    <div class="login_text1 sb al">
+                        <div class="mobile_login_text">{{$t("lang.register")}}</div>
                         <div class="lang bold al">
                             <div class="al cursor lang_item" @click="active = !active">
                                 <div class="al" v-if="$i18n.locale == 'zh-CN'">
@@ -34,75 +146,67 @@
                             </div>
                         </div>
                     </div>
-                    <div class="msg_input">
-                        <div class="input_form">
-                            <div class="user_title">{{$t("lang.userId")}}</div>
-                            <div class="user">
-                                <el-select v-model="userType" class="width100" :placeholder="$t('lang.select')">
-                                    <el-option :label="$t('lang.store')" :value='2'></el-option>
-                                    <el-option :label="$t('lang.advertisers')" :value="1"></el-option>
-                                </el-select>
+                    <div style="max-height: 145px;height: 145px;overflow: hidden">
+                        <transition name="fade">
+                            <div v-show="step == 1 && stepActive == true" style="max-height: 145px;overflow: hidden">
+                                <div class="input_form">
+                                    <div class="user_title">{{$t("lang.userId")}}</div>
+                                    <div class="user">
+                                        <el-select v-model="userType" class="width100" style="height: 30px" :placeholder="$t('lang.select')">
+                                            <el-option :label="$t('lang.store')" :value='2'></el-option>
+                                            <el-option :label="$t('lang.advertisers')" :value="1"></el-option>
+                                        </el-select>
+                                    </div>
+                                </div>
+                                <div class="input_form pwd_inp">
+                                    <div class="user_title">{{$t("lang.name")}}</div>
+                                    <div class="user">
+                                        <input type="text" v-model="userName">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="input_form pwd_inp">
-                            <div class="user_title">{{$t("lang.name")}}</div>
-                            <div class="user">
-                                <input type="text" v-model="userName">
+                        </transition>
+                        <transition name="fade">
+                            <div v-show="step == 2 && stepActive == true" style="max-height: 129px;">
+                                <div class="input_form pwd_inp">
+                                    <div class="user_title">{{$t("lang.phone")}}</div>
+                                    <div class="user">
+                                        <input type="text" v-model="phone">
+                                    </div>
+                                </div>
+                                <div class="input_form pwd_inp">
+                                    <div class="user_title">{{$t("lang.email")}}</div>
+                                    <div class="user">
+                                        <input type="text" v-model="email" oninput="value=value.replace(^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$,'')">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="input_form pwd_inp">
-                            <div class="user_title">{{$t("lang.phone")}}</div>
-                            <div class="user">
-                                <input type="text" v-model="phone">
+                        </transition>
+                        <transition name="fade">
+                            <div v-show="step == 3 && stepActive == true">
+                                <div class="input_form pwd_inp">
+                                    <div class="user_title">{{$t("lang.company")}}</div>
+                                    <div class="user">
+                                        <input type="text" v-model="companyName">
+                                    </div>
+                                </div>
+                                <div class="input_form pwd_inp">
+                                    <div class="user_title">{{$t("lang.pwd")}}</div>
+                                    <div class="user">
+                                        <input type="password" v-model="pwd">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="input_form pwd_inp">
-                            <div class="user_title">{{$t("lang.email")}}</div>
-                            <div class="user">
-                                <input type="text" v-model="email" oninput="value=value.replace(^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$,'')">
-                            </div>
-                        </div>
-                        <div class="input_form pwd_inp">
-                            <div class="user_title">{{$t("lang.company")}}</div>
-                            <div class="user">
-                                <input type="text" v-model="companyName">
-                            </div>
-                        </div>
-                        <div class="input_form pwd_inp">
-                            <div class="user_title">{{$t("lang.pwd")}}</div>
-                            <div class="user">
-                                <input type="password" v-model="pwd">
-                            </div>
-                        </div>
-                        <div class="sign_btn tc cursor" @click="sign">{{$t("lang.register")}}</div>
-                        <div class="sign_btn1 tc cursor" @click="back">登錄</div>
+                        </transition>
                     </div>
+                    <div class="sb" style="margin-top: 24px">
+                        <el-button class="width48" @click.native="last" size="small">上一步</el-button>
+                        <el-button class="width48" @click.native="next" v-if="signButon" size="small">下一步</el-button>
+                        <div class="sign_btns tc cursor" @click="sign" v-else>{{$t("lang.register")}}</div>
+                    </div>
+                    <div class="sign_btn1 tc cursor" @click="back">返回登錄</div>
                 </div>
             </div>
-            <div class="success al ju" v-else>
-                <div >
-                    <div class="al success_item">
-                        <img src="@/assets/img/success_sign.png" alt="">{{$t("lang.success")}}
-                    </div>
-                    <div class="notice">{{$t("lang.staff")}}</div>
-                    <div class="notice">{{$t("lang.thank")}}</div>
-                    <div class="sign_btn mg sure_btn tc cursor" @click="sure">{{$t("lang.sure")}}</div>
-                </div>
-            </div>
-        </div>
-        <div class="welcome ju al">
-            <div style="margin-bottom: 70px;">
-                <!-- <div class="Logo1 ju">
-                    <img src="@/assets/img/logo.png" alt="">
-                </div> -->
-                <div class="guanggao tc">SMART WINDOW ADVERTISEMENT PLATFORM </div>
-                <div class="guanggao tc">智能櫥窗{{$t("lang.plat")}}</div>
-                <div class="welcome_text tc">Welcome</div>
-            </div>
-        </div>
-        <div class="form">
-            <img src="@/assets/img/growing.jpg" alt="">
-            <div class="filter"></div>
         </div>
     </div>
 </template>
@@ -112,6 +216,14 @@ import { signUp } from '@/axios/request.js'
 export default {
     data () {
         return {
+            preload: 'auto',  //  建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
+            src:'',               //视频的路径
+            type: '',                //视频的类型
+            Controls: false,              //确定播放器是否具有用户可以与之交互的控件
+            Autoplay: 'true',              //是否自动播放
+            Poster: '', 
+            signButon: true,
+            stepActive: true,
             lists: [],
             active1: true,
             active: false,
@@ -121,15 +233,37 @@ export default {
             userName: '',
             pwd: '',
             userType: null,
-            loading: false
+            loading: false,
+            step: 1
         }
     },
     mounted () {
         
     },
     methods: {
+        next () {
+            // this.stepActive = false
+            this.step += 1
+            // this.stepActive = true
+            if (this.step > 3) {
+                this.step = 3
+            }
+            if (this.step == 3) {
+                this.signButon = false
+            }
+        },
+        last () {
+            // this.stepActive = false
+            this.signButon = true
+            this.step -= 1
+            // this.stepActive = true
+            if (this.step < 1) {
+                this.step = 1
+            }
+        },
         sign () {
             // this.active = false
+            let that = this
             this.loading = true
             let data = {
                 companyName: this.companyName,
@@ -141,9 +275,12 @@ export default {
             }
             signUp(data).then(res => {
                 this.loading = false
-                 console.log(res)
                 if (res.data.rtnCode == 200) {
-                    this.$router.push('/Sign1')
+                    // this.$router.push('/Sign1')
+                    this.$message.success('註冊成功')
+                    setTimeout(() => {
+                        that.$router.back()
+                    },0)
                 } else {
                     this.$message({
                         type: 'error',
@@ -157,17 +294,18 @@ export default {
                     message: '註冊失敗'
                 })
             })
-            // this.$router.push('/Sign1')
         },
         zh () {
             localStorage.setItem('locale','zh-CN')
             this.$i18n.locale = 'zh-CN'
             this.active = false
+            this.$store.dispatch('setLang', 'zh-TW')
         },
         en () {
             localStorage.setItem('locale','en-US')
             this.$i18n.locale = 'en-US'
             this.active = false
+            this.$store.dispatch('setLang', 'en-US')
         },
         sure () {
             this.active = true
@@ -181,13 +319,58 @@ export default {
 </script>
 
 <style lang='less' scoped>
-@import "@/less/el.less";
+@import "@/less/style.less";
+    .mobile_back {
+        background: #3773D5;
+        height: 100%;
+        display: none;
+        @media screen and (max-width: 564px) {
+            display: flex;
+        }
+    }
+    .mobile_logo {
+        width: 90%;
+        background: white;
+        border-radius: 80px;
+        border: solid @themeColor 15px;
+        img {
+            width: 100%;
+        }
+    }
+    .mobile_login_page {
+        margin-top: 20px;
+        border: solid 15px @themeColor;
+        border-radius: 50px;
+        background: white;
+        width: 95%;
+        padding: 15px 20px;
+    }
+    .mobile_guanggao {
+        font-size: 12px;
+        color: #3773D5;
+        font-weight: bold;
+    }
+    .mobile_login_text {
+        font-size: 23px;
+        color: rgb(0, 0, 0);
+    }
+    .login_text1 {
+        margin: 15px auto;
+        font-size: 25px;
+        color: rgb(0, 0, 0);
+    }
+
+
+
     .lang {
         width: 100px;
         height: 30px;
         background: white;
         font-size: 12px !important;
+        border: solid 1px rgb(228, 226, 226);
+        border-radius: 3px;
         color: gray;
+        z-index: 191;
         position: relative;
         .lang_item {
             padding: 5px;
@@ -207,16 +390,19 @@ export default {
         transition: 0.2s;
         transform: rotateZ(180deg);
     }
+    .width48 {
+        width: 48% !important;
+    }
     .changeLang {
         position: absolute;
-        left: 0px;
-        top: 30px;
+        left: -1px;
+        top: 27px;
         width: 100px;
         overflow: hidden;
         font-size: 12px !important;
         color: gray;
         // border-top: none;
-        // border: solid 1px rgb(231, 231, 231);
+        border: solid 1px rgb(228, 226, 226);
         background: white;
         transition: 0.2s;
         max-height: 60px;
@@ -224,214 +410,193 @@ export default {
             padding: 5px;
         }
     }
+    .backsh {
+        width: 100%;
+        height: 100%;
+        background: @themeColor;
+        border-radius: 60px;
+        @media screen and (max-height: 400px) {
+            height: 89%;
+        }
+    }
     .Sign {
         width: 100%;
         height: 100%;
-        background: url('../../assets/img/growing.jpg');
-        background-size: auto 100%;
+        overflow: hidden;
+        background: #3773D5 !important;
         position: relative;
-        .growing {
-            position: absolute;
-            top: 0;
-            left: 0;
-            overflow: hidden;
-            height: 100%;
-            width: 100%;
-            z-index: 0;
-        }
         .overh {
+            overflow: hidden; 
+            width: 29%;
+            max-width: 460px;
+            min-width: 295px;
+            height: 100%; 
+            // max-height: 550px;
+            // background: white;
             @media screen and (max-height: 501px) {
                 height: calc(90%);
+            }
+            @media screen and (max-height: 666px) {
+                height: calc(120%);
+                transform: scale(0.8) translate(0, -10%);
+            }
+            @media screen and (max-height: 557px) {
+                height: calc(137%);
+                transform: scale(0.7) translate(0, -19%);
             }
         }
         .form_item {
             position: absolute;
-            padding: 15px 0;
-            left: 55%;
-            top: 45%;
-            // min-height: 520px;
-            transform: translate(0, -50%);
-            width: 35%;
-            // height: 85%;
-            // background: #5C48B7;
+            left: 0;
+            top: 50%;
+            width: 90%;
+            height: 65%;
+            max-height: 800px;
+            transform: translate(0%, -50%);
             color: white;
-            z-index: 100; 
-            height: calc(100% - 175px);
-            @media screen and (max-height: 875px) {
-                // top: 41%;
+            z-index: 100;
+            min-height: 295px;
+            @media screen and (max-height: 600px) {
+                top: 18%;
+                transform: translate(0%, 0%);
             }
-            @media screen and (max-width: 1000px) {
-                max-height: 600px;
-            }
-            @media screen and (max-width: 564px) and (max-height: 1190px) {
-                max-height: 570px;
-                min-height: 570px;
-            }
-            @media screen and (max-height: 501px) {
-                height: calc(100% - 80px);
-                max-height: 500px;
-                max-height: 500px;
+            @media screen and (max-height: 430px) {
+                top: 12%;
+                min-height: 316px;
             }
             @media screen and (max-width: 564px) {
-                left: 50%;
-                top: 54%;
-                transform: translate(-50%, -50%);
-                width: 50%;
-                min-width: 345px;
-                // min-height: 525px;
-                // max-height: 525px;
-                // height: 460px;
+                display: none;
             }
-        }
-    }
-    .Logo {
-        height: 40px;
-        position: fixed;
-        top: calc(50% - 305px);
-        left: 50%;
-        z-index: 100;
-        transform: translate(-50%,0);
-        margin-bottom: 20px;
-        display: none;
-        img {
-            height: 90px;
-        }
-        @media screen and (max-width: 564px) and (max-height: 1190px) {
-            top: calc(50% - 335px);
-        }
-        @media screen and (max-width: 564px) {
-            display: block;
+            .Back1 {
+                position: absolute;
+                width: 9999px;
+                height: 9999px;
+                top: -770px;
+                left: 0;
+                z-index: 101;
+            }
         }
     }
     .Logo1 {
-        // margin-bottom: -10px;
+        margin-top: -10px;
         width: 100%;
         img {
-            width: 60%;
+            width: 96%;
         }
-        @media screen and (max-width: 1100px) {
-            margin-bottom: 0px;
-        }
+        // @media screen and (max-width: 1100px) {
+        //     margin-bottom: -30px;
+        // }
         @media screen and (max-width: 564px) {
             display: none;
         }
     }
+    .VIDEO {
+        width: 71%;
+    }
     .i_form {
         width: 100%;
-        // height: 100%;
-        padding: 15px;
-        margin-bottom: 15px;
+        background: white;
+        max-width: 460px;
+        min-width: 295px;
+        max-height: 469px;
+        border-radius: 0 30px 30px 0;
         .login_text {
             margin: auto;
-            width: calc(80% + 35px);
-            font-size:35px;
-            padding-bottom: 25px;
-            color: rgb(255, 255, 255);
-            @media screen and (max-width: 1400px) {
-                font-size: 35px;
-                padding-bottom: 30px;
-            }
-            @media screen and (max-width: 1300px) {
-                font-size: 30px;
-                padding-bottom: 20px;
-            }
-            @media screen and (max-width: 800px) {
-                font-size: 25px;
-                padding: 3px 0 3px 13px;
-            }
-            @media screen and (max-height: 360px) {
-                font-size: 20px;
-            }
+            width: calc(80% + 32px);
+            font-size: 25px;
+            padding-bottom: 30px;
+            color: rgb(0, 0, 0);
+        }
+    }
+    .form_item_c_wrap {
+        padding: 0 20px;
+        width: calc(100% - 20px);
+        background: white;
+        height: 100%;
+        border-radius: 0 40px 40px 0;
+        position: relative;
+        .jiao {
+            position: absolute;
+            background: white;
+            width: 100px;
+            height: 100px;
+            bottom: -99px;
+            left: 0;
+        }
+        .yuan {
+            position: absolute;
+            background: #3773D5;
+            width: 100px;
+            border-radius: 50% 0 0 0;
+            z-index: 1;
+            height: 100px;
+            bottom: -100px;
+            left: 0;
+        }
+    }
+    .video_wrap_v {
+        height: 90%;
+        max-height: 469px;
+        width: 95%;
+        // margin-left: 30px;
+        video {
+            height: 100%;
+            width: 100%;
         }
     }
     .user_title {
-        color: #BA97EE;
-        font-size: 15px;
-        margin-bottom: 2px;
-        @media screen and (max-width: 1477px) {
-            font-size: 15px;
-        }
-        @media screen and (max-width: 1300px) {
-            font-size: 14px;
+        color: #414B55;
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 10px;
+        @media screen and (max-height: 500px) {
+            margin-bottom: 5px;
         }
     }
     .pwd_inp {
-        margin-top: 17px;
-        @media screen and (max-width: 1680px) {
-            margin-top: 17px;
-        }
-        @media screen and (max-width: 1477px) {
-            margin-top: 14px;
-        }
-        @media screen and (max-width: 1300px) {
-            margin-top: 10px;
-        }
-        @media screen and (max-width: 564px) {
-            margin-top: 6px;
-        }
+        margin-bottom: 25px;
     }
     .user {
-        border-bottom: solid 1px;
+        border-bottom: solid 1px gray;
+        margin-bottom: 25px;
         input {
             border: none;
             outline: none;
-            font-size: 25px;
+            font-size: 18px;
             background: none;
             width: 100%;
-            color: white;
-            @media screen and (max-width: 1500px) {
-                font-size: 23px;
-            }
-            @media screen and (max-width: 1300px) {
-                font-size: 18px;
-            }
+            color: rgb(97, 97, 97);
             @media screen and (max-width: 800px) {
                 font-size: 15px;
+            }
+            @media screen and (max-height: 500px) {
+                font-size: 13px;
             }
         }
     }
     .welcome {
-        position: relative;
-        z-index: 11;
-        width: 55%;
-        height: 100%;
-        @media screen and (max-width: 564px) {
-            display: none;
+        width: 100%;
+        position: absolute;
+        left: 0%;
+        top: -100px;
+        padding: 0 10%;
+        @media screen and (max-width: 1250px) {
+            top: -70px;
         }
-    }
-    .form {
-        width: 45%;
-        height: 100%;
-        transform: rotateY(180deg);
-        overflow: hidden;
-        position: relative;
-        @media screen and (max-width: 564px) {
-            width: 100%;
+        @media screen and (max-height: 600px) {
+            top: -60px;
         }
-        img {
-            filter:blur(15px); // 模糊度
-            transform: rotateY(180deg);
+        @media screen and (max-height: 430px) {
+            top: -40px;
         }
-        .filter {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            opacity: 0.45;
-            display: inline-block;
-            background: #5C48B7;
-            z-index: 99;
-        }
-        
     }
     .sign_btn {
         font-size: 20px;
-        color: #604EB9;
-        background: white;
+        color: rgb(255, 255, 255);
+        background: @themeColor;
         // border: solid 3px #8268D5;
-        border: solid 3px #ffffff;
-        padding: 8px 0;
+        border: solid 3px @themeColor;
+        padding: 3px 0;
         margin-top: 30px;
         @media screen and (max-width: 1477px) {
             margin-top: 20px;
@@ -446,22 +611,25 @@ export default {
             padding: 3px 0;
         }
     }
-    .sign_btn1 {
+    .sign_btns {
         font-size: 20px;
-        color: #604EB9;
-        background: white;
-        // border: solid 3px #8268D5;
-        border: solid 3px #ffffff;
-        padding: 8px 0;
+        color: rgb(255, 255, 255);
+        width: 48%;
+        background: @themeColor;
+        border: solid 3px @themeColor;
+        padding: 0px 0;
+        border-radius: 3px;
+    }
+    .sign_btn1 {
+        font-size: 18px;
+        color: #ffffff;
+        background: @themeColor;
+        border-radius: 3px;
+        border: solid 3px @themeColor;
+        padding: 3px 0;
         margin-top: 15px;
-        @media screen and (max-width: 1477px) {
-            font-size: 20px;
-            padding: 6px 0;
-        }
-        @media screen and (max-width: 1300px) {
-            padding: 5px 0;
-        }
         @media screen and (max-width: 800px) {
+            font-size: 15px;
             padding: 3px 0;
         }
     }
@@ -473,7 +641,6 @@ export default {
     .success {
         width: 100%;
         height: 500px;
-        box-shadow: rgb(0, 0, 0) 30px 30px 60px;
         background: #5C48B7;
         @media screen and (max-width: 1300px) {
             height: 70%;
@@ -521,21 +688,18 @@ export default {
         width: 85%;
     }
     .guanggao {
-        width: 80%;
+        width: 100%;
         margin: auto;
-        font-size: 36px;
-        color: #D3ACFF;
-        @media screen and (max-width: 1300px) {
-            font-size: 30px;
-        }
-        @media screen and (max-width: 1300px) {
-            font-size: 16px;
-        }
+        font-size: 25px;
+        color: #ffffff;
         @media screen and (max-width: 564px) {
-            font-size: 12px;
+            font-size: 15px;
         }
-        @media screen and (max-width: 1000px) and (max-height: 500px) {
-            font-size: 12px;
+        @media screen and (max-height: 600px) and (max-width: 1900px) and (min-width: 564px) {
+            font-size: 20px;
+        }
+        @media screen and (max-height: 430px) and (max-width: 1900px) and (min-width: 564px) {
+            font-size: 15px;
         }
     }
     .welcome_text {

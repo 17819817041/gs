@@ -12,15 +12,15 @@
                     </div>
                     <div :class="['child_message1',{ minwidth: $i18n.locale == 'en-US' }]" v-show="category_list">
                         <div class="child_message_title">
-                            <div class="tc cursor" @click="showadd = !showadd">
-                                {{shopTitle.shopName}}
+                            <div class="tc cursor" @click="showadd = !showadd" style="min-height: 20px;">
+                                <div v-if="shopTitle">{{shopTitle.shopName}}</div>
                                 <img class="t_arrow" src="@/assets/img/arrow.png" alt="">
                             </div>
 
                             <div class="addPlat_wrap boxs" v-show="showadd">
                                 <div class="input_msg cursor tc" @click="choose(item)"
                                  v-for="(item,i) in storeList" :key="i">
-                                    {{item.shopName}}
+                                    <div v-if="item.shopName">{{item.shopName}}</div>
                                 </div>
 
                                 <div class="addPlat al ju cursor mg" @click="AddStore">
@@ -35,7 +35,7 @@
                                 <div class="al">
                                     <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.foreignnum")}}
                                 </div>
-                                <div class="al">{{shopTitle.guangGaoTotalAccount}}</div>
+                                <div class="al" v-if="shopTitle">{{shopTitle.guangGaoTotalAccount}}</div>
                             </div>
                             <div class="child_message_content_item sb">
                                 <div class="al">
@@ -47,13 +47,13 @@
                                 <div class="al">
                                     <img class="child_message_content_item_logo" src="@/assets/img/add-address.png" alt="">{{$t("lang.storeArea")}}
                                 </div>
-                                <div class="al">{{shopTitle.addressReginName}}</div>
+                                <div class="al" v-if="shopTitle">{{shopTitle.addressReginName}}</div>
                             </div>
                             <div class="child_message_content_item sb">
                                 <div class="al">
                                     <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.mynum")}}
                                 </div>
-                                <div class="al">{{shopTitle.shopGuangGaoTotalAccount}}</div>
+                                <div class="al" v-if="shopTitle">{{shopTitle.shopGuangGaoTotalAccount}}</div>
                             </div>
                             <!-- <div class="child_message_content_item sb">
                                 <div class="al">
@@ -123,14 +123,15 @@
                 </div>
                 <div :class="['child_message',{ minwidth: $i18n.locale == 'en-US' }]">
                     <div class="child_message_title">
-                        <div class="tc cursor" @click="showadd = !showadd">
-                            {{shopTitle.shopName}}
+                        <div class="tc cursor" @click="showadd = !showadd" style="min-height: 20px;">
+                            <div v-if="shopTitle">{{shopTitle.shopName}}</div>
                             <img class="t_arrow" src="@/assets/img/arrow.png" alt="">
                         </div>
                         <div class="addPlat_wrap" v-show="showadd">
                             <div class="input_msg cursor tc" @click="choose(item)"
                                 v-for="(item) in storeList" :key="item.id">
-                                {{item.shopName}}
+                                
+                                <div v-if="item.shopName">{{item.shopName}}</div>
                             </div>
                             <div class="line"></div>
                             <div class="addPlat al ju cursor mg" @click="AddStore">
@@ -145,7 +146,7 @@
                             <div class="al">
                                 <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.foreignnum")}}
                             </div>
-                            <div class="al">{{shopTitle.guangGaoTotalAccount}}</div>
+                            <div class="al" v-if="shopTitle">{{shopTitle.guangGaoTotalAccount}}</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
@@ -157,13 +158,13 @@
                             <div class="al">
                                 <img class="child_message_content_item_logo" src="@/assets/img/add-address.png" alt="">{{$t("lang.storeArea")}}
                             </div>
-                            <div class="al">{{shopTitle.addressReginName}}</div>
+                            <div class="al" v-if="shopTitle">{{shopTitle.addressReginName}}</div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
                                 <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.mynum")}}
                             </div>
-                            <div class="al">{{shopTitle.shopGuangGaoTotalAccount}}</div>
+                            <div class="al" v-if="shopTitle">{{shopTitle.shopGuangGaoTotalAccount}}</div>
                         </div>
                         <!-- <div class="child_message_content_item sb">
                             <div class="al">

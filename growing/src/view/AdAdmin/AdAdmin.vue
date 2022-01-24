@@ -500,15 +500,13 @@ export default {
 
 <style lang='less' scoped>
 @import "@/less/style.less";
-.backimg {
+    .backimg {
         @media screen and (max-width: 600px) {
 			display: none;
 		}
     }
     .auditBtn {
-        // padding: 20px 0;
-        // width: 45%;
-        min-width: 232.19px;
+        min-width: 289.19px;
         margin: 0 45px;
         @media screen and (max-width: 600px) {
 			width: 85%;
@@ -528,7 +526,7 @@ export default {
         margin-bottom: 15px;
     }
     .result {
-        width: 100%;
+        width: 94%;
         padding: 25px 20px;
     }
     .no_wrap {

@@ -156,7 +156,7 @@
                             
                             
                             <div v-else-if="(child.slot == 'slot')" class="slot">
-                                <slot name="deleUser"></slot>
+                                <slot name="deleUser" :data='item'></slot>
                             </div>
                             <div :class="['child_item']" v-else>{{item[child.key]}}</div>
                         </div>
@@ -218,7 +218,6 @@ export default {
     },
     methods: {
         addShopUser (val) {    //新增賬戶
-            console.log(val)
             let data = {
                 shopId: val[0].shopId,
                 userId: localStorage.getItem('compoundeyesUserId')

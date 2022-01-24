@@ -105,6 +105,8 @@ export default {
             this.$router.push('/UserMessage')
         },
         outLogin () {
+            localStorage.removeItem('compoundeyesToken')
+            localStorage.removeItem('compoundeyesUserId')
             this.$router.push('/Login')
         },
         zh () {

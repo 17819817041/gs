@@ -247,7 +247,10 @@ export default {
         },
         getCumulativeMonthly () {
             this.active = false
-            getCumulativeMonthly().then(res => {
+            let data = {
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            getCumulativeMonthly(data).then(res => {
                 if (res.data.rtnCode == 200) {
                     this.option3.xAxis.data = []
                     this.option3.series[0].data = []
@@ -261,7 +264,10 @@ export default {
         },
         getGuangGaoStatistics () {
             this.active = false
-            getGuangGaoStatistics().then(res => {
+            let data = {
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            getGuangGaoStatistics(data).then(res => {
                 if (res.data.rtnCode == 200) {
                     this.option1.xAxis[0].data = []
                     this.option1.series[0].data = []
@@ -277,7 +283,10 @@ export default {
         },
         getRemainderDay () {
             this.active = false
-            getRemainderDay().then(res => {
+            let data = {
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            getRemainderDay(data).then(res => {
                 if (res.data.rtnCode == 200) {
                     this.option2.radiusAxis.data = []
                     this.option2.series.data = []

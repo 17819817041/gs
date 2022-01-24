@@ -201,9 +201,9 @@
                                 <img style="height: 100%;" :src="user.userHead" v-if="user.userHead" alt="">
                                 <img v-else style="height: 150%;" src="@/assets/img/defaultImg.png" alt="">
                             </div>
-                            <label for="url">
+                            <label for="upload12">
                                 <div class="chooseHead cursor mg tc">{{$t('lang.headImg')}}</div>
-                                <input type="file" id="url" @change="getUrl" v-show="false">
+                                <input type="file" :id="id" @change="getUrl" v-show="false">
                             </label>
                         </div>
                         <div class="name bold tc">{{user.username}}</div>
@@ -404,16 +404,31 @@
 
 <script>
 import { generateCode, verify, updateEmail, updatePhone, updatePwd, updateHead } from '@/axios/request.js'
-import { uploadOSS } from '@/utils/oss';
+import Client from '@/utils/client'
+import  axios  from 'axios'
 export default {
     data () {
         return {
+            uploadHeaders: {
+				authorization: '*'
+			},
+			region: 'oss-cn-beijing',
+			bucket: '',//这里选择OSS容器
+			url: '',//后台获取token地址
+			ClientObj: null,
+			id: 'upload12',
+			urls:[],
+			getToken:{
+				sign:'',
+			},
+            
             imgUrl: '',
             phone: '12345678',
             password: '',
             visible: false,
             visible1: false,
             visible2: false,
+            labelPosition: 'left',
             active: true,
             active1: true,
             active2: true,
@@ -495,6 +510,13 @@ export default {
 				}
 			},
 		},
+        ossData: {
+			handler (val) {
+				if (val) {
+					this.ossData = val
+				}
+			},
+		}
     },
     computed: {
 		user:{             //類型列表
@@ -515,6 +537,15 @@ export default {
 				})
 			}
 		},
+        ossData: {
+			get () { return this.$store.state.user.ossData },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'ossData',
+					value: val
+				})
+			}
+		}
     },
     methods: {
         start () {
@@ -586,12 +617,6 @@ export default {
                     message: '驗證失敗'
                 })
             })
-        },
-        getVerify1 () {
-            this.ruleForm2.veri = 324864  
-        },
-        getVerify2 () {
-            this.ruleForm6.veri = 324864  
         },
         sure () {
             let that = this
@@ -749,26 +774,63 @@ export default {
                 })
             })
         },
+
         getUrl (e) {            //上傳本地圖片
-            let url = URL.createObjectURL(e.target.files[0])
-            this.imgUrl = url
-            this.cutVideo(e.target.files[0])
-        },
-        async cutVideo(options) {
-            options.uid = new Date().getTime()
-            this.loading = true
-            try {
-                let file = options; // 拿到 file
-                let files = new window.File([file], 'image.png', {type: file.type})
-                let res = await uploadOSS(files)
-                this.updateHead(res.fileUrl)
-                // 返回数据
-                this.$emit("fileData", res);
-            } catch (e) {
-                this.loading = false
-                this.$message.error('圖片上傳失败！');
+            let file = e.target.files[0]
+            var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+            const extension =  testmsg === 'png' || testmsg === 'jpeg' || testmsg === 'gif' || testmsg === 'jpg'
+            const isLimit10M = file.size / 1024 / 1024 < 3
+            var bool = false;
+            if (extension && isLimit10M) { bool = true; } else { bool = false; }
+            if (!extension) {
+                this.$message.error('請選擇圖片文件！');
+                return bool;
             }
+            if (!isLimit10M) {
+                this.$message.error('上傳失敗，不能超過3M！');
+                return bool;
+            }
+            if (bool) {
+                this.doUpload()
+            }
+            return bool;
         },
+        doUpload () {
+			const _this = this;
+			let that = this
+			axios('https://compoundeyes.hk/api/oss/token',_this.getToken).then((result) => {
+				this.ossData = result.data.data
+				let oss = {
+					region: 'oss-cn-hongkong',
+					bucket: this.ossData.buketName,
+					accessKeyId: this.ossData.accessKeyId,
+					accessKeySecret: this.ossData.accessKeySecret,
+					stsToken: this.ossData.securityToken
+				}
+				var client = Client(oss)
+				_this.percentage = 0;
+				_this.imgFlag = true
+				const files = document.getElementById(_this.id)
+				if (files.files) {
+					const fileLen = document.getElementById(_this.id).files
+					for (let i = 0; i < fileLen.length; i++) {
+						const file = fileLen[i]
+                        let random_name = 'File' + new Date().getTime() + '.' + file.name.split('.').pop()
+						file.uid = new Date().getTime()
+						client.multipartUpload(random_name, file, {
+							progress: function* (percentage, cpt) {  }
+						}).then((res) => {
+                            console.log(res)
+							if (res.res.statusCode == 200) {
+                                this.updateHead('http://osshongk.oss-cn-hongkong.aliyuncs.com/'+res.name)
+							} else {
+								that.$message.error('上传附件失败！');
+							}
+						}).catch((err) => { console.log(err) }) 
+					} 
+				} 
+			}) 
+		}, 
         updateHead (img) {         //修改頭像
             let data = {
                 head: img,

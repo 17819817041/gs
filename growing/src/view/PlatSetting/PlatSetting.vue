@@ -68,24 +68,10 @@
                                     <div class="searchInp mg">
                                         <el-select class="width100" style="height: 28px;" v-model="area" placeholder="請選擇類型" @change="searchByArea"> 
                                             <el-option v-for="(item,i) in addressList" :key="i"
-                                                :label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
-                                                item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-                                                item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+                                                :label='item.addressName '
                                                 :value="item.id">
                                             </el-option>
                                         </el-select>
-                                    </div>
-                                </template>
-                            </el-table-column>
-                            <el-table-column
-                                prop="d_ratio"
-                                sortable
-                                label="接收外來廣告比例"
-                                min-width="170"
-                                >
-                                <template slot-scope="scope">
-                                    <div class="tc th_color">
-                                        {{scope.row.d_ratio}}%
                                     </div>
                                 </template>
                             </el-table-column>
@@ -97,9 +83,6 @@
                                 >
                                 <template slot-scope="scope">
                                     <div class="tc th_color">
-                                        <!-- <div class="th_color tc" v-show="scope.row.d_time.busy">{{scope.row.d_time.busy}}</div>
-                                        <div class="th_color tc" v-show="scope.row.d_time.unbusy">{{scope.row.d_time.unbusy}}</div>
-                                        <div class="th_color tc" v-show="scope.row.d_time.busy == '' && scope.row.d_time.unbusy == '' ">無</div> -->
                                         <div v-for="(item,i) in scope.row.d_time" :key="i">{{item}}</div>
                                     </div>
                                 </template>
@@ -109,8 +92,9 @@
                                 label="店鋪詳細計劃"
                                 min-width="105"
                                 >
-                                <template>
-                                    <div class="ju al"><img class="planEdit cursor" src="@/assets/img/planEdit.png" alt=""> </div>
+                                <template slot-scope="scope">
+                                    <div class="ju al cursor" style="padding: 15px 20px;" 
+                                    @click="activeAd(scope.row.shopId)"><img class="planEdit" src="@/assets/img/planEdit.png" alt=""> </div>
                                 </template>
                             </el-table-column>
                             <el-table-column
@@ -145,7 +129,7 @@
                                 min-width="130"
                                 >
                                 <template slot-scope="scope">
-                                    <div class="tc cursor" style="font-size: 12px;" v-show="scope.row.d_state == 3">
+                                    <div class="tc cursor" style="font-size: 12px;" v-show="scope.row.d_state == 3" @click="Settingadvertising(scope.row.shopId)">
                                         <div class="ju al"><img class="cuditImg" src="@/assets/img/editPlan.png" alt=""></div>
                                         <div class="tc">更改計劃</div>
                                     </div>
@@ -179,7 +163,7 @@
                             <!-- <div class="delUSer cursor">註銷賬戶</div> -->
                             <el-popconfirm
                                 :title="$t('lang.setting_del') + '？'"
-                                @confirm='cancelAccount(item.shopId)'
+                                @confirm='cancelShop(item.shopId)'
                                 >
                                 <div class="delUSer cursor" slot="reference" @click.stop="">註銷賬戶</div>
                             </el-popconfirm>
@@ -200,11 +184,15 @@
                                     <img src="@/assets/img/copy.png" alt="">
                                 </div>
                             </template>
-                            <template slot="deleUser">
+                            <template slot="deleUser" slot-scope="{ data }">
                                 <div class="ju al">
-                                    <div class='deleUser cursor'>
-                                        刪除設備賬戶
-                                    </div>
+                                    <el-popconfirm :data-clipboard-text="data"
+                                        :title="$t('lang.setting_del') + '？'"
+                                        @confirm='cancelAccount(data.id)'
+                                        >
+                                        <div class='deleUser cursor' slot="reference">刪除設備賬戶</div>
+                                    </el-popconfirm>
+                                    
                                 </div>
                             </template>
                         </ModuleMin1>
@@ -217,27 +205,17 @@
 
 <script>
 import Clipboard from 'clipboard'
-import { getShopAndDeviceList, getShopUserListByUserId, cancelAccount } from "@/axios/request.js"
+import { getShopAndDeviceList, getShopUserListByUserId, cancelAccount, cancelShop } from "@/axios/request.js"
 export default {
     data () {
         return {
-            
             drawer3: false,
             drawer1: false,
             drawer4: false,
             drawer2: false,
             search: '',
             tableHeight:0,
-            tableData:[
-                {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 1, 
-                d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
-                {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 2, 
-                d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
-                {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 1, 
-                d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
-                {d_name:'九龍店',d_type: '美食',d_area: '九龍', d_ratio: '80', d_time: {busy: '繁忙時段(9am - 9pm)', unbusy: '非繁忙時段(9pm - 9am)'},d_detail: '', d_state: 3, 
-                d_auditTime: '2021-06-06 19:00', d_storePlanDetail: ''},
-            ],
+            tableData:[ ],
             area: '',
             type: '',
             columns2: [
@@ -300,8 +278,6 @@ export default {
         
 	},
     created () {
-        this.$store.dispatch('getAddress',this)  
-        this.$store.dispatch('getTypeList',this)
         
         this.getShopUserListByUserId()
     },
@@ -320,9 +296,8 @@ export default {
                         item.drawer = false
                         item.deviceList.forEach(child => {
                             child.active = true
-                            child.name = '設備賬戶'
+                            child.name = child.name
                             child.key = child.pwd
-                            child.id = child.userName,
                             child.shopId = item.shopId
                         })
                     })
@@ -352,7 +327,7 @@ export default {
                 userId: localStorage.getItem('compoundeyesUserId')
             }
             getShopUserListByUserId(data).then(res => {
-                // console.log(res)
+                console.log(res)
                 this.loading = false
                 if (res.data.rtnCode == 200) {
                     this.getShopAndDeviceList()
@@ -360,12 +335,12 @@ export default {
                         this.tableData.push({
                             d_name: item.name,
                             d_type: item.type,
-                            d_area: item.addressRegion, 
-                            d_ratio: '80', 
+                            d_area: item.addressRegion,
                             d_time: item.timeIntervalNames,
                             d_detail: '', 
+                            shopId: item.shopId,
                             d_state: item.state, 
-                            d_auditTime: item.examineTime.split(':')[0] + ":" + item.examineTime.split(':')[1],
+                            d_auditTime: item.examineTime.split(' ')[0] + ":" + item.examineTime.split(':')[1],
                             d_storePlanDetail: ''
                         })
                     })
@@ -383,9 +358,34 @@ export default {
                 })
             })
         },
-        cancelAccount (id) {
+        cancelShop (id) {        //註銷店鋪
             let data = {
                 shopId: id
+            }
+            cancelShop(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.getShopAndDeviceList()
+                    this.$message({
+                        type: 'success',
+                        message: "註銷成功"
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '註銷失敗'
+                    })
+                }
+            }).catch(e => {
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.editError')
+                })
+            })
+        },
+        cancelAccount (id) {        //註銷賬戶
+            let data = {
+                id: id
             }
             cancelAccount(data).then(res => {
                 console.log(res)
@@ -408,6 +408,15 @@ export default {
                 })
             })
         },
+
+        Settingadvertising (id) {
+            this.$router.push({
+                name: 'AdministrationStore',
+                query: {
+                    id: id
+                }
+            })
+        },
         searchByArea () {
             this.getShopUserListByUserId()
         },
@@ -421,7 +430,6 @@ export default {
             },500)
         },
         changeD (item) {
-            console.log(item)
             item.drawer = !item.drawer
             this.$forceUpdate()
         },
@@ -430,6 +438,14 @@ export default {
             let that = this
             this.$nextTick(() => {
                 that.tableHeight = window.innerHeight - 165
+            })
+        },
+        activeAd (id) {
+            this.$router.push({
+                name: 'activeAd',
+                query: {
+                    id: id
+                }
             })
         },
         handleSizeChange(val) {

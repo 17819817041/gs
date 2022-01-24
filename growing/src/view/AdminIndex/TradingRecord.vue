@@ -234,9 +234,9 @@
                             <div class="trading_item_title">本月支出 ($HKD)</div>
                             <div class="trading_item_detail"><img src="@/assets/img/point.png" alt=""></div>
                         </div>
-                        <div class="total_money bold">3617.00</div>
-                        <div class="bili al">上月同比 12% <img src="@/assets/img/arrow_drop_down.png" alt=""></div>
-                        <div class="lastMonth">上月支出 $3000HKD</div>
+                        <div class="total_money bold">{{monthOut.thisMonth}}</div>
+                        <div class="bili al">上月同比 {{monthOut.increase}}% <img src="@/assets/img/arrow_drop_down.png" alt=""></div>
+                        <div class="lastMonth">上月支出 ${{monthOut.lastMonth}}HKD</div>
                     </div>
                     <div class="trading_item float t_last">
                         <div class="sb al">
@@ -307,7 +307,7 @@
 <script>
 import * as echarts from 'echarts';
 import { getIncomeThisMonth, getTotalExpenditure, getTotalIncome, getStatisticsInTheLast7Days, 
-    getIncomeStatisticsInRecentYears, getIncomeAndExpenditureInTheLast2Days } from "@/axios/request.js"
+getIncomeStatisticsInRecentYears, getIncomeAndExpenditureInTheLast2Days, getSpendingThisMonth } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -350,7 +350,8 @@ export default {
             allout: {},
             allin: {},
             thisMonthIn: {},
-            twoDays: {}
+            twoDays: {},
+            monthOut: {}
         }
     },
     mounted () {
@@ -363,6 +364,7 @@ export default {
         this.getIncomeAndExpenditureInTheLast2Days()
         this.getStatisticsInTheLast7Days()
         this.getIncomeStatisticsInRecentYears()
+        this.getSpendingThisMonth()
     },
     methods: {
         goBack () {
@@ -386,6 +388,27 @@ export default {
                 this.$message({
                     type: 'error',
                     message: '本月收入加載失敗'
+                })
+            })
+        },
+        getSpendingThisMonth() {
+            this.loading = true
+            getSpendingThisMonth().then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.monthOut = res.data.data
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '本月支出加載失敗'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '本月支出加載失敗'
                 })
             })
         },

@@ -2,7 +2,7 @@ export default [
     {
         path: "/",
         redirect: "/Login"
-    },
+    }, 
     {
         path:"/Login",
         name: "Login",
@@ -19,6 +19,29 @@ export default [
         component: () => import("@/view/Sign/Sign1.vue")
     },
     {
+        path:"/AdIndex",
+        name: "AdIndex",
+        component: () => import("@/view/Index/AdIndex.vue"),
+        redirect: "/cAdIndex",
+        children: [
+            {
+                path:"/cAdIndex",
+                name: "cAdIndex",
+                component: () => import("@/view/indexPage/AdIndex.vue")
+            },
+            {
+                path:"/storeDetail",
+                name: "storeDetail",
+                component: () => import("@/view/indexPage/storeDetail.vue")
+            },  
+            {
+                path:"/searchMsg",
+                name: "searchMsg",
+                component: () => import("@/view/indexPage/searchMsg.vue")
+            },
+        ]
+    },
+    {
         path:"/Home",
         name: "Home",
         component: () => import("@/view/Home/home.vue"),
@@ -26,7 +49,7 @@ export default [
             {
                 path:"/Index",
                 name: "Index",
-                component: () => import("@/view/Index/index.vue")
+                component: () => import("@/view/Index/index.vue"),
             },
             {
                 path:"/AdminIndex",
@@ -47,6 +70,26 @@ export default [
                 path:"/AdvertisingOperation",
                 name: "AdvertisingOperation",
                 component: () => import("@/view/AdvertisingOperation/AdvertisingOperation.vue")
+            }, 
+            {
+                path:"/editPro",
+                name: "editPro",
+                component: () => import("@/view/AdvertisingOperation/editPro.vue")
+            }, 
+            {
+                path:"/editPlus",
+                name: "editPlus",
+                component: () => import("@/view/AdvertisingOperation/editPlus.vue")
+            }, 
+            {
+                path:"/admineditPro",
+                name: "admineditPro",
+                component: () => import("@/view/AdminIndex/editPro.vue")
+            }, 
+            {
+                path:"/admineditPlus",
+                name: "admineditPlus",
+                component: () => import("@/view/AdminIndex/editPlus.vue")
             }, 
             {
                 path:"/AdvertisingAdd",
@@ -124,6 +167,16 @@ export default [
                 component: () => import("@/view/AdminIndex/PreviewMsg.vue")
             }, 
             {
+                path:"/AdminPlanPrePro",
+                name: "AdminPlanPrePro",
+                component: () => import("@/view/AdminIndex/AdminPlanPrePro.vue")
+            }, 
+            {
+                path:"/AdminPlanPlus",
+                name: "AdminPlanPlus",
+                component: () => import("@/view/AdminIndex/AdminPlanPlus.vue")
+            },
+            {
                 path:"/StoreUserSet",
                 name: "StoreUserSet",
                 component: () => import("@/view/AdminIndex/StoreUserSet.vue")
@@ -153,6 +206,11 @@ export default [
                 name: "EchartsMsg",
                 component: () => import("@/view/AdminIndex/EchartsMsg.vue")
             },    
+            {
+                path:"/activeAd",
+                name: "activeAd",
+                component: () => import("@/view/activeAd/activeAd.vue")
+            },
             {
                 path:"/TradingRecord",
                 name: "TradingRecord",

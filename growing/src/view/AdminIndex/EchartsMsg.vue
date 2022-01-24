@@ -283,7 +283,7 @@
                                 </el-select>
                             </div>
                         </div>
-                        <div class="ECHARTS" id="main"></div>
+                        <div class="ECHARTS" id="main" v-if="active"></div>
                     </div>
                     <div class="echarts">
                         <div class="echarts_title sb">
@@ -302,7 +302,7 @@
                                 </el-select>
                             </div>
                         </div>
-                        <div class="ECHARTS" id="main1"></div>
+                        <div class="ECHARTS" id="main1" v-if="active"></div>
                     </div>
                     <div class="echarts">
                         <div class="echarts_title sb">
@@ -321,7 +321,7 @@
                                 </el-select>
                             </div>
                         </div>
-                        <div class="ECHARTS" id="main2"></div>
+                        <div class="ECHARTS" id="main2" v-if="active"></div>
                     </div>
                 </div>
                 <div class="sb footerEcharts">
@@ -342,7 +342,7 @@
                                 </el-select>
                             </div>
                         </div>
-                        <div class="ECHARTS2" id="main3"></div>
+                        <div class="ECHARTS2" id="main3" v-if="active"></div>
                     </div>
                     <div class="footer_echarts2_wrap">
                         <div class="footer_echarts2">
@@ -415,11 +415,7 @@ export default {
                     formatter: '{a} <br/>{b}: {c} ({d}%)'
                 },
                 legend: {
-                    data: [
-                    'Direct',
-                    'Marketing',
-                    'Search Engine',
-                    ]
+                    
                 },
                 series: [  
                     {
@@ -592,7 +588,7 @@ export default {
                     }
                 },
                 legend: {
-                    data: [ 'Direct', 'Search Engine']
+                    data: []
                 },
                 toolbox: {
                     feature: {
@@ -618,30 +614,30 @@ export default {
                     }
                 ],
                 series: [
-                    {
-                        name: 'Direct',
-                        type: 'line',
-                        stack: 'Total',
-                        areaStyle: {},
-                        emphasis: {
-                            focus: 'series'
-                        },
-                        data: [20, 25, 31, 34, 90, 40, 30]
-                    },
-                    {
-                        name: 'Search Engine',
-                        type: 'line',
-                        stack: 'Total',
-                        label: {
-                            show: true,
-                            position: 'top'
-                        },
-                        areaStyle: {},
-                        emphasis: {
-                            focus: 'series'
-                        },
-                        data: [20, 32, 51, 34, 90, 30, 20]
-                    }
+                    // {
+                    //     name: 'Direct',
+                    //     type: 'line',
+                    //     stack: 'Total',
+                    //     areaStyle: {},
+                    //     emphasis: {
+                    //         focus: 'series'
+                    //     },
+                    //     data: [20, 25, 31, 34, 90, 40, 30]
+                    // },
+                    // {
+                    //     name: 'Search Engine',
+                    //     type: 'line',
+                    //     stack: 'Total',
+                    //     label: {
+                    //         // show: true,
+                    //         // position: 'top'
+                    //     },
+                    //     areaStyle: {},
+                    //     emphasis: {
+                    //         focus: 'series'
+                    //     },
+                    //     data: [20, 32, 51, 34, 90, 30, 20]
+                    // }
                 ]
             },
             options: [{
@@ -664,7 +660,7 @@ export default {
             value1: '',
             value2: '',
             value3: '',
-
+            active: true,
             totalMsg: []
         }
     },
@@ -703,6 +699,7 @@ export default {
     },
     methods: {
         goBack () {
+            this.active = false
 			this.$router.back()
 		},
         getEventExpirationTime () {    //近期廣告活動到期時間
@@ -725,7 +722,7 @@ export default {
         getGuangGaoTypeActiveStatus () {      //廣告類型活動狀態
             this.option1.series[0].data = []
             let data = {
-                date: '2021-12-10'
+                date: new Date().toLocaleDateString().split('/').join('-')
             }
             getGuangGaoTypeActiveStatus(data).then(res => {
                 console.log(res)
@@ -755,24 +752,48 @@ export default {
                         k = []
                     }
                     this.option3.dataset.source = arr
-                    var myChart3 = echarts.init(document.getElementById('main3'));
-                    myChart3.setOption(this.option3);
-                    window.addEventListener("resize",function(){
-                        myChart3.resize();
-                    });
+                    
                 }
+                var myChart3 = echarts.init(document.getElementById('main3'));
+                myChart3.setOption(this.option3);
+                window.addEventListener("resize",function(){
+                    myChart3.resize();
+                });
             })
         },
         getStatisticsForThepastSixMonths () {   //近半年廣告活動統計
             getStatisticsForThepastSixMonths().then(res => {
                 console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.option4.xAxis[0].data = res.data.data[0]
+                    res.data.data.forEach(item => {
+                        // console.log(Object.prototype.toString.call(item))
+                        if (Object.prototype.toString.call(item) == '[object Object]') {
+                            this.option4.series.push({
+                                name: item.name,
+                                type: 'line',
+                                stack: 'Total',
+                                areaStyle: {},
+                                emphasis: {
+                                    focus: 'series'
+                                },
+                                data: item.data
+                            })
+                        }
+                    })
+                }
+                var myChart4 = echarts.init(document.getElementById('main4'));
+                myChart4.setOption(this.option4);
+                window.addEventListener("resize",function(){
+                    myChart4.resize();
+                });
             })
         }, 
         getTimeActiveStatus () {               //廣告時段活動狀態
             this.option.series[0].data = []
             this.option.series[1].data = []
             let data = {
-                date: '2021-12-10'
+                date: new Date().toLocaleDateString().split('/').join('-')
             }
             getTimeActiveStatus(data).then(res => {
                 console.log(res)

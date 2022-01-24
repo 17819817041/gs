@@ -181,42 +181,14 @@
                         <el-radio label="2" border style="margin-right: 0;" @click.native="drawers = true">自定義接收的廣告時間</el-radio>
                         <el-radio label="3" border>不接受外來廣告</el-radio>
                     </el-radio-group>
-                    <el-form v-show="radio4 == '1'" :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'"
-						:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" style="margin-top: 15px;">
-                        <!-- <el-form-item label="外來廣告比例">
-                            <el-select v-model="ggbili" style="margin-right: 10px;">
-                                <el-option v-for="item in 9" :key="item" :label="110 - (item*10) + '%'" :value="110 - (item*10) + '%' "></el-option>
-                            </el-select>
-						</el-form-item> -->
-                    </el-form>
-                    <el-form ref="ruleForm" v-show="radio4 == '22'" style="margin-top: 15px;"
-                        :label-position="$i18n.locale == 'zh-CN'? labelPosition: 'top'"
-						:label-width="$i18n.locale == 'zh-CN'? '90px': '205px'" class="demo-ruleForm">
-						<el-form-item label="繁忙時段">
-                            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" 
-                            @change="handleCheckAllChange">全选</el-checkbox>
-                            <div style="margin: 15px 0;"></div>
-							<el-checkbox-group v-model="checkedCities" @change="adListadd">
-								<el-checkbox v-for="(item,i) in busyTimeList" :label="item" :key="i">{{item}}</el-checkbox>
-							</el-checkbox-group>
-						</el-form-item>
-						<el-form-item label="超繁忙時段">
-                            <el-checkbox :indeterminate="isIndeterminate1" v-model="checkAll1" 
-                            @change="handleCheckAllChange1">全选</el-checkbox>
-                            <div style="margin: 15px 0;"></div>
-							<el-checkbox-group v-model="checkedCities12" @change="adsListadd">
-								<el-checkbox v-for="(item,i) in sbusyTimeList" :label="item" :key="i">{{item}}</el-checkbox>
-							</el-checkbox-group>
-						</el-form-item>
-						<el-form-item label="非繁忙時段">
-                            <el-checkbox :indeterminate="isIndeterminate2" v-model="checkAll2" 
-                            @change="handleCheckAllChange2">全选</el-checkbox>
-                            <div style="margin: 15px 0;"></div>
-							<el-checkbox-group v-model="checkedCities2" @change="adunListadd">
-								<el-checkbox v-for="(item,i) in unbusyTimeList" :label="item" :key="i">{{item}}</el-checkbox>
-							</el-checkbox-group>
-						</el-form-item>
-					</el-form>
+                    <div class="list clear">
+                        <div style="color: #B0B0B0;" class="list_item float al" 
+                        v-for="(item,i) in dialogList" :key="i">
+                            {{item.packageName}} <span class="al" style="margin-left: 5px">
+                                <img class="cursor" @click="deleArea(i)" src="@/assets/img/cha.png" alt="">
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">
@@ -238,7 +210,7 @@
 						<el-form-item label="繁忙時段:">
 							<div class="clear">
                                 <div class="al size12 ju float" v-for="(item,i) in addTimeList" :key="i+11" style="margin-left: 15px;">
-                                    <span class="l_time">{{item.time}}</span> 
+                                    <span class="l_time">{{item.packageName}}</span> 
                                     <!-- <el-input-number @change="handleChange" 
                                     style="margin: 0 5px;width: 107px;" v-model="item.num"
                                     :min="20" :step="10" :max="100" label="描述文字" size="mini"></el-input-number> % -->
@@ -249,7 +221,7 @@
 						<el-form-item label="超繁忙時段:">
 							<div class="clear">
                                 <div class="al size12 ju float" v-for="(item,i) in addTimeList1" :key="i+16" style="margin-left: 15px;">
-                                    <span class="l_time">{{item.time}}</span> 
+                                    <span class="l_time">{{item.packageName}}</span> 
                                     <!-- <el-input-number @change="handleChange" 
                                     style="margin: 0 5px;width: 107px;" v-model="item.num"
                                     :min="20" :step="10" :max="100" label="描述文字" size="mini"></el-input-number> % -->
@@ -260,7 +232,7 @@
 						<el-form-item label="非繁忙時段:">
 							<div class="clear">
                                 <div class="al size12 ju float" v-for="(item,i) in addTimeList2" :key="i+30" style="margin-left: 15px;">
-                                    <span class="l_time">{{item.time}}</span> 
+                                    <span class="l_time">{{item.packageName}}</span> 
                                     <!-- <el-input-number @change="handleChange" 
                                     style="margin: 0 5px;width: 107px;" v-model="item.num"
                                     :min="20" :step="10" :max="100" label="描述文字" size="mini"></el-input-number> % -->
@@ -269,30 +241,31 @@
                             </div>
 						</el-form-item>
 					</el-form>
-
-					
 					<div class="ju" style="margin-top: 20px;">
 						<el-popover
 							style="width: 80px;"
 							placement="right"
 							width="270"
 							trigger="click">
-							<div class="popover_item noBar" ref='popover'>
+							<div class="popover_item noBar" ref='popover' v-if="clockList.length != 0">
 								<el-form label-position="top"  ref="ruleForm" 
 									:label-width="$i18n.locale == 'zh-CN'? '80px': '205px'" class="demo-ruleForm">
-									<el-form-item label="繁忙時段">
+									<el-form-item :label="clockList[0].timeIntervalName">
 										<el-checkbox-group v-model="checkedCities1" @change="group">
-											<el-checkbox v-for="(item,i) in busyTimeList1" :label="item" :key="i+1">{{item.time}}</el-checkbox>
+											<el-checkbox v-for="(item,i) in clockList[0].timeIntervalList" 
+											:label="item" :key="i+1">{{item.packageName}}</el-checkbox>
 										</el-checkbox-group>
 									</el-form-item>
-									<el-form-item label="超繁忙時段">
+									<el-form-item :label="clockList[2].timeIntervalName">
 										<el-checkbox-group v-model="checkedCities11" @change="group1">
-											<el-checkbox v-for="(item,i) in sbusyTimeList1" :label="item" :key="i+2">{{item.time}}</el-checkbox>
+											<el-checkbox v-for="(item,i) in clockList[2].timeIntervalList" 
+											:label="item" :key="i+2">{{item.packageName}}</el-checkbox>
 										</el-checkbox-group>
 									</el-form-item>
-									<el-form-item label="繁忙時段">
+									<el-form-item :label="clockList[1].timeIntervalName">
 										<el-checkbox-group v-model="checkedCities21" @change="group2">
-											<el-checkbox v-for="(item,i) in unbusyTimeList1" :label="item" :key="i">{{item.time}}</el-checkbox>
+											<el-checkbox v-for="(item,i) in clockList[1].timeIntervalList" 
+											:label="item" :key="i">{{item.packageName}}</el-checkbox>
 										</el-checkbox-group>
 									</el-form-item>
 								</el-form>
@@ -324,10 +297,11 @@
 </template>
 
 <script>
-import { updatePrice, getPrice, getShopGuangGaoType, updateShopGuangGaoType } from "@/axios/request.js"
+import { updatePrice, getPrice, getShopGuangGaoType, updateShopGuangGaoType, updateShopDiscount, getShopDiscount } from "@/axios/request.js"
 export default {
     data () {
         return {
+            dialogList: [],
             addTimeList: [],
             addTimeList1: [],
             addTimeList2: [],
@@ -405,7 +379,7 @@ export default {
                 {name:this.$t("lang.set_bili") + ': 80%',set: 'set',active: true,adList1: [],},
             ],
             arr1:[
-                {name:'',set: 'set',active: true,br: true,nodv: false,adList1: [],ids: '100%'},
+                { name:'',set: 'set',active: true,br: true,nodv: false,adList1: [] },
             ],
             arr2:[
                 {name:'',set: 'set',active: true,adList1: [],},
@@ -459,8 +433,10 @@ export default {
 		this.fun()
     },
     created () {
+        this.$store.dispatch('getTimeIntervaDetailslList',this)
         this.$store.dispatch('getTypeList',this)
         this.$store.dispatch('incomePriceId')
+        
         this.getPrice()
         this.getShopGuangGaoType()
         let num1 = 110
@@ -540,10 +516,18 @@ export default {
 				}
 			},
 		},
+        clockList: {
+			handler (val) {
+				if (val) {
+					this.clockList = val
+                    this.getShopDiscount()
+				}
+			}
+		},
     },
     computed: {
         lang () { return this.$i18n.locale },
-        incomePriceIdList:{             //類型列表
+        incomePriceIdList:{             //期望收入
 			get () { return this.$store.state.user.incomePriceIdList },
 			set (val) {
 				this.$store.commit('setUser', {
@@ -561,8 +545,120 @@ export default {
 				})
 			}
 		},
+        clockList: {             //時間列表
+			get () { return this.$store.state.user.clockList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'clockList',
+					value: val
+				})
+			}
+		},
     },
     methods: {
+        getShopDiscount () {
+            this.loading = true
+            let data = {
+                shopId: this.$route.query.id
+            }
+            getShopDiscount(data).then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    let idList = []
+                    let idList1 = []
+                    this.clockList.forEach(item => {
+                        item.timeIntervalList.forEach(val => {
+                            idList.push(val.id)
+                        })
+                        item.timeIntervalList.forEach(child => {
+                            res.data.data.forEach(key => {
+                                if (key.timeIntervalDetailsId == child.id) {
+                                    key.packageName = child.packageName
+                                }
+                            })
+                        })
+                    })
+                    res.data.data.forEach(item => {
+                        idList1.push(item.timeIntervalDetailsId)
+                    })
+                    var arrSimple2 = (idList);
+                    var arrSimple = (idList1);
+                    arrSimple2.sort(function(a,b){
+                        return b-a;
+                    });
+                    arrSimple.sort(function(a,b){
+                        return b-a;
+                    });
+                    if (JSON.stringify(arrSimple2) == JSON.stringify(arrSimple)) {
+                        this.arr1[0].adList1 = []
+                    } else {
+                        this.arr1[0].adList1 = res.data.data
+                    }
+                } else if (res.data.rtnCode == 201) {
+                    this.arr1[0].adList1 = []
+                    this.arr1[0].nodv = true
+                    this.arr1[0].br = false
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message.error(this.$t('lang.editError'))
+            })
+        },
+        updateShopDiscount () {
+            this.loading = true
+            let arr = []
+            let obj = []
+            if (this.addTimeList.length != 0) {
+                arr.push(this.addTimeList)
+            }
+            if (this.addTimeList1.length != 0) {
+                arr.push(this.addTimeList1)
+            }
+            if (this.addTimeList2.length != 0) {
+                arr.push(this.addTimeList2)
+            }
+            arr.forEach(item => {
+                let res = []
+                item.forEach(child => {
+                    res.push({
+                        "timeIntervalDetailsId": child.id, 		
+                        "isReceiving": true 
+                    })
+                })
+                obj.push({
+                    "timeIntervalId": item[0].timeIntervalId, 	
+                    "timeIntervalDetailsDtos": res,
+                    "isReceiving": true, 	
+                    "isUnified": true 
+                })
+            })
+            let data = {
+                shopDiscountDtoJson: obj
+            }  
+            let str = JSON.stringify(data.shopDiscountDtoJson)
+            const qs = require('qs')
+            let data1 = qs.stringify({
+                shopDiscountDtoJson: str,
+                shopId: this.$route.query.id
+            })
+            updateShopDiscount(data1).then(res => {
+                this.loading = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.getShopDiscount()
+                    this.$message.success(this.$t('lang.editSuccess'))
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message.error(this.$t('lang.editError'))
+            })
+        },
         getShopGuangGaoType () {  //查詢接收行業
             this.loading = true
             let data = {
@@ -706,7 +802,8 @@ export default {
 			arr.forEach(item => {
 				i = i + item.num
 			})
-            this.arr1[0].adList1 = this.addTimeList.concat(this.addTimeList1.concat(this.addTimeList2))
+            // this.arr1[0].adList1 = this.addTimeList.concat(this.addTimeList1.concat(this.addTimeList2))
+            this.dialogList = this.addTimeList.concat(this.addTimeList1.concat(this.addTimeList2))
             this.drawers = false
             // this.ruleForm.inp = i
 		},
@@ -761,18 +858,67 @@ export default {
             this.isIndeterminate2 = checkedCount > 0 && checkedCount < this.cityOptions2.length;
             this.copy3 = Array.from(val)
 		},
+        allTime () {
+            let arr = []
+            let obj = []
+            this.clockList.forEach(item => {
+                arr.push(item.timeIntervalList)
+            })
+            arr.forEach(item => {
+                let res = []
+                item.forEach(child => {
+                    res.push({
+                        "timeIntervalDetailsId": child.id, 		
+                        "isReceiving": true 
+                    })
+                })
+                obj.push({
+                    "timeIntervalId": item[0].timeIntervalId, 	
+                    "timeIntervalDetailsDtos": res,
+                    "isReceiving": true, 	
+                    "isUnified": true 
+                })
+            })
+            let data = {
+                shopDiscountDtoJson: obj
+            }  
+            let str = JSON.stringify(data.shopDiscountDtoJson)
+            const qs = require('qs')
+            let data1 = qs.stringify({
+                shopDiscountDtoJson: str,
+                shopId: this.$route.query.id
+            })
+            updateShopDiscount(data1).then(res => {
+                this.loading = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.getShopDiscount()
+                    this.$message.success(this.$t('lang.editSuccess'))
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: res.data.msg
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message.error(this.$t('lang.editError'))
+            })
+        },
         sureaddadList () {
             if (this.radio4 == '1') {
-                this.arr1[0].ids = this.ggbili
+                // this.arr1[0].ids = this.ggbili
+                this.allTime()
             } else if (this.radio4 == '3') {
                 this.arr1[0].adList1 = []
                 this.arr1[0].nodv = true
                 this.arr1[0].br = false
-                
+                this.dontsure()
             } else if (this.radio4 == '2') {
                 // this.adList = this.copy1.concat(this.copy2.concat(this.copy3))
                 // console.log(this.adList)
-                if (this.arr1[0].adList1.length != 0) {
+                if (this.dialogList.length != 0) {
+                    this.updateShopDiscount()
                     // let obj = this.adList[0]
                     // for (let i=0;i<this.adList.length-1;i++) {
                     //     obj = obj + ',' + this.adList[i+1]
@@ -780,6 +926,7 @@ export default {
                     // this.arr1[0].name = this.$t("lang.set_acc") + ': ' + obj
                 } else {
                     // this.arr1[0].name = this.$t("lang.nodata")
+                    this.dontsure()
                     this.arr1[0].nodv = true
                     this.arr1[0].br = false
                 }
@@ -787,6 +934,50 @@ export default {
             
 			this.dialogVisible3 = false
 		},
+        dontsure () {
+            this.loading = true
+            let obj = [
+                {
+                    "timeIntervalId": 1, 	
+                    "timeIntervalDetailsDtos": [],
+                    "isReceiving": false, 	
+                    "isUnified": false 
+                },
+                {
+                    "timeIntervalId": 2, 	
+                    "timeIntervalDetailsDtos": [],
+                    "isReceiving": false, 	
+                    "isUnified": false 
+                },
+                {
+                    "timeIntervalId": 3, 	
+                    "timeIntervalDetailsDtos": [],
+                    "isReceiving": false, 	
+                    "isUnified": false 
+                },
+            ]
+            let data = {
+                shopDiscountDtoJson: obj
+            }  
+            let str = JSON.stringify(data.shopDiscountDtoJson)
+            const qs = require('qs')
+            let data1 = qs.stringify({
+                shopDiscountDtoJson: str,
+                shopId: this.$route.query.id
+            })
+            updateShopDiscount(data1).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.getShopDiscount()
+                    this.$message.success(this.$t('lang.editSuccess'))
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message.error(this.$t('lang.editError'))
+            })
+        },
+
+
         fun () {
 			if (window.innerWidth <= 1304) {
                 this.labelPosition = 'top'

@@ -92,9 +92,9 @@
                         <div class="flex">
                             <el-popconfirm
                                 :title="$t('lang.setting_del') + '？'"
-                                @confirm='admincancelAccount'
+                                @confirm='admincancelShop'
                                 >
-                                <div class="delUSer cursor" slot="reference" @click.stop="">註銷賬戶</div>
+                                <div class="delUSer cursor" slot="reference" @click.stop="">註銷店鋪</div>
                             </el-popconfirm>
                             <div class="arrow_m al" @click="drawer2 = !drawer2"><img :class="[{ rotate: drawer2 }]" src="@/assets/img/pull_down.png" alt=""></div>
                         </div>
@@ -113,11 +113,16 @@
                                     <img src="@/assets/img/copy.png" alt="">
                                 </div>
                             </template>
-                            <template slot="deleUser">
+                            <template slot="deleUser" slot-scope="{ data }">
                                 <div class="ju al">
-                                    <div class='deleUser cursor'>
-                                        刪除設備賬戶
-                                    </div>
+                                    <el-popconfirm
+                                        :title="$t('lang.setting_del') + '？'"
+                                        @confirm='admincancelAccount(data)'
+                                        >
+                                        <div class='deleUser cursor' slot="reference">
+                                            刪除設備賬戶
+                                        </div>
+                                    </el-popconfirm>
                                 </div>
                             </template>
                         </ModuleMin1>
@@ -130,7 +135,7 @@
 
 <script>
 import Clipboard from 'clipboard'
-import { getShopDeviceList, admincancelAccount } from '@/axios/request.js'
+import { getShopDeviceList, admincancelAccount, admincancelShop } from '@/axios/request.js'
 export default {
     data () {
         return {
@@ -191,7 +196,8 @@ export default {
                             id: item.userName,
                             key: item.pwd,
                             active: true,
-                            shopId: res.data.data.shopId
+                            shopId: res.data.data.shopId,
+                            accountId: item.id
                         })
                     })
                 } else {
@@ -235,7 +241,7 @@ export default {
         },
         admincancelAccount (id) {
             let data = {
-                shopId: this.$route.query.id
+                id: id.accountId
             }
             this.loading = true
             admincancelAccount(data).then(res => {
@@ -245,7 +251,34 @@ export default {
                         type: 'success',
                         message: '註銷成功'
                     })
-                    this.back()
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '註銷失敗'
+                    })
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: '註銷失敗'
+                })
+            })
+        },
+
+        admincancelShop () {
+            let data = {
+                shopId: this.$route.query.id
+            }
+            admincancelShop(data).then(res => {
+                console.log(res)
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.$message({
+                        type: 'success',
+                        message: '註銷成功'
+                    })
+                    this.$router.back()
                 } else {
                     this.$message({
                         type: 'error',

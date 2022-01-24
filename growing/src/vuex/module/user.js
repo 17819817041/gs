@@ -1,6 +1,6 @@
 // import router from "@/router/router/router.js"
 import { Message } from 'element-ui';
-import { AddressList, typeList, incomePriceId, getShopList, getTimeIntervaDetailslList, getTimeIntervalList, getUserById } from '@/axios/request.js'
+import { AddressList, typeList, incomePriceId, getShopList, getTimeIntervaDetailslList, getTimeIntervalList, getUserById, getuploadtoken, setLang } from '@/axios/request.js'
 export default {
     state: {
         loading: false,
@@ -22,6 +22,7 @@ export default {
             userType: 0,
             username: "無",
         },
+        ossData: {}
     },
     mutations: {
         setUser (state,data) {
@@ -65,24 +66,23 @@ export default {
             store.commit('setUser', { key: 'loading', value: true })
 			AddressList().then(res => {
                 store.commit('setUser', { key: 'loading', value: false })
-				// console.log(res)
 				if (res.data.rtnCode == 200) {
 					store.commit('setUser', {
 						key: 'addressList',
-						value: res.data.data
+						value: res.data.data,
 					})
 				} else {
-                    Message({
-                        type: 'error',
-                        message: vm.$t('lang.addressLoadFail')
-                    })
+                    // Message({
+                    //     type: 'error',
+                    //     message: vm.$t('lang.addressLoadFail')
+                    // })
                 }
 			}).catch(e => {
-                store.commit('setUser', { key: 'loading', value: true })
-                Message({
-                    type: 'error',
-                    message: vm.$t('lang.addressLoadFail')
-                })
+                store.commit('setUser', { key: 'loading', value: false })
+                // Message({
+                //     type: 'error',
+                //     message: vm.$t('lang.addressLoadFail')
+                // })
             })
 		},
         getTypeList (store,data) {    //获取类型列表
@@ -96,10 +96,10 @@ export default {
 						value: res.data.data
 					})
 				} else {
-                    Message({
-                        type: 'error',
-                        message: vm.$t('lang.typeLoadFail')
-                    })
+                    // Message({
+                    //     type: 'error',
+                    //     message: vm.$t('lang.typeLoadFail')
+                    // })
                 }
             })
         },
@@ -115,7 +115,7 @@ export default {
         },
         getShopList (store,data) {    //獲取店鋪列表
             getShopList(data).then(res => {
-                // console.log(res)
+                console.log(res)
                 if (res.data.rtnCode == 200) {
                     store.commit('setUser', {
 						key: 'storeList',
@@ -148,6 +148,24 @@ export default {
 						value: res.data.data
 					})
                 }
+            })
+        },
+        getuploadtoken (store,data) {
+            getuploadtoken().then(res => {
+                if (res.data.rtnCode == 200) {
+                    store.commit('setUser', {
+						key: 'ossData',
+						value: res.data.data
+					})
+                }
+            })
+        },
+        setLang (store, val) {           //修改語言
+            let data = {
+                lang: val
+            }
+            setLang(data).then(res => {
+                // console.log(res)
             })
         }
     }

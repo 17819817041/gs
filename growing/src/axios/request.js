@@ -154,6 +154,16 @@ export function getTimeIntervalList (data) {    //获取时段列表
     )
 } 
 
+export function userGuangGaoFirst (data) {    //獲取廣告用戶首頁數據
+    return request (
+        {
+            url: "/api/userGuangGao/home",
+            method: "GET",
+            params: data
+        }
+    )
+} 
+
 
 
 
@@ -294,11 +304,54 @@ export function addShopUser (data) {    //新增账户
     )
 }
 
-export function cancelAccount (data) {    //注销店铺
+export function cancelAccount (data) {    //注销賬戶
     return request (
         {
             url: "/api/shopDetails/cancelAccount",
             method: "DELETE",
+            params: data
+        }
+    )
+} 
+
+export function cancelShop (data) {    //注销店铺
+    return request (
+        {
+            url: "/api/shopDetails/cancelShop",
+            method: "DELETE",
+            params: data
+        }
+    )
+} 
+
+export function updateShopDiscount (data) {    //修改店铺外来广告比例（馬上可以修改的
+    return request (
+        {
+            url: "/api/userShop/updateShopDiscount",
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        }
+    )
+}
+
+export function getShopDiscount (data) {    //查询外來廣告時段
+    return request (
+        {
+            url: "/api/userShop/getShopDiscount",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
+export function getShopDeta (data) {    //查询外來廣告時段
+    return request (
+        {
+            url: "/api/shopDetails/getShopD",
+            method: "GET",
             params: data
         }
     )
@@ -311,7 +364,7 @@ export function cancelAccount (data) {    //注销店铺
 export function AddressList (data) {    //查询地址列表
     return request (
         {
-            url: "/api/manager/address/list",
+            url: "/api/address/list",
             method: "GET"
         }
     )
@@ -546,8 +599,8 @@ export function getShopListpage (data) {    //获取店铺列表 带分页
 export function AdGetShopDetailsById (data) {    //預覽店鋪
     return request (
         {
-            url: "/api/shopManager/getShopDetail",
-            method: "GET",
+            url: "/api/manager/shopExamine/getShopDetailsById",
+            method: "PUT",
             params: data
         }
     )
@@ -704,6 +757,15 @@ export function getTotalIncome (data) {    //收入總數 ($HKD)
     )
 }
 
+export function getSpendingThisMonth (data) {    //本月支出 ($HKD)
+    return request (
+        {
+            url: "/api/manager/IncomeAndExpenditure/getSpendingThisMonth",
+            method: "GET"
+        }
+    )
+}
+
 export function getTotalExpenditure (data) {    //支出總數 ($HKD)
     return request (
         {
@@ -722,10 +784,20 @@ export function getStatisticsInTheLast7Days (data) {    //近7天收入支出統
     )
 }
 
-export function admincancelAccount (data) {    //近7天收入支出統計
+export function admincancelAccount (data) {    //註銷賬戶
     return request (
         {
             url: "/api/shopManager/cancelAccount",
+            method: "DELETE",
+            params: data
+        }
+    )
+}
+
+export function admincancelShop (data) {    //註銷店鋪
+    return request (
+        {
+            url: "/api/shopManager/cancelShop",
             method: "DELETE",
             params: data
         }
@@ -751,6 +823,65 @@ export function getShopDetails (data) {    //查询店鋪详情
     )
 }
 
+export function examinegetGuangGaoDetailsById (data) {    //查询店鋪详情
+    return request (
+        {
+            url: "/api/manager/examine/getGuangGaoDetailsById",
+            method: "PUT",
+            params: data
+        }
+    )
+}
+
+export function adminguangGaoById (data) {    //获取广告媒体内容
+    return request (
+        {
+            url: "/api/managerUser/guangGaoById",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
+export function admindelGuangGaoJiHua (data) {    //删除计划
+    return request (
+        {
+            url: "/api/managerUser/delGuangGaoJiHua",
+            method: "PUT",
+            params: data
+        }
+    )
+}
+
+export function adminoffShelf (data) {    //下架广告
+    return request (
+        {
+            url: "/api/managerUser/offShelf",
+            method: "PUT",
+            params: data
+        }
+    )
+}
+
+export function adminsjGuangGao (data) {    //shang架广告
+    return request (
+        {
+            url: "/api/managerUser/sjGuangGao",
+            method: "PUT",
+            params: data
+        }
+    )
+}
+
+export function AdmingetPriceByGuangGaoId (data) {    //查询价格
+    return request (
+        {
+            url: "/api/managerUser/getPriceByGuangGaoId",
+            method: "GET",
+            params: data
+        }
+    )
+}
 
 
 
@@ -773,6 +904,7 @@ export function getCumulativeMonthly (data) {    //获取最近一年的月份�
         {
             url: "/api/statistics/getCumulativeMonthly",
             method: "GET",
+            params: data
         }
     )
 } 
@@ -782,6 +914,7 @@ export function getGuangGaoStatistics (data) {    //每个区域的所有广告�
         {
             url: "/api/statistics/getGuangGaoStatistics",
             method: "GET",
+            params: data
         }
     )
 } 
@@ -791,6 +924,7 @@ export function getRemainderDay (data) {    //获取每个区域的所有广告
         {
             url: "/api/statistics/getRemainderDay",
             method: "GET",
+            params: data
         }
     )
 } 
@@ -858,6 +992,122 @@ export function guangGaoById (data) {    //查询套餐
     return request (
         {
             url: "/api/userGuangGao/guangGaoById",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
+export function offShelf (data) {    //下架广告
+    return request (
+        {
+            url: "/api/userGuangGao/offShelf",
+            method: "PUT",
+            params: data
+        }
+    )
+}
+
+export function sjGuangGao (data) {    //上架计划
+    return request (
+        {
+            url: "/api/userGuangGao/sjGuangGao",
+            method: "PUT",
+            params: data
+        }
+    )
+}
+
+export function delGuangGaoJiHua (data) {    //删除计划
+    return request (
+        {
+            url: "/api/userGuangGao/delGuangGaoJiHua",
+            method: "PUT",
+            params: data
+        }
+    )
+}
+
+export function updateGuangGao (data) {    //广告编辑(精准投放)
+    return request (
+        {
+            url: "/api/userGuangGao/updateGuangGao",
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        }
+    )
+} 
+
+export function updatePackageGuangGao (data) {    //广告编辑(套餐投放)
+    return request (
+        {
+            url: "/api/userGuangGao/updatePackageGuangGao",
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        }
+    )
+} 
+
+export function getGuangGaoDetailsById (data) {    //查询套餐
+    return request (
+        {
+            url: "/api/userGuangGao/getGuangGaoDetailsById",
+            method: "PUT",
+            params: data
+        }
+    )
+}
+
+export function getPriceByGuangGaoId (data) {    //查询价格
+    return request (
+        {
+            url: "/api/userGuangGao/getPriceByGuangGaoId",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
+export function popular (data) {    //热门
+    return request (
+        {
+            url: "/api/userGuangGao/popular",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
+export function recommend (data) {    //同区推荐
+    return request (
+        {
+            url: "/api/userGuangGao/recommend",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
+export function GGgetShopDetails (data) {    //店铺详情
+    return request (
+        {
+            url: "/api/userGuangGao/getShopDetails",
+            method: "GET",
+            params: data
+        }
+    )
+}
+
+export function userGuangGaosearch (data) {    //搜索
+    return request (
+        {
+            url: "/api/userGuangGao/search",
             method: "GET",
             params: data
         }

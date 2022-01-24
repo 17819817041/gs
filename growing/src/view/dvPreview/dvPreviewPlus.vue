@@ -34,7 +34,6 @@
 									<div class="float" style="margin-right: 15px;width: 140px;">
 										<el-form-item prop="startDate">
 											<el-date-picker disabled
-												@change="STIME"
 												class="width100"
 												v-model="ruleForm.startDate"
 												type="date"
@@ -107,21 +106,17 @@
 							:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" class="demo-ruleForm">
 								<el-form-item label="廣告媒體投放時段">
 									<div class="time_duan">
-										<div class="clear">
-											<div class="float" style="width: 70px;min-width: 70px;">繁忙時段</div>
-											<div class="float float320"><el-checkbox v-model="checked2" disabled>10:00~11:00(15分鐘)</el-checkbox></div>
-											<div class="float"><el-checkbox v-model="checked2" disabled>11:00~12:00(15分鐘)</el-checkbox></div>
-										</div>
-										<div class="clear" style="margin: 15px 0;">
-											<div class="float" style="width: 70px;min-width: 70px;">超繁忙時段</div>
-											<div class="float float320"><el-checkbox v-model="checked2" disabled>12:00~13:00(20分鐘)</el-checkbox></div>
-											<div class="float"><el-checkbox v-model="checked2" disabled>18:00~19:00(20分鐘)</el-checkbox></div>
-										</div>
-										<div class="clear">
-											<div class="float" style="width: 70px;min-width: 70px;">非繁忙時段</div>
-											<div class="float float320"><el-checkbox v-model="checked2" disabled>19:00~20:00(10分鐘)</el-checkbox></div>
-											<div class="float"><el-checkbox v-model="checked2" disabled>20:00~21:00(10分鐘)</el-checkbox></div>
-											<div class="float"><el-checkbox v-model="checked2" disabled>21:00~22:00(10分鐘)</el-checkbox></div>
+										<div class="clear" v-for="(item,i) in adList" :key="i">
+											<div class="float" style="width: 70px;min-width: 70px;" 
+											v-if="item.timeIntervalId == 1">{{$t('lang.buTime')}}</div>
+											<div class="float" style="width: 70px;min-width: 70px;" 
+											v-else-if="item.timeIntervalId == 2">{{$t('lang.ubbuTime')}}</div>
+											<div class="float" style="width: 70px;min-width: 70px;"
+											v-else-if="item.timeIntervalId == 3">{{$t('lang.sbuTime')}}</div>
+
+											<div class="float float320"><el-checkbox v-model="checked2"
+											v-for="(res,k) in item.guangGaoTimeMinDtos" :key="k"
+											disabled>{{res.packageName}}({{res.timeMin}}分鐘)</el-checkbox></div>
 										</div>
 									</div>
 								</el-form-item>
@@ -129,9 +124,9 @@
 								<el-form-item label="套餐指定(店鋪/街道/區域)">
 									<div class="list clear">
 										<div style="color: #B0B0B0;" class="list_item float al cursor" 
-										@click="storehit(i)"
+										@click="storehit(item)"
 										v-for="(item,i) in tc_storeList" :key="i">
-											{{item}} <span class="al" style="margin-left: 5px"></span>
+											{{item.msg}} <span class="al" style="margin-left: 5px"></span>
 										</div>
 									</div>
 									<div class="map_wrap">
@@ -175,148 +170,6 @@
 				</div>
 			</div>
 		</div>
-		<el-drawer
-			title="請選擇您需要的套餐內容"
-			:visible.sync="drawer_tc"
-			:direction="direction">
-			<div style="padding: 0 20px;overflw:auto;" class="noBar scale">
-				<div @click="active = !active" 
-				:class="['technology_content_item cursor',{ mgb: active, 'technology_content_item_border': choose == 1 }]" v-show="technologysubmit">
-					<div class="drawer_arrow" @click.stop="active = !active">
-						<img style="height: 90%;" :class="[{'rotate': active}]" src="@/assets/img/pull_down.png" alt="">
-					</div>
-					<div class="taocan_title bold">旺角街道高流量商鋪廣告套餐</div>
-					<div class="clear">
-						<div class="float title_p sa al">
-							<div>
-								<div class="technology_bold">繁忙時段</div>
-								<div class="technology_size12">9am-9pm廣告高曝光時間</div>
-							</div>
-							<div>
-								<div class="technology_bold">旺角街道高流量商鋪</div>
-								<div class="technology_size12">由多加旺角街道中人流量集中店鋪組成</div>
-							</div>
-						</div>
-						<div class="float title_p1 sa al">
-							<div>
-								<div class="technology_bold_red">計劃原價</div>
-								<div class="technology_bold_red1" style="text-decoration: line-through;">
-									$49999 HKD
-								</div>
-							</div>
-							<div>
-								<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
-							</div>
-							<div class="flex al">
-								<div class="technology_bold dor radius ju al">$</div>
-								<div class="technology_bold technology_price">39999</div>
-								<div class="hkd">HKD</div>
-								<div :class="['choose_btn cursor technology_bold',
-								{ 'choose_btn_background':choose == 1 }]" 
-								@click.stop='choosetaocan(1,"39999",5)'>選中</div>
-							</div>
-						</div>
-					</div>
-					<div :class="['content_msg',{ maxheight: !active }]">
-						<div class="bold">套餐內容</div>
-						<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
-						<div class="msg_item">精確投放到指定旺角街道店鋪，由高人流量店鋪組成</div>
-						<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
-						<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
-					</div>
-				</div>
-				<div @click="active1 = !active1" 
-				:class="['technology_content_item cursor',{ mgb: active1, 'technology_content_item_border': choose == 2 }]" v-show="technologysubmit">
-					<div class="drawer_arrow" @click.stop="active1 = !active1">
-						<img style="height: 90%;" :class="[{'rotate': active1}]" src="@/assets/img/pull_down.png" alt="">
-					</div>
-					<div class="taocan_title bold">中環街道高流量商鋪廣告套餐</div>
-					<div class="clear">
-						<div class="float title_p sa al">
-							<div>
-								<div class="technology_bold">非繁忙時段</div>
-								<div class="technology_size12">9pm-9am廣告播放時間</div>
-							</div>
-							<div>
-								<div class="technology_bold">中環街道高流量商鋪</div>
-								<div class="technology_size12">由多加中環街道中人流量集中店鋪組成</div>
-							</div>
-						</div>
-						<div class="float title_p1 sa al">
-							<div>
-								<div class="technology_bold_red">計劃原價</div>
-								<div class="technology_bold_red1" style="text-decoration: line-through;">
-									$69999 HKD
-								</div>
-							</div>
-							<div>
-								<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
-							</div>
-							<div class="flex al">
-								<div class="technology_bold dor radius ju al">$</div>
-								<div class="technology_bold technology_price">59999</div>
-								<div class="hkd">HKD</div>
-								<div :class="['choose_btn cursor technology_bold',
-								{ 'choose_btn_background':choose == 2 }]" 
-								@click.stop='choosetaocan(2,"59999",7)'>選中</div>
-							</div>
-						</div>
-					</div>
-					<div :class="['content_msg',{ maxheight: !active1 }]">
-						<div class="bold">套餐內容</div>
-						<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
-						<div class="msg_item">精確投放到指定中環街道店鋪，由高人流量店鋪組成</div>
-						<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
-						<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
-					</div>
-				</div>
-				<div @click="active2 = !active2" 
-				:class="['technology_content_item cursor',{ mgb: active2, 'technology_content_item_border': choose == 3 }]" v-show="technologysubmit">
-					<div class="drawer_arrow" @click.stop="active2 = !active2">
-						<img style="height: 90%;" :class="[{'rotate': active2}]" src="@/assets/img/pull_down.png" alt="">
-					</div>
-					<div class="taocan_title bold">黃大仙街道高流量商鋪廣告套餐</div>
-					<div class="clear">
-						<div class="float title_p sa al">
-							<div>
-								<div class="technology_bold">繁忙時段</div>
-								<div class="technology_size12">9am-9pm廣告高曝光時間</div>
-							</div>
-							<div>
-								<div class="technology_bold">黃大仙街道高流量商鋪</div>
-								<div class="technology_size12">由多加黃大仙街道中人流量集中店鋪組成</div>
-							</div>
-						</div>
-						<div class="float title_p1 sa al">
-							<div>
-								<div class="technology_bold_red">計劃原價</div>
-								<div class="technology_bold_red1" style="text-decoration: line-through;">
-									$79999 HKD
-								</div>
-							</div>
-							<div>
-								<div class="youhui"><img src="@/assets/img/youhui.png" alt=""></div>
-							</div>
-							<div class="flex al">
-								<div class="technology_bold dor radius ju al">$</div>
-								<div class="technology_bold technology_price">69999</div>
-								<div class="hkd">HKD</div>
-								<div :class="['choose_btn cursor technology_bold',
-								{ 'choose_btn_background':choose == 3 }]" 
-								@click.stop='choosetaocan(3,"69999",10)'>選中</div>
-							</div>
-						</div>
-					</div>
-					<div :class="['content_msg',{ maxheight: !active2 }]">
-						<div class="bold">套餐內容</div>
-						<div class="msg_item">廣告計劃播放於9am-9pm黃金繁忙時段</div>
-						<div class="msg_item">精確投放到指定黃大仙街道店鋪，由高人流量店鋪組成</div>
-						<div class="msg_item">可指定時段的某個準確時間進行投放廣告媒體內容</div>
-						<div class="msg_item">套餐所選的指定街道商鋪，在廣告計劃播放時段，會同步播放廣告媒體內容</div>
-					</div>
-				</div>
-			</div>
-		</el-drawer>
 		<el-dialog
 			:visible.sync="showVideo"
 			width="90%">
@@ -336,7 +189,9 @@
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import dimg from "@/assets/img/growing.jpg"
+import mar from "@/assets/img/marker.png"
 import img1 from "@/assets/img/backimg.png"
+import { guangGaoById } from "@/axios/request.js"
 export default {
     data() {
         return {
@@ -356,11 +211,7 @@ export default {
 			dimg1: '',
 			taocanDetail: true,
 			checked2: true,
-			tc_storeList: ['九龍店', '車展會','科技大廈', '醫院', '時尚大廳'],
-
-			copy1: [],
-			copy2: [],
-			copy3: [],
+			tc_storeList: [],
 
 
 			position1: 'left-end',
@@ -373,15 +224,15 @@ export default {
             radio: '1',
 			labelPosition: 'left',
             ruleForm: {
-                name: '食品會投放',
+                name: '',
                 area: '',
                 store: '',
                 street: '',
                 // time: '',
                 type: '',
 				date: '',
-                startDate: '2021-12-06',
-				endDate: '2021-12-07',
+                startDate: '',
+				endDate: '',
                 content: '',
 				mediaType: '',
 				cmediaType: '',
@@ -432,7 +283,8 @@ export default {
 			typeList: ['旺角街道高流量商鋪廣告套餐($10000HKD/day)/旺角區域店鋪/廣告100分鐘'],
 			areaList: [],
 			timeList: [],
-			imageList: [{url: img1,name: 'image1',size: '13KB'}, {url: dimg,name: 'image2',size: '500KB'}],
+			adList: [],
+			imageList: [],
 			minute: [],         //时长
             storeList: [],
             streetList: [],
@@ -450,6 +302,7 @@ export default {
 			technologysubmit: true,
 		}
     },
+	components: { ElImageViewer },
 	components: { ElImageViewer },
 	props: {
 		urlList: {
@@ -469,6 +322,72 @@ export default {
 		default: () => {}
 		}
 	},
+    computed: {
+        lang () { return this.$i18n.locale },
+		getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		},
+		addressList: {           //地址列表
+			get () { return this.$store.state.user.addressList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'addressList',
+					value: val
+				})
+			}
+		},
+		clockList: {             //時間列表
+			get () { return this.$store.state.user.clockList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'clockList',
+					value: val
+				})
+			}
+		},
+    },
+	watch: {
+        lang: {
+            handler (val) {
+                if (val) {
+					let that = this
+					this.$nextTick(() => {
+						that.initMap1(22.6,114.1,1)
+					})
+                }
+            }
+        },
+		getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+					this.$store.dispatch('getAddress',this) 
+					this.$store.dispatch('getTimeIntervaDetailslList',this)
+				}
+			},
+		},
+		addressList: {
+			handler (val) {
+				if (val) {
+					this.addressList = val
+				}
+			}
+		},
+		clockList: {
+			handler (val) {
+				if (val) {
+					this.clockList = val
+					this.guangGaoById()
+				}
+			}
+		},
+    },
 	beforeMount() {
 		let that = this
         window.addEventListener('resize', (e) => {
@@ -477,15 +396,88 @@ export default {
 		this.fun()
     },
 	created () {
+		this.$store.dispatch('getTypeList',this)
 		this.dimg = dimg
 	},
     mounted () {
-        this.initMap(22.6,114.1,1)
-		window.shopadd = this.shopadd;
 		window.onPreview = this.onPreview;
 		window.closewin = this.closewin;
     },
     methods: {
+		guangGaoById () {
+			let that = this
+			let data = {
+				guangGaoId: this.$route.query.id
+			}
+			guangGaoById(data).then(res => {
+				console.log(res)
+				if (res.data.rtnCode == 200) {
+					let obj = this.ruleForm
+					let item = res.data.data
+					obj.name = item.title
+					this.getTypeList.forEach(item1 => {
+						item1.forEach(child => {
+							if (child.id == res.data.data.typeId && child.language == 'zh-TW' && this.$i18n.locale == 'zh-CN') {
+								obj.type = child.guangGaoTypeName
+							} else if (child.id == res.data.data.typeId && child.language == 'en-US' && this.$i18n.locale == 'en-US') {
+								obj.type = child.guangGaoTypeName
+							}
+						})
+					})
+					obj.startDate = new Date(item.startTime).toLocaleDateString().split('/').join('-')
+					obj.endDate = new Date(item.endTime).toLocaleDateString().split('/').join('-')
+					obj.mediaType = item.type
+					obj.inp = item.totalLength
+					this.imageList = item.guangGaoContentDto
+					this.clockList.forEach(item1 => {
+						item1.timeIntervalList.forEach(child => {
+							if (item.guangGaoAddressAndTime2Dto) {
+								item.guangGaoAddressAndTime2Dto.guangGaoTimeDtos.forEach(val => {
+									val.guangGaoTimeMinDtos.forEach(last => {
+										if (child.id == last.timeIntervalDetailsId) {
+											last.packageName = child.packageName
+										}
+									})
+								})
+							}
+						})
+					})
+					if (item.guangGaoAddressAndTime2Dto) {
+						this.adList = item.guangGaoAddressAndTime2Dto.guangGaoTimeDtos
+						if (res.data.data.guangGaoAddressAndTime2Dto.shopVoList.length != 0) {
+							res.data.data.guangGaoAddressAndTime2Dto.shopVoList.forEach(child => {
+								that.addressList.forEach(item1 => {
+									if (child.addressParentId == item1.id) {
+										child.area = item1.addressLanguageDtos.find( res => res.language == "zh-TW") && that.$i18n.locale == "zh-CN" ? 
+										item1.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
+										item1.addressLanguageDtos.find( res => res.language == "en-US").addressName
+									}
+									child.position = new google.maps.LatLng(child.latitude,child.longitude),
+									child.type= "info",
+									child.msg= child.shopName,
+									child.area= child.area,
+									child.address= child.shopAddressName,
+									child.widthAndHeihth= child.widthAndHeihth,
+									child.shopId= child.shopId,
+									child.timeIntervalName= child.timeIntervalNames,
+									child.typeNames= child.typeNames,
+									child.priceContents= child.priceContents,
+									child.addressParentId= child.addressParentId,
+									child.addressId= child.addressId,
+									child.images= child.images
+								})
+							})
+							this.tc_storeList = res.data.data.guangGaoAddressAndTime2Dto.shopVoList
+						}
+					}
+					
+					this.initMap1(22.34,114.1,1)
+				} else {
+					this.$router.back()
+					this.$message.warning(res.data.msg)
+				}
+			})
+		},
 		previewVideo (item) {
 			this.src = item.url
 			this.showVideo = true
@@ -532,85 +524,23 @@ export default {
 			}
 		},
 		storehit (i) {
+			console.log(i)
 			let that = this
 			let map = this.map
-			const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
+			const iconBase = mar
 			const icons = {
-				parking: {
-				icon: iconBase + "parking_lot_maps.png",
-				},
-				library: {
-				icon: iconBase + "library_maps.png",
-				},
 				info: {
-				icon: iconBase + "info-i_maps.png",
+					icon: iconBase
 				},
 			};
-			const features = [
-				{
-				position: new google.maps.LatLng(22.7, 114.1),
-				type: "info",
-				msg: this.$t("lang.ks")
-				},
-				{
-				position: new google.maps.LatLng(22.79, 114.16),
-				type: "info",
-				msg: '車展會'
-				},
-				{
-				position: new google.maps.LatLng(22.87, 114.13),
-				type: "info",
-				msg: '科技大廈'
-				},
-				{
-				position: new google.maps.LatLng(22.66, 114.10),
-				type: "info",
-				msg: '醫院'
-				},
-				{
-				position: new google.maps.LatLng(22.8, 114.1),
-				type: "info",
-				msg: '時尚大廳'
-				},
-				{
-				position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
-				type: "library",
-				},
-			];
-			// Create markers.
-			if (that.$i18n.locale == 'zh-CN') {
-				// for (let i = 0; i < features.length; i++) {
+			const features = this.tc_storeList
+			features.forEach(item => {
+				if (item.shopId == i.shopId) {
+					// Create markers.
+				if (that.$i18n.locale == 'zh-CN') {
 					const marker1 = new google.maps.Marker({
-						position: features[i].position,
-						icon: icons[features[i].type].icon,
+						position: item.position,
+						icon: 'info',
 						map: map,
 					});
 					
@@ -631,25 +561,25 @@ export default {
 						` +
 						`
 							<div class="sb" style="margin-top:5px;">
-								<div class='bold tc'>${features[i].msg}(旺角店)</div>
+								<div class='bold tc'>${item.msg}(${item.area})</div>
 								<div class="contentString1_address" 
 								style="text-decoration: underline;
-								font-size:12px;">香港旺角區旺角街道666號</div>
+								font-size:12px;">${item.area}</div>
 							</div>
 						` + 
 						`
 							<div class="size12">
 								<div>
-									<span>廣告顯示的尺寸(高 × 寬):</span>
+									<span>廣告顯示的尺寸(${item.widthAndHeihth}):</span>
 									<span style="color: blue;">2m × 1m</span>
 								</div>
 								<div>
 									<span>為廣告商開放的可用時間:</span>
-									<span style="color: blue;">9am~23pm</span>
+									<span style="color: blue;">${item.timeIntervalNames}</span>
 								</div>
 								<div>
 									<span>廣告不接受的業務類型:</span>
-									<span style="color: blue;">食品</span>
+									<span style="color: blue;">${item.typeNames}</span>
 								</div>
 								<div>
 									<span>高峰/非高峰時段的每月價格:</span>
@@ -659,16 +589,12 @@ export default {
 									</span>
 								</div>
 							</div>
-						` 
-					
+						`
 					that.openwin(contentString1,marker1,map)
-				// }
-			} else if (that.$i18n.locale == 'en-US') {
-				console.log(that.$i18n.locale)
-				// for (let i = 0; i < features.length; i++) {
+				} else if (that.$i18n.locale == 'en-US') {
 					const marker1 = new google.maps.Marker({
-						position: features[i].position,
-						icon: icons[features[i].type].icon,
+						position: item.position,
+						icon: 'info',
 						map: map,
 					});
 					
@@ -689,7 +615,7 @@ export default {
 						` +
 						`
 							<div class="sb" style="margin-top:5px;">
-								<div class='bold tc'>${features[i].msg}(Mong Kok Store)</div>
+								<div class='bold tc'>${item.msg}(Mong Kok Store)</div>
 								<div class="contentString1_address" 
 								style="text-decoration: underline;
 								font-size:12px;">HongKong street at six</div>
@@ -698,39 +624,37 @@ export default {
 						`
 							<div class="size12">
 								<div>
-									<span>size (height x width) of adv display:</span>
+									<span>廣告顯示的尺寸(${item.widthAndHeihth}):</span>
 									<span style="color: blue;">2m × 1m</span>
 								</div>
 								<div>
-									<span>available hour opened for advertisers:</span>
-									<span style="color: blue;">9am~23pm</span>
+									<span>為廣告商開放的可用時間:</span>
+									<span style="color: blue;">${item.timeIntervalNames}</span>
 								</div>
 								<div>
-									<span>type of business unaccepted for adv:</span>
-									<span style="color: blue;">Food</span>
+									<span>廣告不接受的業務類型:</span>
+									<span style="color: blue;">${item.typeNames}</span>
 								</div>
 								<div>
-									<span>monthly price at rush/non-rush hour:</span>
+									<span>高峰/非高峰時段的每月價格:</span>
 									<span style="color: blue;">
-										<div>rush(20000HKD/month)</div>
-										<div>non-rush(10000HKD/month)</div>
+										<div>高峰(20000HKD/month)</div>
+										<div>非高峰(10000HKD/month)</div>
 									</span>
 								</div>
 							</div>
 						` 
-
-					// marker1.addListener("click", () => {
 						that.openwin(contentString1,marker1,map)
-					// });
-				// }
-			}
+					}
+				}
+			})
 		},
-		initMap (lat,lng,val) {
+		initMap1 (lat,lng,val) {
 			let that = this
 			let boolean = true
 			let map = new google.maps.Map(document.getElementById('map'), {
 				center: {lat: lat, lng: lng},
-				zoom: 8,
+				zoom: 11,
 				mapTypeId: "roadmap",
 				disableDefaultUI: true,
 				zoomControl: boolean,
@@ -742,128 +666,92 @@ export default {
 			});
 			this.map = map
 
-			if (navigator.geolocation) {       //获取自身定位
-				navigator.geolocation.getCurrentPosition(function(position) {
-					var pos = {
-					lat: position.coords.latitude,
-					lng: position.coords.longitude
-					};
-					var marker = new google.maps.Marker({position: pos, map: map});
-					map.setCenter(pos);
-				})
-			}
-			// const myLatLng = {lat: 22.6, lng: 114.1}
-			// new google.maps.Marker({
-			// 	position: myLatLng,
-			// 	map,
-			// 	title: "Hello World!",
+			// if (navigator.geolocation) {       //获取自身定位
+			// 	navigator.geolocation.getCurrentPosition(function(position) {
+			// 		var pos = {
+			// 		lat: position.coords.latitude,
+			// 		lng: position.coords.longitude
+			// 		};
+			// 		var marker = new google.maps.Marker({position: pos, map: map});
+			// 		map.setCenter(pos);
+			// 	})
+			// }
+			let input = this.$refs.pac
+			let searchBox = new google.maps.places.SearchBox(input);
+			map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+			map.addListener("bounds_changed", () => {
+				searchBox.setBounds(map.getBounds());
+			});
+			// map.addListener('click', function(e) {   //点击获取经纬度
+			// 	console.log(e.latLng.lat(),e.latLng.lng()); 
+			// 	let data = {
+			// 		key: '66b48ee066b6ada810d662b110cfc463',
+			// 		location: String(e.latLng.lng()) + ',' + String(e.latLng.lat())
+			// 	}
+			// 	gaode(data).then(res => {
+			// 		console.log(res)    //地理解析，详细地址
+			// 	})
 			// });
+			let markers = [];
+			searchBox.addListener("places_changed", () => {
+				let places = searchBox.getPlaces();
 
-			let msg = this.msg
-			var data = [
-				{id:1,name:'小李'},
-			]
-			this.$nextTick(() => {
-				// const contentString = `
-				// 	<div>
-				// 		${data.map((item) => {
-				// 			return `<div><span>${item.name}</span></div>`
-				// 		}).join('')}
-				// 	</div>
-				// `
-				// const infowindow = new google.maps.InfoWindow({
-				// 	content: contentString,
-				// });
-				// const marker = new google.maps.Marker({
-				// 	position: myLatLng,
-				// 	map,
-				// 	title: "Uluru (Ayers Rock)",
-				// });
-				// marker.addListener("click", () => {
-				// 	infowindow.open({
-				// 		anchor: marker,
-				// 		map,
-				// 		shouldFocus: false,
-				// 	});
-				// })
-				// this.lightArea(map)
-			})
+				if (places.length == 0) {
+					return;
+				}
+
+				// Clear out the old markers.
+				markers.forEach((marker) => {
+				marker.setMap(null);
+				});
+				markers = [];
+
+				// For each place, get the icon, name and location.
+				const bounds = new google.maps.LatLngBounds();
+
+				places.forEach((place) => {
+				if (!place.geometry || !place.geometry.location) {
+					console.log("Returned place contains no geometry");
+					return;
+				}
+
+				const icon = {
+					url: place.icon,
+					size: new google.maps.Size(71, 71),
+					origin: new google.maps.Point(0, 0),
+					anchor: new google.maps.Point(17, 34),
+					scaledSize: new google.maps.Size(25, 25),
+				};
+
+				// Create a marker for each place.
+				markers.push(
+					new google.maps.Marker({
+					map,
+					icon,
+					title: place.name,
+					position: place.geometry.location,
+					})
+				);
+				if (place.geometry.viewport) {
+					// Only geocodes have viewport.
+					bounds.union(place.geometry.viewport);
+				} else {
+					bounds.extend(place.geometry.location);
+				}
+				});
+				map.fitBounds(bounds);
+			});
 
 			if (val == 1) {
-				const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
+				const iconBase = mar
 				const icons = {
-					parking: {
-					icon: iconBase + "parking_lot_maps.png",
-					},
-					library: {
-					icon: iconBase + "library_maps.png",
-					},
 					info: {
-					icon: iconBase + "info-i_maps.png",
+						icon: iconBase
 					},
 				};
-				const features = [
-					{
-					position: new google.maps.LatLng(22.7, 114.1),
-					type: "info",
-					msg: this.$t("lang.ks")
-					},
-					{
-					position: new google.maps.LatLng(22.79, 114.16),
-					type: "info",
-					msg: '車展會'
-					},
-					{
-					position: new google.maps.LatLng(22.87, 114.13),
-					type: "info",
-					msg: '科技大廈'
-					},
-					{
-					position: new google.maps.LatLng(22.66, 114.10),
-					type: "info",
-					msg: '醫院'
-					},
-					{
-					position: new google.maps.LatLng(22.8, 114.1),
-					type: "info",
-					msg: '時尚大廳'
-					},
-					{
-					position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
-					type: "library",
-					},
-				];
+				const features = this.tc_storeList
 				// Create markers.
 				if (that.$i18n.locale == 'zh-CN') {
-					console.log(that.$i18n.locale)
 					for (let i = 0; i < features.length; i++) {
 						const marker1 = new google.maps.Marker({
 							position: features[i].position,
@@ -888,25 +776,25 @@ export default {
 							` +
 							`
 								<div class="sb" style="margin-top:5px;">
-									<div class='bold tc'>${features[i].msg}(旺角店)</div>
+									<div class='bold tc'>${features[i].msg}(${features[i].area})</div>
 									<div class="contentString1_address" 
 									style="text-decoration: underline;
-									font-size:12px;">香港旺角區旺角街道666號</div>
+									font-size:12px;">${features[i].area}</div>
 								</div>
 							` + 
 							`
 								<div class="size12">
 									<div>
-										<span>廣告顯示的尺寸(高 × 寬):</span>
-										<span style="color: blue;">2m × 1m</span>
+										<span>廣告顯示的尺寸(寬 × 高):</span>
+										<span style="color: blue;">${features[i].widthAndHeihth}</span>
 									</div>
 									<div>
 										<span>為廣告商開放的可用時間:</span>
-										<span style="color: blue;">9am~23pm</span>
+										<span style="color: blue;">${features[i].timeIntervalNames}</span>
 									</div>
 									<div>
 										<span>廣告不接受的業務類型:</span>
-										<span style="color: blue;">食品</span>
+										<span style="color: blue;">${features[i].typeNames}</span>
 									</div>
 									<div>
 										<span>高峰/非高峰時段的每月價格:</span>
@@ -916,32 +804,13 @@ export default {
 										</span>
 									</div>
 								</div>
-							` 
-						// 	+
-						// 	`<div style='margin-top: 10px;' class='ju al'>
-						// 		<div onclick="closewin()" class='cursor close'
-						// 		style='padding: 5px 20px;
-						// 		color: gray;
-						// 		font-size: 12px;
-						// 		border: solid 1px rgb(201, 201, 201);
-						// 		border-radius: 4px;
-						// 		margin-right: 5px;'>取消</div>
-
-						// 		<div onclick="shopadd('${features[i].msg}')"
-						// 		class='cursor' style='padding: 5px 20px;
-						// 		color: rgb(253, 253, 253);
-						// 		background: rgb(0, 153, 255);
-						// 		font-size: 12px;
-						// 		border-radius: 4px;'>添加</div>
-						// 	</div>
-						// `
+							`
 
 						marker1.addListener("click", () => {
 							that.openwin(contentString1,marker1,map)
 						});
 					}
 				} else if (that.$i18n.locale == 'en-US') {
-					console.log(that.$i18n.locale)
 					for (let i = 0; i < features.length; i++) {
 						const marker1 = new google.maps.Marker({
 							position: features[i].position,
@@ -966,25 +835,25 @@ export default {
 							` +
 							`
 								<div class="sb" style="margin-top:5px;">
-									<div class='bold tc'>${features[i].msg}(Mong Kok Store)</div>
+									<div class='bold tc'>${features[i].msg}(${features[i].area})</div>
 									<div class="contentString1_address" 
 									style="text-decoration: underline;
-									font-size:12px;">HongKong street at six</div>
+									font-size:12px;">${features[i].area}</div>
 								</div>
 							` + 
 							`
 								<div class="size12">
 									<div>
 										<span>size (height x width) of adv display:</span>
-										<span style="color: blue;">2m × 1m</span>
+										<span style="color: blue;">${features[i].widthAndHeihth}</span>
 									</div>
 									<div>
 										<span>available hour opened for advertisers:</span>
-										<span style="color: blue;">9am~23pm</span>
+										<span style="color: blue;">${features[i].timeIntervalNames}</span>
 									</div>
 									<div>
 										<span>type of business unaccepted for adv:</span>
-										<span style="color: blue;">Food</span>
+										<span style="color: blue;">${features[i].typeNames}</span>
 									</div>
 									<div>
 										<span>monthly price at rush/non-rush hour:</span>
@@ -994,24 +863,7 @@ export default {
 										</span>
 									</div>
 								</div>
-							` 
-						// 	+ `<div style='margin-top: 10px;' class='ju al'>
-						// 		<div onclick="closewin()" class='cursor close'
-						// 		style='padding: 5px 20px;
-						// 		color: gray;
-						// 		font-size: 12px;
-						// 		border: solid 1px rgb(201, 201, 201);
-						// 		border-radius: 4px;
-						// 		margin-right: 5px;'>Cancel</div>
-
-						// 		<div onclick="shopadd('${features[i].msg}')"
-						// 		class='cursor' style='padding: 5px 20px;
-						// 		color: rgb(253, 253, 253);
-						// 		background: rgb(0, 153, 255);
-						// 		font-size: 12px;
-						// 		border-radius: 4px;'>Add</div>
-						// 	</div>
-						// `
+							`
 
 						marker1.addListener("click", () => {
 							that.openwin(contentString1,marker1,map)
@@ -1019,9 +871,6 @@ export default {
 					}
 				}
 			}
-		},
-		shopadd (val) {
-			this.addStore(val)
 		},
 		openwin (contentString1,marker1,map) {
 			if (this.infowindow) {
@@ -1039,24 +888,6 @@ export default {
 		closewin (val) {
 			this.infowindow.close()
 		},
-		lightArea () {
-			let that = this
-			let map = this.map
-			// Construct the polygon.
-			const bermudaTriangle = new google.maps.Polygon({
-				paths: that.deLight,
-				strokeColor: "#FF0000",
-				strokeOpacity: 0.8,
-				strokeWeight: 2,
-				fillColor: "#FF0000",
-				fillOpacity: 0.35,
-			})
-			this.delelightArea(bermudaTriangle)
-			bermudaTriangle.setMap(map);
-		},
-		delelightArea (bermudaTriangle) {
-			bermudaTriangle.setMap(null);
-		},
 		fun () {
 			if (window.innerWidth <= 564) {
                 this.labelPosition = 'top'
@@ -1069,112 +900,11 @@ export default {
 				this.position = 'left-end'
 			}
 		},
-		STIME (val) {
-			let D = new Date(val)
-			let start = D.getTime()
-			if (this.ruleForm.endDate) {
-				if (start > this.ruleForm.endDate.getTime()) {
-					this.ruleForm.endDate = ''
-				}
-			}
-		},
-		submitForm(formName) {
-			this.$refs[formName].validate((valid) => {
-			if (valid) {
-				alert('submit!');
-			} else {
-				console.log('error submit!!');
-				return false;
-			}
-			});
-		},
-		resetForm(formName) {
-			this.$refs[formName].resetFields();
-		},
 		submitG () {
 			this.submit = false
 		},
 		goBack () {
 			this.$router.back()
-		},
-		addType (item) {
-			if (item) {
-				this.typeList.push(item)
-				let arr = new Set(this.typeList)
-				this.typeList = Array.from(arr)
-			}
-		},
-		addArea (item) {
-			if (item) {
-				this.areaList.push(item)
-				let arr = new Set(this.areaList)
-				this.areaList = Array.from(arr)
-			}
-		},
-        addStore (item) {
-			this.infowindow.close()
-			if (item) {
-				this.storeList.push(item)
-				let arr = new Set(this.storeList)
-				this.storeList = Array.from(arr)
-			}
-		},
-        addStreet (item) {
-			if (item) {
-				this.streetList.push(item)
-				let arr = new Set(this.streetList)
-				this.streetList = Array.from(arr)
-			}
-		},
-		deleType (i) {
-			this.taocanDetail = false
-			this.typeList.splice(i,1)
-		},
-        deleStore (i) {
-			this.storeList.splice(i,1)
-		},
-        deleStreet (i) {
-			this.streetList.splice(i,1)
-		},
-		deleArea (i) {
-			this.areaList.splice(i,1)
-		},
-		addTime (item) {
-			if (item) {
-				this.timeList.push(item)
-				let arr = new Set(this.timeList)
-				this.timeList = Array.from(arr)
-			}
-		},
-		deleTime (i) {
-			this.timeList.splice(i,1)
-		},
-		getType (e) {
-			this.imageList = []
-			// this.ruleForm.inp = ''
-			this.minute = []
-			if (e == 1) {
-				this.video = false
-				this.ruleForm.mediaType = 'image'
-				this.ruleForm.cmediaType = '圖片'
-			} else if (e == 2) {
-				this.video = true
-				this.ruleForm.mediaType = 'video'
-				this.ruleForm.cmediaType = '視頻'
-			}
-		},
-		deleImg (i) {
-			if (this.ruleForm.mediaType == 'video') {
-				this.minute.splice(i,1)
-				this.ruleForm.inp = 0
-				for (let i=0;i<Array.from(this.minute).length;i++) {
-					this.ruleForm.inp = this.ruleForm.inp*1 + this.minute[i]
-					this.$forceUpdate()
-				}
-				this.imageList.splice(i,1)
-			} else {
-				this.imageList.splice(i,1)
-			}
 		},
     }
 }

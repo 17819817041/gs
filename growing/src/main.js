@@ -12,28 +12,38 @@ Vue.component("ModuleMin1",ModuleMin1)
 import Header from "@/components/header/header.vue"
 Vue.component("Header",Header)
 
-
-import element from "element-ui"
+import ElementUI from "element-ui"
 // import "@/assets/theme/index.css"
 import 'element-ui/lib/theme-chalk/index.css'; 
-// import locale1 from 'element-ui/lib/locale/lang/en'         //设置英文
-// Vue.use(element,{locale1})
-Vue.use(element)
 
+import ElementLocale from 'element-ui/lib/locale'      //设置英文
+import en from '@/assets/lang/en.js'
+import zh from '@/assets/lang/zh.js'
+import enLocale from 'element-ui/lib/locale/lang/en'
+import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 
-
+// Vue.use(ElementUI,{ locale })
+Vue.use(ElementUI)
 
 import VueI18n from 'vue-i18n'
-import { locale } from 'core-js'
 Vue.use(VueI18n)
+
 const i18n = new VueI18n({
-  locale: localStorage.getItem('locale') || 'zh-CN', // 通过切换locale的值来实现语言切换,this.$i18n.locale
-//   locale: localStorage.getItem('locale') || 'en-US', // 通过切换locale的值来实现语言切换,this.$i18n.locale
-  messages: {
-    'zh-CN': require('@/assets/lang/zh.js'), // 中文语言包
-    'en-US': require('@/assets/lang/en.js') // 英文语言包
-  }
+	locale: localStorage.getItem('locale') || 'zh-CN', // set locale，默认中文
+	// messages // set locale messages。语言包
+	messages:{
+		'zh-CN':{
+			...zh,
+			...zhLocale
+		},
+		'en-US':{
+			...en,
+			...enLocale
+		}
+	},
+	silentTranslationWarn: true
 })
+ElementLocale.i18n((key, value) => i18n.t(key, value))
 
 Vue.prototype.dealImg = function (file, success, error) {
 	// 图片小于0.5M不压缩
@@ -114,8 +124,8 @@ Vue.prototype.dealImg = function (file, success, error) {
 
 
 new Vue({
-  router,
-  store,
-  i18n,
-  render: h => h(App),
+	router,
+	store,
+	i18n,
+	render: h => h(App),
 }).$mount('#app')

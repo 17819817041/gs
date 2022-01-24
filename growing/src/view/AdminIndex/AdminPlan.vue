@@ -42,8 +42,13 @@
                     <el-table-column
                         prop="time"
                         label="廣告投放時段"
-                        min-width="300"
+                        min-width="200"
                         >
+                        <template slot-scope="scope">
+                            <div class="divider_text" v-for="(item,i) in scope.row.time" :key="i">
+                                {{item.timeIntervalName}}
+                            </div>
+                        </template>
                     </el-table-column>
                     <el-table-column
                         prop="outTime"
@@ -54,8 +59,13 @@
                     <el-table-column
                         prop="price"
                         label="廣告投放總價"
-                        min-width="110"
+                        min-width="125"
                         >
+                        <template slot-scope="scope">
+                            <div class="no_state">
+                                {{scope.row.price}}
+                            </div>
+                        </template>
                     </el-table-column>
                     <el-table-column
                         prop="state"
@@ -63,12 +73,7 @@
                         min-width="120"
                         >
                         <template slot-scope="scope">
-                        <!-- <div :class="['cursor toufang ju', {'sure_state': scope.row.state == 1, 'no_state': scope.row.state == 2}]"> -->
-                        <div :class="['cursor toufang ju', {'sure_state': scope.row.state == 1, 'no_state': scope.row.state == 2}]">
-                            <!-- <span v-if="scope.row.state == 1" >已投放</span>
-                            <span v-else-if="scope.row.state == 2">未投放(未付款)</span>
-                            <span :class="[{ 'no_state': scope.row.state == 3}]" v-else-if="scope.row.state == 3">未投放(已付款)</span>
-                            <span :class="[{ 'wait': scope.row.state == 4}]" v-else-if="scope.row.state == 4">{{scope.row.status}}</span> -->
+                        <div :class="['toufang ju', {'sure_state': scope.row.state == 1, 'no_state': scope.row.state == 2}]">
                             <span>{{scope.row.status}}</span>
                         </div>
                     </template>
@@ -78,10 +83,12 @@
                         label="廣告媒體內容"
                         min-width="120"
                         >
-                        <template>
-                            <div class="preview cursor">
-                                <div class="ju"><img src="@/assets/img/eye.png" alt=""></div>
-                                <div class="tc">查看預覽</div>
+                        <template slot-scope="scope">
+                            <div class="preview ju">
+                                <div class="cursor" @click="preview(scope.row.launchType,scope.row.id)">
+                                    <div class="ju"><img src="@/assets/img/eye.png" alt=""></div>
+                                    <div class="tc">{{$t("lang.preview")}}</div>
+                                </div>
                             </div>
                         </template>
                     </el-table-column>
@@ -92,25 +99,59 @@
                         >
                         <template slot-scope="scope">
                             <div class="putaway sa">
-                                <div class="putaway_logo" v-if="scope.row.showEdiy">
+                                <div class="putaway_logo cursor" v-if="scope.row.showEdiy" @click="toEdit(scope.row.launchType, scope.row.id)">
                                     <div class="ju"><img src="@/assets/img/edit.png" alt=""></div>
-                                    <div class="tc">編輯計劃</div>
+                                    <div class="tc">{{$t("lang.editplan")}}</div>
                                 </div>
                                 <!-- <div v-else></div> -->
-                                <div class="putaway_logo centerL" v-if="scope.row.showShangJia">
-                                    <div class="ju "><img src="@/assets/img/up.png" alt=""></div>
-                                    <div class="tc">上架計劃</div>
-                                </div>
+                                <el-popconfirm
+                                    v-if="scope.row.showShangJia"
+                                    confirm-button-type= 'success'
+                                    confirm-button-text='好的'
+                                    cancel-button-text='不用了'
+                                    icon="el-icon-info"
+                                    icon-color="#6CF675"
+                                    @confirm='adminsjGuangGao(scope.row.id)'
+                                    title="確定上架嗎？"
+                                    >
+                                    <div class="putaway_logo centerL cursor" slot="reference" v-if="scope.row.showShangJia">
+                                        <div class="ju "><img src="@/assets/img/up.png" alt=""></div>
+                                        <div class="tc">{{$t("lang.shelfplan")}}</div>
+                                    </div>
+                                    <div v-else slot="reference"></div>
+                                </el-popconfirm>
                                 <!-- <div v-else></div> -->
-                                <div class="putaway_logo centerL" v-if="scope.row.showXiaJia">
-                                    <div class="ju"><img src="@/assets/img/down.png" alt=""></div>
-                                    <div class="tc">下架計劃</div>
-                                </div>
+                                <el-popconfirm
+                                    v-if="scope.row.showXiaJia"
+                                    icon="el-icon-info"
+                                    icon-color="red"
+                                    @confirm='adminoffShelf(scope.row.id)'
+                                    title="確定下架嗎？"
+                                    >
+                                    <div class="putaway_logo centerL cursor" slot="reference" v-if="scope.row.showXiaJia">
+                                        <div class="ju"><img src="@/assets/img/down.png" alt=""></div>
+                                        <div class="tc">{{$t("lang.downplan")}}</div>
+                                    </div>
+                                    <div v-else slot="reference"></div>
+                                </el-popconfirm>
                                 <!-- <div v-else></div> -->
-                                <div class="putaway_logo" v-if="scope.row.showDelete">
+                                <el-popconfirm
+                                    v-if="scope.row.showDelete"
+                                    icon="el-icon-info"
+                                    icon-color="red"
+                                    @confirm='admindelGuangGaoJiHua(scope.row.id)'
+                                    title="確定删除嗎？"
+                                    >
+                                    <div class="putaway_logo cursor" slot="reference" v-if="scope.row.showDelete">
+                                        <div class="ju"><img src="@/assets/img/delete.png" alt=""></div>
+                                        <div class="tc">{{$t("lang.deleteplan")}}</div>
+                                    </div>
+                                    <div v-else slot="reference"></div>
+                                </el-popconfirm>
+                                <!-- <div class="putaway_logo cursor" v-if="scope.row.showDelete" @click="admindelGuangGaoJiHua(scope.row.id)">
                                     <div class="ju"><img src="@/assets/img/delete.png" alt=""></div>
                                     <div class="tc">刪除計劃</div>
-                                </div>
+                                </div> -->
                                 <!-- <div v-else></div> -->
                             </div>
                         </template>
@@ -125,7 +166,7 @@
                         :current-page="1"
                         :page-size="10"
                         layout=" jumper, prev, pager, next"
-                        :total="tableData.length">
+                        :total="totalRecordsCount">
                     </el-pagination>
                 </div>
             </div>
@@ -135,24 +176,18 @@
 </template>
 
 <script>
-import { managerUserDetail } from "@/axios/request.js"
+import { managerUserDetail, admindelGuangGaoJiHua, adminoffShelf, adminsjGuangGao } from "@/axios/request.js"
 export default {
     data () {
         return {
             storeName: localStorage.getItem('storeName'),
             tableHeight:0,
-            tableData: [
-                // {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
-                // outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 1, content: '查看預覽', edit: 1},
-                // {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
-                // outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 2, content: '查看預覽', edit: 2},
-                // {name:'食品會',category: '食品，美食，時尚',area: '九龍', time: '繁忙時段(9am-9pm);非繁忙時段(9pm-9am)',
-                // outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 3, content: '查看預覽', edit: 3},
-            ],
+            tableData: [],
             pageNum: 0,
             pageSize: 10,
             storeList: [],
-            loading: false
+            loading: false,
+            totalRecordsCount: 0
         }
     },
     mounted () {
@@ -166,7 +201,82 @@ export default {
         this.managerUserDetail()
     },
     methods: {
+        admindelGuangGaoJiHua (id) {
+            this.loading = true
+            let data = {
+                guangGaoId: id
+            }
+            admindelGuangGaoJiHua(data).then(res => {
+                this.loading = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$message.success(this.$t('lang.editSuccess'))
+                    this.managerUserDetail()
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message.error(this.$t('lang.editError'))
+            })
+        },
+        toEdit (type, id) {
+            if (type == 1 || type == 2) {
+                this.$router.push({
+                    name: 'editPro',
+                    query: {
+                        id: id
+                    }
+                })
+            } else if (type == 3) {
+                this.$router.push({
+                    name: 'editPlus',
+                    query: {
+                        id: id
+                    }
+                })
+            }
+        },
+        adminoffShelf (id) {
+            this.loading = true
+            let data = {
+                guangGaoId: id
+            }
+            adminoffShelf(data).then(res => {
+                this.loading = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$message.success(this.$t('lang.editSuccess'))
+                    this.managerUserDetail()
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message.error(this.$t('lang.editError'))
+            })
+        },
+        adminsjGuangGao (id) {
+            this.loading = true
+            let data = {
+                guangGaoId: id
+            }
+            adminsjGuangGao(data).then(res => {
+                this.loading = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$message.success(this.$t('lang.editSuccess'))
+                    this.managerUserDetail()
+                } else {
+                    this.$message.error(res.data.msg)
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message.error(this.$t('lang.editError'))
+            })
+        },
         managerUserDetail () {
+            this.tableData = []
             this.loading = true
             let data = {
                 pageNum: this.pageNum,
@@ -182,11 +292,13 @@ export default {
                             name: item.guangGaoTitle,
                             category: item.guangGaoTypeName,
                             area: item.guangGaoAddressLisr, 
-                            time: item.launchTypeName,
+                            time: item.guangGaoTimeIntervalDtoList,
+                            launchType: item.launchType,
                             outTime: item.startTime.split(' ')[0] + "~" + item.endTime.split(' ')[0], 
                             price: '$' + item.totalPrice + 'HKD', 
                             status: item.guangGaoStateName,
                             content: '查看預覽', 
+                            id: item.id,
                             edit: 0,
                             showDelete: item.showDelete,
                             showEdiy: item.showEdiy,
@@ -194,6 +306,7 @@ export default {
                             showXiaJia: item.showXiaJia
                         })
                     })
+                    this.totalRecordsCount = res.data.data.totalRecordsCount
                 } else {
                     this.$message({
                         type: 'warning',
@@ -208,6 +321,23 @@ export default {
                 })
             })
         },
+        preview (val, id) {
+            if (val == 1 || val == 2) {
+                this.$router.push({
+                    name: 'AdminPlanPrePro',
+                    query: {
+                        id: id
+                    }
+                })
+            } else if (val == 3) {
+                this.$router.push({
+                    name: 'AdminPlanPlus',
+                    query: {
+                        id: id
+                    }
+                })
+            }
+        },
         resi () {
             let that = this
             this.$nextTick(() => {
@@ -215,10 +345,12 @@ export default {
             })
         },
         handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
+            this.pageNum = val
+            this.managerUserDetail()
         },
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+            this.pageNum = val
+            this.managerUserDetail()
         },
         tableRowClassName ({ row,rowIndex }) {
             if (rowIndex%2 == 1) {

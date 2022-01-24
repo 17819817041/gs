@@ -84,9 +84,9 @@
 								<el-form-item label="套餐指定(店鋪/街道/區域)">
 									<div class="list clear">
 										<div style="color: #B0B0B0;" class="list_item float al cursor" 
-										@click="storehit(i)"
+										@click="storehit(item)"
 										v-for="(item,i) in tc_storeList" :key="i">
-											{{item}} <span class="al" style="margin-left: 5px"></span>
+											{{item.msg}} <span class="al" style="margin-left: 5px"></span>
 										</div>
 									</div>
 									<div class="map_wrap">
@@ -104,7 +104,7 @@
 								<div></div>
 								<div class="total_price">
 									<div class="t_price bold">
-										<span>{{$t('lang.total')}}:</span><span class="math_price"> $ 6000 </span><span class="p_d">HKD</span>
+										<span>{{$t('lang.total')}}:</span><span class="math_price"> $ {{price}} </span><span class="p_d">HKD</span>
 									</div>
 									<div class="total_price_item">{{$t('lang.ppotd')}}: <span style="color: red;">$ 1000 HKD</span></div>
 									<div class="total_price_item">{{$t('lang.days')}}: <span style="color: red;">6天</span></div>
@@ -149,6 +149,7 @@
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import dimg from "@/assets/img/growing.jpg"
+import mar from "@/assets/img/marker.png"
 import { previewAD } from "@/axios/request.js"
 export default {
     data() {
@@ -169,7 +170,7 @@ export default {
 			dimg1: '',
 			taocanDetail: true,
 			checked2: true,
-			tc_storeList: ['九龍店', '車展會','科技大廈', '醫院', '時尚大廳'],
+			tc_storeList: [],
 
 			copy1: [],
 			copy2: [],
@@ -274,11 +275,122 @@ export default {
 				totalLength: 3,
 				typeId: 2
 			},
-			loading: false
+			loading: false,
+
+			mapStoreListShow: [],
+
+			price: 0
 
 		}
     },
 	components: { ElImageViewer },
+	computed: {
+        lang () { return this.$i18n.locale },
+        getTypeList:{             //類型列表
+			get () { return this.$store.state.user.typeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'typeList',
+					value: val
+				})
+			}
+		},
+		addressList: {           //地址列表
+			get () { return this.$store.state.user.addressList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'addressList',
+					value: val
+				})
+			}
+		},
+		mapstoreList:{             //店鋪列表
+			get () { return this.$store.state.user.storeList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'storeList',
+					value: val
+				})
+			}
+		},
+		clockList: {             //時間列表
+			get () { return this.$store.state.user.clockList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'clockList',
+					value: val
+				})
+			}
+		},
+    },
+	watch: {
+        lang: {
+            handler (val) {
+                if (val) {
+					let that = this
+					this.$nextTick(() => {
+						that.initMap1(22.6,114.1,1)
+					})
+                }
+            }
+        },
+		getTypeList: {
+			handler (val) {
+				if (val) {
+					this.getTypeList = val
+					this.$store.dispatch('getAddress',this) 
+				}
+			},
+		},
+		addressList: {
+			handler (val) {
+				if (val) {
+					this.addressList = val
+					this.$store.dispatch('getTimeIntervaDetailslList',this)
+					this.getStore()
+					this.previewAD()
+				}
+			}
+		},
+		clockList: {
+			handler (val) {
+				if (val) {
+					this.clockList = val
+				}
+			}
+		},
+		mapstoreList: {
+			handler (val) {
+				if (val) {
+					this.mapStoreListShow = []
+					this.mapstoreList = val
+					val.forEach((child,i) => {
+						child.area = '暫無地區'
+						this.addressList.forEach(item => {
+							if (child.addressParentId == item.id) {
+								child.area = item.addressName
+							}
+						})
+						this.mapStoreListShow.push({
+							position: new google.maps.LatLng(child.latitude,child.longitude),
+							type: "info",
+							msg: child.shopName,
+							area: child.area,
+							address: child.shopAddressName,
+							widthAndHeihth: child.widthAndHeihth,
+							shopId: child.shopId,
+							timeIntervalNames: child.timeIntervalNames,
+							typeNames: child.typeNames,
+							priceContents: child.priceContents,
+							addressParentId: child.addressParentId,
+							addressId: child.addressId
+						})
+					})
+					this.initMap1(22.6,114.1,1)
+				}
+			},
+		},
+    },
 	props: {
 		urlList: {
 		type: Array,
@@ -305,11 +417,11 @@ export default {
 		this.fun()
     },
 	created () {
+		
+		this.$store.dispatch('getTypeList',this)
 		this.dimg = dimg
-		this.previewAD()
 	},
     mounted () {
-        this.initMap(22.6,114.1,1)
 		window.shopadd = this.shopadd;
 		window.onPreview = this.onPreview;
 		window.closewin = this.closewin;
@@ -325,6 +437,27 @@ export default {
 				this.loading = false
 				if (res.data.rtnCode == 200) {
 					this.preview = res.data.data
+					this.price = res.data.data.presentPrice
+					this.tc_storeList = res.data.data.shopVoList
+					this.tc_storeList.forEach(child => {
+						this.addressList.forEach(item => {
+							if (item.addressParentId == child.id) {
+								child.area = item.addressName
+							}
+						})
+						child.type = 'info'
+						child.position = new google.maps.LatLng(child.latitude,child.longitude)
+						child.address = child.shopAddressName
+						child.addressId = child.addressId
+						child.addressParentId = child.addressParentId
+						// child.area = "暫無地區"
+						child.msg = child.shopName
+						child.priceContents = child.priceContents
+						child.shopId = child.shopId
+						child.timeIntervalNames = child.timeIntervalNames
+						child.typeNames = child.typeNames
+						child.widthAndHeihth = child.widthAndHeihth
+					})
 				} else {
 					this.$message({
 						type: 'error',
@@ -332,14 +465,22 @@ export default {
 					})
 				}
 			}).catch(e => {
-				that.loading = false
+				this.loading = false
 				this.$message({
 					type: 'error',
 					message: this.$t('lang.loading')
 				})
 			})
 		},
-
+		getStore () {
+			let data = {
+				parentAddressId: '',
+				shopName: '',
+				addressId: '',
+				typeId:	''
+			}
+			this.$store.dispatch('getShopList',data)
+		},
 		previewVideo (item) {
 			this.src = item.url
 			this.showVideo = true
@@ -367,83 +508,20 @@ export default {
 		storehit (i) {
 			let that = this
 			let map = this.map
-			const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
+			const iconBase = mar
 			const icons = {
-				parking: {
-				icon: iconBase + "parking_lot_maps.png",
-				},
-				library: {
-				icon: iconBase + "library_maps.png",
-				},
 				info: {
-				icon: iconBase + "info-i_maps.png",
+					icon: iconBase
 				},
 			};
-			const features = [
-				{
-				position: new google.maps.LatLng(22.7, 114.1),
-				type: "info",
-				msg: this.$t("lang.ks")
-				},
-				{
-				position: new google.maps.LatLng(22.79, 114.16),
-				type: "info",
-				msg: '車展會'
-				},
-				{
-				position: new google.maps.LatLng(22.87, 114.13),
-				type: "info",
-				msg: '科技大廈'
-				},
-				{
-				position: new google.maps.LatLng(22.66, 114.10),
-				type: "info",
-				msg: '醫院'
-				},
-				{
-				position: new google.maps.LatLng(22.8, 114.1),
-				type: "info",
-				msg: '時尚大廳'
-				},
-				{
-				position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
-				type: "parking",
-				},
-				{
-				position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
-				type: "library",
-				},
-			];
-			// Create markers.
-			if (that.$i18n.locale == 'zh-CN') {
-				// for (let i = 0; i < features.length; i++) {
+			const features = this.mapStoreListShow
+			features.forEach(item => {
+				if (item.shopId == i.shopId) {
+					// Create markers.
+				if (that.$i18n.locale == 'zh-CN') {
 					const marker1 = new google.maps.Marker({
-						position: features[i].position,
-						icon: icons[features[i].type].icon,
+						position: item.position,
+						icon: 'info',
 						map: map,
 					});
 					
@@ -464,25 +542,25 @@ export default {
 						` +
 						`
 							<div class="sb" style="margin-top:5px;">
-								<div class='bold tc'>${features[i].msg}(旺角店)</div>
+								<div class='bold tc'>${item.msg}(${item.area})</div>
 								<div class="contentString1_address" 
 								style="text-decoration: underline;
-								font-size:12px;">香港旺角區旺角街道666號</div>
+								font-size:12px;">${item.area}</div>
 							</div>
 						` + 
 						`
 							<div class="size12">
 								<div>
-									<span>廣告顯示的尺寸(高 × 寬):</span>
+									<span>廣告顯示的尺寸(${item.widthAndHeihth}):</span>
 									<span style="color: blue;">2m × 1m</span>
 								</div>
 								<div>
 									<span>為廣告商開放的可用時間:</span>
-									<span style="color: blue;">9am~23pm</span>
+									<span style="color: blue;">${item.timeIntervalNames}</span>
 								</div>
 								<div>
 									<span>廣告不接受的業務類型:</span>
-									<span style="color: blue;">食品</span>
+									<span style="color: blue;">${item.typeNames}</span>
 								</div>
 								<div>
 									<span>高峰/非高峰時段的每月價格:</span>
@@ -492,16 +570,12 @@ export default {
 									</span>
 								</div>
 							</div>
-						` 
-					
+						`
 					that.openwin(contentString1,marker1,map)
-				// }
-			} else if (that.$i18n.locale == 'en-US') {
-				console.log(that.$i18n.locale)
-				// for (let i = 0; i < features.length; i++) {
+				} else if (that.$i18n.locale == 'en-US') {
 					const marker1 = new google.maps.Marker({
-						position: features[i].position,
-						icon: icons[features[i].type].icon,
+						position: item.position,
+						icon: 'info',
 						map: map,
 					});
 					
@@ -522,7 +596,7 @@ export default {
 						` +
 						`
 							<div class="sb" style="margin-top:5px;">
-								<div class='bold tc'>${features[i].msg}(Mong Kok Store)</div>
+								<div class='bold tc'>${item.msg}(Mong Kok Store)</div>
 								<div class="contentString1_address" 
 								style="text-decoration: underline;
 								font-size:12px;">HongKong street at six</div>
@@ -531,39 +605,37 @@ export default {
 						`
 							<div class="size12">
 								<div>
-									<span>size (height x width) of adv display:</span>
+									<span>廣告顯示的尺寸(${item.widthAndHeihth}):</span>
 									<span style="color: blue;">2m × 1m</span>
 								</div>
 								<div>
-									<span>available hour opened for advertisers:</span>
-									<span style="color: blue;">9am~23pm</span>
+									<span>為廣告商開放的可用時間:</span>
+									<span style="color: blue;">${item.timeIntervalNames}</span>
 								</div>
 								<div>
-									<span>type of business unaccepted for adv:</span>
-									<span style="color: blue;">Food</span>
+									<span>廣告不接受的業務類型:</span>
+									<span style="color: blue;">${item.typeNames}</span>
 								</div>
 								<div>
-									<span>monthly price at rush/non-rush hour:</span>
+									<span>高峰/非高峰時段的每月價格:</span>
 									<span style="color: blue;">
-										<div>rush(20000HKD/month)</div>
-										<div>non-rush(10000HKD/month)</div>
+										<div>高峰(20000HKD/month)</div>
+										<div>非高峰(10000HKD/month)</div>
 									</span>
 								</div>
 							</div>
 						` 
-
-					// marker1.addListener("click", () => {
 						that.openwin(contentString1,marker1,map)
-					// });
-				// }
-			}
+					}
+				}
+			})
 		},
-		initMap (lat,lng,val) {
+		initMap1 (lat,lng,val) {
 			let that = this
 			let boolean = true
 			let map = new google.maps.Map(document.getElementById('map'), {
-				center: {lat: lat, lng: lng},
-				zoom: 8,
+				// center: {lat: lat, lng: lng},
+				zoom: 11,
 				mapTypeId: "roadmap",
 				disableDefaultUI: true,
 				zoomControl: boolean,
@@ -585,118 +657,72 @@ export default {
 					map.setCenter(pos);
 				})
 			}
-			// const myLatLng = {lat: 22.6, lng: 114.1}
-			// new google.maps.Marker({
-			// 	position: myLatLng,
-			// 	map,
-			// 	title: "Hello World!",
+			// let input = this.$refs.pac
+			// let searchBox = new google.maps.places.SearchBox(input);
+			// map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+			// map.addListener("bounds_changed", () => {
+			// 	searchBox.setBounds(map.getBounds());
+			// });
+			// let markers = [];
+			// searchBox.addListener("places_changed", () => {
+			// 	let places = searchBox.getPlaces();
+
+			// 	if (places.length == 0) {
+			// 		return;
+			// 	}
+
+			// 	// Clear out the old markers.
+			// 	markers.forEach((marker) => {
+			// 	marker.setMap(null);
+			// 	});
+			// 	markers = [];
+
+			// 	// For each place, get the icon, name and location.
+			// 	const bounds = new google.maps.LatLngBounds();
+
+			// 	places.forEach((place) => {
+			// 	if (!place.geometry || !place.geometry.location) {
+			// 		console.log("Returned place contains no geometry");
+			// 		return;
+			// 	}
+
+			// 	const icon = {
+			// 		url: place.icon,
+			// 		size: new google.maps.Size(71, 71),
+			// 		origin: new google.maps.Point(0, 0),
+			// 		anchor: new google.maps.Point(17, 34),
+			// 		scaledSize: new google.maps.Size(25, 25),
+			// 	};
+
+			// 	// Create a marker for each place.
+			// 	markers.push(
+			// 		new google.maps.Marker({
+			// 		map,
+			// 		icon,
+			// 		title: place.name,
+			// 		position: place.geometry.location,
+			// 		})
+			// 	);
+			// 	if (place.geometry.viewport) {
+			// 		// Only geocodes have viewport.
+			// 		bounds.union(place.geometry.viewport);
+			// 	} else {
+			// 		bounds.extend(place.geometry.location);
+			// 	}
+			// 	});
+			// 	map.fitBounds(bounds);
 			// });
 
-			let msg = this.msg
-			var data = [
-				{id:1,name:'小李'},
-			]
-			this.$nextTick(() => {
-				// const contentString = `
-				// 	<div>
-				// 		${data.map((item) => {
-				// 			return `<div><span>${item.name}</span></div>`
-				// 		}).join('')}
-				// 	</div>
-				// `
-				// const infowindow = new google.maps.InfoWindow({
-				// 	content: contentString,
-				// });
-				// const marker = new google.maps.Marker({
-				// 	position: myLatLng,
-				// 	map,
-				// 	title: "Uluru (Ayers Rock)",
-				// });
-				// marker.addListener("click", () => {
-				// 	infowindow.open({
-				// 		anchor: marker,
-				// 		map,
-				// 		shouldFocus: false,
-				// 	});
-				// })
-				// this.lightArea(map)
-			})
-
 			if (val == 1) {
-				const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
+				const iconBase = mar
 				const icons = {
-					parking: {
-					icon: iconBase + "parking_lot_maps.png",
-					},
-					library: {
-					icon: iconBase + "library_maps.png",
-					},
 					info: {
-					icon: iconBase + "info-i_maps.png",
+						icon: iconBase
 					},
 				};
-				const features = [
-					{
-					position: new google.maps.LatLng(22.7, 114.1),
-					type: "info",
-					msg: this.$t("lang.ks")
-					},
-					{
-					position: new google.maps.LatLng(22.79, 114.16),
-					type: "info",
-					msg: '車展會'
-					},
-					{
-					position: new google.maps.LatLng(22.87, 114.13),
-					type: "info",
-					msg: '科技大廈'
-					},
-					{
-					position: new google.maps.LatLng(22.66, 114.10),
-					type: "info",
-					msg: '醫院'
-					},
-					{
-					position: new google.maps.LatLng(22.8, 114.1),
-					type: "info",
-					msg: '時尚大廳'
-					},
-					{
-					position: new google.maps.LatLng(-33.91662347903106, 151.22879464019775),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.916365282092855, 151.22937399734496),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91665018901448, 151.2282474695587),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.919543720969806, 151.23112279762267),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91608037421864, 151.23288232673644),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91851096391805, 151.2344058214569),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91818154739766, 151.2346203981781),
-					type: "parking",
-					},
-					{
-					position: new google.maps.LatLng(-33.91727341958453, 151.23348314155578),
-					type: "library",
-					},
-				];
+				const features = this.mapStoreListShow
 				// Create markers.
 				if (that.$i18n.locale == 'zh-CN') {
-					console.log(that.$i18n.locale)
 					for (let i = 0; i < features.length; i++) {
 						const marker1 = new google.maps.Marker({
 							position: features[i].position,
@@ -721,25 +747,25 @@ export default {
 							` +
 							`
 								<div class="sb" style="margin-top:5px;">
-									<div class='bold tc'>${features[i].msg}(旺角店)</div>
+									<div class='bold tc'>${features[i].msg}(${features[i].area})</div>
 									<div class="contentString1_address" 
 									style="text-decoration: underline;
-									font-size:12px;">香港旺角區旺角街道666號</div>
+									font-size:12px;">${features[i].area}</div>
 								</div>
 							` + 
 							`
 								<div class="size12">
 									<div>
-										<span>廣告顯示的尺寸(高 × 寬):</span>
-										<span style="color: blue;">2m × 1m</span>
+										<span>廣告顯示的尺寸(寬 × 高):</span>
+										<span style="color: blue;">${features[i].widthAndHeihth}</span>
 									</div>
 									<div>
 										<span>為廣告商開放的可用時間:</span>
-										<span style="color: blue;">9am~23pm</span>
+										<span style="color: blue;">${features[i].timeIntervalNames}</span>
 									</div>
 									<div>
 										<span>廣告不接受的業務類型:</span>
-										<span style="color: blue;">食品</span>
+										<span style="color: blue;">${features[i].typeNames}</span>
 									</div>
 									<div>
 										<span>高峰/非高峰時段的每月價格:</span>
@@ -749,32 +775,13 @@ export default {
 										</span>
 									</div>
 								</div>
-							` 
-						// 	+
-						// 	`<div style='margin-top: 10px;' class='ju al'>
-						// 		<div onclick="closewin()" class='cursor close'
-						// 		style='padding: 5px 20px;
-						// 		color: gray;
-						// 		font-size: 12px;
-						// 		border: solid 1px rgb(201, 201, 201);
-						// 		border-radius: 4px;
-						// 		margin-right: 5px;'>取消</div>
-
-						// 		<div onclick="shopadd('${features[i].msg}')"
-						// 		class='cursor' style='padding: 5px 20px;
-						// 		color: rgb(253, 253, 253);
-						// 		background: rgb(0, 153, 255);
-						// 		font-size: 12px;
-						// 		border-radius: 4px;'>添加</div>
-						// 	</div>
-						// `
+							`
 
 						marker1.addListener("click", () => {
 							that.openwin(contentString1,marker1,map)
 						});
 					}
 				} else if (that.$i18n.locale == 'en-US') {
-					console.log(that.$i18n.locale)
 					for (let i = 0; i < features.length; i++) {
 						const marker1 = new google.maps.Marker({
 							position: features[i].position,
@@ -799,25 +806,25 @@ export default {
 							` +
 							`
 								<div class="sb" style="margin-top:5px;">
-									<div class='bold tc'>${features[i].msg}(Mong Kok Store)</div>
+									<div class='bold tc'>${features[i].msg}(${features[i].area})</div>
 									<div class="contentString1_address" 
 									style="text-decoration: underline;
-									font-size:12px;">HongKong street at six</div>
+									font-size:12px;">${features[i].area}</div>
 								</div>
 							` + 
 							`
 								<div class="size12">
 									<div>
 										<span>size (height x width) of adv display:</span>
-										<span style="color: blue;">2m × 1m</span>
+										<span style="color: blue;">${features[i].widthAndHeihth}</span>
 									</div>
 									<div>
 										<span>available hour opened for advertisers:</span>
-										<span style="color: blue;">9am~23pm</span>
+										<span style="color: blue;">${features[i].timeIntervalNames}</span>
 									</div>
 									<div>
 										<span>type of business unaccepted for adv:</span>
-										<span style="color: blue;">Food</span>
+										<span style="color: blue;">${features[i].typeNames}</span>
 									</div>
 									<div>
 										<span>monthly price at rush/non-rush hour:</span>
@@ -827,24 +834,7 @@ export default {
 										</span>
 									</div>
 								</div>
-							` 
-						// 	+ `<div style='margin-top: 10px;' class='ju al'>
-						// 		<div onclick="closewin()" class='cursor close'
-						// 		style='padding: 5px 20px;
-						// 		color: gray;
-						// 		font-size: 12px;
-						// 		border: solid 1px rgb(201, 201, 201);
-						// 		border-radius: 4px;
-						// 		margin-right: 5px;'>Cancel</div>
-
-						// 		<div onclick="shopadd('${features[i].msg}')"
-						// 		class='cursor' style='padding: 5px 20px;
-						// 		color: rgb(253, 253, 253);
-						// 		background: rgb(0, 153, 255);
-						// 		font-size: 12px;
-						// 		border-radius: 4px;'>Add</div>
-						// 	</div>
-						// `
+							`
 
 						marker1.addListener("click", () => {
 							that.openwin(contentString1,marker1,map)
@@ -868,24 +858,6 @@ export default {
 		},
 		closewin (val) {
 			this.infowindow.close()
-		},
-		lightArea () {
-			let that = this
-			let map = this.map
-			// Construct the polygon.
-			const bermudaTriangle = new google.maps.Polygon({
-				paths: that.deLight,
-				strokeColor: "#FF0000",
-				strokeOpacity: 0.8,
-				strokeWeight: 2,
-				fillColor: "#FF0000",
-				fillOpacity: 0.35,
-			})
-			this.delelightArea(bermudaTriangle)
-			bermudaTriangle.setMap(map);
-		},
-		delelightArea (bermudaTriangle) {
-			bermudaTriangle.setMap(null);
 		},
 		fun () {
 			if (window.innerWidth <= 564) {
@@ -952,7 +924,7 @@ export default {
         border-radius: 5px;
         // margin-top: 15px;
 		min-height: 125px;
-		padding-top: 20px;
+		padding: 20px 5px 0px 5px;
         transition: 0.2s;
 		@media screen and (max-width: 970px) {
 			padding-top: 15px;
@@ -1030,7 +1002,7 @@ export default {
     }
     .title_p {
         min-width: 300px;
-        width: 43%;
+        width: 47%;
         height: 100px;
         @media screen and (max-width: 970px) {
             height: 75px;

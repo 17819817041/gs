@@ -63,16 +63,14 @@
                             <div class="searchInp mg">
                                 <el-select class="width100" style="height: 28px;" v-model="area" placeholder="請選擇區域" @change="searchByArea">
                                     <el-option v-for="(item,i) in addressList" :key="i"
-                                        :label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
-                                        item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-                                        item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+                                        :label='item.addressName'
                                         :value="item.id">
                                     </el-option>
                                 </el-select>
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column
+                    <!-- <el-table-column
                         prop="ratio"
                         label="接收外來廣告比例"
                         sortable
@@ -83,7 +81,7 @@
                                 {{scope.row.ratio}}
                             </div>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
                     <el-table-column
                         prop="gtime"
                         label="接收外來廣告時段"

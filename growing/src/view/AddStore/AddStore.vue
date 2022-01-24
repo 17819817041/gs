@@ -41,24 +41,25 @@
 									<el-select v-model="ruleForm.area" @change="changeArea"
 										:placeholder="$t('lang.pldselectarea')" style="margin-right: 10px;">
 										<el-option v-for="(item,i) in addressList" :key="i"
-											:label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
-											item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-											item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+											:label='item.addressName '
 											:value="item.id">
 										</el-option>
 									</el-select>
 									<el-select v-model="ruleForm.street" :placeholder="$t('lang.pldselectstreet')">
-										<el-option :label="$t('lang.Kowloon') + $t('lang.street')" @click.native="changeCen(22.8, 114.6)"
-										v-if="ruleForm.area == $t('lang.jiulong')" :value="$t('lang.Kowloon') + $t('lang.street')"></el-option>
-										<el-option :label="$t('lang.MongKok') + $t('lang.street')"  @click.native="changeCen(23.8, 114.6)"
-										v-if="ruleForm.area == $t('lang.wangjiao')" :value="$t('lang.MongKok') + $t('lang.street')"></el-option>
-										<el-option :label="$t('lang.Central') + $t('lang.street')"  @click.native="changeCen(22.8, 116.6)"
-										v-if="ruleForm.area == $t('lang.zhonghuan')" :value="$t('lang.Central') + $t('lang.street')"></el-option>
+										<el-option v-for="(item,i) in streetObj" :key="i"
+											:label='item.addressName '
+											:value='item.id '>
+										</el-option>
 									</el-select>
 								</div>
 							</div>
 						</el-form-item>
-						<el-form-item label="店鋪詳細位置地址" prop="latLng.lat">
+						<el-form-item label="店鋪詳細位置地址" prop="address" class="bcolor">
+							<div class="elinput width30">
+								<el-input class="width100" v-model="ruleForm.address"></el-input>
+							</div>
+						</el-form-item>
+						<el-form-item label="店鋪詳細位置" prop="latLng.lat">
 							<div class="mapwrap_w">
 								<div class="size12 latlngShow" v-show="ruleForm.latLng.lat"
 								> lat: {{ruleForm.latLng.lat}}, lng: {{ruleForm.latLng.lng}} </div>
@@ -91,7 +92,7 @@
 										<el-input class="width100" v-model="ruleForm.size.width"></el-input>
 									</el-form-item>
 								</div>
-								<div> m(寬)</div>
+								<div> cm(寬)</div>
 								<div style="margin: 0 10px;"> × </div>
 								<div class="inp_time1 al">
 									<!-- <input type="text" v-model="ruleForm.size.height"> -->
@@ -99,7 +100,7 @@
 										<el-input class="width100" v-model="ruleForm.size.height"></el-input>
 									</el-form-item>
 								</div>
-								<div> m(高)</div>
+								<div> cm(高)</div>
 							</div>
 						</el-form-item>
 						<el-form-item label="店鋪展示圖片" prop="imageList1" class="bcolor">
@@ -110,21 +111,20 @@
 									</div>
 									<input type="file" id="img1" v-show="false" multiple="multiple" @change="changeFile1">
 								</label> -->
-								<el-upload
-									ref="fileUpload" action="" :headers="uploadProps.headers" list-type="picture-card" 
-									:show-file-list="false" multiple :limit='10' :on-change="videoChange1"
-									:http-request="fnUploadRequest1" :on-success="handleSuccess1" :on-error="handleError1" :on-progress="uploadProcess1"
-									:before-upload="handleUpload1" :on-exceed='outFile1'>
-									<i class="el-icon-plus"></i>
-									<el-progress v-show="imgFlag1 == true" type="circle" :percentage="percent1"></el-progress>
-								</el-upload>
+								<label for="getUrl1">
+									<input type="file" :id="id1" @change="handleUpload1" v-show="false">
+									<div class="addFile ju al">
+										<img src="@/assets/img/add.png" alt="">
+										<el-progress v-show="imgFlag1 == true" type="circle" :percentage="percent1"></el-progress>
+									</div>
+								</label>
 								<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm.imageList1" :key="i">
 									<div class="imageList_wrap">
 										<div class="deleImg radius ju al" @click.stop="deleImg1(i)">
 											<img style="heihgt: 100%;" src="@/assets/img/cha.png" alt="">
 										</div>
-										<div class="textarea_wrap_item_child ju al" @click="imgPreview(item.url)">
-											<img style="height: 100%;" :src="item.url" alt="">
+										<div class="textarea_wrap_item_child ju al" @click="imgPreview(item.fileUrl)">
+											<img style="height: 100%;" :src="item.fileUrl" alt="">
 										</div>
 									</div>
 									<div class="imageList_name tc">{{item.name}}</div>
@@ -183,7 +183,7 @@
 								<div class="clear" style="margin-left: 13px;">
 									<div style="color: #B0B0B0;" class="list_item1 float al" 
 									v-for="(item,i) in ruleForm1.adTimeList" :key="i">
-										{{item.time}} <span class="al" style="margin-left: 5px">
+										{{item.packageName}} <span class="al" style="margin-left: 5px">
 											<img class="cursor" @click="deleOutTime(i)" 
 											src="@/assets/img/cha.png" alt="">
 										</span>
@@ -253,31 +253,30 @@
 									</div>
 									<input type="file" id="img" v-show="false" multiple="multiple" @change="changeFile">
 								</label> -->
-								<el-upload
-									ref="fileUpload" action="" :headers="uploadProps.headers" list-type="picture-card" 
-									:show-file-list="false" multiple :limit='listLength' :on-change="videoChange"
-									:http-request="fnUploadRequest" :on-success="handleSuccess" :on-error="handleError" :on-progress="uploadProcess"
-									:before-upload="handleUpload" :on-exceed='outFile'>
-									<i class="el-icon-plus"></i>
-									<el-progress v-show="imgFlag == true" type="circle" :percentage="percent"></el-progress>
-								</el-upload>
+								<label for="getUrl">
+									<input type="file" :id="id" @change="handleUpload" v-show="false">
+									<div class="addFile ju al">
+										<img src="@/assets/img/add.png" alt="">
+										<el-progress v-show="imgFlag == true" type="circle" :percentage="percent"></el-progress>
+									</div>
+								</label>
 								<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm2.imageList" :key="i">
 									<div class="imageList_wrap">
 										<div class="deleImg cursor radius ju al" @click.stop="deleImg(i)">
 											<img style="heihgt: 100%;" src="@/assets/img/cha.png" alt="">
 										</div>
 										<div class="textarea_wrap_item_child cursor ju al">
-											<img v-if="ruleForm.mediaType == 'image'"  @click="imgPreview(item.url)"
-											style="height: 100%;" :src="item.url" alt="">
+											<img v-if="ruleForm.mediaType == 'image'"  @click="imgPreview(item.fileUrl)"
+											style="height: 100%;" :src="item.fileUrl" alt="">
 											<div class="video_outWrap" v-else-if="ruleForm.mediaType == 'video'">
 												<img class="img" src="@/assets/img/start.png" alt="">
 												<div class="videoImage ju al" id="output" ref="output"  
 													@click="previewVideo(item)">
 													
 												</div>
-												<video style="height: 100%;" id="video1" ref="video" v-if="previewV"
+												<video style="height: 100%;" id="videos" ref="videos"
 													:controls="false">
-													<source :src="item.url" type="video/mp4">
+													<source :src="item.fileUrl" type="video/mp4">
 												</video>
 											</div>
 										</div>
@@ -419,7 +418,7 @@
 						:label-width="$i18n.locale == 'zh-CN'? '100px': '205px'" style="margin-top: 15px;">
 						<div class="clear" style="margin-top: 10px;">
 						<div style="color: #B0B0B0;" class="list_item1 float al" v-for="(item,i) in outTimeList" :key="i">
-							{{item.time}} <span class="al" style="margin-left: 5px">
+							{{item.packageName}} <span class="al" style="margin-left: 5px">
 								<img class="cursor" @click="deleOutTime1(i)" 
 								src="@/assets/img/cha.png" alt="">
 							</span>
@@ -447,10 +446,7 @@
 						<el-form-item label="繁忙時段:">
 							<div class="clear">
                                 <div class="al size12 ju float" v-for="(item,i) in addTimeList" :key="i+11" style="margin-left: 15px;">
-                                    <span class="l_time">{{item.time}}</span> 
-                                    <!-- <el-input-number @change="handleChange" 
-                                    style="margin: 0 5px;width: 107px;" v-model="item.num"
-                                    :min="20" :step="10" :max="100" label="描述文字" size="mini"></el-input-number> % -->
+                                    <span class="l_time">{{item.packageName}}</span>
                                     <el-button plain size="mini" style="margin-left: 7px;" @click.native="deleList(i)">刪除</el-button>
                                 </div>
                             </div>
@@ -458,10 +454,7 @@
 						<el-form-item label="超繁忙時段:">
 							<div class="clear">
                                 <div class="al size12 ju float" v-for="(item,i) in addTimeList1" :key="i+16" style="margin-left: 15px;">
-                                    <span class="l_time">{{item.time}}</span> 
-                                    <!-- <el-input-number @change="handleChange" 
-                                    style="margin: 0 5px;width: 107px;" v-model="item.num"
-                                    :min="20" :step="10" :max="100" label="描述文字" size="mini"></el-input-number> % -->
+                                    <span class="l_time">{{item.packageName}}</span>
                                     <el-button plain size="mini" style="margin-left: 7px;" @click.native="deleList1(i)">刪除</el-button>
                                 </div>
                             </div>
@@ -469,10 +462,7 @@
 						<el-form-item label="非繁忙時段:">
 							<div class="clear">
                                 <div class="al size12 ju float" v-for="(item,i) in addTimeList2" :key="i+30" style="margin-left: 15px;">
-                                    <span class="l_time">{{item.time}}</span> 
-                                    <!-- <el-input-number @change="handleChange" 
-                                    style="margin: 0 5px;width: 107px;" v-model="item.num"
-                                    :min="20" :step="10" :max="100" label="描述文字" size="mini"></el-input-number> % -->
+                                    <span class="l_time">{{item.packageName}}</span>
                                     <el-button plain size="mini" style="margin-left: 7px;" @click.native="deleList2(i)">刪除</el-button>
                                 </div>
                             </div>
@@ -487,21 +477,24 @@
 							width="270"
 							trigger="click">
 							<div class="popover_item noBar" ref='popover'>
-								<el-form label-position="top"
+								<el-form label-position="top"  v-if="clockList.length != 0"
 									:label-width="$i18n.locale == 'zh-CN'? '80px': '205px'" class="demo-ruleForm">
-									<el-form-item label="繁忙時段">
+									<el-form-item :label="clockList[0].timeIntervalName">
 										<el-checkbox-group v-model="checkedCities1" @change="group">
-											<el-checkbox v-for="(item,i) in busyTimeList1" :label="item" :key="i+1">{{item.time}}</el-checkbox>
+											<el-checkbox v-for="(item,i) in clockList[0].timeIntervalList" 
+											:label="item" :key="i+1">{{item.packageName}}</el-checkbox>
 										</el-checkbox-group>
 									</el-form-item>
-									<el-form-item label="超繁忙時段">
+									<el-form-item :label="clockList[2].timeIntervalName">
 										<el-checkbox-group v-model="checkedCities11" @change="group1">
-											<el-checkbox v-for="(item,i) in sbusyTimeList1" :label="item" :key="i+2">{{item.time}}</el-checkbox>
+											<el-checkbox v-for="(item,i) in clockList[2].timeIntervalList" 
+											:label="item" :key="i+2">{{item.packageName}}</el-checkbox>
 										</el-checkbox-group>
 									</el-form-item>
-									<el-form-item label="繁忙時段">
+									<el-form-item :label="clockList[1].timeIntervalName">
 										<el-checkbox-group v-model="checkedCities21" @change="group2">
-											<el-checkbox v-for="(item,i) in unbusyTimeList1" :label="item" :key="i">{{item.time}}</el-checkbox>
+											<el-checkbox v-for="(item,i) in clockList[1].timeIntervalList" 
+											:label="item" :key="i">{{item.packageName}}</el-checkbox>
 										</el-checkbox-group>
 									</el-form-item>
 								</el-form>
@@ -534,13 +527,27 @@
 
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
-import dimg from "@/assets/img/growing.jpg"
 import mapPoint from "@/assets/img/marker.png"
-import { uploadOSS } from '@/utils/oss';
+import  axios  from 'axios'
+import Client from '@/utils/client'
 import { AddStore, getuploadtoken } from '@/axios/request.js'
 export default {
     data() {
         return {
+			streetObj: {},
+			uploadHeaders: {
+				authorization: '*'
+			},
+			region: 'oss-cn-beijing',
+			bucket: '',//这里选择OSS容器
+			url: '',//后台获取token地址
+			ClientObj: null,
+			id: 'getUrl',
+			id1: 'getUrl1',
+			urls:[],
+			getToken:{
+				sign:'',
+			},
 			previewV: true,
 			addTimeList: [],
             addTimeList1: [],
@@ -625,10 +632,11 @@ export default {
 					width: '',
 					height: ''
 				},
+				address: '',
 				latLng: { lat: '', lng: '' },//
                 storeType: '',//
                 mediaType: '',
-                
+                street: '',
                 inp: 1,
 				
                 date: '',
@@ -760,12 +768,7 @@ export default {
         };
     },
 	created () {
-		// AK().then(res => {
-		// 	console.log(res)
-		// })
-		this.$store.dispatch('getAddress',this) 
-        this.$store.dispatch('getTypeList',this)
-        this.$store.dispatch('incomePriceId',this)
+		
         let num = 10000
         for (let i=0;i<10;i++) {
             num += 5000
@@ -819,7 +822,7 @@ export default {
 		this.fun()
     },
     mounted () {
-        this.initMap1(22.6,114.1,1)
+        this.initMap1(22.33,114.17,1)
     },
 	watch: {
 		addressList: {
@@ -850,8 +853,31 @@ export default {
 				}
 			},
 		},
+		ossData: {
+			handler (val) {
+				if (val) {
+					this.ossData = val
+				}
+			},
+		},
+		clockList: {
+			handler (val) {
+				if (val) {
+					this.clockList = val
+				}
+			}
+		},
 	},
 	computed: {
+		ossData: {
+			get () { return this.$store.state.user.ossData },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'ossData',
+					value: val
+				})
+			}
+		},
 		addressList: {           //地址列表
 			get () { return this.$store.state.user.addressList },
 			set (val) {
@@ -888,23 +914,132 @@ export default {
 				})
 			}
 		},
-		uploadProps() {
-            return {
-                // action: `${process.env.VUE_APP_BASE_API}/api/file/upload`,
-                headers: {
-                    // 接口可能要带token: "",
-                    Authorization: getuploadtoken(),
-                },
-                data: {},
-            };
-        },
+		clockList: {             //時間列表
+			get () { return this.$store.state.user.clockList },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'clockList',
+					value: val
+				})
+			}
+		},
 	},
 	components: { ElImageViewer },
     methods: {
-		handleExceed(file, fileList){
-            this.$message.error('上传失败，限制上传数量10个文件以内！');
-        },
-        handleUpload(file){
+		doUpload () {
+			const _this = this;
+			let that = this
+			axios('https://compoundeyes.hk/api/oss/token',_this.getToken).then((result) => {
+				this.ossData = result.data.data
+				let oss = {
+					region: 'oss-cn-hongkong',
+					bucket: this.ossData.buketName,
+					accessKeyId: this.ossData.accessKeyId,
+					accessKeySecret: this.ossData.accessKeySecret,
+					stsToken: this.ossData.securityToken
+				}
+				var client = Client(oss)
+				_this.percentage = 0;
+				_this.imgFlag = true
+				const files = document.getElementById(_this.id)
+				if (files.files) {
+					const fileLen = document.getElementById(_this.id).files
+					for (let i = 0; i < fileLen.length; i++) {
+						const file = fileLen[i]
+						file.uid = new Date().getTime()
+						// 随机命名
+						let random_name = 'File' + new Date().getTime() + '.' + file.name.split('.').pop()
+						// 上传
+						this.imgFlag = true //进度条显示
+						const interval = setInterval(() => {
+							if (_this.percent >= 75) {
+								clearInterval(interval)
+								return
+							}
+							this.percent += 1 //进度条进度
+						}, 160)
+						client.multipartUpload(random_name, file, {
+							progress: function* (percentage, cpt) {
+								// 上传进度
+								// _this.percent = percentage
+							}
+						}).then((res) => {
+							if (res.res.statusCode == 200) {
+								let size
+								if (file.size >= 1000000) {
+									var s = file.size/1000000
+									size = s.toFixed(1) + 'M'
+									// size = Math.ceil(files[ff].size/1000000) + 'm'
+								} else {
+									var s = file.size/1000
+									size = s.toFixed(0) + 'KB'
+									// size = Math.ceil(files[ff].size/1000) + 'kb'
+								}
+								this.percent = 100;
+								setTimeout(() => {
+									that.imgFlag = false;
+									that.percent = 0;
+								},1000)
+								if (that.ruleForm.mediaType == 'video') {
+									let audioElement = new Audio(res.res.requestUrls[0].split('?')[0]);
+									audioElement.addEventListener("loadedmetadata", function (_event) {
+										var time = Math.ceil(audioElement.duration)
+										var sTime = parseInt(time);// 秒
+										var mTime = 0;// 分
+										if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+											//获取分钟，除以60取整数，得到整数分钟
+											mTime = parseInt(sTime / 60);
+											//获取秒数，秒数取佘，得到整数秒数
+											sTime = parseInt(sTime % 60);
+										}
+										that.ruleForm2.imageList.push({ 
+											fileUrl: res.res.requestUrls[0].split('?')[0], 
+											fileName: res.name, 
+											fileSize: size, 
+											time: time,
+											videoTime: mTime + '分' + sTime + '秒'
+										})
+										let obj = {
+											fileUrl: 'http://osshongk.oss-cn-hongkong.aliyuncs.com/'+res.name, 
+											fileName: res.name, 
+											fileSize: size, 
+											time: time,
+											videoTime: mTime + '分' + sTime + '秒'
+										}
+										let index = that.ruleForm2.imageList.length -1
+										setTimeout(() => {
+											that.initialize(index,obj)
+										},200)
+										// that.minute.push(Math.ceil(audioElement.duration))
+										that.minute.push(time)
+										that.$forceUpdate()
+									});
+								} else if (that.ruleForm.mediaType == 'image') {
+									that.ruleForm2.imageList.push({ 
+										// url: res.res.requestUrls[0], 
+										fileUrl: 'http://osshongk.oss-cn-hongkong.aliyuncs.com/'+res.name,
+										fileName: res.name, 
+										fileSize: size, 
+										time: null, 
+										videoTime: null
+									})
+								}
+								return res.res.requestUrls
+							} else {
+								that.$message.error('上传附件失败！');
+							}
+							// 上传完成
+							// const url = 'http://osshongk.oss-cn-hongkong.aliyuncs.com/'+res.name; 
+							// _this.$store.dispatch("changeUrl", _this.url); 
+							// _this.url = url; 
+							// console.log(url); 
+						}).catch((err) => { console.log(err) }) 
+					} 
+				} 
+			}) 
+		}, 
+        handleUpload(e){
+			let file = e.target.files[0]
 			if (this.ruleForm.mediaType == 'image') {
 				let boo = false
 				if (this.ruleForm2.imageList.length <= 10 ) { boo = true }
@@ -921,8 +1056,11 @@ export default {
 						return bool;
 					}
 					if (!isLimit10M) {
-						this.$message.error('上傳失敗，圖片不能超過3M！');
+						this.$message.error('上傳失敗，不能超過3M！');
 						return bool;
+					}
+					if (bool) {
+						this.doUpload()
 					}
 					return bool;
 				}
@@ -943,124 +1081,23 @@ export default {
 						return bool;
 					}
 					if (!isLimit10M) {
-						this.$message.error('上傳失敗，視頻不能超過100M！');
+						this.$message.error('上傳失敗，不能超過100M！');
 						return bool;
+					}
+					if (bool) {
+						this.doUpload()
 					}
 					return bool;
 				}
 			} else {
-				this.$message({
-					type: 'warning',
-					message: '請選擇廣告媒體類型!'
-				})
-				this.imgFlag = false;
-				this.percent = 0;
-				return false
+				this.$message.warning('請選擇媒體廣告類型')
 			}
-        },
-        handleSuccess(res) {
-            // console.log(res);
-            if (res) {
-				this.imageUrl = URL.createObjectURL(file.raw); // 项目中用后台返回的真实地址
-                this.$emit('fileData', res)
-                this.$message.success("上传附件成功！");
-            }
-        },
-		async videoChange(file, fileList) {
-			//刚开始上传的时候，可以拿到ready状态，给个定时器，让进度条显示
-			if (file.status === 'ready') {
-				this.imgFlag = true //进度条显示
-				const interval = setInterval(() => {
-					if (this.percent >= 75) {
-						clearInterval(interval)
-						return
-					}
-					this.percent += 1 //进度条进度
-				}, 80)
-			}
-		},
-        handleError(err){
-            this.$message.error('上传附件失败！');
-        },
-        // 上传图片
-        async fnUploadRequest(options) {
-			console.log(options)
-            try {
-				let that = this
-                let file = options.file; // 拿到 file
-                let res = await uploadOSS(file)
-				let size
-				if (file.size >= 1000000) {
-					var s = file.size/1000000
-					size = s.toFixed(1) + 'M'
-					// size = Math.ceil(files[ff].size/1000000) + 'm'
-				} else {
-					var s = file.size/1000
-					size = s.toFixed(0) + 'KB'
-					// size = Math.ceil(files[ff].size/1000) + 'kb'
-				}
-				this.percent = 100;
-				setTimeout(() => {
-					that.imgFlag = false;
-					that.percent = 0;
-				},1000)
-				let fileurl = res.fileUrl
-				let name = res.fileName
-				let audioElement = new Audio(fileurl);
-				if (this.ruleForm.mediaType == 'video') {
-					audioElement.addEventListener("loadedmetadata", function (_event) {
-						var time = Math.ceil(audioElement.duration)
-						var sTime = parseInt(time);// 秒
-						var mTime = 0;// 分
-						if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
-							//获取分钟，除以60取整数，得到整数分钟
-							mTime = parseInt(sTime / 60);
-							//获取秒数，秒数取佘，得到整数秒数
-							sTime = parseInt(sTime % 60);
-						}
-						that.ruleForm2.imageList.push({ 
-							url: fileurl, 
-							name: name, 
-							size: size, 
-							time: time, 
-							videoTime: mTime + '分' + sTime + '秒'
-						})
-						let obj = {
-							url: fileurl, 
-							name: name, 
-							size: size, 
-							time: time, 
-							videoTime: mTime + '分' + sTime + '秒'
-						}
-						let index = that.ruleForm2.imageList.length -1
-						setTimeout(() => {
-							that.initialize(index,obj)
-						},200)
-						// that.minute.push(Math.ceil(audioElement.duration))
-						that.minute.push(time)
-						that.$forceUpdate()
-					});
-				} else if (this.ruleForm.mediaType == 'image') {
-					that.ruleForm2.imageList.push({ 
-						url: fileurl, 
-						name: name, 
-						size: size, 
-						time: null, 
-						videoTime: null
-					})
-				}
-                // 返回数据
-                this.$emit("fileData", res);
-                this.$message.success("上传附件成功！");
-            } catch (e) {
-                this.$message.error('上传附件失败！');
-            }
         },
 		initialize (ff, obj) {
 			var scale = 0.8;
 			var output = this.$refs.output[ff]
-			var video = this.$refs.video[ff]
-			// console.log(ff)
+			var video = this.$refs.videos[ff]
+			console.log(video)
 			video.addEventListener('loadeddata',this.captureImage(video,output,scale, obj));
 		},
 		captureImage (video,output,scale,obj) {
@@ -1072,49 +1109,54 @@ export default {
 				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 				var img = document.createElement("img");
 				img.src = canvas.toDataURL("image/png");
+				console.log(canvas)
 				canvas.toBlob(function (blob) {
 					let files = new window.File([blob], 'image.png', {type: blob.type})
 					files.uid = new Date().getTime()
 					that.cutVideo(files,obj)
 				})
-				// img.width = 400;
-				// img.height = 100;
 				output.appendChild(img);
 			},100)
 		},
-        // 上传图片
-        async cutVideo(options,obj) {
+		async cutVideo(options,obj) {
+			let that = this
             try {
                 let file = options; // 拿到 file
-                let res = await uploadOSS(file)
-				obj.imageUrl = res.fileUrl
-				this.ruleForm2.imageList.forEach(item => {
-					if (item.url == obj.url) {
-						item.imageUrl = obj.imageUrl
-					}
+				console.log(file)
+				let oss = {
+					region: 'oss-cn-hongkong',
+					bucket: that.ossData.buketName,
+					accessKeyId: that.ossData.accessKeyId,
+					accessKeySecret: that.ossData.accessKeySecret,
+					stsToken: that.ossData.securityToken
+				}
+				var client = Client(oss)
+				var random_name = 'image' + new Date().getTime();
+				// 分片上传文件
+				await client.multipartUpload(random_name, file, {
+					
+				}).then(res => {
+					let url = res.res.requestUrls[0].split('?')[0]
+					obj.imageUrl = url
+					that.ruleForm2.imageList.forEach(item => {
+						if (item.url == obj.url) {
+							console.log(item)
+							item.imageUrl = obj.imageUrl
+						}
+					})
 				})
-				this.$forceUpdate()
+				that.$forceUpdate()
                 // 返回数据
-                this.$emit("fileData", res);
-                this.$message.success("視頻截幀成功！");
+                // this.$emit("fileData", res);
+                that.$message.success("視頻截幀成功！");
             } catch (e) {
-                this.$message.error('視頻封面獲取失败！');
+                that.$message.error('上传附件失败！');
             }
         },
-		outFile (e) {
-			this.$message.error('上传失败，限制上传数量' + this.listLength + '个文件以内！');
-        },
-		uploadProcess(event, file, fileList) {
-			console.log(event);
-			// this.imgFlag = true;
-			// console.log(event.percent);
-			// this.percent = Math.floor(event.percent);
-		},
 
-		handleExceed1(file, fileList){
-            this.$message.error('上传失败，限制上传数量10个文件以内！');
-        },
-        handleUpload1(file){
+
+        handleUpload1(e){
+				let file = e.target.files[0]
 				let boo = false
 				if (this.ruleForm.imageList1.length <= 10 ) { boo = true }
 
@@ -1133,160 +1175,82 @@ export default {
 						this.$message.error('上傳失敗，圖片不能超過3M！');
 						return bool;
 					}
+					if (bool) {
+						this.doUpload1()
+					}
 					return bool;
 				}
         },
-        handleSuccess1(res) {
-            // console.log(res);
-            if (res) {
-				// this.imageUrl = URL.createObjectURL(file.raw); // 项目中用后台返回的真实地址
-                this.$emit('fileData', res)
-                this.$message.success("上传附件成功！");
-            }
-        },
-		async videoChange1(file, fileList) {
-			//刚开始上传的时候，可以拿到ready状态，给个定时器，让进度条显示
-			if (file.status === 'ready') {
-				this.imgFlag1 = true //进度条显示
-				const interval = setInterval(() => {
-					if (this.percent1 >= 75) {
-						clearInterval(interval)
-						return
-					}
-					this.percent1 += 1 //进度条进度
-				}, 80)
-			}
-		},
-        handleError1(err){
-            this.$message.error('上传附件失败！');
-        },
-        // 上传图片
-        async fnUploadRequest1(options) {
-			console.log(options)
-            try {
-				let that = this
-                let file = options.file; // 拿到 file
-                let res = await uploadOSS(file)
-				let size
-				if (file.size >= 1000000) {
-					var s = file.size/1000000
-					size = s.toFixed(1) + 'M'
-					// size = Math.ceil(files[ff].size/1000000) + 'm'
-				} else {
-					var s = file.size/1000
-					size = s.toFixed(0) + 'KB'
-					// size = Math.ceil(files[ff].size/1000) + 'kb'
+		doUpload1 () {
+			const _this = this;
+			let that = this
+			axios('https://compoundeyes.hk/api/oss/token',_this.getToken).then((result) => {
+				this.ossData = result.data.data
+				let oss = {
+					region: 'oss-cn-hongkong',
+					bucket: this.ossData.buketName,
+					accessKeyId: this.ossData.accessKeyId,
+					accessKeySecret: this.ossData.accessKeySecret,
+					stsToken: this.ossData.securityToken
 				}
-				this.percent1 = 100;
-				setTimeout(() => {
-					that.imgFlag1 = false;
-					that.percent1 = 0;
-				},1000)
-				let fileurl = res.fileUrl
-				let name = res.fileName
-				// let audioElement = new Audio(fileurl);
-				// if (this.ruleForm.mediaType == 'video') {
-				// 	audioElement.addEventListener("loadedmetadata", function (_event) {
-				// 		var time = Math.ceil(audioElement.duration)
-				// 		var sTime = parseInt(time);// 秒
-				// 		var mTime = 0;// 分
-				// 		if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
-				// 			//获取分钟，除以60取整数，得到整数分钟
-				// 			mTime = parseInt(sTime / 60);
-				// 			//获取秒数，秒数取佘，得到整数秒数
-				// 			sTime = parseInt(sTime % 60);
-				// 		}
-				// 		that.ruleForm.imageList.push({ 
-				// 			url: fileurl, 
-				// 			name: name, 
-				// 			size: size, 
-				// 			time: time, 
-				// 			videoTime: mTime + '分' + sTime + '秒'
-				// 		})
-				// 		// let obj = {
-				// 		// 	url: fileurl, 
-				// 		// 	name: name, 
-				// 		// 	size: size, 
-				// 		// 	time: time, 
-				// 		// 	videoTime: mTime + '分' + sTime + '秒'
-				// 		// }
-				// 		// let index = that.ruleForm.imageList.length -1
-				// 		// setTimeout(() => {
-				// 		// 	that.initialize(index,obj)
-				// 		// },200)
-				// 		that.minute.push(time)
-				// 		that.$forceUpdate()
-				// 	});
-				// } else if (this.ruleForm.mediaType == 'image') {
-					that.ruleForm.imageList1.push({ 
-						url: fileurl, 
-						name: name, 
-						size: size, 
-						time: null, 
-						videoTime: null
-					})
-				// }
-                // 返回数据
-                this.$emit("fileData", res);
-                this.$message.success("上传附件成功！");
-            } catch (e) {
-                this.$message.error('上传附件失败！');
-            }
-        },
-		// initialize (ff, obj) {
-		// 	var scale = 0.8;
-		// 	var output = this.$refs.output[ff]
-		// 	var video = this.$refs.video[ff]
-		// 	// console.log(ff)
-		// 	video.addEventListener('loadeddata',this.captureImage(video,output,scale, obj));
-		// },
-		// captureImage (video,output,scale,obj) {
-		// 	let that = this
-		// 	setTimeout(() => {
-		// 		var canvas = document.createElement("canvas");
-		// 		canvas.width = video.videoWidth * scale;
-		// 		canvas.height = video.videoHeight * scale;
-		// 		canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-		// 		var img = document.createElement("img");
-		// 		img.src = canvas.toDataURL("image/png");
-		// 		canvas.toBlob(function (blob) {
-		// 			let files = new window.File([blob], 'image.png', {type: blob.type})
-		// 			files.uid = new Date().getTime()
-		// 			that.cutVideo(files,obj)
-		// 		})
-		// 		// img.width = 400;
-		// 		// img.height = 100;
-		// 		output.appendChild(img);
-		// 	},100)
-		// },
-        // 上传图片
-        // async cutVideo(options,obj) {
-        //     try {
-        //         let file = options; // 拿到 file
-        //         let res = await uploadOSS(file)
-		// 		obj.imageUrl = res.fileUrl
-		// 		this.ruleForm.imageList.forEach(item => {
-		// 			if (item.url == obj.url) {
-		// 				item.imageUrl = obj.imageUrl
-		// 			}
-		// 		})
-		// 		this.$forceUpdate()
-        //         // 返回数据
-        //         this.$emit("fileData", res);
-        //         this.$message.success("視頻截幀成功！");
-        //     } catch (e) {
-        //         this.$message.error('視頻封面獲取失败！');
-        //     }
-        // },
-		outFile1 (e) {
-			this.$message.error('上传失败，限制上传数量' + this.listLength + '个文件以内！');
-        },
-		uploadProcess1(event, file, fileList) {
-			console.log(event);
-			// this.imgFlag = true;
-			// console.log(event.percent);
-			// this.percent = Math.floor(event.percent);
-		},
+				var client = Client(oss)
+				_this.imgFlag1 = true
+				const files = document.getElementById(_this.id1)
+				if (files.files) {
+					const fileLen = document.getElementById(_this.id1).files
+					for (let i = 0; i < fileLen.length; i++) {
+						const file = fileLen[i]
+						file.uid = new Date().getTime()
+						// 随机命名
+						let random_name = 'File' + new Date().getTime() + '.' + file.name.split('.').pop()
+						// 上传
+						this.imgFlag1 = true //进度条显示
+						const interval = setInterval(() => {
+							if (_this.percent1 >= 75) {
+								clearInterval(interval)
+								return
+							}
+							this.percent1 += 1 //进度条进度
+						}, 160)
+						client.multipartUpload(random_name, file, {
+							progress: function* (percentage, cpt) {
+								// 上传进度
+								// _this.percent = percentage
+							}
+						}).then((res) => {
+							if (res.res.statusCode == 200) {
+								let size
+								if (file.size >= 1000000) {
+									var s = file.size/1000000
+									size = s.toFixed(1) + 'M'
+									// size = Math.ceil(files[ff].size/1000000) + 'm'
+								} else {
+									var s = file.size/1000
+									size = s.toFixed(0) + 'KB'
+									// size = Math.ceil(files[ff].size/1000) + 'kb'
+								}
+								this.percent1 = 100;
+								setTimeout(() => {
+									that.imgFlag1 = false;
+									that.percent1 = 0;
+								},1000)
+								that.ruleForm.imageList1.push({ 
+									// url: res.res.requestUrls[0], 
+									fileUrl: 'http://osshongk.oss-cn-hongkong.aliyuncs.com/'+res.name,
+									fileName: res.name, 
+									fileSize: size, 
+									time: null, 
+									videoTime: null
+								})
+								return res.res.requestUrls
+							} else {
+								that.$message.error('上传附件失败！');
+							}
+						}).catch((err) => { console.log(err) }) 
+					} 
+				} 
+			}) 
+		}, 
 
 
 		flag () {
@@ -1321,57 +1285,91 @@ export default {
 				this.ruleForm2.imageList.forEach((item,i) => {
 					arr.push({
 						"id": null,
-						"fileUrl": item.url,
+						"fileUrl": item.fileUrl,
 						"step": i,
 						"type": that.ruleForm2.cmediaType1,
 						"shopGuangGaoId": null,
-						"fileName": item.name,
-						"fileSize": item.size,
+						"fileName": item.fileName,
+						"fileSize": item.fileSize,
 						"filePlayTime": item.videoTime
 					})
 				})
 				let imgList = []
 				that.ruleForm.imageList1.forEach(item => {
-					imgList.push(item.url)
+					imgList.push(item.fileUrl)
 				})
+				let timeLists = []
+				if (this.addTimeList.length != 0) {
+					let chiArr = []
+					this.addTimeList.forEach(item => {
+						chiArr.push({
+							"timeIntervalDetailsId": item.id,
+							"discount": 0,
+							"isReceiving": true
+						})
+					})
+					timeLists.push({
+						"timeIntervalId": 1,
+						"discount": 0,
+						"timeIntervalDetailsDtos": chiArr,
+						"isReceiving": true,
+						"isUnified": true
+					})
+				}
+				if (this.addTimeList1.length != 0) {
+					let chiArr = []
+					this.addTimeList1.forEach(item => {
+						chiArr.push({
+							"timeIntervalDetailsId": item.id,
+							"discount": 0,
+							"isReceiving": true
+						})
+					})
+					timeLists.push({
+						"timeIntervalId": 3,
+						"discount": 0,
+						"timeIntervalDetailsDtos": chiArr,
+						"isReceiving": true,
+						"isUnified": true
+					})
+				}
+				if (this.addTimeList2.length != 0) {
+					let chiArr = []
+					this.addTimeList2.forEach(item => {
+						chiArr.push({
+							"timeIntervalDetailsId": item.id,
+							"discount": 0,
+							"isReceiving": true
+						})
+					})
+					timeLists.push({
+						"timeIntervalId": 2,
+						"discount": 0,
+						"timeIntervalDetailsDtos": chiArr,
+						"isReceiving": true,
+						"isUnified": true
+					})
+				}
 				let data = {
 					shopDtoJson: {
 						"shopName": that.ruleForm.name,
 						"addressParentId": that.ruleForm.area,
-						"shopAddressId": 0,
-						"addressName": "",
+						"shopAddressId": that.ruleForm.street,
+						"addressName": that.ruleForm.address,
 						"longitude": String(that.ruleForm.latLng.lng),
 						"latitude": String(that.ruleForm.latLng.lat),
 						"content": that.ruleForm.message,
 						"types": that.storeTypeList,
 						"shopTypeId": that.ruleForm.storeType,
 						"userId": Number(localStorage.getItem('compoundeyesUserId')),
-						"shopDiscountDtos": [{
-							"timeIntervalId": 1,
-							"discount": 0,
-							"timeIntervalDetailsDtos": [{
-								"timeIntervalDetailsId": 1,
-								"discount": 70,
-								"isReceiving": true
-							}],
-							"isReceiving": true,
-							"isUnified": true
-						}],
+						"shopDiscountDtos": timeLists,
 						"shopGuangGaoDto": {
 							"shopGuangGaoTitle": "",
-							"shopGuangGaoLength": 6,
-							// "shopGuangGaoContents": [{
-							// 	"id": null,
-							// 	"fileUrl": "www.baidu.com",
-							// 	"step": 1,
-							// 	"type": that.ruleForm2.cmediaType,
-							// 	"shopGuangGaoId": 1
-							// }],
+							"shopGuangGaoLength": that.ruleForm2.videoMinute,
 							"shopGuangGaoContents": arr
 						},
 						"width": that.ruleForm.size.width,
 						"heigth": that.ruleForm.size.height,
-						// "shopImages": ["12313513032"],
 						"shopImages": imgList,
 						"incomePriceId": that.ruleForm1.price
 					}
@@ -1433,7 +1431,12 @@ export default {
 			this.videoWrap = false
 		},
 		changeArea (val) {
-			console.log(val)
+			// this.ruleForm.area = val.id
+			this.addressList.forEach(item => {
+				if (item.id == val) {
+					this.streetObj = item.childrenAddress
+				}
+			})
 			this.ruleForm.street = ''
 		},
 		changeCen (lat,lng) {
@@ -1459,8 +1462,10 @@ export default {
 			if (navigator.geolocation) {       //获取自身定位
 				navigator.geolocation.getCurrentPosition(function(position) {
 					var pos = {
-					lat: position.coords.latitude,
-					lng: position.coords.longitude
+						// lat: position.coords.latitude,
+						// lng: position.coords.longitude
+						lat: lat,
+						lng: lng
 					};
 					var marker = new google.maps.Marker({position: pos, map: map});
 					// that.marker = marker
@@ -1624,8 +1629,8 @@ export default {
 		},
 		addType (item) {
 			// if (item) {
-				this.storeTypeList = []
-				this.storeTypeList.push(item)
+				// this.storeTypeList = []
+				// this.storeTypeList.push(item)
 				// let arr = new Set(this.storeTypeList)
 				// this.storeTypeList = Array.from(arr)
 			// }
@@ -1646,58 +1651,60 @@ export default {
 		deleOutTime1 (k) {
 			this.ruleForm1.adTimeList = JSON.parse(JSON.stringify(this.ruleForm1.adTimeList))
 			let that = this
+			console.log(that.outTimeList[k].packageName)
 			this.checkedCities1.findIndex((res,i) => {   //同步勾选繁忙时段列表
-				if (res.time == that.outTimeList[k].time) {
+				if (res.packageName == that.outTimeList[k].packageName) {
+					console.log(res)
 					this.dnum = i
 				}
 			})
 			this.checkedCities11.findIndex((res,i) => {   //同步勾选超繁忙时段列表
-				if (res.time == that.outTimeList[k].time) {
+				if (res.packageName == that.outTimeList[k].packageName) {
 					this.dnum4 = i
 				}
 			})
 			this.checkedCities21.findIndex((res,i) => {   //同步勾选非繁忙时段列表
-				if (res.time == that.outTimeList[k].time) {
+				if (res.packageName == that.outTimeList[k].packageName) {
 					this.dnum5 = i
 				}
 			})
 			this.addTimeList.findIndex((res,i) => {       //同步drawer繁忙时段列表
-				if (res.time == that.outTimeList[k].time) {
+				if (res.packageName == that.outTimeList[k].packageName) {
 					this.dnum1 = i
 				}
 			})
 			this.addTimeList1.findIndex((res,i) => {     //同步drawer超繁忙时段列表
-				if (res.time == that.outTimeList[k].time) {
+				if (res.packageName == that.outTimeList[k].packageName) {
 					this.dnum2 = i
 				}
 			})
 			this.addTimeList2.findIndex((res,i) => {   	 //同步drawer非繁忙时段列表
-				if (res.time == that.outTimeList[k].time) {
+				if (res.packageName == that.outTimeList[k].packageName) {
 					this.dnum3 = i
 				}
 			})
 			if (this.checkedCities1[this.dnum]) {
-				// this.checkedCities1.splice(dnum,1)     //同步勾选繁忙时段列表
+				this.checkedCities1.splice(this.dnum,1)     //同步勾选繁忙时段列表
 				this.dList.push(this.checkedCities1[this.dnum])
 			}
 			if (this.checkedCities11[this.dnum4]) {
-				// this.checkedCities11.splice(dnum4,1)     //同步勾选超繁忙时段列表
+				this.checkedCities11.splice(this.dnum4,1)     //同步勾选超繁忙时段列表
 				this.dList4.push(this.checkedCities11[this.dnum4])
 			}
 			if (this.checkedCities21[this.dnum5]) {
-				// this.checkedCities21.splice(dnum5,1)     //同步勾选非繁忙时段列表
+				this.checkedCities21.splice(this.dnum5,1)     //同步勾选非繁忙时段列表
 				this.dList5.push(this.checkedCities21[this.dnum5])
 			}
 			if (this.addTimeList[this.dnum1]) {
-				// this.addTimeList.splice(dnum1,1)     //同步drawer繁忙时段列表
+				this.addTimeList.splice(this.dnum1,1)     //同步drawer繁忙时段列表
 				this.dList1.push(this.addTimeList[this.dnum1])
 			}
 			if (this.addTimeList1[this.dnum2]) {
-				// this.addTimeList1.splice(dnum2,1)     //同步drawer超繁忙时段列表
+				this.addTimeList1.splice(this.dnum2,1)     //同步drawer超繁忙时段列表
 				this.dList2.push(this.addTimeList1[this.dnum2])
 			}
 			if (this.addTimeList2[this.dnum3]) {
-				// this.addTimeList2.splice(dnum3,1)     //同步drawer非繁忙时段列表
+				this.addTimeList2.splice(this.dnum3,1)     //同步drawer非繁忙时段列表
 				this.dList3.push(this.addTimeList2[this.dnum3])
 			}
 			
@@ -1730,42 +1737,42 @@ export default {
 		tongbu () {
 			this.dList.forEach(item => {
 				for (let i=0;i<this.checkedCities1.length;i++) {
-					if (this.checkedCities1[i].time == item.time) {
+					if (this.checkedCities1[i].packageName == item.packageName) {
 						this.checkedCities1.splice(i,1)   //同步勾选繁忙时段列表
 					}
 				}
 			})
 			this.dList4.forEach(item => {
 				for (let i=0;i<this.checkedCities11.length;i++) {
-					if (this.checkedCities11[i].time == item.time) {
+					if (this.checkedCities11[i].packageName == item.packageName) {
 						this.checkedCities11.splice(i,1)   //同步勾选超繁忙时段列表
 					}
 				}
 			})
 			this.dList5.forEach(item => {
 				for (let i=0;i<this.checkedCities21.length;i++) {
-					if (this.checkedCities21[i].time == item.time) {
+					if (this.checkedCities21[i].packageName == item.packageName) {
 						this.checkedCities21.splice(i,1)   //同步勾选非繁忙时段列表
 					}
 				}
 			})
 			this.dList1.forEach(item => {
 				for (let i=0;i<this.addTimeList.length;i++) {
-					if (this.addTimeList[i].time == item.time) {
+					if (this.addTimeList[i].packageName == item.packageName) {
 						this.addTimeList.splice(i,1)   //同步drawer繁忙时段列表
 					}
 				}
 			})
 			this.dList2.forEach(item => {
 				for (let i=0;i<this.addTimeList1.length;i++) {
-					if (this.addTimeList1[i].time == item.time) {
+					if (this.addTimeList1[i].packageName == item.packageName) {
 						this.addTimeList1.splice(i,1)   //同步drawer超繁忙时段列表
 					}
 				}
 			})
 			this.dList3.forEach(item => {
 				for (let i=0;i<this.addTimeList2.length;i++) {
-					if (this.addTimeList2[i].time == item.time) {
+					if (this.addTimeList2[i].packageName == item.packageName) {
 						this.addTimeList2.splice(i,1)   //同步drawer非繁忙时段列表
 					}
 				}
@@ -1807,161 +1814,7 @@ export default {
 		delePrice (i) {
 			this.ruleForm1.priceList.splice(i,1)
 		},
-        changeFile (e) {
-			var files = e.target.files
-			let that = this
-			if (this.ruleForm.mediaType) {
-				if (this.video) {
-					if (this.ruleForm.mediaType == 'video') {
-						if (e.target.files.length<=5 && this.ruleForm2.imageList.length < 5 && e.target.files.length + this.ruleForm2.imageList.length <= 5) {
-							for(var ff=0;ff<e.target.files.length;ff++){
-								let file = e.target.files[ff].type.split('/')[0]
-								let fileSize = e.target.files[ff].size
-								if (file == 'video') {
-									if (fileSize <= 100000000) {
-										let fileurl = URL.createObjectURL(e.target.files[ff])
-										let name = files[ff].name
-										let size
-										if (files[ff].size >= 1000000) {
-											var s = files[ff].size/1000000
-											size = s.toFixed(1) + 'M'
-											// size = Math.ceil(files[ff].size/1000000) + 'm'
-										} else {
-											var s = files[ff].size/1000
-											size = s.toFixed(0) + 'KB'
-											// size = Math.ceil(files[ff].size/1000) + 'kb'
-										}
 
-										let audioElement = new Audio(fileurl);
-										audioElement.addEventListener("loadedmetadata", function (_event) {
-											var time = Math.ceil(audioElement.duration)
-											var sTime = parseInt(time);// 秒
-											var mTime = 0;// 分
-											if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
-												//获取分钟，除以60取整数，得到整数分钟
-												mTime = parseInt(sTime / 60);
-												//获取秒数，秒数取佘，得到整数秒数
-												sTime = parseInt(sTime % 60);
-											}
-											that.ruleForm2.imageList.push({ 
-												url: fileurl, 
-												name: name, 
-												size: size, 
-												time: time, 
-												videoTime: mTime + '分' + sTime + '秒'
-											})
-											let index = that.ruleForm2.imageList.length -1
-											setTimeout(() => {
-												that.initialize(index)
-											},200)
-											
-											// that.minute.push(Math.ceil(audioElement.duration))
-											that.minute.push(time)
-											that.$forceUpdate()
-										});
-									} else {
-										this.$message({
-											type: 'error',
-											message: '單個視頻最大限制100M !'
-										})
-									}
-								} else {}
-							}
-							setTimeout(() => {
-								let that = this
-								this.$nextTick(() => {
-									let num = 0
-									for (let i=0;i<that.minute.length;i++) {
-										num += that.minute[i]
-									}
-									let time = num
-									var sTime = parseInt(time);// 秒
-									var mTime = 0;// 分
-									if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
-										//获取分钟，除以60取整数，得到整数分钟
-										mTime = parseInt(sTime / 60);
-										//获取秒数，秒数取佘，得到整数秒数
-										sTime = parseInt(sTime % 60);
-									}
-									// console.log(sTime, mTime, mTime + '.' + sTime, Number(mTime + '.' + sTime))
-									time = Math.ceil(Number(mTime + '.' + sTime))
-									that.ruleForm2.videoMinute = time
-									that.$forceUpdate()
-								})
-							},100)
-						} else {
-							this.$message({
-								type: 'error',
-								message: '最大限制5個視頻文件!'
-							})
-						}
-					} else {}
-				}
-				if (!this.video) {
-					if (this.ruleForm.mediaType == 'image') {
-						if (e.target.files.length<=10 && this.ruleForm2.imageList.length <= 10) {
-							for(var ff=0;ff<e.target.files.length;ff++){
-								let file = e.target.files[ff].type.split('/')[0]
-								let fileSize = e.target.files[ff].size
-								if (file == 'image') {
-									if (fileSize <= 3000000) {
-										let fileurl = URL.createObjectURL(e.target.files[ff])
-										let name = files[ff].name
-										let size
-										if (files[ff].size >= 1000000) {
-											var s = files[ff].size/1000000
-											size = s.toFixed(1) + 'M'
-											// size = Math.ceil(files[ff].size/1000000) + 'm'
-										} else {
-											var s = files[ff].size/1000
-											size = s.toFixed(0) + 'KB'
-											// size = Math.ceil(files[ff].size/1000) + 'kb'
-										}
-										that.ruleForm2.imageList.push({ url: fileurl, name: name, size: size })
-									} else {
-										this.$message({
-											type: 'error',
-											message: '單個圖片最大限制3M !'
-										})
-									}
-								} else { }
-							}
-						} else {
-							this.$message({
-								type: 'error',
-								message: '最大限制10個圖片文件!'
-							})
-						}
-					} else { }
-				}
-			} else {
-				this.$message({
-					type: 'warning',
-					message: '請選擇文件類型!'
-				})
-			}
-		},
-		initialize (ff) {
-			var scale = 0.8;
-			var output = this.$refs.output[ff]
-			var video = this.$refs.video[ff]
-			// console.log(ff)
-			video.addEventListener('loadeddata',this.captureImage(video,output,scale));
-		},
-		captureImage (video,output,scale) {
-			setTimeout(() => {
-				var canvas = document.createElement("canvas");
-				canvas.width = video.videoWidth * scale;
-				canvas.height = video.videoHeight * scale;
-				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-				var img = document.createElement("img");
-				img.src = canvas.toDataURL("image/png");
-				
-				// img.width = 400;
-				// img.height = 100;
-				output.appendChild(img);
-			},100)
-		},
 		deleImg (i) {
 			let that = this
 			if (this.ruleForm.mediaType == 'video') {
@@ -2064,7 +1917,10 @@ export default {
 				this.typeList1.push(item)
 				let arr = new Set(this.typeList1)
 				this.typeList1 = Array.from(arr)
-				// this.changeType()
+
+				this.storeTypeList.push(item[0].id)
+				let arr1 = new Set(this.storeTypeList)
+				this.storeTypeList = Array.from(arr1)
 			}
 		},
 		chooseT (item) {
@@ -2076,9 +1932,6 @@ export default {
 		},
 		changeType(chooseType) {
 			this.ruleForm1.typeList = this.typeList1
-			// this.ruleForm1.typeList.push(chooseType)
-			// let arr = new Set(this.ruleForm1.typeList)
-			// this.ruleForm1.typeList = Array.from(arr)
 			this.dialogVisible2 = false
 		}
     }

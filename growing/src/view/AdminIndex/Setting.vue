@@ -46,9 +46,8 @@
                         </div>
                         <div class="area_content clear">
                             <div style="color: #B0B0B0;" class="list_item float al" v-for="(item,i) in addressList" :key="i">
-                                <div v-for="(child,i) in item.addressLanguageDtos" :key="i" class="al">
-                                    <div v-if="child.language == 'zh-TW' && $i18n.locale == 'zh-CN'" class="al">
-                                        {{child.addressName}} 
+                                    <div class="al">
+                                        {{item.addressName}} 
                                         <span class="al" style="margin-left: 5px">
                                             <el-popconfirm
                                                 :title="$t('lang.setting_del') + '？'"
@@ -58,7 +57,7 @@
                                             </el-popconfirm>
                                         </span>
                                     </div>
-                                    <div v-if="child.language == 'en-US' && $i18n.locale == 'en-US'" class="al">
+                                    <!-- <div v-if="child.language == 'en-US' && $i18n.locale == 'en-US'" class="al">
                                         {{child.addressName}} 
                                         <span class="al" style="margin-left: 5px">
                                             <el-popconfirm
@@ -68,8 +67,7 @@
                                                 <img style="margin-top: 5px;" class="cursor" slot="reference" src="@/assets/img/cha.png" alt="">
                                             </el-popconfirm>
                                         </span>
-                                    </div>
-                                </div>
+                                    </div> -->
                             </div>
                         </div>
                     </div>
@@ -235,19 +233,17 @@
                     </div>
                     <div class="flex al" style="padding-top: 60px;">
                         <label for="liveLogo">
-                            <div class="uploadBtn ju al">
-                                <el-upload 
-                                    ref="fileUpload"
-                                    class="upload-demo" 
-                                    action="" :headers="uploadProps.headers"
-                                    :show-file-list="false" :limit='1' :on-exceed='outFile'
-                                    :http-request="fnUploadRequest" :on-success="handleSuccess" :on-error="handleError"
-                                    :before-upload="handleUpload">
-                                    <el-button size="small" type="primary">選擇Logo</el-button>
-                                </el-upload>
+                            <div class="uploadBtn ju al cursor">
+                                <!-- <label for="uploadUrl">
+                                    <input type="file" :id="id" @change="handleUpload" v-show="false">
+                                    <div class="addFile ju al">
+                                        <img src="@/assets/img/add.png" alt="">
+                                        <el-progress v-show="imgFlag == true" type="circle" :percentage="percent"></el-progress>
+                                    </div>
+                                </label> -->
+                                選擇圖片
+                                <input type="file" :id="id" @change="handleUpload" v-show="false">
                             </div>
-                            
-                            <input type="file" name="" id="liveLogo" @change="getLiveLogo" v-show="false">
                         </label>
                         <div class="unmust" style="margin: 9px 0 0 10px;">(選填)</div>
                     </div>
@@ -269,11 +265,25 @@
 </template>
 
 <script>
-import { addressAdd, addressDel, adTypeAdd, getTextGuangGaoList, adTypeDel, getuploadtoken, delTextGuangGaoService, addTextGuangGaoService } from '@/axios/request.js'
-import { uploadOSS } from '@/utils/oss';
+import { addressAdd, addressDel, adTypeAdd, getTextGuangGaoList, adTypeDel, delTextGuangGaoService, addTextGuangGaoService } from '@/axios/request.js'
+import  axios  from 'axios'
+import Client from '@/utils/client'
 export default {
     data () {
         return {
+            uploadHeaders: {
+				authorization: '*'
+			},
+			region: 'oss-cn-beijing',
+			bucket: '',//这里选择OSS容器
+			url: '',//后台获取token地址
+			ClientObj: null,
+			id: 'liveLogo',
+			urls:[],
+			getToken:{
+				sign:'',
+			},
+
             dialogVisible: false,
             url: '',
             position: 'right',
@@ -327,26 +337,40 @@ export default {
         // location.reload();
     },
     created () {
+        this.$store.dispatch('getuploadtoken')
         this.$store.dispatch('getAddress',this) 
         this.$store.dispatch('getTypeList',this)
         this.getTextGuangGaoList()
     },
     watch: {
-		addressList (val) {
-			if (val) {
-				this.addressList = val
-			}
+        addressList: {
+			handler (val) {
+				if (val) {
+					this.addressList = val
+				}
+			},
 		},
-        typeList (val) {
-			if (val) {
-				this.typeList = val
-			}
+        typeList: {
+			handler (val) {
+				if (val) {
+					this.typeList = val
+				}
+			},
 		},
-        loading (val) {
-			if (val) {
-				this.loading = val
-			}
-		}
+        loading: {
+			handler (val) {
+				if (val) {
+					this.loading = val
+				}
+			},
+		},
+        ossData: {
+			handler (val) {
+				if (val) {
+					this.ossData = val
+				}
+			},
+		},
 	},
 	computed: {
 		addressList: {
@@ -376,108 +400,97 @@ export default {
 				})
 			}
 		},
-        uploadProps() {
-            return {
-                // action: `${process.env.VUE_APP_BASE_API}/api/file/upload`,
-                headers: {
-                    // 接口可能要带token: "",
-                    Authorization: getuploadtoken(),
-                },
-                data: {},
-            };
-        },
+        ossData: {
+			get () { return this.$store.state.user.ossData },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'ossData',
+					value: val
+				})
+			}
+		}
 	},
     methods: {
-        handleExceed(file, fileList){
-            this.$message.error('上传失败，限制上传数量10个文件以内！');
-        },
-        handleUpload(file){
-            console.log(file)
-			const isJPG = file.type === 'image/jpg';
-            const isPNG = file.type === 'image/png';
-            console.log(isJPG,isPNG)
-            const isLt20M = file.size / 1024 / 1024 < 20;
-            if (!isJPG && !isPNG) {
-                this.$message.error('上传图片的格式只能是 JPG或PNG 格式!');
-            }
-            if (!isLt20M) {
-                this.$message.error('上传图片的大小不能超过 20M!');
-            }
-            const isSize = new Promise(function(resolve, reject) {
-                let width = 300;
-                let height = 300;
-                let _URL = window.URL || window.webkitURL;
-                let img = new Image();
-                img.onload = function() {
-                    let valid = img.width == width && img.height == height;
-                    valid ? resolve() : reject();
-                }
-                img.src = _URL.createObjectURL(file);
-            }).then(() => {
-                return file;
-            }, () => {
-                this.$message.error('上传的图片宽高必须是300*300!');
-                return Promise.reject();
-            });
-            return (isPNG || isJPG) && isSize && isLt20M;
-        },
-        handleSuccess(res) {
-            // console.log(res);
-            if (res) {
-				// this.imageUrl = URL.createObjectURL(file.raw); // 项目中用后台返回的真实地址
-                this.$emit('fileData', res)
-                this.$message.success("上传附件成功！");
-            }
-        },
-		async videoChange(file, fileList) {
-			//刚开始上传的时候，可以拿到ready状态，给个定时器，让进度条显示
-			if (file.status === 'ready') {
-				// this.imgFlag = true //进度条显示
-				// const interval = setInterval(() => {
-				// 	if (this.percent >= 75) {
-				// 		clearInterval(interval)
-				// 		return
-				// 	}
-				// 	this.percent += 1 //进度条进度
-				// }, 80)
-			}
-		},
-        handleError(err){
-            this.$message.error('上传附件失败！');
-        },
-        // 上传图片
-        async fnUploadRequest(options) {
-			console.log(options)
-            try {
-				let that = this
-                let file = options.file; // 拿到 file
-                let res = await uploadOSS(file)
+        doUpload () {
+			const _this = this;
+			let that = this
+			axios('https://compoundeyes.hk/api/oss/token',_this.getToken).then((result) => {
+				this.ossData = result.data.data
+				let oss = {
+					region: 'oss-cn-hongkong',
+					bucket: this.ossData.buketName,
+					accessKeyId: this.ossData.accessKeyId,
+					accessKeySecret: this.ossData.accessKeySecret,
+					stsToken: this.ossData.securityToken
+				}
+				var client = Client(oss)
+				_this.percentage = 0;
+				_this.imgFlag = true
+				const files = document.getElementById(_this.id)
+				if (files.files) {
+					const fileLen = document.getElementById(_this.id).files
+					for (let i = 0; i < fileLen.length; i++) {
+						const file = fileLen[i]
+						file.uid = new Date().getTime()
+						// 随机命名
+						let random_name = 'File' + new Date().getTime() + '.' + file.name.split('.').pop()
+						// 上传
+						this.imgFlag = true //进度条显示
+						const interval = setInterval(() => {
+							if (_this.percent >= 75) {
+								clearInterval(interval)
+								return
+							}
+							this.percent += 1 //进度条进度
+						}, 160)
+						client.multipartUpload(random_name, file, {
+							progress: function* (percentage, cpt) {}
+						}).then((res) => {
+							if (res.res.statusCode == 200) {
+								this.url = 'http://osshongk.oss-cn-hongkong.aliyuncs.com/'+res.name
 
-				// this.percent = 100;
-				// setTimeout(() => {
-				// 	that.imgFlag = false;
-				// 	that.percent = 0;
-				// },1000)
-                
-				this.url = res.fileUrl
-                // 返回数据
-                this.$emit("fileData", res);
-                this.$message.success("上传附件成功！");
-            } catch (e) {
-                console.log(e)
-                this.$message.error('上传附件失败！');
+							} else {
+								that.$message.error('上传附件失败！');
+							}
+						}).catch((err) => { console.log(err) }) 
+					} 
+				} 
+			}) 
+		}, 
+        handleUpload(e){
+			let file = e.target.files[0]
+            let boo = true
+
+            if (boo) {
+                var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
+                const extension =  testmsg === 'png' || testmsg === 'jpeg' || testmsg === 'gif' || testmsg === 'jpg'
+
+                const isLimit10M = file.size / 1024 / 1024 < 3
+                var bool = false;
+                if (extension && isLimit10M) { bool = true; } else { bool = false; }
+                if (!extension) {
+                    this.$message.error('請選擇圖片文件！');
+                    return bool;
+                }
+                if (!isLimit10M) {
+                    this.$message.error('上傳失敗，不能超過3M！');
+                    return bool;
+                }
+                if (bool) {
+                    this.doUpload()
+                }
+                return bool;
             }
-        },
-        outFile (e) {
-			this.$message.error('上传失败，限制上传数量' + this.listLength + '个文件以内！');
         },
 
 
 
         getTextGuangGaoList () {
             this.tableData = []
+            this.loading = true
             getTextGuangGaoList().then(res => {
                 console.log(res)
+                this.loading = false
                 if (res.data.rtnCode == 200) {
                     res.data.data.forEach((item,i) => {
                         this.tableData.push({
@@ -496,6 +509,7 @@ export default {
                     })
                 }
             }).catch(e => {
+                this.loading = false
                 this.$message({
                     type: 'error',
                     message: '廣告電台文字Live加載失敗'
@@ -647,32 +661,12 @@ export default {
                 })
             })
 		},
-        getLiveLogo (e) {
-            var fileData = e.target.files[0]; 
-            //读取图片数据
-            var Max_Width = 300
-            var Max_Height = 300
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                var data = e.target.result;
-                //加载图片获取图片真实宽度和高度
-                var image = new Image();
-                image.onload=function(){
-                    console.log(image.width, image.height)
-                    var width = image.width;
-                    var height = image.height;
-                    isAllow = width >= Max_Width && height >= Max_Height;
-                };
-            };
-            reader.readAsDataURL(fileData)
-            let url = URL.createObjectURL(e.target.files[0])
-            this.url = url
-        },
         deleteRow(index, rows) {
             rows.splice(index, 1);
         },
         addLive () {                   //添加文字广告
             let that = this
+            this.loading = true
             this.$refs.forms.validate(flag => {
                 if (flag) {
                     that.dialogVisible = false
@@ -686,6 +680,7 @@ export default {
                         id: ''
                     }
                     addTextGuangGaoService(data).then(res => {
+                        this.loading = false
                         console.log(res)
                         if (res.data.rtnCode == 200) {
                             that.getTextGuangGaoList()
@@ -700,6 +695,7 @@ export default {
                             })
                         }
                     }).catch(e => {
+                        this.loading = false
                         that.$message({
                             type: 'error',
                             message: that.$t('lang.addFail')
@@ -710,10 +706,12 @@ export default {
             })
         },
         delTextGuangGaoService (id) {
+            this.loading = true
             let data = {
                 id: id
             }
             delTextGuangGaoService(data).then(res => {
+                this.loading = false
                 console.log(res)
                 if (res.data.rtnCode == 200) {
                     this.getTextGuangGaoList()
@@ -722,6 +720,12 @@ export default {
                         message: this.$t('lang.delSuccess')
                     })
                 }
+            }).catch(e => {
+                this.loading = false
+                this.$message({
+                    type: 'error',
+                    message: this.$t('lang.delFail')
+                })
             })
         }
     },
@@ -799,9 +803,11 @@ export default {
         padding: 5px;
         width: 75px;
         height: 32px;
+        color: white;
         overflow: hidden;
         font-size: 12px;
         margin-left: 20px;
+        background: @themeColor;
     }
     .addArea1 {
         padding: 5px;

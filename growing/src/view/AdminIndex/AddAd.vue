@@ -189,9 +189,7 @@
 									<div class="flex">
 										<el-select v-model="ruleForm1.area" :placeholder="$t('lang.pldselectarea')" @change="changeLight">
 											<el-option v-for="(item,i) in addressList" :key="i"
-												:label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
-												item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-												item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+												:label='item.addressName '
 												:value="item.id">
 											</el-option>
 										</el-select>
@@ -202,9 +200,7 @@
 									<div class="list clear">
 										<div style="color: #B0B0B0;" class="list_item float al" 
 										v-for="(item,i) in areaList" :key="i">
-											{{item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
-												item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-												item.addressLanguageDtos.find( res => res.language == "en-US").addressName}} <span class="al" style="margin-left: 5px">
+											{{item.addressName}} <span class="al" style="margin-left: 5px">
 												<img class="cursor" @click="deleArea(i)" src="@/assets/img/cha.png" alt="">
 											</span>
 										</div>
@@ -214,21 +210,20 @@
 							<el-form-item :label="$t('lang.AdvertisingArea')" prop="street" v-show="radio == 3">
 								<div class="flex br">
 									<div class="flex">
-										<el-select v-model="ruleForm.area" @change="changeArea"
+										<el-select v-model="ruleForm1.area" @change="changeArea"
 											:placeholder="$t('lang.pldselectarea')" style="margin-right: 10px;">
-											<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
-											<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
-											<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
+											<el-option v-for="(item,i) in addressList" :key="i"
+												:label='item.addressName '
+												:value="item.id">
+											</el-option>
 										</el-select>
-										<el-select v-model="ruleForm.street" :placeholder="$t('lang.pldselectstreet')">
-											<el-option :label="$t('lang.Kowloon') + $t('lang.street')" @click.native="changeCen(22.8, 114.6)"
-											v-if="ruleForm.area == $t('lang.jiulong')" :value="$t('lang.Kowloon') + $t('lang.street')"></el-option>
-											<el-option :label="$t('lang.MongKok') + $t('lang.street')"  @click.native="changeCen(23.8, 114.6)"
-											v-if="ruleForm.area == $t('lang.wangjiao')" :value="$t('lang.MongKok') + $t('lang.street')"></el-option>
-											<el-option :label="$t('lang.Central') + $t('lang.street')"  @click.native="changeCen(22.8, 116.6)"
-											v-if="ruleForm.area == $t('lang.zhonghuan')" :value="$t('lang.Central') + $t('lang.street')"></el-option>
+										<el-select v-model="ruleForm1.street" :placeholder="$t('lang.pldselectstreet')" :disabled='streetObj == ""' @change="getStreet">
+											<el-option v-for="(item,i) in streetObj" :key="i"
+												:label='item.addressName'
+												:value='item.id '>
+											</el-option>
 										</el-select>
-										<div class="addCate cursor al" @click="addStreet(ruleForm.street)">
+										<div class="addCate cursor al" @click="addStreet(street)">
 											{{$t("lang.addbtn")}}
 										</div>
 									</div>
@@ -573,7 +568,8 @@ export default {
                 ]
             },
 			ruleForm1: {
-				area: ''
+				area: '',
+				street: ''
 			},
 			rules1: {
 				area: [
@@ -639,7 +635,9 @@ export default {
 			dimg1: '',
 			mapStoreListShow: [],
 
-			totalContentLength: 0
+			totalContentLength: 0,
+			street: '',
+			streetObj: ''
 		}
     },
 	beforeMount() {
@@ -650,8 +648,7 @@ export default {
 		this.fun()
     },
 	created () {
-		this.$store.dispatch('getTimeIntervaDetailslList',this)
-		this.$store.dispatch('getTypeList',this)
+		
 		this.dimg = dimg
 		let that = this
 		let h = 8
@@ -689,6 +686,7 @@ export default {
 		}
 	},
     mounted () {
+		this.getStore()
 		window.shopadd = this.shopadd;
 		window.onPreview = this.onPreview;
 		window.closewin = this.closewin
@@ -699,7 +697,7 @@ export default {
                 if (val) {
 					let that = this
 					this.$nextTick(() => {
-						that.initMap1(22.6,114.1,1)
+						that.initMap1(22.32,114.17,1)
 					})
                 }
             }
@@ -708,7 +706,6 @@ export default {
 			handler (val) {
 				if (val) {
 					this.getTypeList = val
-					this.$store.dispatch('getAddress',this) 
 				}
 			},
 		},
@@ -716,7 +713,7 @@ export default {
 			handler (val) {
 				if (val) {
 					this.addressList = val
-					this.getStore()
+					
 				}
 			}
 		},
@@ -736,9 +733,7 @@ export default {
 						child.area = '暫無地區'
 						this.addressList.forEach(item => {
 							if (child.addressParentId == item.id) {
-								child.area = item.addressLanguageDtos.find( res => res.language == "zh-TW") && this.$i18n.locale == "zh-CN" ? 
-								item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-								item.addressLanguageDtos.find( res => res.language == "en-US").addressName
+								child.area = item.addressName
 							}
 						})
 						this.mapStoreListShow.push({
@@ -756,7 +751,7 @@ export default {
 							addressId: child.addressId
 						})
 					})
-					this.initMap1(22.6,114.1,1)
+					this.initMap1(22.32,114.17,1)
 				}
 			},
 		},
@@ -830,9 +825,10 @@ export default {
 			this.$store.dispatch('getShopList',data)
 		},
 		addCombo () {
-			this.ruleForm.contentList.unshift(this.ruleForm.content)
+			let msg = JSON.parse(JSON.stringify(this.ruleForm.contentList))
+			msg.unshift(this.ruleForm.content)
 			let con = []
-			this.ruleForm.contentList.forEach(item => {
+			msg.forEach(item => {
 				con.push(item.value)
 			})
 			let arr = []
@@ -859,14 +855,6 @@ export default {
 					"concessionalRate": this.ruleForm.ids,
 					"contentList": con,
 					"endTime": String(new Date(this.ruleForm.endDate).toLocaleDateString().split('/').join('-')),
-					// "guangGaotimeDtos":[{
-					// 	"guangGaoTimeMinDtos":[{
-					// 		"timeIntervalDetailsId":1,
-					// 		"timeMin":5
-					// 	}],
-					// 	"timeIntervalId":1,
-					// 	"totalMinLength":20
-					// }],
 					"guangGaotimeDtos": timeList,
 					"length": Number(this.ruleForm.inp),
 					"oldPrice": this.ruleForm.lastPrice,
@@ -1116,7 +1104,13 @@ export default {
 			// }
 		},
 		changeArea (val) {
-			this.ruleForm.street = ''
+			// this.ruleForm.area = val.id
+			this.addressList.forEach(item => {
+				if (item.id == val) {
+					this.streetObj = item.childrenAddress
+				}
+			})
+			this.street = ''
 		},
         openDra (i) {
 			if (i == 1) {
@@ -1132,7 +1126,7 @@ export default {
 			let that = this
 			let boolean = true
 			let map = new google.maps.Map(document.getElementById('map'), {
-				center: {lat: lat, lng: lng},
+				// center: {lat: lat, lng: lng},
 				zoom: 11,
 				mapTypeId: "roadmap",
 				disableDefaultUI: true,
@@ -1591,6 +1585,13 @@ export default {
 		deleList2 (i) {
 			this.addTimeList2.splice(i,1)
 			this.checkedCities21.splice(i,1)
+		},
+		getStreet (val) {
+			this.streetObj.forEach(item => {
+				if (item.id == val) {
+					this.street = item.addressName
+				}
+			})
 		},
 		cahngeFile (e) {
 			var files = e.target.files

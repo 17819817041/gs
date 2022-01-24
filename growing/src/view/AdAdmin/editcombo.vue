@@ -189,9 +189,7 @@
 									<div class="flex">
 										<el-select v-model="ruleForm1.area" :placeholder="$t('lang.pldselectarea')" @change="changeLight">
 											<el-option v-for="(item,i) in addressList" :key="i"
-												:label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
-												item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-												item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+												:label='item.addressName '
 												:value="item.id">
 											</el-option>
 										</el-select>
@@ -202,9 +200,7 @@
 									<div class="list clear">
 										<div style="color: #B0B0B0;" class="list_item float al" 
 										v-for="(item,i) in areaList" :key="i">
-											{{item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
-												item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-												item.addressLanguageDtos.find( res => res.language == "en-US").addressName}} <span class="al" style="margin-left: 5px">
+											{{item.addressName}} <span class="al" style="margin-left: 5px">
 												<img class="cursor" @click="deleArea(i)" src="@/assets/img/cha.png" alt="">
 											</span>
 										</div>
@@ -471,7 +467,6 @@ export default {
 			unbusyTimeList: [],
 
 			checkedCities21: [],
-			unbusyTimeList1: [],
 
 
 
@@ -651,8 +646,6 @@ export default {
 		this.fun()
     },
 	created () {
-		this.$store.dispatch('getTimeIntervaDetailslList',this)
-		this.$store.dispatch('getTypeList',this)
         this.previewAD()
 		this.dimg = dimg
 		let that = this
@@ -677,20 +670,18 @@ export default {
 			uns += 1
 			unh += 1
 			this.unbusyTimeList.push(unh + ':00~' + uns + ':00')
-			this.unbusyTimeList1.push( {time: unh + ':00~' + uns + ':00', num: 1} )
 		}
 		this.unbusyTimeList.push('23:00~00:00')
-		this.unbusyTimeList1.push( { time: '23:00~00:00', num: 1 } )
 		let unh1 = -1
 		let uns1 = 0
 		for (let i=0;i<9;i++) {
 			uns1 += 1
 			unh1 += 1
 			this.unbusyTimeList.push(unh1 + ':00~' + uns1 + ':00')
-			this.unbusyTimeList1.push( {time: unh1 + ':00~' + uns1 + ':00', num: 1} )
 		}
 	},
     mounted () {
+		this.initMap1(22.6,114.1,1)
 		window.shopadd = this.shopadd;
 		window.onPreview = this.onPreview;
 		window.closewin = this.closewin
@@ -738,9 +729,7 @@ export default {
 						child.area = '暫無地區'
 						this.addressList.forEach(item => {
 							if (child.addressParentId == item.id) {
-								child.area = item.addressLanguageDtos.find( res => res.language == "zh-TW") && this.$i18n.locale == "zh-CN" ? 
-								item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-								item.addressLanguageDtos.find( res => res.language == "en-US").addressName
+								child.area = item.addressName
 							}
 						})
 						this.mapStoreListShow.push({
@@ -758,7 +747,6 @@ export default {
 							addressId: child.addressId
 						})
 					})
-					this.initMap1(22.6,114.1,1)
 				}
 			},
 		},
@@ -861,7 +849,27 @@ export default {
                             item.find( key => key.language == "en-US").guangGaoTypeName
                         }
                     })
+					this.storeList = obj.shopVoList
+					this.storeList.forEach(child => {
+						this.addressList.forEach(item => {
+							if (item.addressParentId == child.id) {
+								item.addressName
+							}
+						})
+						child.type = 'info'
+						child.position = new google.maps.LatLng(child.latitude,child.longitude)
+						child.address = child.shopAddressName
+						child.addressId = child.addressId
+						child.addressParentId = child.addressParentId
+						// child.area = "暫無地區"
+						child.msg = child.shopName
+						child.priceContents = child.priceContents
+						child.shopId = child.shopId
+						child.timeIntervalNames = child.timeIntervalNames
+						child.typeNames = child.typeNames
+						child.widthAndHeihth = child.widthAndHeihth
 
+					})
 				} else {
 					this.$message({
 						type: 'error',

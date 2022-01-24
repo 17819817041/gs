@@ -39,6 +39,7 @@
                         <span v-if="scope.row.area.length != 0">
                             <div v-for="(item,i) in scope.row.area" :key="i">{{item}}</div>
                         </span>
+                        <span v-else>{{scope.row.launchTypeName}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -47,19 +48,15 @@
                     min-width="250"
                     >
                     <template slot-scope="scope">
-                        <!-- <div class="tc">{{$t("lang.busyhour")}}</div>
-                        <div class="tc">{{$t("lang.unbusyhour")}}</div> -->
-                        <div>
-                            <div :ref="'clockDom' + scope.row.id">
-                                <div v-for="(item,i) in scope.row.time" :key="i">
-                                    <div v-for="(child,ii) in item.guangGaoTimeIntervalDetialsDtos" :key='ii'>
-                                        {{child.timeIntervalDetailsName}}
-                                    </div>
+                        <div :ref="'clockDom' + scope.row.id" class="maxHeight">
+                            <div v-for="(item,i) in scope.row.time" :key="i">
+                                <div v-for="(child,ii) in item.guangGaoTimeIntervalDetialsDtos" :key='ii'>
+                                    <span>{{child.timeIntervalDetailsName}} </span>
                                 </div>
                             </div>
-                            <div class="ju" v-if="scope.row.dom > 46">
-                                <div class="cursor" style="padding: 0 20px;">...</div>
-                            </div>
+                        </div>
+                        <div class="ju" v-if="scope.row.height.length > 3">
+                            <div class="cursor" style="padding: 0 20px;">...</div>
                         </div>
                     </template>
                 </el-table-column>
@@ -102,7 +99,7 @@
                     >
                     <template slot-scope="scope">
                         <div class="preview ju">
-                            <div class="cursor" style="width: 65%; padding: 12px 0" @click="toPreview(scope.row.launchType)">
+                            <div class="cursor" style="width: 65%; padding: 12px 0" @click="toPreview(scope.row.launchType,scope.row.id)">
                                 <div class="ju"><img src="@/assets/img/eye.png" alt=""></div>
                                 <div class="tc">{{$t("lang.preview")}}</div>
                             </div>
@@ -116,25 +113,34 @@
                     >
                     <template slot-scope="scope">
                         <div class="putaway sa al">
-                            <div class="putaway_logo" v-if="scope.row.showEdiy">
+                            <div class="putaway_logo cursor" v-if="scope.row.showEdiy" @click="toEdit(scope.row.launchType, scope.row.id)">
                                 <div class="ju"><img src="@/assets/img/edit.png" alt=""></div>
                                 <div class="tc">{{$t("lang.editplan")}}</div>
                             </div>
                             <!-- <div v-else></div> -->
-                            <div class="putaway_logo centerL" v-if="scope.row.showShangJia">
+                            <div class="putaway_logo centerL cursor" v-if="scope.row.showShangJia" @click="sjGuangGao(scope.row.id)">
                                 <div class="ju "><img src="@/assets/img/up.png" alt=""></div>
                                 <div class="tc">{{$t("lang.shelfplan")}}</div>
                             </div>
                             <!-- <div v-else></div> -->
-                            <div class="putaway_logo centerL" v-if="scope.row.showXiaJia">
+                            <div class="putaway_logo centerL cursor" v-if="scope.row.showXiaJia" @click="offShelf(scope.row.id)"> 
                                 <div class="ju"><img src="@/assets/img/down.png" alt=""></div>
                                 <div class="tc">{{$t("lang.downplan")}}</div>
                             </div>
                             <!-- <div v-else></div> -->
-                            <div class="putaway_logo" v-if="scope.row.showDelete">
-                                <div class="ju"><img src="@/assets/img/delete.png" alt=""></div>
-                                <div class="tc">{{$t("lang.deleteplan")}}</div>
-                            </div>
+                            <el-popconfirm
+                                v-if="scope.row.showDelete"
+                                icon="el-icon-info"
+                                icon-color="red"
+                                @confirm='delGuangGaoJiHua(scope.row.id)'
+                                title="确定删除吗？"
+                                >
+                                <div class="putaway_logo cursor" slot="reference" v-if="scope.row.showDelete">
+                                    <div class="ju"><img src="@/assets/img/delete.png" alt=""></div>
+                                    <div class="tc">{{$t("lang.deleteplan")}}</div>
+                                </div>
+                                <div v-else slot="reference"></div>
+                            </el-popconfirm>
                             <!-- <div v-else></div> -->
                         </div>
                     </template>
@@ -157,7 +163,7 @@
 </template>
 
 <script>
-import { adList } from "@/axios/request.js"
+import { adList, offShelf, sjGuangGao, delGuangGaoJiHua } from "@/axios/request.js"
 export default {
     data () {
         return {
@@ -170,7 +176,7 @@ export default {
                 {name:'售藥',category: 3,area: '中環', time: 3, dv: 'pro',
                 outTime: '2021-06-21~2021-06-28', price: '$6000HKD', state: 3, content: '查看預覽', edit: 3},
             ],
-            pageNum: 4,
+            pageNum: 0,
             pageSize: 10,
             loading: false,
             totalRecordsCount: null
@@ -202,6 +208,15 @@ export default {
                 if (res.data.rtnCode == 200) {
                     this.totalRecordsCount = res.data.data.totalRecordsCount
                     res.data.data.pageT.forEach(item => {
+                        // if (item.launchType == 3) {
+                        //     console.log(item)
+                        // }
+                        let height = []
+                        item.guangGaoTimeIntervalDtoList.forEach(child => {
+                            child.guangGaoTimeIntervalDetialsDtos.forEach(key => {
+                                height.push(key)
+                            })
+                        })
                         this.tableData.push({
                             name: item.guangGaoTitle,
                             category: item.guangGaoTypeName,
@@ -213,22 +228,25 @@ export default {
                             state: item.guangGaoStateName, 
                             content: '查看預覽', 
                             edit: 1,
+                            height: height,
                             id: item.id,
+                            launchTypeName: item.launchTypeName,
                             showDelete: item.showDelete,
                             showEdiy: item.showEdiy,
                             showShangJia: item.showShangJia,
                             showXiaJia: item.showXiaJia,
                             launchType: item.launchType
                         })
-                        this.$nextTick(() => {
-                            item.dom = that.$refs['clockDom' + item.id].clientHeight
-                            that.tableData.forEach(child => {
-                                if (child.id == item.id) {
-                                    // console.log(child)
-                                    child.dom = item.dom
-                                }
-                            })
-                        })
+                        // this.$nextTick(() => {
+                        //     item.dom = that.$refs['clockDom' + item.id].clientHeight
+                        //     that.tableData.forEach(child => {
+                        //         if (child.id == item.id) {
+                        //             // console.log(child)
+                        //             child.dom = item.dom
+                        //         }
+                        //     })
+                        // })
+                        // this.$forceUpdate()
                     })
                 } else {
                     this.$message({
@@ -244,16 +262,74 @@ export default {
                 })
             })
         },
-        toPreview (val) {
-            if (val == 1) {
+        offShelf (id) {
+            this.loading = true
+            let data = {
+                guangGaoId: id
+            }
+            offShelf(data).then(res => {
+                this.loading = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.adList()
+                    this.$message.success(this.$t('lang.editSuccess'))
+                } else {
+                    this.$message.error(this.$t('lang.editError'))
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message.error(this.$t('lang.editError'))
+            })
+        },
+        sjGuangGao (id) {
+            this.loading = true
+            let data = {
+                guangGaoId: id
+            }
+            sjGuangGao(data).then(res => {
+                this.loading = false
+                if (res.data.rtnCode == 200) {
+                    this.adList()
+                    this.$message.success(this.$t('lang.editSuccess'))
+                } else {
+                    this.$message.error(this.$t('lang.editError'))
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message.error(this.$t('lang.editError'))
+            })
+        },
+        delGuangGaoJiHua (id) {
+            let data = {
+                guangGaoId: id
+            }
+            delGuangGaoJiHua(data).then(res => {
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    this.$message.success(this.$t('lang.delSuccess'))
+                } else {
+                    this.$message.error(this.$t('lang.addFail'))
+                }
+            }).catch(e => {
+                this.loading = false
+                this.$message.error(this.$t('lang.addFail'))
+            })
+        },
+        toPreview (val,id) {
+            if (val == 1 || val == 2) {
                 this.$router.push({
                     name: 'dvPreview',
                     query: {
-                        id: val
+                        id: id
                     }
                 })
             } else if (val == 3) {
-                this.$router.push('/dvPreviewPlus')
+                this.$router.push({
+                    name: 'dvPreviewPlus',
+                    query: {
+                        id: id
+                    }
+                })
             }
         },
         resi () {
@@ -278,6 +354,23 @@ export default {
         },
         back () {
              this.$router.back()
+        },
+        toEdit (type, id) {
+            if (type == 1 || type == 2) {
+                this.$router.push({
+                    name: 'editPro',
+                    query: {
+                        id: id
+                    }
+                })
+            } else if (type == 3) {
+                this.$router.push({
+                    name: 'editPlus',
+                    query: {
+                        id: id
+                    }
+                })
+            }
         }
     }
 }
@@ -378,5 +471,9 @@ export default {
     }
     .centerL {
         margin: 0 5px;
+    }
+    .maxHeight {
+        max-height: 69px;
+        overflow: hidden;
     }
 </style>

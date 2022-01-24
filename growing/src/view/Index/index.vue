@@ -1,5 +1,5 @@
 <template>
-    <div class="Index">
+    <div class="Index" v-loading='loading'>
         <div class="content ju">
             <div class="content_item sb">
                 <div class="item_child clear noBar">
@@ -11,26 +11,32 @@
                     </div>
                     <div :class="['child_message1']" v-show="category_list">
                         <div class="child_message_title tc">
-                            Title
+                            {{message.userName}}
                         </div>
                         <div class="child_message_content">
                             <div class="child_message_content_item sb">
                                 <div class="al">
                                     <img class="child_message_content_item_logo" src="@/assets/img/guanggao.png" alt="">{{$t("lang.gindex")}}
                                 </div>
-                                <div class="al">4</div>
+                                <div class="al">
+                                    {{message.guangGaoTotalCount}}
+                                </div>
                             </div>
                             <div class="child_message_content_item sb">
                                 <div class="al">
                                     <img class="child_message_content_item_logo" src="@/assets/img/area.png" alt="">{{$t("lang.garea")}}
                                 </div>
-                                <div class="al">{{$t("lang.Kowloon")}}</div>
+                                <div class="al">{{area}}</div>
                             </div>
-                            <div class="child_message_content_item sb">
+                            <div class="child_message_content_item sb al">
                                 <div class="al">
                                     <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.gtype")}}
                                 </div>
-                                <div class="al">{{$t("lang.food")}}</div>
+                                <el-tooltip class="item" effect="dark" :content="message.type" placement="left-start">
+                                    <div class="ellipsis al">
+                                        <span v-for="(item,i) in message.guangGaoTypeNames" :key="i">{{item}}</span>
+                                    </div>
+                                </el-tooltip>
                             </div>
                             <div class="child_message_content_item sb">
                                 <div class="al">
@@ -39,10 +45,10 @@
                                 <div class="al">{{$t("lang.busy")}}9am-9pm</div>
                             </div>
                             <div class="child_message_content_item sb">
-                                <div class="al" style="width: 61%;">
+                                <div class="al">
                                     <img class="child_message_content_item_logo" src="@/assets/img/endTime.png" alt="">{{$t("lang.maturity")}}
                                 </div>
-                                <div class="al">2021-06-26</div>
+                                <div class="al" style="min-width: 72px; white-space: nowrap;">{{message.firstTime}}</div>
                             </div>
                             <!-- <div class="moreMsg flexEnd al">
                                 <img class="cursor" src="@/assets/img/more.png" alt=""><span class="cursor">查看更多详细</span>
@@ -97,26 +103,32 @@
                 </div>
                 <div :class="['child_message']">
                     <div class="child_message_title tc">
-                        Title
+                        {{message.userName}}
                     </div>
                     <div class="child_message_content">
                         <div class="child_message_content_item sb">
                             <div class="al">
                                 <img class="child_message_content_item_logo" src="@/assets/img/guanggao.png" alt="">{{$t("lang.gindex")}}
                             </div>
-                            <div class="al">4</div>
+                            <div class="al">
+                                {{message.guangGaoTotalCount}}
+                            </div>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
                                 <img class="child_message_content_item_logo" src="@/assets/img/area.png" alt="">{{$t("lang.garea")}}
                             </div>
-                            <div class="al">{{$t("lang.Kowloon")}}</div>
+                            <div class="al">{{area}}</div>
                         </div>
-                        <div class="child_message_content_item sb">
+                        <div class="child_message_content_item sb al">
                             <div class="al">
                                 <img class="child_message_content_item_logo" src="@/assets/img/num.png" alt="">{{$t("lang.gtype")}}
                             </div>
-                            <div class="al">{{$t("lang.food")}}</div>
+                            <el-tooltip class="item" effect="dark" :content="message.type" placement="left-start">
+                                <div class="ellipsis al">
+                                    <span v-for="(item,i) in message.guangGaoTypeNames" :key="i">{{item}}</span>
+                                </div>
+                            </el-tooltip>
                         </div>
                         <div class="child_message_content_item sb">
                             <div class="al">
@@ -128,7 +140,7 @@
                             <div class="al">
                                 <img class="child_message_content_item_logo" src="@/assets/img/endTime.png" alt="">{{$t("lang.maturity")}}
                             </div>
-                            <div class="al" style="min-width: 72px; white-space: nowrap;">2021-06-26</div>
+                            <div class="al" style="min-width: 72px; white-space: nowrap;">{{message.firstTime}}</div>
                         </div>
                         <!-- <div class="moreMsg flexEnd al">
                             <img class="cursor" src="@/assets/img/more.png" alt=""><span class="cursor">查看更多详细</span>
@@ -141,12 +153,18 @@
 </template>
 
 <script>
-
+import { userGuangGaoFirst } from "@/axios/request.js"
 export default {
     data () {
         return {
             category_list: false,
+            loading: false,
+            message: {},
+            area: ''
         }
+    },
+    created () {
+        this.userGuangGaoFirst()
     },
     methods: {
         advertisingOperation () {
@@ -159,12 +177,45 @@ export default {
         statistics () {
             this.$router.push('/Statistics')          //廣告統計
         },
-        
+        userGuangGaoFirst () {
+            this.loading = true
+            let data = {
+                userId: localStorage.getItem('compoundeyesUserId')
+            }
+            userGuangGaoFirst(data).then(res => {
+                this.loading = false
+                console.log(res)
+                if (res.data.rtnCode == 200) {
+                    res.data.data.type = ''
+                    for (let i=0;i<res.data.data.guangGaoTypeNames.length;i++) {
+                        if (i != (res.data.data.guangGaoTypeNames.length-1)) {
+                            res.data.data.guangGaoTypeNames[i] = res.data.data.guangGaoTypeNames[i] + ','
+                        }
+                        res.data.data.type += res.data.data.guangGaoTypeNames[i]
+                        this.area = res.data.data.addressNames[0]
+                    }
+                    res.data.data.firstTime = res.data.data.firstTime.split(' ')[0]
+                    this.message = res.data.data
+                }
+            }).catch(e => {
+                this.loading = false
+            })
+        }
     }
 }
 </script>
 
 <style lang='less' scoped>
+    .ellipsis {
+        // font-size: 12px;
+        max-width: 130px;
+        text-overflow: ellipsis; /*有些示例里需要定义该属性，实际可省略*/
+        display: -webkit-box;
+        -webkit-line-clamp: 1;/*规定超过两行的部分截断*/
+        -webkit-box-orient: vertical;
+        overflow : hidden; 
+        word-break: normal;/*在任何地方换行*/
+    }
     .Index {
         height: 100%;
         margin-top: 20px;

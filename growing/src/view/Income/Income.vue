@@ -57,10 +57,10 @@
                                 <div>繁忙時段(9am - 9pm)收入</div>
                                 <div class="size12 tc" style="color: gray;">[不包含(12am~1pm,6pm~7pm)]</div>
                             </template>
-                            <template>
+                            <template slot-scope="scope">
                                 <div class="timeIncome ju">
                                     <!-- <div class="busyTime"> -->
-                                        <div class="perple">$5000HKD</div>
+                                        <div class="perple">{{scope.row.busy}}</div>
                                     <!-- </div> -->
                                 </div>
                             </template>
@@ -70,10 +70,24 @@
                             label="非繁忙時段(9pm - 9am)收入"
                             min-width="210"
                             >
-                            <template>
+                            <template slot-scope="scope">
                                 <div class="timeIncome ju">
                                     <!-- <div class="busyTime"> -->
-                                        <div class="perple">$4000HKD</div>
+                                        <div class="perple">{{scope.row.unbusy}}</div>
+                                    <!-- </div> -->
+                                </div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                            prop="sbusy"
+                            label="超繁忙時段收入"
+                            min-width="210"
+                            >
+                            <template slot-scope="scope">
+                                <div class="timeIncome ju">
+                                    <!-- <div class="busyTime"> -->
+                                        <div class="perple" v-if="scope.row.sbusy">{{scope.row.sbusy}}</div>
+                                        <div class="perple" v-else>$ 0 HKD</div>
                                     <!-- </div> -->
                                 </div>
                             </template>
@@ -83,47 +97,15 @@
                             label="廣告類型和投放分鐘收入"
                             min-width="270"
                             >
-                            <template>
+                            <template slot-scope="scope">
                                 <div class="timeIncome ju">
                                     <div>
-                                        <div class="flex timeIncome_item">
-                                            <div class="type_n">食品</div>
+                                        <div class="flex timeIncome_item" v-for="(item,i) in scope.row.income" :key="i">
+                                            <div class="type_n">{{item.guangGaoTypeName}}</div>
                                             <div class="busyTime">
-                                                <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
-                                                <div class="i_busy">-超繁忙时段: 30分鐘 900HKD</div>
-                                                <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
-                                            </div>
-                                        </div>
-                                        <div class="flex timeIncome_item">
-                                            <div class="type_n">運動</div>
-                                            <div class="busyTime">
-                                                <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
-                                                <div class="i_busy">-超繁忙时段: 0分鐘 0HKD</div>
-                                                <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
-                                            </div>
-                                        </div>
-                                        <div class="flex timeIncome_item">
-                                            <div class="type_n">醫療</div>
-                                            <div class="busyTime">
-                                                <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
-                                                <div class="i_busy">-超繁忙时段: 10分鐘 300HKD</div>
-                                                <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
-                                            </div>
-                                        </div>
-                                        <div class="flex timeIncome_item">
-                                            <div class="type_n">服裝</div>
-                                            <div class="busyTime">
-                                                <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
-                                                <div class="i_busy">-超繁忙时段: 100分鐘 3000HKD</div>
-                                                <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
-                                            </div>
-                                        </div>
-                                        <div class="flex timeIncome_item">
-                                            <div class="type_n">設計</div>
-                                            <div class="busyTime">
-                                                <div class="i_busy">-繁忙时段: 100分鐘 $1000HKD</div>
-                                                <div class="i_busy">-超繁忙时段: 30分鐘 900HKD</div>
-                                                <div class="i_unbusy">-非繁忙时段: 120分鐘 $800HKD</div>
+                                                <div class="i_busy" v-for="(child,k) in item.timeIntervalDetailVoList" :key="k">
+                                                    {{child.timeIntervalName}}: {{child.totalScore}}分鐘 $ {{child.totalPrice}} HKD
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -135,10 +117,10 @@
                             label="收入總數"
                             min-width="120"
                             >
-                            <template>
+                            <template slot-scope="scope">
                                 <div class="timeIncome ju">
                                     <!-- <div class="busyTime"> -->
-                                        <div class="perple">$9000HKD</div>
+                                        <div class="perple">{{scope.row.totalIncome}}</div>
                                     <!-- </div> -->
                                 </div>
                             </template>
@@ -159,7 +141,7 @@
                 </div>
                 <div class="totalIncome_price flexEnd">
                     <div class="padding_foot">
-                        <span>廣告收入總計:</span><span class="th_color"> $36000HKD </span>
+                        <span>廣告收入總計:</span><span class="th_color"> ${{totalPrice}}HKD </span>
                     </div>
                 </div>
 
@@ -343,7 +325,8 @@ export default {
                     }
                 }]
             },
-            timeList: []
+            timeList: [],
+            totalPrice: 0
         }
     },
     created () {
@@ -405,6 +388,7 @@ export default {
             let arr = D.split('/')
             D = arr[0] + '-' + arr[1] + '-' + arr[2]
             this.value1 = D
+            this.getShopIncomeStatistics()
         },
         resi () {
             let that = this
@@ -428,8 +412,10 @@ export default {
             return ''
         },
         getShopIncomeStatistics () {
+            this.tableData = []
+            this.totalPrice = 0
             let data = {
-                date: '2021-12-29',
+                date: this.value1,
                 pageNum: this.goToPage,
                 pageSize: this.pageSize,
                 shopId: this.$route.query.id,
@@ -437,7 +423,21 @@ export default {
             }
             getShopIncomeStatistics(data).then(res => {
                 console.log(res)
-                
+                if (res.data.rtnCode == 200) {
+                    let num = 0
+                    res.data.data.pageT.forEach(item => {
+                        this.tableData.push({
+                            name: item.shopName,
+                            busy: item.fmincome,
+                            unbusy: item.ffmincome,
+                            sbusy: item.cfmincome, 
+                            income: item.incomeDetailList,
+                            totalIncome: item.totalIncome
+                        })
+                        num += Number(item.totalIncome.split('HKD')[0].split('$')[1])
+                    })
+                    this.totalPrice = num
+                }
             })
         },
         getShopIncomeAnalysis () {

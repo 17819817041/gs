@@ -1,11 +1,9 @@
 <template>
-  <div id="app">
+  <div id="app" :class="[{ font: $i18n.locale == 'en-US' }]">
     <router-view></router-view>
   </div>
 </template>
-
 <script>
-
 export default {
 	name: 'App',
 	data () {
@@ -13,11 +11,51 @@ export default {
 			
 		}
 	},
+	mounted () {
+		// window.onload=function () {
+		// 	document.addEventListener('touchstart',function (event) {
+		// 		if(event.touches.length>1){
+		// 			event.preventDefault();
+		// 		}
+		// 	})
+		// 	var lastTouchEnd=0;
+		// 	document.addEventListener('touchend',function (event) {
+		// 		var now=(new Date()).getTime();
+		// 		if(now-lastTouchEnd<=300){
+		// 			event.preventDefault();
+		// 		}
+		// 		lastTouchEnd=now;
+		// 	},false)
+		// }
+
+		setTimeout(() => {
+			try {
+				if (!google) {
+					//在这里调用动态创建script的fangfa
+					this.createScript()
+				}
+			} catch {
+				//在这里调用动态创建script的fangfa
+				this.createScript()
+			}
+		},3000)
+	},
 	created () {
-		
+		if ( localStorage.getItem('compoundeyesToken') ) {
+			this.$store.dispatch('getTimeIntervaDetailslList',this)
+			this.$store.dispatch('getAddress',this) 
+			this.$store.dispatch('getTypeList',this)
+			this.$store.dispatch('incomePriceId',this)
+		}
 	},
 	methods: {
-		
+		createScript () {
+			// 创建script标签，引入外部文件
+			let script = document.createElement('script')
+			script.type = 'text/javascript'
+			script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyC4UE1P5tLy0aSibmA0WzZq-yFi9cpyrW0&language=zh_HK&libraries=places&v=weekly'
+			document.getElementsByTagName('head')[0].appendChild(script)
+		}
 	}
 }
 </script>
@@ -25,16 +63,36 @@ export default {
 <style lang='less'>
 @import "@/less/style.less";
 	body, html {
+		width: 100%;
+		height: 100%;
 		padding: 0;
 		margin: 0;
-		height: 100%;
 		background: #F2F2F2;
+		position: relative;
 	}
 	.theme {
 		background: #F2F2F2;
 	}
+	.font {
+		font-family: "Segoe UI" !important;
+	}
 	#app {
+		width: 100%;
 		height: 100%;
+		background: white;
+		overflow: scroll;
+		-webkit-overflow-scrolling: touch;
+		position: absolute;
+		left:0;
+		top:0;
+		padding-bottom: 0rem
+	}
+	#app::-webkit-scrollbar { display: none !important; }
+	
+	.cover {
+		width: 100%;
+		height: 100%;
+		object-fit: cover !important;
 	}
 	div {
 		box-sizing: border-box;
@@ -135,27 +193,42 @@ export default {
 			justify-content: center;
 		}
 	}
-
-	.el-upload{
+	textarea {
+		color: gray;
+	}
+	.addFile {
 		margin: 5px;
-		width: 100px !important;
-    	height: 100px !important;
-		line-height: 106px !important;
-		float: left !important;
+		border: dashed 1px #C0CCDA;
+		border-radius: 3px;
+		width: 100px;
+		height: 100px;
+		float: left;
+		position: relative;
+		img {
+			width: 32px;
+			height: 32px;
+			@media screen and (max-width: 564px) {
+				width: 25px !important;
+				height: 25px !important;
+			}
+		}
 		@media screen and (max-width: 564px) {
-			line-height: 80px !important;
 			width: 70px !important;
 			height: 70px !important;
 		}
+	}
+	.addFile:hover {
+		border-color: rgb(64, 158, 255);
 	}
 	.el-progress{
 		width: 80px !important;
     	height: 80px !important;
 		// line-height: 106px !important;
-		transform: translate(0px, -97px);
+		// transform: translate(0px, -97px);
+		position: absolute !important;
 		background: white;
 		@media screen and (max-width: 564px) {
-			transform: translate(0px, -105px);
+			// transform: translate(0px, -105px);
 			width: 50px !important;
 			height: 50px !important;
 		}
@@ -202,7 +275,7 @@ export default {
 		overflow: hidden !important;
 	}
 	.Sign .el-select .el-input .el-input__inner {
-		color: white;
+		color: rgb(105, 105, 105);
 		border: none !important;
 		outline: none !important;
 		background: none !important;
@@ -283,9 +356,13 @@ export default {
 	.AdvertisingAdd1 .el-input.is-disabled .el-input__inner {
 		color: rgb(170, 170, 170);
 	}
-
-	.AdvertisingAdd1 .el-dialog, .AddStore .el-dialog, .AdvertisingAddPlus .el-dialog,
-	.AdvertisingAdd2 .el-dialog, .AddStore .el-dialog, .AdvertisingAddPlus .el-dialog {
+	
+	.AdvertisingAdd1 .el-dialog,
+	.AdvertisingAdd2 .el-dialog,
+	.Gdetail .el-dialog, 
+	.AddStore .el-dialog, 
+	.AdvertisingAddPlus .el-dialog, 
+	.PreviewMsg .el-dialog {
 		max-width: 800px;
 		max-height: 591px;
 		// height: 85% !important;
@@ -293,12 +370,17 @@ export default {
 			height: 80%;
 		}
 	}
-	.AdvertisingAdd1 .el-dialog__wrapper .el-dialog__body, .AdAdmin .el-dialog__wrapper .el-dialog__body,
-	.AdvertisingAdd2 .el-dialog__wrapper .el-dialog__body, .AdAdmin .el-dialog__wrapper .el-dialog__body {
+	.AdvertisingAdd1 .el-dialog__wrapper .el-dialog__body,
+	.AdvertisingAdd2 .el-dialog__wrapper .el-dialog__body,
+	.Gdetail .el-dialog__wrapper .el-dialog__body, 
+	.AdAdmin .el-dialog__wrapper .el-dialog__body {
 		display: flex;
 		justify-content: center;
 		height: 82%;
+		max-height: 489px;
 	}
+
+	
 
 
 	.el-checkbox__label {
@@ -394,7 +476,7 @@ export default {
 	}
 	.AddStore .el-form-item {
 		margin-bottom: 0;
-		padding: 20px 0;
+		padding: 20px 5px;
 	}
 	.AddStore .el-dialog .el-radio {
 		margin-left: 0 !important;
@@ -576,7 +658,7 @@ export default {
 	}
 	.StoreSet .el-form-item {
 		margin-bottom: 0;
-		padding: 20px 0;
+		padding: 20px 5px;
 	}
 
 
@@ -598,7 +680,7 @@ export default {
 	}
 	.PreviewMsg .el-form-item {
 		margin-bottom: 0;
-		padding: 20px 0;
+		padding: 20px 5px;
 	}
 
 	.Settingadvertising .el-dialog {
@@ -640,10 +722,8 @@ export default {
 	.video-js {
 		width: 100% !important;
 		max-width: 750px;
-		height: 100%;
+		// height: 100%;
 	}
-
-
 	.video_outWrap {
 		position: relative;
 		z-index: 20;
@@ -660,5 +740,38 @@ export default {
 				object-fit: cover;
 			}
 		}
+	}
+	.fade-enter-active {
+		transition: opacity 1s;
+	}
+	.fade-leave-active {
+		transition: opacity 0.1s;
+	}
+	.fade-enter, .leave-active {
+		opacity: 0;
+	}
+
+	.fade1-enter-active {
+		transition: opacity .1s;
+	}
+	.fade1-leave-active {
+		transition: opacity 0.1s;
+	}
+	.fade1-enter, .leave-active {
+		opacity: 0;
+	}
+
+	.storeDetail .el-radio {
+		margin-right: 0 !important;
+	}
+
+	.storeDetail .el-checkbox, .storeDetail .time_wrap .el-form-item__content {
+		line-height: 20px !important;
+	}
+	.storeDetail .time_wrap .el-form-item {
+		margin-bottom: 7px !important;
+	}
+	.storeDetail .time_wrap .el-form-item__label {
+		padding: 0 !important;
 	}
 </style>

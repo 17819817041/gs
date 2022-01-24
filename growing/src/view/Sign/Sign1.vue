@@ -5,28 +5,30 @@
         </div>
         <div class="growing"><img style="height: 148%" src="@/assets/img/growing.jpg" alt=""></div>
         <div class="form_item noBar">
-            <div class="Logo1 ju">
-                <img src="@/assets/img/logo.png" alt="">
-            </div>
+            
             <div class="success al ju">
-                <div class="success_item_wrap">
-                    <div class="al ju success_item">
-                        <img src="@/assets/img/success_sign.png" alt="">{{$t("lang.success")}}
+                <div class="mg">
+                    <div class="Logo1 ju">
+                        <img src="@/assets/img/logo.png" alt="">
                     </div>
-                    <div class="notice tc">{{$t("lang.staff")}}</div>
-                    <div class="notice tc">{{$t("lang.thank")}}</div>
-                    <div class="sign_btn mg sure_btn tc cursor" @click="sure">{{$t("lang.sure")}}</div>
+                    <div class="success_item_wrap mg">
+                        <div class="al ju success_item">
+                            <img src="@/assets/img/success_sign.png" alt="">{{$t("lang.success")}}
+                        </div>
+                        <div class="notice tc">{{$t("lang.staff")}}</div>
+                        <div class="notice tc">{{$t("lang.thank")}}</div>
+                        <div class="sign_btn mg sure_btn tc cursor" @click="sure">{{$t("lang.sure")}}</div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="welcome ju al">
-           <div style="margin-bottom: 70px;">
+        <div class="welcome ju">
+           <div style="margin-top: 70px;">
                 <!-- <div class="Logo1 ju">
                     <img src="@/assets/img/logo.png" alt="">
                 </div> -->
                 <div class="guanggao tc">SMART WINDOW ADVERTISEMENT PLATFORM </div>
                 <div class="guanggao tc">智能櫥窗{{$t("lang.plat")}}</div>
-                <div class="welcome_text tc">Welcome</div>
             </div>
         </div>
         <div class="form">
@@ -63,7 +65,7 @@ export default {
 </script>
 
 <style lang='less' scoped>
-@import "@/less/el.less";
+    @import "@/less/style.less";
     .Sign {
         width: 100%;
         height: 100%;
@@ -94,8 +96,8 @@ export default {
             width: 35%;
             // height: 85%;
             // background: #5C48B7;
-            color: white;
-            z-index: 100; 
+            color: rgb(0, 0, 0);
+            z-index: 100;
             height: calc(100% - 195px);
             @media screen and (max-height: 875px) {
                 // top: 41%;
@@ -144,10 +146,10 @@ export default {
         }
     }
     .Logo1 {
-        margin-bottom: -10px;
+        margin-bottom: 10px;
         width: 100%;
         img {
-            width: 60%;
+            width: 83%;
         }
         @media screen and (max-width: 1100px) {
             margin-bottom: 0px;
@@ -216,7 +218,7 @@ export default {
             font-size: 25px;
             background: none;
             width: 100%;
-            color: white;
+            color: rgb(97, 97, 97);
             @media screen and (max-width: 1500px) {
                 font-size: 23px;
             }
@@ -258,23 +260,18 @@ export default {
             left: 0;
             opacity: 0.45;
             display: inline-block;
-            background: #5C48B7;
+            background: @miniBlue ;
             z-index: 99;
         }
         
     }
     .sign_btn {
         font-size: 20px;
-        color: #604EB9;
-        background: white;
+        color: #ffffff;
+        background: @themeColor;
         // border: solid 3px #8268D5;
         padding: 8px 0;
-        margin-top: 30px;
-        @media screen and (max-width: 1477px) {
-            margin-top: 20px;
-            font-size: 20px;
-            padding: 6px 0;
-        }
+        margin-top: 50px;
         @media screen and (max-width: 1300px) {
             margin-top: 10px;
             padding: 5px 0;
@@ -293,9 +290,9 @@ export default {
         height: 500px;
         padding: 15px;
         box-shadow: rgb(0, 0, 0) 30px 30px 60px;
-        background: #5C48B7;
+        background: white;
         @media screen and (max-width: 1300px) {
-            height: 70%;
+            height: 65%;
         }
     }
     .success_item_wrap {
@@ -303,7 +300,7 @@ export default {
     }
     .success_item {
         font-size: 40px;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         // @media screen and (max-width: 1477px) {
         //     font-size: 30px;
         // }
@@ -336,20 +333,17 @@ export default {
             font-size: 17px;
         }
         @media screen and (max-width: 1300px) {
-            font-size: 10px;
+            font-size: 12px;
         }
     }
     .sure_btn {
         width: 100%;
     }
     .guanggao {
-        width: 80%;
+        width: 100%;
         margin: auto;
-        font-size: 36px;
+        font-size: 25px;
         color: #D3ACFF;
-        @media screen and (max-width: 1300px) {
-            font-size: 30px;
-        }
         @media screen and (max-width: 1300px) {
             font-size: 16px;
         }

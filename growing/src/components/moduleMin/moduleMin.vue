@@ -177,13 +177,12 @@
                                 <span v-if="!item.br">{{item[child.key]}}</span>
                                 <div class="" v-else-if="item.adList1.length == 0">
                                     <div>接收外來廣告時段：全部時段</div>
-                                    <div class="">外來廣告比例：{{item.ids}}</div>
                                 </div>
                                 <div class="" v-else-if="item.adList1.length != 0">
                                     <div class="list clear">
 										<div style="color: #B0B0B0;" class="list_item float al ju" 
 										v-for="(item1,i) in item.adList1" :key="i">
-											{{item1.time}} 
+											{{item1.packageName}} 
                                             <!-- <span class="al" style="margin-left: 5px">({{item1.num}}%)</span> -->
 										</div>
 									</div>

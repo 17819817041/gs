@@ -27,6 +27,8 @@ export const lang = {
 	buTime: 'Busy hour',
 	ubbuTime: 'Off-peak hours',
 	sbuTime: 'Super busy hour',
+	contact1: 'contact us',
+	problem: 'common problem',
 
 
 	addbtn: 'Add',
@@ -149,6 +151,7 @@ export const lang = {
 	dp: 'Designated shop',
 	sa: 'specific area',
 	ds: 'Designated street',
+	editAd: 'Edit ad',
 
 
 
@@ -270,3 +273,4 @@ export const lang = {
 
 }
   
+export default {lang}

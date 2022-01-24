@@ -5,7 +5,6 @@
         </div>
 		<div class="noBar" style="height: calc(100% - 35px);overflow: auto;margin-top: 15px;">
 			<div :class="['content mg noBar',{ heigh: !submit }]">
-				<!-- <div class="content_title al"><img class="cursor" style="width: 25px;" @click="goBack" style="padding: 0 15px;" src="@/assets/img/back_arrow.png" alt="">新增廣告計劃</div> -->
 				<div class="noBar" style="height: calc(100% - 0px); overflow:auto" v-show="submit">
 					<div class="basicsMsg theme" v-show="submit">
 						<div class=" basicsMsg_item bold al">
@@ -25,7 +24,7 @@
 												:label='item.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
 												item.find( res => res.language == "zh-TW").guangGaoTypeName: 
 												item.find( res => res.language == "en-US").guangGaoTypeName '
-												:value="item">
+												:value="item[0].id">
 											</el-option>
 										</el-select>
 										<!-- <div class="addCate cursor al" @click="addType(ruleForm.type)">
@@ -101,14 +100,13 @@
 							</el-form-item>
 							<el-form-item :label="$t('lang.adcontent')" prop="imageList">
 								<div :class="['textarea_wrap clear', { content_down: $i18n.locale == 'zh-CN' }]">
-									<el-upload
-                                        ref="fileUpload" action="" :headers="uploadProps.headers" list-type="picture-card" 
-										:show-file-list="false" multiple :limit='listLength' :on-change="videoChange"
-                                        :http-request="fnUploadRequest" :on-success="handleSuccess" :on-error="handleError" :on-progress="uploadProcess"
-										:before-upload="handleUpload" :on-exceed='outFile'>
-                                        <i class="el-icon-plus"></i>
-										<el-progress v-show="imgFlag == true" type="circle" :percentage="percent"></el-progress>
-                                    </el-upload>
+									<label for="uploadUrl">
+										<input type="file" :id="id" @change="handleUpload" v-show="false">
+										<div class="addFile ju al">
+											<img src="@/assets/img/add.png" alt="">
+											<el-progress v-show="imgFlag == true" type="circle" :percentage="percent"></el-progress>
+										</div>
+									</label>
 									<div class="textarea_wrap_item float" v-for="(item,i) in ruleForm.imageList" :key="i">
 										<div class="imageList_wrap cursor">
 											<div class="deleImg radius ju al" @click.stop="deleImg(i)">
@@ -116,11 +114,11 @@
 											</div>
 											<div class="textarea_wrap_item_child ju al cursor">
 												<img v-if="ruleForm.mediaType == 'image'"  @click="imgPreview(item.url)"
-												style="height: 100%;" :src="item.url" alt="">
+												style="height: 100%;width: 100%; object-fit:cover;" :src="item.url" alt="">
 
 												<div class="video_outWrap" v-else-if="ruleForm.mediaType == 'video'">
 													<img class="img" src="@/assets/img/start.png" alt="">
-													<div class="cutImage ju al"><img style="height: 100%;" 
+													<div class="cutImage ju al"><img style="height: 100%;width:100%;object-fit:cover;" 
 													@click="previewVideo(item)" :src="item.imageUrl" alt=""></div>
 													<div class="videoImage ju al" id="output" ref="output">
 														
@@ -223,9 +221,7 @@
 									<div class="flex">
 										<el-select v-model="ruleForm1.area" :placeholder="$t('lang.pldselectarea')" @change="changeLight">
 											<el-option v-for="(item,i) in addressList" :key="i"
-												:label='item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
-												item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-												item.addressLanguageDtos.find( res => res.language == "en-US").addressName '
+												:label='item.addressName '
 												:value="item.id">
 											</el-option>
 										</el-select> 
@@ -236,9 +232,7 @@
 									<div class="list clear">
 										<div style="color: #B0B0B0;" class="list_item float al" 
 										v-for="(item,i) in areaList" :key="i">
-											{{item.addressLanguageDtos.find( res => res.language == "zh-TW") && $i18n.locale == "zh-CN" ? 
-												item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-												item.addressLanguageDtos.find( res => res.language == "en-US").addressName}} <span class="al" style="margin-left: 5px">
+											{{item.addressName}} <span class="al" style="margin-left: 5px">
 												<img class="cursor" @click="deleArea(i)" src="@/assets/img/cha.png" alt="">
 											</span>
 										</div>
@@ -248,21 +242,20 @@
 							<el-form-item :label="$t('lang.AdvertisingArea')" prop="street" v-show="radio == 3">
 								<div class="flex br">
 									<div class="flex">
-										<el-select v-model="ruleForm.area" @change="changeArea"
+										<el-select v-model="ruleForm1.area" @change="changeArea"
 											:placeholder="$t('lang.pldselectarea')" style="margin-right: 10px;">
-											<el-option :label="$t('lang.jiulong')" :value="$t('lang.jiulong')"></el-option>
-											<el-option :label="$t('lang.wangjiao')" :value="$t('lang.wangjiao')"></el-option>
-											<el-option :label="$t('lang.zhonghuan')" :value="$t('lang.zhonghuan')"></el-option>
+											<el-option v-for="(item,i) in addressList" :key="i"
+												:label='item.addressName '
+												:value="item.id">
+											</el-option>
 										</el-select>
-										<el-select v-model="ruleForm.street" :placeholder="$t('lang.pldselectstreet')">
-											<el-option :label="$t('lang.Kowloon') + $t('lang.street')" @click.native="changeCen(22.8, 114.6)"
-											v-if="ruleForm.area == $t('lang.jiulong')" :value="$t('lang.Kowloon') + $t('lang.street')"></el-option>
-											<el-option :label="$t('lang.MongKok') + $t('lang.street')"  @click.native="changeCen(23.8, 114.6)"
-											v-if="ruleForm.area == $t('lang.wangjiao')" :value="$t('lang.MongKok') + $t('lang.street')"></el-option>
-											<el-option :label="$t('lang.Central') + $t('lang.street')"  @click.native="changeCen(22.8, 116.6)"
-											v-if="ruleForm.area == $t('lang.zhonghuan')" :value="$t('lang.Central') + $t('lang.street')"></el-option>
+										<el-select v-model="ruleForm1.street" :placeholder="$t('lang.pldselectstreet')" :disabled='streetObj == ""' @change="getStreet">
+											<el-option v-for="(item,i) in streetObj" :key="i"
+												:label='item.addressName'
+												:value='item.id '>
+											</el-option>
 										</el-select>
-										<div class="addCate cursor al" @click="addStreet(ruleForm.street)">
+										<div class="addCate cursor al" @click="addStreet(street)">
 											{{$t("lang.addbtn")}}
 										</div>
 									</div>
@@ -272,7 +265,7 @@
 											{{item}} <span class="al" style="margin-left: 5px">
 												<img class="cursor" @click="deleStreet(i)" src="@/assets/img/cha.png" alt="">
 											</span>
-										</div>
+										</div> 
 									</div>
 								</div>
 							</el-form-item>
@@ -482,9 +475,9 @@
 				:controls="Controls">
 				<source :src="src" type="video/mp4">
 			</video>
-			<span slot="footer" class="dialog-footer">
+			<!-- <span slot="footer" class="dialog-footer">
 				<el-button type="primary" @click="closeVideo">确 定</el-button>
-			</span>
+			</span> -->
 		</el-dialog>
 		<el-image-viewer 
 		v-if="showViewer" 
@@ -493,17 +486,30 @@
 		<el-image-viewer v-if="showViewer1" :on-close="closeViewer1" :url-list="[dimg1]" />
     </div>
 </template>
-
 <script>
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import dimg from "@/assets/img/growing.jpg"
 import mar from "@/assets/img/marker.png"
 import areajs from "@/assets/js/area.js"
-import { uploadOSS } from '@/utils/oss';
+import  axios  from 'axios'
+import Client from '@/utils/client'
 import { genOrder, gaode, gerArea, getShopList, getuploadtoken, submit } from "@/axios/request.js"
 export default {
     data() {
         return {
+			uploadHeaders: {
+				authorization: '*'
+			},
+			region: 'oss-cn-beijing',
+			bucket: '',//这里选择OSS容器
+			url: '',//后台获取token地址
+			ClientObj: null,
+			id: 'uploadUrl',
+			urls:[],
+			getToken:{
+				sign:'',
+			},
+
 			listLength: 1,
 			orderPrice: {
 				"price": 0,
@@ -540,17 +546,14 @@ export default {
 			addTimeList2: [],
 
 			checkedCities: [],
-			busyTimeList: [],
 
 			checkedCities1: [],
 
 			checkedCities12: [],
-			sbusyTimeList: ['12:00~13:00','18:00~19:00'],
 
 			checkedCities11: [],
 
 			checkedCities2: [],
-			unbusyTimeList: [],
 
 			checkedCities21: [],
 
@@ -571,7 +574,7 @@ export default {
                 name: '',
 				date: 'full',
                 // store: '',
-                // street: '',
+                // 
                 // time: '',
 				adList: [],
                 type: '',
@@ -627,6 +630,7 @@ export default {
             },
 			ruleForm1: {
 				area: '',
+				street: '',
 				storeList: []
 			},
 			rules1: {
@@ -699,7 +703,11 @@ export default {
 			totalContentLength: 0,
 
 			floorMath: 0,
-			loading: false
+			loading: false,
+
+			marTop: '0px',
+			street: '',
+			streetObj: ''
 		}
     },
 	beforeMount() {
@@ -710,43 +718,22 @@ export default {
 		this.fun()
     },
 	created () {
+		this.$store.dispatch('getuploadtoken')
+		
 		this.dimg = dimg
-		let that = this
-		let h = 8
-		let s = 9
-		for (let i=0;i<12;i++) {
-			s += 1
-			h += 1
-			this.busyTimeList.push(h + ':00~' + s + ':00')
-		}
-		this.$nextTick(() => {
-			that.busyTimeList.splice(3,1)
-			that.busyTimeList.splice(8,1)
-		})
-
-		let unh = 20
-		let uns = 21
-		for (let i=0;i<2;i++) {
-			uns += 1
-			unh += 1
-			this.unbusyTimeList.push(unh + ':00~' + uns + ':00')
-		}
-		this.unbusyTimeList.push('23:00~00:00')
-		let unh1 = -1
-		let uns1 = 0
-		for (let i=0;i<9;i++) {
-			uns1 += 1
-			unh1 += 1
-			this.unbusyTimeList.push(unh1 + ':00~' + uns1 + ':00')
-		}
 	},
     mounted () {
-		this.$store.dispatch('getTimeIntervaDetailslList',this)
-		this.$store.dispatch('getTypeList',this)
-		// this.initMap1(22.6,114.1,1)
 		window.shopadd = this.shopadd;
 		window.onPreview = this.onPreview;
 		window.closewin = this.closewin
+		if (google) {
+
+		} else {
+			alert('google is undefined')
+			location.reload()
+		}
+		this.getStore()
+		// location.reload();   //刷新
     },
 	watch: {
         lang: {
@@ -776,7 +763,6 @@ export default {
 			handler (val) {
 				if (val) {
 					this.getTypeList = val
-					this.$store.dispatch('getAddress',this) 
 				}
 			},
 		},
@@ -784,7 +770,7 @@ export default {
 			handler (val) {
 				if (val) {
 					this.addressList = val
-					this.getStore()
+					
 				}
 			}
 		},
@@ -794,6 +780,13 @@ export default {
 					this.clockList = val
 				}
 			}
+		},
+		ossData: {
+			handler (val) {
+				if (val) {
+					this.ossData = val
+				}
+			},
 		},
 		mapstoreList: {
 			handler (val) {
@@ -806,9 +799,7 @@ export default {
 							child.area = '暫無地區'
 							that.addressList.forEach(item => {
 								if (child.addressParentId == item.id) {
-									child.area = item.addressLanguageDtos.find( res => res.language == "zh-TW") && this.$i18n.locale == "zh-CN" ? 
-									item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-									item.addressLanguageDtos.find( res => res.language == "en-US").addressName
+									child.area = item.addressName
 								}
 							})
 							that.mapStoreListShow.push({
@@ -827,7 +818,7 @@ export default {
 								images: child.images
 							})
 						})
-						that.initMap1(22.6,114.1,1)
+						that.initMap1(22.32,114.17,1)
 					})
 				}
 			},
@@ -903,23 +894,22 @@ export default {
 				})
 			}
 		},
-		uploadProps() {
-            return {
-                // action: `${process.env.VUE_APP_BASE_API}/api/file/upload`,
-                headers: {
-                    // 接口可能要带token: "",
-                    Authorization: getuploadtoken(),
-                },
-                data: {},
-            };
-        },
+		ossData: {
+			get () { return this.$store.state.user.ossData },
+			set (val) {
+				this.$store.commit('setUser', {
+					key: 'ossData',
+					value: val
+				})
+			}
+		}
     },
     methods: {
 		getStore () {
 			let data = {
 				parentAddressId: this.ruleForm1.area,
 				shopName: '',
-				addressId: this.ruleForm1.area,
+				addressId: this.ruleForm1.street,
 				typeId: this.ruleForm.type
 			}
 			this.$store.dispatch('getShopList',data)
@@ -940,9 +930,15 @@ export default {
 				let arr = []
 				this.loading = true	
 				this.ruleForm.imageList.forEach(item => {
+					let fileurl = ''
+					if (item.imageUrl) {
+						fileurl = item.url + '&#&' + item.imageUrl
+					} else {
+						fileurl = item.url
+					}
 					arr.push({
 						"fileType": Number(this.ruleForm.cmediaType1),
-						"url": item.url,
+						"url": fileurl,
 						"fileName": item.name,
 						"fileSize": item.size,
 						"filePlayTime": item.videoTime
@@ -997,7 +993,7 @@ export default {
 						timeArr.push({
 							"guangGaoTimeMinDtos": arrc,
 							"timeIntervalId": item[0].timeIntervalId,
-							"totalMinLength": total
+							"totalMinLength": Math.ceil(total)
 						})
 					})
 				}
@@ -1005,21 +1001,8 @@ export default {
 					guangGaoDtoJson: {
 						"endTime": String(new Date(this.ruleForm.endDate).toLocaleDateString().split('/').join('-')),
 						"guangGaoAddressAndTimeDto": {
-							// "guangGaoTimeDtos": [{
-							// 	"guangGaoTimeMinDtos": [{
-							// 		"timeIntervalDetailsId": 1,
-							// 		"timeMin": 2
-							// 	}],
-							// 	"timeIntervalId": 1,
-							// 	"totalMinLength": 12
-							// }],
 							"guangGaoTimeDtos": timeArr,
-
-							// "shopAndAddressDtos": [{
-							// 	"addressId": 19,
-							// 	"addressParentId": 9,
-							// 	"shopId": 52
-							// }]
+							"deliveryType": Number(this.radio1), 		 //1.均分广告时间 2.自定义时间
 							"shopAndAddressDtos": shopAndAddressDtos
 						},
 						"guangGaoContentDto": arr,
@@ -1028,7 +1011,7 @@ export default {
 						"title": this.ruleForm.name,
 						"totalLength": this.ruleForm.inp, 
 						"type": 1,    //精準
-						"typeId": this.ruleForm.type[0].id,
+						"typeId": this.ruleForm.type,
 						"userId": localStorage.getItem('compoundeyesUserId')
 					},
 				}
@@ -1087,10 +1070,121 @@ export default {
 		},
 
 
-		handleExceed(file, fileList){
-            this.$message.error('上传失败，限制上传数量10个文件以内！');
-        },
-        handleUpload(file){
+		doUpload () {
+			const _this = this;
+			let that = this
+			axios('https://compoundeyes.hk/api/oss/token',_this.getToken).then((result) => {
+				this.ossData = result.data.data
+				let oss = {
+					region: 'oss-cn-hongkong',
+					bucket: this.ossData.buketName,
+					accessKeyId: this.ossData.accessKeyId,
+					accessKeySecret: this.ossData.accessKeySecret,
+					stsToken: this.ossData.securityToken
+				}
+				var client = Client(oss)
+				_this.percentage = 0;
+				_this.imgFlag = true
+				const files = document.getElementById(_this.id)
+				if (files.files) {
+					const fileLen = document.getElementById(_this.id).files
+					for (let i = 0; i < fileLen.length; i++) {
+						const file = fileLen[i]
+						file.uid = new Date().getTime()
+						// 随机命名
+						let random_name = 'File' + new Date().getTime() + '.' + file.name.split('.').pop()
+						// 上传
+						this.imgFlag = true //进度条显示
+						const interval = setInterval(() => {
+							if (_this.percent >= 75) {
+								clearInterval(interval)
+								return
+							}
+							this.percent += 1 //进度条进度
+						}, 160)
+						client.multipartUpload(random_name, file, {
+							progress: function* (percentage, cpt) {
+								// 上传进度
+								// _this.percent = percentage
+							}
+						}).then((res) => {
+							console.log(res)
+							if (res.res.statusCode == 200) {
+								let size
+								if (file.size >= 1000000) {
+									var s = file.size/1000000
+									size = s.toFixed(1) + 'M'
+									// size = Math.ceil(files[ff].size/1000000) + 'm'
+								} else {
+									var s = file.size/1000
+									size = s.toFixed(0) + 'KB'
+									// size = Math.ceil(files[ff].size/1000) + 'kb'
+								}
+								this.percent = 100;
+								setTimeout(() => {
+									that.imgFlag = false;
+									that.percent = 0;
+								},1000)
+								if (that.ruleForm.mediaType == 'video') {
+									let audioElement = new Audio('http://osshongk.oss-cn-hongkong.aliyuncs.com/'+res.name,);
+									audioElement.addEventListener("loadedmetadata", function (_event) {
+										var time = Math.ceil(audioElement.duration)
+										var sTime = parseInt(time);// 秒
+										var mTime = 0;// 分
+										if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
+											//获取分钟，除以60取整数，得到整数分钟
+											mTime = parseInt(sTime / 60);
+											//获取秒数，秒数取佘，得到整数秒数
+											sTime = parseInt(sTime % 60);
+										}
+										that.ruleForm.imageList.push({ 
+											url: 'http://osshongk.oss-cn-hongkong.aliyuncs.com/'+res.name,
+											name: res.name, 
+											size: size, 
+											time: time,
+											videoTime: mTime + '分' + sTime + '秒'
+										})
+										let obj = {
+											url: 'http://osshongk.oss-cn-hongkong.aliyuncs.com/'+res.name,
+											name: res.name, 
+											size: size, 
+											time: time,
+											videoTime: mTime + '分' + sTime + '秒'
+										}
+										let index = that.ruleForm.imageList.length -1
+										setTimeout(() => {
+											that.initialize(index,obj)
+										},200)
+										// that.minute.push(Math.ceil(audioElement.duration))
+										that.minute.push(time)
+										that.$forceUpdate()
+									});
+								} else if (that.ruleForm.mediaType == 'image') {
+									that.ruleForm.imageList.push({ 
+										// url: res.res.requestUrls[0], 
+										url: 'http://osshongk.oss-cn-hongkong.aliyuncs.com/'+res.name,
+										name: res.name, 
+										size: size, 
+										time: null, 
+										videoTime: null
+									})
+								}
+								return res.res.requestUrls
+							} else {
+								that.$message.error('上传附件失败！');
+							}
+							// 上传完成
+							// const url = 'http://osshongk.oss-cn-hongkong.aliyuncs.com/'+res.name; 
+							// _this.$store.dispatch("changeUrl", _this.url); 
+							// _this.url = url; 
+							// console.log(url); 
+						}).catch((err) => { console.log(err) }) 
+					} 
+				} 
+			}) 
+		}, 
+        handleUpload(e){
+			let file = e.target.files[0]
 			if (this.ruleForm.mediaType == 'image') {
 				let boo = false
 				if (this.ruleForm.imageList.length <= 10 ) { boo = true }
@@ -1107,8 +1201,11 @@ export default {
 						return bool;
 					}
 					if (!isLimit10M) {
-						this.$message.error('上傳失敗，圖片不能超過3M！');
+						this.$message.error('上傳失敗，不能超過3M！');
 						return bool;
+					}
+					if (bool) {
+						this.doUpload()
 					}
 					return bool;
 				}
@@ -1129,118 +1226,17 @@ export default {
 						return bool;
 					}
 					if (!isLimit10M) {
-						this.$message.error('上傳失敗，視頻不能超過100M！');
+						this.$message.error('上傳失敗，不能超過100M！');
 						return bool;
+					}
+					if (bool) {
+						this.doUpload()
 					}
 					return bool;
 				}
 			} else {
-				this.$message({
-					type: 'warning',
-					message: '請選擇廣告媒體類型!'
-				})
-				this.imgFlag = false;
-				this.percent = 0;
-				return false
+				this.$message.warning('請選擇媒體廣告類型')
 			}
-        },
-        handleSuccess(res) {
-            // console.log(res);
-            if (res) {
-				this.imageUrl = URL.createObjectURL(file.raw); // 项目中用后台返回的真实地址
-                this.$emit('fileData', res)
-                this.$message.success("上传附件成功！");
-            }
-        },
-		async videoChange(file, fileList) {
-			//刚开始上传的时候，可以拿到ready状态，给个定时器，让进度条显示
-			if (file.status === 'ready') {
-				this.imgFlag = true //进度条显示
-				const interval = setInterval(() => {
-					if (this.percent >= 75) {
-						clearInterval(interval)
-						return
-					}
-					this.percent += 1 //进度条进度
-				}, 80)
-			}
-		},
-        handleError(err){
-            this.$message.error('上传附件失败！');
-        },
-        // 上传图片
-        async fnUploadRequest(options) {
-			console.log(options)
-            try {
-				let that = this
-                let file = options.file; // 拿到 file
-                let res = await uploadOSS(file)
-				let size
-				if (file.size >= 1000000) {
-					var s = file.size/1000000
-					size = s.toFixed(1) + 'M'
-					// size = Math.ceil(files[ff].size/1000000) + 'm'
-				} else {
-					var s = file.size/1000
-					size = s.toFixed(0) + 'KB'
-					// size = Math.ceil(files[ff].size/1000) + 'kb'
-				}
-				this.percent = 100;
-				setTimeout(() => {
-					that.imgFlag = false;
-					that.percent = 0;
-				},1000)
-				let fileurl = res.fileUrl
-				let name = res.fileName
-				let audioElement = new Audio(fileurl);
-				if (this.ruleForm.mediaType == 'video') {
-					audioElement.addEventListener("loadedmetadata", function (_event) {
-						var time = Math.ceil(audioElement.duration)
-						var sTime = parseInt(time);// 秒
-						var mTime = 0;// 分
-						if ( sTime > 60 ) {//如果秒数大于60，将秒数转换成整数
-							//获取分钟，除以60取整数，得到整数分钟
-							mTime = parseInt(sTime / 60);
-							//获取秒数，秒数取佘，得到整数秒数
-							sTime = parseInt(sTime % 60);
-						}
-						that.ruleForm.imageList.push({ 
-							url: fileurl, 
-							name: name, 
-							size: size, 
-							time: time, 
-							videoTime: mTime + '分' + sTime + '秒'
-						})
-						let obj = {
-							url: fileurl, 
-							name: name, 
-							size: size, 
-							time: time, 
-							videoTime: mTime + '分' + sTime + '秒'
-						}
-						let index = that.ruleForm.imageList.length -1
-						setTimeout(() => {
-							that.initialize(index,obj)
-						},200)
-						// that.minute.push(Math.ceil(audioElement.duration))
-						that.minute.push(time)
-						that.$forceUpdate()
-					});
-				} else if (this.ruleForm.mediaType == 'image') {
-					that.ruleForm.imageList.push({ 
-						url: fileurl, 
-						name: name, 
-						size: size, 
-						time: null, 
-						videoTime: null
-					})
-				}
-                // 返回数据
-                this.$emit("fileData", res);
-                this.$message.success("上传附件成功！");
-            } catch (e) {
-                this.$message.error('上传附件失败！');
-            }
         },
 		initialize (ff, obj) {
 			var scale = 0.8;
@@ -1258,7 +1254,9 @@ export default {
 				canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 				var img = document.createElement("img");
 				img.src = canvas.toDataURL("image/png");
+				console.log(canvas)
 				canvas.toBlob(function (blob) {
+					console.log(blob)
 					let files = new window.File([blob], 'image.png', {type: blob.type})
 					files.uid = new Date().getTime()
 					that.cutVideo(files,obj)
@@ -1268,36 +1266,41 @@ export default {
 				output.appendChild(img);
 			},100)
 		},
-        // 上传图片
-        async cutVideo(options,obj) {
+		async cutVideo(options,obj) {
+			let that = this
             try {
                 let file = options; // 拿到 file
-                let res = await uploadOSS(file)
-				obj.imageUrl = res.fileUrl
-				this.ruleForm.imageList.forEach(item => {
-					if (item.url == obj.url) {
-						item.imageUrl = obj.imageUrl
-					}
+				console.log(file)
+				let oss = {
+					region: 'oss-cn-hongkong',
+					bucket: that.ossData.buketName,
+					accessKeyId: that.ossData.accessKeyId,
+					accessKeySecret: that.ossData.accessKeySecret,
+					stsToken: that.ossData.securityToken
+				}
+				var client = Client(oss)
+				var random_name = 'image' + new Date().getTime();
+				// 分片上传文件
+				await client.multipartUpload(random_name, file, {
+					
+				}).then(res => {
+					let url = res.res.requestUrls[0].split('?')[0]
+					obj.imageUrl = url
+					that.ruleForm.imageList.forEach(item => {
+						if (item.url == obj.url) {
+							console.log(item)
+							item.imageUrl = obj.imageUrl
+						}
+					})
 				})
-				this.$forceUpdate()
+				that.$forceUpdate()
                 // 返回数据
-                this.$emit("fileData", res);
-                this.$message.success("視頻截幀成功！");
+                // this.$emit("fileData", res);
+                that.$message.success("視頻截幀成功！");
             } catch (e) {
-                this.$message.error('視頻封面獲取失败！');
+                that.$message.error('上传附件失败！');
             }
         },
-		outFile (e) {
-			this.$message.error('上传失败，限制上传数量' + this.listLength + '个文件以内！');
-        },
-		uploadProcess(event, file, fileList) {
-			console.log(event);
-			// this.imgFlag = true;
-			// console.log(event.percent);
-			// this.percent = Math.floor(event.percent);
-		},
-
-
 		
 
 		imgPreview (url) {
@@ -1335,20 +1338,30 @@ export default {
 						icon: 'info',
 						map: map,
 					});
-					
+					let arr = [
+						{image: 'http://osshongk.oss-cn-hongkong.aliyuncs.com/File1641526164927.jpg'},
+						{image: 'http://osshongk.oss-cn-hongkong.aliyuncs.com/File1641526164927.jpg'},
+						{image: 'http://osshongk.oss-cn-hongkong.aliyuncs.com/File1641526164927.jpg'}
+					]
+					let list = []
+					let str = ''
+					arr.forEach(item => {
+						list.push({
+							obj: `
+								<div class="imgdom" style="width: 150px;height: 100px;overflow: hidden;">
+									<img style="height: 109%;" src= ${item.image} onclick="onPreview()">
+								</div>
+							`
+						})
+					})
+					for (let i=0;i<list.length;i++) {
+						str += list[i].obj
+					}
+					console.log(str)
 					const contentString1 = 
 						`
 							<div class="sb" style="height: 100px;">
-								<div style="width: 150px;height: 100px;overflow: hidden;">
-									<img style="height: 109%;" src= ${dimg} onclick="onPreview()">
-								</div>
-								<div style="width: 150px;height: 100px;overflow: hidden;
-									margin:0 7px;">
-									<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
-								</div>
-								<div style="width: 150px;height: 100px;overflow: hidden;">
-									<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
-								</div>
+								${str}
 							</div>
 						` +
 						`
@@ -1382,6 +1395,7 @@ export default {
 								</div>
 							</div>
 						`
+					
 					that.openwin(contentString1,marker1,map)
 				} else if (that.$i18n.locale == 'en-US') {
 					const marker1 = new google.maps.Marker({
@@ -1442,7 +1456,6 @@ export default {
 			})
 		},
 		onPreview() {
-			console.log(123)
 			this.showViewer = true
         },
         // 关闭查看器
@@ -1450,19 +1463,13 @@ export default {
           this.showViewer = false
         },
 		mount (i) {
-			let data = {
-				parentAddressId: '',
-				shopName: '',
-				addressId: '',
-				typeId: ''
-			}
-			this.$store.dispatch('getShopList',data)
 			if (i == '1') {
-				this.initMap1(22.6,114.1,1)
+				// this.initMap1(22.32,114.17,1)
 			} else if (i == '2') {
-				this.initMap1(22.6,114.1,2)
+				// this.initMap1(22.32,114.17,2)
+				this.lightArea()
 			} else if (i == '3') {
-				this.initMap1(22.6,114.1,3)
+				// this.initMap1(22.32,114.17,3)
 			}
 		},
 		adListadd (val) {
@@ -1551,9 +1558,30 @@ export default {
 			// }
 		},
 		changeArea (val) {
-			this.ruleForm.street = ''
+			// this.ruleForm.area = val.id
+			
+			this.addressList.forEach(item => {
+				if (item.id == val) {
+					this.streetObj = item.childrenAddress
+				}
+			})
+			this.street = ''
 		},
-		
+		getStreet (val) {
+			this.streetObj.forEach(item => {
+				if (item.id == val) {
+					this.street = item.addressName
+				}
+			})
+		},
+		addStreet (item) {
+			this.getStore()
+			if (item) {
+				this.streetList.push(item)
+				let arr = new Set(this.streetList)
+				this.streetList = Array.from(arr)
+			}
+		},
 		changeCen (lat,lng) {
 			this.map.panTo({ lat: lat,lng: lng });
 		},
@@ -1561,7 +1589,7 @@ export default {
 			let that = this
 			let boolean = true
 			let map = new google.maps.Map(document.getElementById('map'), {
-				// center: {lat: lat, lng: lng},
+				center: {lat: lat, lng: lng},
 				zoom: 11,
 				mapTypeId: "roadmap",
 				disableDefaultUI: true,
@@ -1573,33 +1601,21 @@ export default {
 				fullscreenControl: boolean,
 			});
 			this.map = map
-
-			if (navigator.geolocation) {       //获取自身定位
-				navigator.geolocation.getCurrentPosition(function(position) {
-					var pos = {
-					lat: position.coords.latitude,
-					lng: position.coords.longitude
-					};
-					var marker = new google.maps.Marker({position: pos, map: map});
-					map.setCenter(pos);
-				})
-			}
+			var pos = {
+			// lat: position.coords.latitude,
+			// lng: position.coords.longitude
+				lat: lat,
+				lng: lng
+			};
+			var marker = new google.maps.Marker({position: pos, map: map});
+			map.setCenter(pos);
 			let input = this.$refs.pac
 			let searchBox = new google.maps.places.SearchBox(input);
 			map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 			map.addListener("bounds_changed", () => {
 				searchBox.setBounds(map.getBounds());
 			});
-			// map.addListener('click', function(e) {   //点击获取经纬度
-			// 	console.log(e.latLng.lat(),e.latLng.lng()); 
-			// 	let data = {
-			// 		key: '66b48ee066b6ada810d662b110cfc463',
-			// 		location: String(e.latLng.lng()) + ',' + String(e.latLng.lat())
-			// 	}
-			// 	gaode(data).then(res => {
-			// 		console.log(res)    //地理解析，详细地址
-			// 	})
-			// });
+			
 			let markers = [];
 			searchBox.addListener("places_changed", () => {
 				let places = searchBox.getPlaces();
@@ -1650,172 +1666,175 @@ export default {
 				map.fitBounds(bounds);
 			});
 
-			if (val == 1) {
-				const iconBase = mar
-				const icons = {
-					info: {
-						icon: iconBase
-					},
-				};
-				const features = this.mapStoreListShow
-				// Create markers.
-				if (that.$i18n.locale == 'zh-CN') {
-					for (let i = 0; i < features.length; i++) {
-						const marker1 = new google.maps.Marker({
-							position: features[i].position,
-							icon: icons[features[i].type].icon,
-							map: map,
-						});
-						
-						const contentString1 = 
-							`
-								<div class="sb" style="height: 100px;">
-									<div style="width: 150px;height: 100px;overflow: hidden;">
-										<img style="height: 109%;" src= ${dimg} onclick="onPreview()">
-									</div>
-									<div style="width: 150px;height: 100px;overflow: hidden;
-										margin:0 7px;">
-										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
-									</div>
-									<div style="width: 150px;height: 100px;overflow: hidden;">
-										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
-									</div>
+			const iconBase = mar
+			const icons = {
+				info: {
+					icon: iconBase
+				},
+			};
+			const features = this.mapStoreListShow
+			// Create markers.
+			if (that.$i18n.locale == 'zh-CN') {
+				for (let i = 0; i < features.length; i++) {
+					const marker1 = new google.maps.Marker({
+						position: features[i].position,
+						icon: icons[features[i].type].icon,
+						map: map,
+					});
+					let arr = [
+						{image: 'http://osshongk.oss-cn-hongkong.aliyuncs.com/File1641526164927.jpg'},
+						{image: 'http://osshongk.oss-cn-hongkong.aliyuncs.com/File1641526164927.jpg'},
+						{image: 'http://osshongk.oss-cn-hongkong.aliyuncs.com/File1641526164927.jpg'}
+					]
+					let list = []
+					let str = ''
+					arr.forEach(item => {
+						list.push({
+							obj: `
+								<div class="ju al" style="width: 150px;height: 100px;overflow: hidden;">
+									<img style="height: 109%;" src= ${item.image} onclick="onPreview()">
 								</div>
-							` +
 							`
-								<div class="sb" style="margin-top:5px;">
-									<div class='bold tc'>${features[i].msg}(${features[i].area})</div>
-									<div class="contentString1_address" 
-									style="text-decoration: underline;
-									font-size:12px;">${features[i].area}</div>
-								</div>
-							` + 
-							`
-								<div class="size12">
-									<div>
-										<span>廣告顯示的尺寸(寬 × 高):</span>
-										<span style="color: blue;">${features[i].widthAndHeihth}</span>
-									</div>
-									<div>
-										<span>為廣告商開放的可用時間:</span>
-										<span style="color: blue;">${features[i].timeIntervalNames}</span>
-									</div>
-									<div>
-										<span>廣告不接受的業務類型:</span>
-										<span style="color: blue;">${features[i].typeNames}</span>
-									</div>
-									<div>
-										<span>高峰/非高峰時段的每月價格:</span>
-										<span style="color: blue;">
-											<div>高峰(20000HKD/month)</div>
-											<div>非高峰(10000HKD/month)</div>
-										</span>
-									</div>
-								</div>
-							` +
-							`<div style='margin-top: 10px;' class='ju al'>
-								<div onclick="closewin()" class='cursor close'
-								style='padding: 5px 20px;
-								color: gray;
-								font-size: 12px;
-								border: solid 1px rgb(201, 201, 201);
-								border-radius: 4px;
-								margin-right: 5px;'>取消</div>
-
-								<div onclick="shopadd('${i}')"
-								class='cursor' style='padding: 5px 20px;
-								color: rgb(253, 253, 253);
-								background: rgb(0, 153, 255);
-								font-size: 12px;
-								border-radius: 4px;'>添加</div>
-							</div>
-						`
-
-						marker1.addListener("click", () => {
-							that.openwin(contentString1,marker1,map)
-						});
+						})
+					})
+					for (let i=0;i<list.length;i++) {
+						str += list[i].obj
 					}
-				} else if (that.$i18n.locale == 'en-US') {
-					for (let i = 0; i < features.length; i++) {
-						const marker1 = new google.maps.Marker({
-							position: features[i].position,
-							icon: icons[features[i].type].icon,
-							map: map,
-						});
-						
-						const contentString1 = 
-							`
-								<div class="sb" style="height: 100px;">
-									<div style="width: 150px;height: 100px;overflow: hidden;">
-										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
-									</div>
-									<div style="width: 150px;height: 100px;overflow: hidden;
-										margin:0 7px;">
-										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
-									</div>
-									<div style="width: 150px;height: 100px;overflow: hidden;">
-										<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
-									</div>
-								</div>
-							` +
-							`
-								<div class="sb" style="margin-top:5px;">
-									<div class='bold tc'>${features[i].msg}(${features[i].area})</div>
-									<div class="contentString1_address" 
-									style="text-decoration: underline;
-									font-size:12px;">${features[i].area}</div>
-								</div>
-							` + 
-							`
-								<div class="size12">
-									<div>
-										<span>size (height x width) of adv display:</span>
-										<span style="color: blue;">${features[i].widthAndHeihth}</span>
-									</div>
-									<div>
-										<span>available hour opened for advertisers:</span>
-										<span style="color: blue;">${features[i].timeIntervalNames}</span>
-									</div>
-									<div>
-										<span>type of business unaccepted for adv:</span>
-										<span style="color: blue;">${features[i].typeNames}</span>
-									</div>
-									<div>
-										<span>monthly price at rush/non-rush hour:</span>
-										<span style="color: blue;">
-											<div>rush(20000HKD/month)</div>
-											<div>non-rush(10000HKD/month)</div>
-										</span>
-									</div>
-								</div>
-							` +
-							`<div style='margin-top: 10px;' class='ju al'>
-								<div onclick="closewin()" class='cursor close'
-								style='padding: 5px 20px;
-								color: gray;
-								font-size: 12px;
-								border: solid 1px rgb(201, 201, 201);
-								border-radius: 4px;
-								margin-right: 5px;'>Cancel</div>
-
-								<div onclick="shopadd('${i}')"
-								class='cursor' style='padding: 5px 20px;
-								color: rgb(253, 253, 253);
-								background: rgb(0, 153, 255);
-								font-size: 12px;
-								border-radius: 4px;'>Add</div>
-							</div>
+					const contentString1 = 
 						`
+							<div class="sb" style="height: 100px;">
+								${str}
+							</div>
+						` +
+						`
+							<div class="sb" style="margin-top:5px;">
+								<div class='bold tc'>${features[i].msg}(${features[i].area})</div>
+								<div class="contentString1_address" 
+								style="text-decoration: underline;
+								font-size:12px;">${features[i].area}</div>
+							</div>
+						` + 
+						`
+							<div class="size12">
+								<div>
+									<span>廣告顯示的尺寸(寬 × 高):</span>
+									<span style="color: blue;">${features[i].widthAndHeihth}</span>
+								</div>
+								<div>
+									<span>為廣告商開放的可用時間:</span>
+									<span style="color: blue;">${features[i].timeIntervalNames}</span>
+								</div>
+								<div>
+									<span>廣告不接受的業務類型:</span>
+									<span style="color: blue;">${features[i].typeNames}</span>
+								</div>
+								<div>
+									<span>高峰/非高峰時段的每月價格:</span>
+									<span style="color: blue;">
+										<div>高峰(20000HKD/month)</div>
+										<div>非高峰(10000HKD/month)</div>
+									</span>
+								</div>
+							</div>
+						` +
+						`<div style='margin-top: 10px;' class='ju al'>
+							<div onclick="closewin()" class='cursor close'
+							style='padding: 5px 20px;
+							color: gray;
+							font-size: 12px;
+							border: solid 1px rgb(201, 201, 201);
+							border-radius: 4px;
+							margin-right: 5px;'>取消</div>
 
-						marker1.addListener("click", () => {
-							that.openwin(contentString1,marker1,map)
-						});
-					}
+							<div onclick="shopadd('${i}')"
+							class='cursor' style='padding: 5px 20px;
+							color: rgb(253, 253, 253);
+							background: rgb(0, 153, 255);
+							font-size: 12px;
+							border-radius: 4px;'>添加</div>
+						</div>
+					`
+					
+					marker1.addListener("click", () => {
+						that.openwin(contentString1,marker1,map)
+					});
 				}
-			} else if (val == 2) {
-				this.lightArea(map)
-			} else if (val == 3) {
-				
+			} else if (that.$i18n.locale == 'en-US') {
+				for (let i = 0; i < features.length; i++) {
+					const marker1 = new google.maps.Marker({
+						position: features[i].position,
+						icon: icons[features[i].type].icon,
+						map: map,
+					});
+					
+					const contentString1 = 
+						`
+							<div class="sb" style="height: 100px;">
+								<div style="width: 150px;height: 100px;overflow: hidden;">
+									<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+								</div>
+								<div style="width: 150px;height: 100px;overflow: hidden;
+									margin:0 7px;">
+									<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+								</div>
+								<div style="width: 150px;height: 100px;overflow: hidden;">
+									<img style="height: 109%;" src= ${dimg}  onclick="onPreview()">
+								</div>
+							</div>
+						` +
+						`
+							<div class="sb" style="margin-top:5px;">
+								<div class='bold tc'>${features[i].msg}(${features[i].area})</div>
+								<div class="contentString1_address" 
+								style="text-decoration: underline;
+								font-size:12px;">${features[i].area}</div>
+							</div>
+						` + 
+						`
+							<div class="size12">
+								<div>
+									<span>size (height x width) of adv display:</span>
+									<span style="color: blue;">${features[i].widthAndHeihth}</span>
+								</div>
+								<div>
+									<span>available hour opened for advertisers:</span>
+									<span style="color: blue;">${features[i].timeIntervalNames}</span>
+								</div>
+								<div>
+									<span>type of business unaccepted for adv:</span>
+									<span style="color: blue;">${features[i].typeNames}</span>
+								</div>
+								<div>
+									<span>monthly price at rush/non-rush hour:</span>
+									<span style="color: blue;">
+										<div>rush(20000HKD/month)</div>
+										<div>non-rush(10000HKD/month)</div>
+									</span>
+								</div>
+							</div>
+						` +
+						`<div style='margin-top: 10px;' class='ju al'>
+							<div onclick="closewin()" class='cursor close'
+							style='padding: 5px 20px;
+							color: gray;
+							font-size: 12px;
+							border: solid 1px rgb(201, 201, 201);
+							border-radius: 4px;
+							margin-right: 5px;'>Cancel</div>
+
+							<div onclick="shopadd('${i}')"
+							class='cursor' style='padding: 5px 20px;
+							color: rgb(253, 253, 253);
+							background: rgb(0, 153, 255);
+							font-size: 12px;
+							border-radius: 4px;'>Add</div>
+						</div>
+					`
+
+					marker1.addListener("click", () => {
+						that.openwin(contentString1,marker1,map)
+					});
+				}
 			}
 		},
 		shopadd (item) {
@@ -1846,9 +1865,7 @@ export default {
 			let areaName
 			this.addressList.forEach(item => {
 				if (id == item.id) {
-					areaName = item.addressLanguageDtos.find( res => res.language == "zh-TW") ? 
-					item.addressLanguageDtos.find( res => res.language == "zh-TW").addressName: 
-					item.addressLanguageDtos.find( res => res.language == "en-US").addressName
+					areaName = item.addressName
 				}
 			})
 			
@@ -1888,7 +1905,6 @@ export default {
 		},
 		lightArea () {
 			this.delelightArea(this.bermudaTriangle)
-
 			let that = this
 			let map = this.map
 			// Construct the polygon.
@@ -1996,7 +2012,7 @@ export default {
 				parentAddressId: this.ruleForm1.area,
 				shopName: '',
 				addressId: '',
-				typeId: this.ruleForm.type[0].id
+				typeId: this.ruleForm.type
 			}
 			getShopList(data1).then(res => {
                 console.log(res)
@@ -2018,6 +2034,21 @@ export default {
 							images: child.images
 						})
 					})
+					// this.ruleForm1.storeList = this.ruleForm1.storeList.concat(this.mapStoreListShow)  
+					var arr = this.ruleForm1.storeList.filter(function(element,index,self){
+						return self.findIndex(el => el.shopId == element.shopId ) === index  //如果是根据name去重就江id改为name
+					})
+					this.ruleForm1.storeList = arr
+
+					this.addressList.forEach(item => {
+						if (item.id == id) {
+							this.areaList.push(item)
+						}
+					})
+					var arr1 = this.areaList.filter(function(element,index,self){
+						return self.findIndex(el => el.id == element.id ) === index  //如果是根据name去重就江id改为name
+					})
+					this.areaList = arr1
                 } else {
 					this.$message({
 						type: 'warning',
@@ -2030,28 +2061,7 @@ export default {
 					message: '加載失敗'
 				})
 			})
-			// this.ruleForm1.storeList = this.ruleForm1.storeList.concat(this.mapStoreListShow)  
-			var arr = this.ruleForm1.storeList.filter(function(element,index,self){
-				return self.findIndex(el => el.shopId == element.shopId ) === index  //如果是根据name去重就江id改为name
-			})
-			this.ruleForm1.storeList = arr
-
-			this.addressList.forEach(item => {
-				if (item.id == id) {
-					this.areaList.push(item)
-				}
-			})
-			var arr1 = this.areaList.filter(function(element,index,self){
-				return self.findIndex(el => el.id == element.id ) === index  //如果是根据name去重就江id改为name
-			})
-			this.areaList = arr1
-		},
-        addStreet (item) {
-			if (item) {
-				this.streetList.push(item)
-				let arr = new Set(this.streetList)
-				this.streetList = Array.from(arr)
-			}
+			
 		},
 		deleType (i) {
 			this.typeList.splice(i,1)
@@ -2594,10 +2604,10 @@ export default {
 		}
 	}
 	.list1 {
-		margin-left: 10px;
+		margin-left: -100px;
 		margin-top: 10px;
-		@media screen and (max-width: 870px) {
-			margin-left: -10px !important;
+		@media screen and (max-width: 564px) {
+			margin-left: 0px !important;
 			margin-top: 10px !important;
 		}
 	}
