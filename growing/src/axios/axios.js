@@ -1,7 +1,7 @@
 import axios from "axios"
 // window.baseURL = '/api'
-window.baseURL = 'http://192.168.9.27:9017'
-// window.baseURL = 'https://compoundeyes.hk'  
+// window.baseURL = 'http://192.168.9.27:9017'
+window.baseURL = 'https://compoundeyes.hk'  
 // window.baseURL = 'http://47.115.1.125:9017'  
  
 const service = axios.create({

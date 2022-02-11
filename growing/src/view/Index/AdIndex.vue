@@ -144,7 +144,7 @@ export default {
 			let that = this
 			let boolean = true
 			let map = new google.maps.Map(document.getElementById('map'), {
-				// center: {lat: lat, lng: lng},
+				center: {lat: lat, lng: lng},
 				zoom: 11,
 				mapTypeId: "roadmap",
 				disableDefaultUI: true,
@@ -157,18 +157,18 @@ export default {
 			});
 			this.map = map
 
-			if (navigator.geolocation) {       //获取自身定位
-				navigator.geolocation.getCurrentPosition(function(position) {
-					var pos = {
-					// lat: position.coords.latitude,
-					// lng: position.coords.longitude
-                        lat: lat,
-                        lng: lng
-					};
-					var marker = new google.maps.Marker({position: pos, map: map});
-					map.setCenter(pos);
-				})
-			}
+			// if (navigator.geolocation) {       //获取自身定位
+			// 	navigator.geolocation.getCurrentPosition(function(position) {
+			// 		var pos = {
+			// 		// lat: position.coords.latitude,
+			// 		// lng: position.coords.longitude
+            //             lat: lat,
+            //             lng: lng
+			// 		};
+			// 		var marker = new google.maps.Marker({position: pos, map: map});
+			// 		map.setCenter(pos);
+			// 	})
+			// }
 			let input = this.$refs.pac
 			let searchBox = new google.maps.places.SearchBox(input);
 			map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
@@ -419,7 +419,7 @@ export default {
         },
         home () {
             if (localStorage.getItem('platform') == 1) {
-                this.$router.push('/Index')
+                this.$router.push('/cAdIndex')
             } else if (localStorage.getItem('platform') == 2) {
                 this.$router.push('/platIndex')
             } else if (localStorage.getItem('platform') == 3) {
@@ -608,8 +608,8 @@ export default {
         position: relative;
     }
     .domWhite {
-        width: 210px;
-        @media screen and (max-width: 564px) {
+        min-width: 210px;
+        @media screen and (max-width: 800px) {
             display: none;
         }
     }
@@ -618,22 +618,11 @@ export default {
     }
     .LOGO {
         width: 100%;
-        margin-right: 10px;
         max-width: 270px;
+        @media screen and (max-width: 800px) {
+            margin-right: 10px;
+        }
     }
-    // .LOGO {
-    //     height: 130px;
-    //     margin-left: -30px;
-    //     @media screen and (max-width: 700px) {
-    //         height: 100px;
-    //     }
-    //     @media screen and (max-width: 564px) {
-    //         height: 80px;
-    //     }
-    //     @media screen and (max-width: 400px) {
-    //         height: 70px;
-    //     }
-    // }
     .header_item {
         padding: 5px 20px;
         height: 85px;

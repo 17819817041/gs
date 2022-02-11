@@ -2,7 +2,7 @@
     <div class="AdIndex noBar flex" id="AdIndex" v-loading='loading'>
         <transition name='fade1'>
             <div class="adBackDom flexEnd" @click="showMenu = false" v-show="showMenu">
-                <div :class="['menuRight bold drawer_top', { showMenu: showMenu }]">
+                <div :class="['menuRight bold drawer_top', { showMenu: showMenu }]" @click.stop="">
                     <div class="wClose cursor" @click="showMenu = false">
                         <img src="@/assets/img/whiteClose.png" alt="">
                     </div>
@@ -12,13 +12,13 @@
                     <div class="drawer_item cursor">{{$t("lang.contact1")}}</div>
                     <div class="drawer_item cursor">{{$t("lang.problem")}}</div>
                     <div class="ju" style="margin-top: 40px;">
-                        <div class="logo_wrap ju al">
+                        <div class="logo_wrap ju al cursor">
                             <img src="@/assets/img/a.png" alt="">
                         </div>
-                        <div class="logo_wrap ju al" style="margin: 0 50px;">
+                        <div class="logo_wrap ju al cursor" style="margin: 0 50px;">
                             <img src="@/assets/img/b.png" alt="">
                         </div>
-                        <div class="logo_wrap ju al">
+                        <div class="logo_wrap ju al cursor">
                             <img src="@/assets/img/c.png" alt="">
                         </div>
                     </div>

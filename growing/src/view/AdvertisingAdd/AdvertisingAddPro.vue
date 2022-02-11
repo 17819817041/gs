@@ -152,7 +152,7 @@
 												{{$t('lang.minute')}}
 											</div>
 										</div>
-										<div class="size12" style="color: gray;">( 媒體時長按每分鐘計數，不足一分鐘按一分鐘計算. )</div>
+										<div class="size12" style="color: gray;">( {{$t('lang.becare1')}} )</div>
 									</div>
 							</el-form-item>
 							<el-form-item :label="$t('lang.amt')">
@@ -1566,6 +1566,7 @@ export default {
 				}
 			})
 			this.street = ''
+			this.ruleForm1.street = ''
 		},
 		getStreet (val) {
 			this.streetObj.forEach(item => {
